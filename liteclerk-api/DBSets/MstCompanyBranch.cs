@@ -15,5 +15,6 @@ namespace liteclerk_api.DBSets
         public String Branch { get; set; }
         public String Address { get; set; }
         public String TIN { get; set; }
+        public ICollection<MstUser> CompanyBranchUsers { get; set; }
     }
 }

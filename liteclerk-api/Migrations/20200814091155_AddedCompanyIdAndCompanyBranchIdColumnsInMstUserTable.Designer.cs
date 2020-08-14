@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200814091155_AddedCompanyIdAndCompanyBranchIdColumnsInMstUserTable")]
+    partial class AddedCompanyIdAndCompanyBranchIdColumnsInMstUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,7 +170,7 @@ namespace liteclerk_api.Migrations
 
                     b.Property<string>("CurrencyCode")
                         .IsRequired()
-                        .HasColumnName("CurrencyCode")
+                        .HasColumnName("BranchCode")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
@@ -207,10 +209,12 @@ namespace liteclerk_api.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("CompanyBranchId")
+                        .IsRequired()
                         .HasColumnName("CompanyBranchId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CompanyId")
+                        .IsRequired()
                         .HasColumnName("CompanyId")
                         .HasColumnType("int");
 
@@ -291,12 +295,14 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstCompanyBranch", "CompanyBranch")
                         .WithMany("CompanyBranchUsers")
                         .HasForeignKey("CompanyBranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstCompany", "Company")
                         .WithMany("CompanyUsers")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

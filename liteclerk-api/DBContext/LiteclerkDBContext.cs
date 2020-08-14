@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace liteclerk_api.DBContext
                 entity.Property(e => e.Username).HasColumnName("Username").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Password).HasColumnName("Password").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Fullname).HasColumnName("Fullname").HasColumnType("nvarchar(100)").HasMaxLength(100).IsRequired();
+                entity.Property(e => e.CompanyId).HasColumnName("CompanyId").HasColumnType("int");
+                entity.HasOne(f => f.Company).WithMany(f => f.CompanyUsers).HasForeignKey(f => f.CompanyId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.CompanyBranchId).HasColumnName("CompanyBranchId").HasColumnType("int");
+                entity.HasOne(f => f.CompanyBranch).WithMany(f => f.CompanyBranchUsers).HasForeignKey(f => f.CompanyBranchId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<DBSets.MstCompany>(entity =>
@@ -69,7 +74,7 @@ namespace liteclerk_api.DBContext
             {
                 entity.ToTable("MstCurrency");
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.CurrencyCode).HasColumnName("BranchCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
+                entity.Property(e => e.CurrencyCode).HasColumnName("CurrencyCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.ManualCode).HasColumnName("ManualCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Currency).HasColumnName("Currency").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();

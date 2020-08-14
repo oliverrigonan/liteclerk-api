@@ -24,5 +24,6 @@ namespace liteclerk_api.DBSets
         public MstUser UpdatedByUser { get; set; }
         public DateTime UpdatedByDateTime { get; set; }
         public ICollection<MstCompanyBranch> CompanyBranches { get; set; }
+        public ICollection<MstUser> CompanyUsers { get; set; }
     }
 }

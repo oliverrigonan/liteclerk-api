@@ -11,6 +11,10 @@ namespace liteclerk_api.DBSets
         public String Username { get; set; }
         public String Password { get; set; }
         public String Fullname { get; set; }
+        public Int32? CompanyId { get; set; }
+        public MstCompany Company { get; set; }
+        public Int32? CompanyBranchId { get; set; }
+        public MstCompanyBranch CompanyBranch { get; set; }
         public ICollection<MstCompany> CreatedByUserCompanies { get; set; }
         public ICollection<MstCompany> UpdatedByUserCompanies { get; set; }
         public ICollection<MstCurrency> CreatedByUserCurrencies { get; set; }
