@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DBSets
 {
-    public class MstCompany
+    public class MstCompanyDBSet
     {
         public Int32 Id { get; set; }
         public String CompanyCode { get; set; }
@@ -14,16 +14,16 @@ namespace liteclerk_api.DBSets
         public String Address { get; set; }
         public String TIN { get; set; }
         public Int32 CurrencyId { get; set; }
-        public MstCurrency Currency { get; set; }
+        public MstCurrencyDBSet Currency { get; set; }
         public String CostMethod { get; set; }
         public Boolean IsLocked { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public MstUser CreatedByUser { get; set; }
+        public MstUserDBSet CreatedByUser { get; set; }
         public DateTime CreatedByDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public MstUser UpdatedByUser { get; set; }
+        public MstUserDBSet UpdatedByUser { get; set; }
         public DateTime UpdatedByDateTime { get; set; }
-        public ICollection<MstCompanyBranch> CompanyBranches { get; set; }
-        public ICollection<MstUser> CompanyUsers { get; set; }
+        public ICollection<MstCompanyBranchDBSet> MstCompanyBranches_Company { get; set; }
+        public ICollection<MstUserDBSet> MstUsers_Company { get; set; }
     }
 }

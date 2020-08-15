@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DTO
 {
-    public class MstUser
+    public class MstCurrencyDTO
     {
     }
 }

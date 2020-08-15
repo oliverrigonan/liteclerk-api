@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DTO
 {
-    public class MstCompany
+    public class SysUserAuthenticationSecretKeyDTO
     {
+        public String SecretKey { get; set; }
     }
 }

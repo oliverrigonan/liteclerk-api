@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DTO
 {
-    public class MstCurrency
+    public class SysUserAuthenticationRequestDTO
     {
+        public String Username { get; set; }
+        public String Password { get; set; }
     }
 }

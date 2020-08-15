@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DBSets
 {
-    public class MstCurrency
+    public class MstCurrencyDBSet
     {
         public Int32 Id { get; set; }
         public String CurrencyCode { get; set; }
@@ -13,11 +13,11 @@ namespace liteclerk_api.DBSets
         public String Currency { get; set; }
         public Boolean IsLocked { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public MstUser CreatedByUser { get; set; }
+        public MstUserDBSet CreatedByUser { get; set; }
         public DateTime CreatedByDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public MstUser UpdatedByUser { get; set; }
+        public MstUserDBSet UpdatedByUser { get; set; }
         public DateTime UpdatedByDateTime { get; set; }
-        public ICollection<MstCompany> CompanyCurrencies { get; set; }
+        public ICollection<MstCompanyDBSet> MstCompanies_Currency { get; set; }
     }
 }
