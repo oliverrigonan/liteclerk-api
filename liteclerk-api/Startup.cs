@@ -38,6 +38,12 @@ namespace liteclerk_api
                     )
                 );
 
+            // Enable CORS Origin
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AppCorsPolicy", builder => builder.SetIsOriginAllowed(appCors => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+            });
+
             services.AddControllers();
 
             // configure strongly typed settings objects
@@ -79,6 +85,8 @@ namespace liteclerk_api
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseCors("AppCorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -13,11 +13,27 @@ namespace liteclerk_api.DBSets
         public String Fullname { get; set; }
         public Int32? CompanyId { get; set; }
         public MstCompanyDBSet Company { get; set; }
-        public Int32? CompanyBranchId { get; set; }
+        public Int32? BranchId { get; set; }
         public MstCompanyBranchDBSet CompanyBranch { get; set; }
         public ICollection<MstCompanyDBSet> MstCompanies_CreatedByUser { get; set; }
         public ICollection<MstCompanyDBSet> MstCompanies_UpdatedByUser { get; set; }
         public ICollection<MstCurrencyDBSet> MstCurrencies_CreatedByUser { get; set; }
         public ICollection<MstCurrencyDBSet> MstCurrencies_UpdatedByUser { get; set; }
+        public ICollection<MstArticleDBSet> MstArticles_CreatedByUser { get; set; }
+        public ICollection<MstArticleDBSet> MstArticles_UpdatedByUser { get; set; }
+        public ICollection<MstTermDBSet> MstTerms_CreatedByUser { get; set; }
+        public ICollection<MstTermDBSet> MstTerms_UpdatedByUser { get; set; }
+        public ICollection<MstAccountDBSet> MstAccounts_CreatedByUser { get; set; }
+        public ICollection<MstAccountDBSet> MstAccounts_UpdatedByUser { get; set; }
+        public ICollection<MstAccountTypeDBSet> MstAccountTypes_CreatedByUser { get; set; }
+        public ICollection<MstAccountTypeDBSet> MstAccountTypes_UpdatedByUser { get; set; }
+        public ICollection<MstAccountCashFlowDBSet> MstAccountCashFlows_CreatedByUser { get; set; }
+        public ICollection<MstAccountCashFlowDBSet> MstAccountCashFlows_UpdatedByUser { get; set; }
+        public ICollection<MstAccountCategoryDBSet> MstAccountCategories_CreatedByUser { get; set; }
+        public ICollection<MstAccountCategoryDBSet> MstAccountCategories_UpdatedByUser { get; set; }
+        public ICollection<MstUnitDBSet> MstUnits_CreatedByUser { get; set; }
+        public ICollection<MstUnitDBSet> MstUnits_UpdatedByUser { get; set; }
+        public ICollection<MstArticleAccountGroupDBSet> MstArticleAccountGroups_CreatedByUser { get; set; }
+        public ICollection<MstArticleAccountGroupDBSet> MstArticleAccountGroups_UpdatedByUser { get; set; }
     }
 }

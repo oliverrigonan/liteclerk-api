@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using liteclerk_api.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace liteclerk_api.APIControllers
 {
     [Authorize]
+    [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class SysUserAuthenticationAPIController : ControllerBase

@@ -19,8 +19,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.Fullname).HasColumnName("Fullname").HasColumnType("nvarchar(100)").HasMaxLength(100).IsRequired();
                 entity.Property(e => e.CompanyId).HasColumnName("CompanyId").HasColumnType("int");
                 entity.HasOne(f => f.Company).WithMany(f => f.MstUsers_Company).HasForeignKey(f => f.CompanyId).OnDelete(DeleteBehavior.Restrict);
-                entity.Property(e => e.CompanyBranchId).HasColumnName("CompanyBranchId").HasColumnType("int");
-                entity.HasOne(f => f.CompanyBranch).WithMany(f => f.MstUsers_CompanyBranch).HasForeignKey(f => f.CompanyBranchId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.BranchId).HasColumnName("BranchId").HasColumnType("int");
+                entity.HasOne(f => f.CompanyBranch).WithMany(f => f.MstUsers_CompanyBranch).HasForeignKey(f => f.BranchId).OnDelete(DeleteBehavior.Restrict);
             });
         }
     }
