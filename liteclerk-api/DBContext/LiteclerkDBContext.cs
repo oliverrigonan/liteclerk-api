@@ -29,6 +29,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstArticleAccountGroupDBSet> MstArticleAccountGroups { get; set; }
         public virtual DbSet<DBSets.MstArticleCustomerDBSet> MstArticleCustomers { get; set; }
         public virtual DbSet<DBSets.MstArticleItemDBSet> MstArticleItems { get; set; }
+        public virtual DbSet<DBSets.TrnSalesInvoiceDBSet> TrnSalesInvoices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +50,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstArticleAccountGroupModelBuilder.CreateMstArticleAccountGroupModel(modelBuilder);
             DBModelBuilder.MstArticleCustomerModelBuilder.CreateMstArticleCustomerModel(modelBuilder);
             DBModelBuilder.MstArticleItemModelBuilder.CreateMstArticleItemModel(modelBuilder);
+            DBModelBuilder.TrnSalesInvoiceModelBuilder.CreateTrnSalesInvoiceModel(modelBuilder);
         }
     }
 }

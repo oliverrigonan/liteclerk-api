@@ -35,5 +35,11 @@ namespace liteclerk_api.DBSets
         public ICollection<MstUnitDBSet> MstUnits_UpdatedByUser { get; set; }
         public ICollection<MstArticleAccountGroupDBSet> MstArticleAccountGroups_CreatedByUser { get; set; }
         public ICollection<MstArticleAccountGroupDBSet> MstArticleAccountGroups_UpdatedByUser { get; set; }
+        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_SoldByUser { get; set; }
+        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_PreparedByUser { get; set; }
+        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_CheckedByUser { get; set; }
+        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_ApprovedByUser { get; set; }
+        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_CreatedByUser { get; set; }
+        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_UpdatedByUser { get; set; }
     }
 }

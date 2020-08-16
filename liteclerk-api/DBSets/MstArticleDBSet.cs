@@ -22,5 +22,6 @@ namespace liteclerk_api.DBSets
         public DateTime UpdatedByDateTime { get; set; }
         public ICollection<MstArticleCustomerDBSet> MstArticleCustomers_Article { get; set; }
         public ICollection<MstArticleItemDBSet> MstArticleItems_Article { get; set; }
+        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_Customer { get; set; }
     }
 }
