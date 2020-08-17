@@ -39,22 +39,25 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstCompanyDTO> companies = await _dbContext.MstCompanies.Select(d => new DTO.MstCompanyDTO
-                {
-                    Id = d.Id,
-                    CompanyCode = d.CompanyCode,
-                    ManualCode = d.ManualCode,
-                    Company = d.Company,
-                    Address = d.Address,
-                    TIN = d.TIN,
-                    CurrencyId = d.CurrencyId,
-                    CostMethod = d.CostMethod,
-                    IsLocked = d.IsLocked,
-                    CreatedByUserFullname = d.CreatedByUser.Fullname,
-                    CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                    UpdatedByUserFullname = d.UpdatedByUser.Fullname,
-                    UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
-                }).ToListAsync();
+                IEnumerable<DTO.MstCompanyDTO> companies = await _dbContext.MstCompanies
+                    .Select(d =>
+                        new DTO.MstCompanyDTO
+                        {
+                            Id = d.Id,
+                            CompanyCode = d.CompanyCode,
+                            ManualCode = d.ManualCode,
+                            Company = d.Company,
+                            Address = d.Address,
+                            TIN = d.TIN,
+                            CurrencyId = d.CurrencyId,
+                            CostMethod = d.CostMethod,
+                            IsLocked = d.IsLocked,
+                            CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
+                            CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
+                            UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
+                            UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
+                        })
+                    .ToListAsync();
 
                 return StatusCode(200, companies);
             }
@@ -70,6 +73,7 @@ namespace liteclerk_api.APIControllers
             try
             {
                 DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+
                 if (company == null)
                 {
                     return StatusCode(404, new DTO.MstCompanyDTO());
@@ -87,9 +91,9 @@ namespace liteclerk_api.APIControllers
                     CurrencyId = d.CurrencyId,
                     CostMethod = d.CostMethod,
                     IsLocked = d.IsLocked,
-                    CreatedByUserFullname = d.CreatedByUser.Fullname,
+                    CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
                     CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                    UpdatedByUserFullname = d.UpdatedByUser.Fullname,
+                    UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
                     UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
                 };
 
@@ -109,13 +113,17 @@ namespace liteclerk_api.APIControllers
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
                 DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies.FirstOrDefaultAsync();
+
                 if (currency == null)
                 {
                     return StatusCode(404, "Currency not found.");
                 }
 
                 String companyCode = "0000000001";
-                var lastCompany = await _dbContext.MstCompanies.OrderByDescending(d => d.Id).FirstOrDefaultAsync();
+                DBSets.MstCompanyDBSet lastCompany = await _dbContext.MstCompanies
+                    .OrderByDescending(d => d.Id)
+                    .FirstOrDefaultAsync();
+
                 if (lastCompany != null)
                 {
                     Int32 lastCompanyCode = Convert.ToInt32(lastCompany.CompanyCode) + 0000000001;
@@ -157,6 +165,7 @@ namespace liteclerk_api.APIControllers
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
                 DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+
                 if (company == null)
                 {
                     return StatusCode(404, "Company not found.");
@@ -168,8 +177,8 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies
-                                              .Where(d => d.Id == mstCompanyDTO.CurrencyId && d.IsLocked == true)
-                                              .FirstOrDefaultAsync();
+                    .Where(d => d.Id == mstCompanyDTO.CurrencyId)
+                    .FirstOrDefaultAsync();
 
                 if (currency == null)
                 {
@@ -204,6 +213,7 @@ namespace liteclerk_api.APIControllers
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
                 DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+
                 if (company == null)
                 {
                     return StatusCode(404, "Company not found.");
@@ -215,8 +225,8 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies
-                                              .Where(d => d.Id == mstCompanyDTO.CurrencyId && d.IsLocked == true)
-                                              .FirstOrDefaultAsync();
+                    .Where(d => d.Id == mstCompanyDTO.CurrencyId)
+                    .FirstOrDefaultAsync();
 
                 if (currency == null)
                 {
@@ -252,6 +262,7 @@ namespace liteclerk_api.APIControllers
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
                 DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+
                 if (company == null)
                 {
                     return StatusCode(404, "Company not found.");
@@ -283,6 +294,7 @@ namespace liteclerk_api.APIControllers
             try
             {
                 DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+
                 if (company == null)
                 {
                     return StatusCode(404, "Company not found.");

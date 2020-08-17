@@ -38,16 +38,19 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstCompanyBranchDTO> companyBranches = await _dbContext.MstCompanyBranches.Select(d => new DTO.MstCompanyBranchDTO
-                {
-                    Id = d.Id,
-                    BranchCode = d.BranchCode,
-                    ManualCode = d.ManualCode,
-                    CompanyId = d.CompanyId,
-                    Branch = d.Branch,
-                    Address = d.Address,
-                    TIN = d.TIN
-                }).ToListAsync();
+                IEnumerable<DTO.MstCompanyBranchDTO> companyBranches = await _dbContext.MstCompanyBranches
+                    .Select(d =>
+                        new DTO.MstCompanyBranchDTO
+                        {
+                            Id = d.Id,
+                            BranchCode = d.BranchCode,
+                            ManualCode = d.ManualCode,
+                            CompanyId = d.CompanyId,
+                            Branch = d.Branch,
+                            Address = d.Address,
+                            TIN = d.TIN
+                        })
+                    .ToListAsync();
 
                 return StatusCode(200, companyBranches);
             }
@@ -63,8 +66,8 @@ namespace liteclerk_api.APIControllers
             try
             {
                 DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies
-                                            .Where(d => d.Id == mstCompanyBranchDTO.CompanyId)
-                                            .FirstOrDefaultAsync();
+                    .Where(d => d.Id == mstCompanyBranchDTO.CompanyId)
+                    .FirstOrDefaultAsync();
 
                 if (company == null)
                 {
@@ -77,7 +80,11 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String branchCode = "0000000001";
-                var lastCompanyBranch = await _dbContext.MstCompanyBranches.OrderByDescending(d => d.Id).FirstOrDefaultAsync();
+                DBSets.MstCompanyBranchDBSet lastCompanyBranch = await _dbContext.MstCompanyBranches
+                    .Where(d => d.CompanyId == mstCompanyBranchDTO.CompanyId)
+                    .OrderByDescending(d => d.Id)
+                    .FirstOrDefaultAsync();
+
                 if (lastCompanyBranch != null)
                 {
                     Int32 lastBranchCode = Convert.ToInt32(lastCompanyBranch.BranchCode) + 0000000001;
@@ -111,12 +118,13 @@ namespace liteclerk_api.APIControllers
             try
             {
                 DBSets.MstCompanyBranchDBSet companyBranch = await _dbContext.MstCompanyBranches.FindAsync(id);
+
                 if (companyBranch == null)
                 {
                     return StatusCode(404, "Branch not found.");
                 }
 
-                if (companyBranch.Company.IsLocked == true)
+                if (companyBranch.MstCompany_Company.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot update a branch if the current company is locked.");
                 }
@@ -143,12 +151,13 @@ namespace liteclerk_api.APIControllers
             try
             {
                 DBSets.MstCompanyBranchDBSet companyBranch = await _dbContext.MstCompanyBranches.FindAsync(id);
+
                 if (companyBranch == null)
                 {
                     return StatusCode(404, "Branch not found.");
                 }
 
-                if (companyBranch.Company.IsLocked == true)
+                if (companyBranch.MstCompany_Company.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete a branch if the current company is locked.");
                 }

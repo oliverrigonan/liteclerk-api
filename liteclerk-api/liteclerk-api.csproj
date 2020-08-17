@@ -12,6 +12,8 @@
     <Compile Remove="Migrations\20200816114901_AddedMstAccountTable.Designer.cs" />
     <Compile Remove="Migrations\20200816120338_AddedAllMstAccountingTables.cs" />
     <Compile Remove="Migrations\20200816120338_AddedAllMstAccountingTables.Designer.cs" />
+    <Compile Remove="Migrations\20200817015531_ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired.cs" />
+    <Compile Remove="Migrations\20200817015531_ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

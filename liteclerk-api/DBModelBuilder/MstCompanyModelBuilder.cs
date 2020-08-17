@@ -20,14 +20,14 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.Address).HasColumnName("Address").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.TIN).HasColumnName("TIN").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.CurrencyId).HasColumnName("CurrencyId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.Currency).WithMany(f => f.MstCompanies_Currency).HasForeignKey(f => f.CurrencyId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstCurrency_Currency).WithMany(f => f.MstCompanies_Currency).HasForeignKey(f => f.CurrencyId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.CostMethod).HasColumnName("CostMethod").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.CreatedByUser).WithMany(f => f.MstCompanies_CreatedByUser).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstUser_CreatedByUser).WithMany(f => f.MstCompanies_CreatedByUser).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.CreatedByDateTime).HasColumnName("CreatedByDateTime").HasColumnType("datetime").IsRequired();
                 entity.Property(e => e.UpdatedByUserId).HasColumnName("UpdatedByUserId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.UpdatedByUser).WithMany(f => f.MstCompanies_UpdatedByUser).HasForeignKey(f => f.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstUser_UpdatedByUser).WithMany(f => f.MstCompanies_UpdatedByUser).HasForeignKey(f => f.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.UpdatedByDateTime).HasColumnName("UpdatedByDateTime").HasColumnType("datetime").IsRequired();
             });
         }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200817015845_ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired")]
+    partial class ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -678,6 +680,10 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<bool>("IsLocked")
+                        .HasColumnName("IsLocked")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ManualCode")
                         .IsRequired()
                         .HasColumnName("ManualCode")
@@ -812,11 +818,13 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BranchId")
+                    b.Property<int?>("BranchId")
+                        .IsRequired()
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
+                        .IsRequired()
                         .HasColumnName("CompanyId")
                         .HasColumnType("int");
 

@@ -12,12 +12,12 @@ namespace liteclerk_api.DBSets
         public String ManualCode { get; set; }
         public String AccountType { get; set; }
         public Int32 AccountCategoryId { get; set; }
-        public MstAccountCategoryDBSet AccountCategory { get; set; }
+        public MstAccountCategoryDBSet MstAccountCategory_AccountCategory { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public MstUserDBSet CreatedByUser { get; set; }
+        public MstUserDBSet MstUser_CreatedByUser { get; set; }
         public DateTime CreatedByDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public MstUserDBSet UpdatedByUser { get; set; }
+        public MstUserDBSet MstUser_UpdatedByUser { get; set; }
         public DateTime UpdatedByDateTime { get; set; }
         public ICollection<MstAccountDBSet> MstAccounts_AccountType { get; set; }
     }

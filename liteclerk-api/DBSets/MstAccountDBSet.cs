@@ -12,14 +12,14 @@ namespace liteclerk_api.DBSets
         public String ManualCode { get; set; }
         public String Account { get; set; }
         public Int32 AccountTypeId { get; set; }
-        public MstAccountTypeDBSet AccountType { get; set; }
+        public MstAccountTypeDBSet MstAccountType_AccountType { get; set; }
         public Int32 AccountCashFlowId { get; set; }
-        public MstAccountCashFlowDBSet AccountCashFlow { get; set; }
+        public MstAccountCashFlowDBSet MstAccountCashFlow_AccountCashFlow { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public MstUserDBSet CreatedByUser { get; set; }
+        public MstUserDBSet MstUser_CreatedByUser { get; set; }
         public DateTime CreatedByDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public MstUserDBSet UpdatedByUser { get; set; }
+        public MstUserDBSet MstUser_UpdatedByUser { get; set; }
         public DateTime UpdatedByDateTime { get; set; }
         public ICollection<MstArticleCustomerDBSet> MstArticleCustomers_ReceivableAccount { get; set; }
         public ICollection<MstArticleAccountGroupDBSet> MstArticleAccountGroups_AssetAccount { get; set; }

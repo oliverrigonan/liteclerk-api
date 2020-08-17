@@ -17,7 +17,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.BranchCode).HasColumnName("BranchCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.ManualCode).HasColumnName("ManualCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.CompanyId).HasColumnName("CompanyId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.Company).WithMany(f => f.MstCompanyBranches_Company).HasForeignKey(f => f.CompanyId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(f => f.MstCompany_Company).WithMany(f => f.MstCompanyBranches_Company).HasForeignKey(f => f.CompanyId).OnDelete(DeleteBehavior.Cascade);
                 entity.Property(e => e.Branch).HasColumnName("Branch").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.Address).HasColumnName("Address").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.TIN).HasColumnName("TIN").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
