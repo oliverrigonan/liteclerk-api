@@ -15,6 +15,7 @@ namespace liteclerk_api.DBSets
         public MstCompanyDBSet MstCompany_Company { get; set; }
         public Int32 BranchId { get; set; }
         public MstCompanyBranchDBSet MstCompanyBranch_Branch { get; set; }
+        public Boolean IsActive { get; set; }
         public ICollection<MstCompanyDBSet> MstCompanies_CreatedByUser { get; set; }
         public ICollection<MstCompanyDBSet> MstCompanies_UpdatedByUser { get; set; }
         public ICollection<MstCurrencyDBSet> MstCurrencies_CreatedByUser { get; set; }

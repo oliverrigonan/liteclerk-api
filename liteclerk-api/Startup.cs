@@ -73,6 +73,9 @@ namespace liteclerk_api
 
             // configure DI for application services
             services.AddScoped<Modules.ISysUserAuthenticationModule, Modules.SysUserAuthenticationModule>();
+
+            // Make Json Serialization Return Camel Case Latters
+            services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

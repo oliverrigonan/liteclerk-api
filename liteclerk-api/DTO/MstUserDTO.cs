@@ -15,5 +15,6 @@ namespace liteclerk_api.DTO
         public String Company { get; set; }
         public Int32 BranchId { get; set; }
         public String Branch { get; set; }
+        public Boolean IsActive { get; set; }
     }
 }

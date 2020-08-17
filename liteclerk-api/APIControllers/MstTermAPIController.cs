@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,28 +14,29 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MstCurrencyAPIController : ControllerBase
+    public class MstTermAPIController : ControllerBase
     {
         private DBContext.LiteclerkDBContext _dbContext;
 
-        public MstCurrencyAPIController(DBContext.LiteclerkDBContext dbContext)
+        public MstTermAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstCurrencyDTO>>> GetCurrencyList()
+        public async Task<ActionResult<IEnumerable<DTO.MstTermDTO>>> GetTermList()
         {
             try
             {
-                IEnumerable<DTO.MstCurrencyDTO> currencies = await _dbContext.MstCurrencies
+                IEnumerable<DTO.MstTermDTO> terms = await _dbContext.MstTerms
                     .Select(d =>
-                        new DTO.MstCurrencyDTO
+                        new DTO.MstTermDTO
                         {
                             Id = d.Id,
-                            CurrencyCode = d.CurrencyCode,
+                            TermCode = d.Term,
                             ManualCode = d.ManualCode,
-                            Currency = d.Currency,
+                            Term = d.Term,
+                            NumberOfDays = d.NumberOfDays,
                             CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
                             CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
                             UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
@@ -42,7 +44,7 @@ namespace liteclerk_api.APIControllers
                         })
                     .ToListAsync();
 
-                return StatusCode(200, currencies);
+                return StatusCode(200, terms);
             }
             catch (Exception e)
             {

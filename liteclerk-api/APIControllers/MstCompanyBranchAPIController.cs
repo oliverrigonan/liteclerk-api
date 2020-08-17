@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace liteclerk_api.APIControllers
 {
     [Authorize]
+    [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class MstCompanyBranchAPIController : ControllerBase
@@ -34,7 +36,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstCompanyBranchDTO>>> CompanyBranchList()
+        public async Task<ActionResult<IEnumerable<DTO.MstCompanyBranchDTO>>> GetCompanyBranchList()
         {
             try
             {

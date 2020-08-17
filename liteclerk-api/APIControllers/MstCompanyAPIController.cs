@@ -4,12 +4,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace liteclerk_api.APIControllers
 {
     [Authorize]
+    [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class MstCompanyAPIController : ControllerBase
@@ -35,7 +37,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstCompanyDTO>>> CompanyList()
+        public async Task<ActionResult<IEnumerable<DTO.MstCompanyDTO>>> GetCompanyList()
         {
             try
             {
@@ -68,7 +70,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult<DTO.MstCompanyDTO>> CompanyDetail(int id)
+        public async Task<ActionResult<DTO.MstCompanyDTO>> GetCompanyDetail(int id)
         {
             try
             {
@@ -149,7 +151,7 @@ namespace liteclerk_api.APIControllers
                 _dbContext.MstCompanies.Add(newCompany);
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(200, CompanyDetail(newCompany.Id));
+                return StatusCode(200, GetCompanyDetail(newCompany.Id));
             }
             catch (Exception e)
             {

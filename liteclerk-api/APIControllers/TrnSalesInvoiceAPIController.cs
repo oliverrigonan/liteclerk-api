@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace liteclerk_api.APIControllers
 {
     [Authorize]
+    [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class TrnSalesInvoiceAPIController : ControllerBase
@@ -35,80 +37,8 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("customer/dropdown/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleCustomerDTO>>> CustomerDropdownList()
-        {
-            try
-            {
-                IEnumerable<DTO.MstArticleCustomerDTO> customers = await _dbContext.MstArticleCustomers
-                    .Select(d =>
-                        new DTO.MstArticleCustomerDTO
-                        {
-                            Id = d.Id,
-                            ArticleId = d.ArticleId,
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Customer = d.Customer
-                        })
-                    .ToListAsync();
-
-                return StatusCode(200, customers);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("term/dropdown/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstTermDTO>>> TermDropdownList()
-        {
-            try
-            {
-                IEnumerable<DTO.MstTermDTO> terms = await _dbContext.MstTerms
-                    .Select(d =>
-                        new DTO.MstTermDTO
-                        {
-                            Id = d.Id,
-                            TermCode = d.Term,
-                            ManualCode = d.ManualCode,
-                            Term = d.Term
-                        })
-                    .ToListAsync();
-
-                return StatusCode(200, terms);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("user/dropdown/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstUserDTO>>> UserDropdownList()
-        {
-            try
-            {
-                IEnumerable<DTO.MstUserDTO> users = await _dbContext.MstUsers
-                    .Select(d =>
-                        new DTO.MstUserDTO
-                        {
-                            Id = d.Id,
-                            Username = d.Username,
-                            Fullname = d.Fullname
-                        })
-                    .ToListAsync();
-
-                return StatusCode(200, users);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
         [HttpGet("list/{startDate}/{endDate}")]
-        public async Task<ActionResult<IEnumerable<DTO.TrnSalesInvoiceDTO>>> SalesInvoiceList(String startDate, String endDate)
+        public async Task<ActionResult<IEnumerable<DTO.TrnSalesInvoiceDTO>>> GetSalesInvoiceListFilteredByDateRanged(String startDate, String endDate)
         {
             try
             {
@@ -163,9 +93,9 @@ namespace liteclerk_api.APIControllers
                             IsPrinted = d.IsPrinted,
                             IsLocked = d.IsLocked,
                             CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                            CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                            UpdatedByUserFullname = d.MstUser_PreparedByUser.Fullname,
-                            UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
+                            CreatedByDateTime = d.CreatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
+                            UpdatedByDateTime = d.UpdatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         })
                     .ToListAsync();
 
@@ -178,7 +108,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult<DTO.TrnSalesInvoiceDTO>> SalesInvoiceDetail(int id)
+        public async Task<ActionResult<DTO.TrnSalesInvoiceDTO>> GetSalesInvoiceDetail(int id)
         {
             try
             {
@@ -236,7 +166,7 @@ namespace liteclerk_api.APIControllers
                     IsLocked = d.IsLocked,
                     CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
                     CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                    UpdatedByUserFullname = d.MstUser_PreparedByUser.Fullname,
+                    UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
                     UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString()
                 };
 
@@ -318,7 +248,7 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnSalesInvoices.Add(newSalesInvoice);
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(200, SalesInvoiceDetail(newSalesInvoice.Id));
+                return StatusCode(200, GetSalesInvoiceDetail(newSalesInvoice.Id));
             }
             catch (Exception e)
             {
