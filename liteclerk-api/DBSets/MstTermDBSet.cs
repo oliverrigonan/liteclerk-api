@@ -13,12 +13,12 @@ namespace liteclerk_api.DBSets
         public String Term { get; set; }
         public Decimal NumberOfDays { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public MstUserDBSet MstUser_CreatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_CreatedByUser { get; set; }
         public DateTime CreatedByDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public MstUserDBSet MstUser_UpdatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
         public DateTime UpdatedByDateTime { get; set; }
-        public ICollection<MstArticleCustomerDBSet> MstArticleCustomers_Term { get; set; }
-        public ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_Term { get; set; }
+        public virtual ICollection<MstArticleCustomerDBSet> MstArticleCustomers_Term { get; set; }
+        public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_Term { get; set; }
     }
 }

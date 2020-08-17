@@ -32,11 +32,10 @@ namespace liteclerk_api
         {
             IdentityModelEventSource.ShowPII = true;
 
-            services.AddDbContext<DBContext.LiteclerkDBContext>(
-                options => options.UseSqlServer(
-                        Configuration["ConnectionStrings:DefaultConnection"]
-                    )
-                );
+            services.AddDbContext<DBContext.LiteclerkDBContext>(options => options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"])
+            );
 
             // Enable CORS Origin
             services.AddCors(options =>

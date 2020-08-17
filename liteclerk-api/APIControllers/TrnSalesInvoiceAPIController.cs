@@ -44,60 +44,57 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await _dbContext.MstUsers
-                    .Where(d => d.Id == userId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
 
-                if (user == null)
-                {
-                    return StatusCode(404, "User login not found.");
-                }
-
-                IEnumerable<DTO.TrnSalesInvoiceDTO> salesInvoices = await _dbContext.TrnSalesInvoices
-                    .Where(d =>
-                        d.BranchId == user.BranchId &&
-                        d.SIDate >= Convert.ToDateTime(startDate) &&
-                        d.SIDate <= Convert.ToDateTime(endDate))
-                    .Select(d =>
-                        new DTO.TrnSalesInvoiceDTO
-                        {
-                            Id = d.Id,
-                            BranchId = d.BranchId,
-                            Branch = d.MstCompanyBranch_Branch.Branch,
-                            CurrencyId = d.CurrencyId,
-                            Currency = d.MstCurrency_Currency.Currency,
-                            SINumber = d.SINumber,
-                            SIDate = d.SIDate.ToShortDateString(),
-                            ManualNumber = d.ManualNumber,
-                            DocumentReference = d.DocumentReference,
-                            CustomerId = d.CustomerId,
-                            Customer = d.MstArticle_Customer.Article,
-                            TermId = d.TermId,
-                            Term = d.MstTerm_Term.Term,
-                            DateNeeded = d.DateNeeded.ToShortDateString(),
-                            Remarks = d.Remarks,
-                            SoldByUserId = d.SoldByUserId,
-                            SoldByUserFullname = d.MstUser_SoldByUser.Fullname,
-                            PreparedByUserId = d.PreparedByUserId,
-                            PreparedByUserFullname = d.MstUser_PreparedByUser.Fullname,
-                            CheckedByUserId = d.CheckedByUserId,
-                            CheckedByUserFullname = d.MstUser_CheckedByUser.Fullname,
-                            ApprovedByUserId = d.ApprovedByUserId,
-                            ApprovedByUserFullname = d.MstUser_ApprovedByUser.Fullname,
-                            Amount = d.Amount,
-                            PaidAmount = d.PaidAmount,
-                            AdjustmentAmount = d.AdjustmentAmount,
-                            BalanceAmount = d.BalanceAmount,
-                            Status = d.Status,
-                            IsCancelled = d.IsCancelled,
-                            IsPrinted = d.IsPrinted,
-                            IsLocked = d.IsLocked,
-                            CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                            CreatedByDateTime = d.CreatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
-                            UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                            UpdatedByDateTime = d.UpdatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.TrnSalesInvoiceDTO> salesInvoices = await (
+                    from d in _dbContext.TrnSalesInvoices
+                    where d.BranchId == user.BranchId
+                    && d.SIDate >= Convert.ToDateTime(startDate)
+                    && d.SIDate <= Convert.ToDateTime(endDate)
+                    orderby d.Id descending
+                    select new DTO.TrnSalesInvoiceDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        CurrencyId = d.CurrencyId,
+                        Currency = d.MstCurrency_Currency.Currency,
+                        SINumber = d.SINumber,
+                        SIDate = d.SIDate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        CustomerId = d.CustomerId,
+                        Customer = d.MstArticle_Customer.Article,
+                        TermId = d.TermId,
+                        Term = d.MstTerm_Term.Term,
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
+                        Remarks = d.Remarks,
+                        SoldByUserId = d.SoldByUserId,
+                        SoldByUserFullname = d.MstUser_SoldByUser.Fullname,
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUserFullname = d.MstUser_PreparedByUser.Fullname,
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUserFullname = d.MstUser_CheckedByUser.Fullname,
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUserFullname = d.MstUser_ApprovedByUser.Fullname,
+                        Amount = d.Amount,
+                        PaidAmount = d.PaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
+                        CreatedByDateTime = d.CreatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
+                        UpdatedByDateTime = d.UpdatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, salesInvoices);
             }
@@ -108,69 +105,62 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult<DTO.TrnSalesInvoiceDTO>> GetSalesInvoiceDetail(int id)
+        public async Task<ActionResult<DTO.TrnSalesInvoiceDTO>> GetSalesInvoiceDetail(Int32 id)
         {
             try
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await _dbContext.MstUsers
-                    .Where(d => d.Id == userId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
 
-                if (user == null)
-                {
-                    return StatusCode(404, "User login not found.");
-                }
+                DTO.TrnSalesInvoiceDTO salesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoices
+                    where d.Id == id
+                    select new DTO.TrnSalesInvoiceDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        CurrencyId = d.CurrencyId,
+                        Currency = d.MstCurrency_Currency.Currency,
+                        SINumber = d.SINumber,
+                        SIDate = d.SIDate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        CustomerId = d.CustomerId,
+                        Customer = d.MstArticle_Customer.Article,
+                        TermId = d.TermId,
+                        Term = d.MstTerm_Term.Term,
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
+                        Remarks = d.Remarks,
+                        SoldByUserId = d.SoldByUserId,
+                        SoldByUserFullname = d.MstUser_SoldByUser.Fullname,
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUserFullname = d.MstUser_PreparedByUser.Fullname,
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUserFullname = d.MstUser_CheckedByUser.Fullname,
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUserFullname = d.MstUser_ApprovedByUser.Fullname,
+                        Amount = d.Amount,
+                        PaidAmount = d.PaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
+                        CreatedByDateTime = d.CreatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
+                        UpdatedByDateTime = d.UpdatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                    }
+                ).FirstOrDefaultAsync();
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await _dbContext.TrnSalesInvoices.FindAsync(id);
-
-                if (salesInvoice == null)
-                {
-                    return StatusCode(404, new DTO.TrnSalesInvoiceDTO());
-                }
-
-                DBSets.TrnSalesInvoiceDBSet d = salesInvoice;
-                DTO.TrnSalesInvoiceDTO salesInvoiceDetail = new DTO.TrnSalesInvoiceDTO
-                {
-                    Id = d.Id,
-                    BranchId = d.BranchId,
-                    Branch = d.MstCompanyBranch_Branch.Branch,
-                    CurrencyId = d.CurrencyId,
-                    Currency = d.MstCurrency_Currency.Currency,
-                    SINumber = d.SINumber,
-                    SIDate = d.SIDate.ToShortDateString(),
-                    ManualNumber = d.ManualNumber,
-                    DocumentReference = d.DocumentReference,
-                    CustomerId = d.CustomerId,
-                    Customer = d.MstArticle_Customer.Article,
-                    TermId = d.TermId,
-                    Term = d.MstTerm_Term.Term,
-                    DateNeeded = d.DateNeeded.ToShortDateString(),
-                    Remarks = d.Remarks,
-                    SoldByUserId = d.SoldByUserId,
-                    SoldByUserFullname = d.MstUser_SoldByUser.Fullname,
-                    PreparedByUserId = d.PreparedByUserId,
-                    PreparedByUserFullname = d.MstUser_PreparedByUser.Fullname,
-                    CheckedByUserId = d.CheckedByUserId,
-                    CheckedByUserFullname = d.MstUser_CheckedByUser.Fullname,
-                    ApprovedByUserId = d.ApprovedByUserId,
-                    ApprovedByUserFullname = d.MstUser_ApprovedByUser.Fullname,
-                    Amount = d.Amount,
-                    PaidAmount = d.PaidAmount,
-                    AdjustmentAmount = d.AdjustmentAmount,
-                    BalanceAmount = d.BalanceAmount,
-                    Status = d.Status,
-                    IsCancelled = d.IsCancelled,
-                    IsPrinted = d.IsPrinted,
-                    IsLocked = d.IsLocked,
-                    CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                    CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                    UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                    UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString()
-                };
-
-                return StatusCode(200, salesInvoiceDetail);
+                return StatusCode(200, salesInvoice);
             }
             catch (Exception e)
             {
@@ -185,18 +175,22 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await _dbContext.MstUsers
-                    .Where(d => d.Id == userId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
                 }
 
-                DBSets.MstArticleCustomerDBSet customer = await _dbContext.MstArticleCustomers
-                    .Where(d => d.MstArticle_Article.IsLocked == true)
-                    .FirstOrDefaultAsync();
+                DBSets.MstArticleCustomerDBSet customer = await (
+                    from d in _dbContext.MstArticleCustomers
+                    where d.MstArticle_Article.IsLocked == true
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (customer == null)
                 {
@@ -204,10 +198,12 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String SINumber = "0000000001";
-                DBSets.TrnSalesInvoiceDBSet lastSalesInvoice = await _dbContext.TrnSalesInvoices
-                    .Where(d => d.BranchId == user.BranchId)
-                    .OrderByDescending(d => d.Id)
-                    .FirstOrDefaultAsync();
+                DBSets.TrnSalesInvoiceDBSet lastSalesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoices
+                    where d.BranchId == user.BranchId
+                    orderby d.Id descending
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (lastSalesInvoice != null)
                 {
@@ -223,7 +219,7 @@ namespace liteclerk_api.APIControllers
                     SIDate = DateTime.Today,
                     ManualNumber = SINumber,
                     DocumentReference = "",
-                    CustomerId = customer.Id,
+                    CustomerId = customer.ArticleId,
                     TermId = customer.TermId,
                     DateNeeded = DateTime.Today,
                     Remarks = "",
@@ -248,7 +244,7 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnSalesInvoices.Add(newSalesInvoice);
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(200, GetSalesInvoiceDetail(newSalesInvoice.Id));
+                return StatusCode(200, newSalesInvoice.Id);
             }
             catch (Exception e)
             {
@@ -257,22 +253,28 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("save/{id}")]
-        public async Task<IActionResult> SaveSalesInvoice(int id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
+        public async Task<IActionResult> SaveSalesInvoice(Int32 id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
         {
             try
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await _dbContext.MstUsers
-                    .Where(d => d.Id == userId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
                 }
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await _dbContext.TrnSalesInvoices.FindAsync(id);
+                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoices
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync(); ;
 
                 if (salesInvoice == null)
                 {
@@ -284,29 +286,34 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a sales invoice that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies
-                    .Where(d => d.Id == trnSalesInvoiceDTO.CurrencyId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstCurrencyDBSet currency = await (
+                    from d in _dbContext.MstCurrencies
+                    where d.Id == trnSalesInvoiceDTO.CurrencyId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (currency == null)
                 {
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstArticleCustomerDBSet customer = await _dbContext.MstArticleCustomers
-                    .Where(d =>
-                        d.MstArticle_Article.Id == trnSalesInvoiceDTO.CustomerId &&
-                        d.MstArticle_Article.IsLocked == true)
-                    .FirstOrDefaultAsync();
+                DBSets.MstArticleCustomerDBSet customer = await (
+                    from d in _dbContext.MstArticleCustomers
+                    where d.ArticleId == trnSalesInvoiceDTO.CustomerId
+                    && d.MstArticle_Article.IsLocked == true
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (customer == null)
                 {
                     return StatusCode(404, "Customer not found.");
                 }
 
-                DBSets.MstTermDBSet term = await _dbContext.MstTerms
-                    .Where(d => d.Id == trnSalesInvoiceDTO.TermId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == trnSalesInvoiceDTO.TermId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (term == null)
                 {
@@ -340,22 +347,28 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("lock/{id}")]
-        public async Task<IActionResult> LockSalesInvoice(int id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
+        public async Task<IActionResult> LockSalesInvoice(Int32 id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
         {
             try
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await _dbContext.MstUsers
-                    .Where(d => d.Id == userId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
                 }
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await _dbContext.TrnSalesInvoices.FindAsync(id);
+                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                     from d in _dbContext.TrnSalesInvoices
+                     where d.Id == id
+                     select d
+                 ).FirstOrDefaultAsync(); ;
 
                 if (salesInvoice == null)
                 {
@@ -367,29 +380,34 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a sales invoice that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies
-                    .Where(d => d.Id == trnSalesInvoiceDTO.CurrencyId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstCurrencyDBSet currency = await (
+                    from d in _dbContext.MstCurrencies
+                    where d.Id == trnSalesInvoiceDTO.CurrencyId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (currency == null)
                 {
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstArticleCustomerDBSet customer = await _dbContext.MstArticleCustomers
-                    .Where(d =>
-                        d.MstArticle_Article.Id == trnSalesInvoiceDTO.CustomerId &&
-                        d.MstArticle_Article.IsLocked == true)
-                    .FirstOrDefaultAsync();
+                DBSets.MstArticleCustomerDBSet customer = await (
+                    from d in _dbContext.MstArticleCustomers
+                    where d.ArticleId == trnSalesInvoiceDTO.CustomerId
+                    && d.MstArticle_Article.IsLocked == true
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (customer == null)
                 {
                     return StatusCode(404, "Customer not found.");
                 }
 
-                DBSets.MstTermDBSet term = await _dbContext.MstTerms
-                    .Where(d => d.Id == trnSalesInvoiceDTO.TermId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == trnSalesInvoiceDTO.TermId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (term == null)
                 {
@@ -424,22 +442,28 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("unlock/{id}")]
-        public async Task<IActionResult> UnlockSalesInvoice(int id)
+        public async Task<IActionResult> UnlockSalesInvoice(Int32 id)
         {
             try
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await _dbContext.MstUsers
-                    .Where(d => d.Id == userId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
                 }
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await _dbContext.TrnSalesInvoices.FindAsync(id);
+                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                     from d in _dbContext.TrnSalesInvoices
+                     where d.Id == id
+                     select d
+                 ).FirstOrDefaultAsync(); ;
 
                 if (salesInvoice == null)
                 {
@@ -467,22 +491,28 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("cancel/{id}")]
-        public async Task<IActionResult> CancelSalesInvoice(int id)
+        public async Task<IActionResult> CancelSalesInvoice(Int32 id)
         {
             try
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await _dbContext.MstUsers
-                    .Where(d => d.Id == userId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
                 }
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await _dbContext.TrnSalesInvoices.FindAsync(id);
+                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                     from d in _dbContext.TrnSalesInvoices
+                     where d.Id == id
+                     select d
+                 ).FirstOrDefaultAsync(); ;
 
                 if (salesInvoice == null)
                 {
@@ -510,12 +540,28 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteSalesInvoice(int id)
+        public async Task<IActionResult> DeleteSalesInvoice(Int32 id)
         {
             try
             {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await _dbContext.TrnSalesInvoices.FindAsync(id);
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                     from d in _dbContext.TrnSalesInvoices
+                     where d.Id == id
+                     select d
+                 ).FirstOrDefaultAsync(); ;
 
                 if (salesInvoice == null)
                 {

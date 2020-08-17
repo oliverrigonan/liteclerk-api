@@ -14,16 +14,16 @@ namespace liteclerk_api.DBSets
         public String Address { get; set; }
         public String TIN { get; set; }
         public Int32 CurrencyId { get; set; }
-        public MstCurrencyDBSet MstCurrency_Currency { get; set; }
+        public virtual MstCurrencyDBSet MstCurrency_Currency { get; set; }
         public String CostMethod { get; set; }
         public Boolean IsLocked { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public MstUserDBSet MstUser_CreatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_CreatedByUser { get; set; }
         public DateTime CreatedByDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public MstUserDBSet MstUser_UpdatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
         public DateTime UpdatedByDateTime { get; set; }
-        public ICollection<MstCompanyBranchDBSet> MstCompanyBranches_Company { get; set; }
-        public ICollection<MstUserDBSet> MstUsers_Company { get; set; }
+        public virtual ICollection<MstCompanyBranchDBSet> MstCompanyBranches_Company { get; set; }
+        public virtual ICollection<MstUserDBSet> MstUsers_Company { get; set; }
     }
 }
