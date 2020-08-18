@@ -60,7 +60,12 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
-                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        { 
+                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
+                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
+                            Branch = d.MstCompanyBranch_Branch.Branch
+                        },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
@@ -163,7 +168,12 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
-                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
+                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
+                            Branch = d.MstCompanyBranch_Branch.Branch
+                        },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {

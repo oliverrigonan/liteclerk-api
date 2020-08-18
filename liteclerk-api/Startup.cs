@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace liteclerk_api
 {
@@ -42,8 +44,6 @@ namespace liteclerk_api
             {
                 options.AddPolicy("AppCorsPolicy", builder => builder.SetIsOriginAllowed(appCors => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             });
-
-            services.AddControllers();
 
             // configure strongly typed settings objects
             var configureUserAuthenticationSecretKey = Configuration.GetSection("SysUserAuthenticationSecretKey");
@@ -74,7 +74,10 @@ namespace liteclerk_api
             services.AddScoped<Modules.ISysUserAuthenticationModule, Modules.SysUserAuthenticationModule>();
 
             // Make Json Serialization Return Camel Case Latters
-            services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; });
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
