@@ -9,9 +9,9 @@ namespace liteclerk_api.DTO
     {
         public Int32 Id { get; set; }
         public Int32 ArticleId { get; set; }
-        public String Article { get; set; }
+        public MstArticleDTO Article { get; set; }
         public Int32 BranchId { get; set; }
-        public String Branch { get; set; }
+        public MstCompanyBranchDTO Branch { get; set; }
         public String InventoryCode { get; set; }
         public Decimal Quantity { get; set; }
         public Decimal Cost { get; set; }

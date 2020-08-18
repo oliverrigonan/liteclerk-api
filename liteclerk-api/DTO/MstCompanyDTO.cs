@@ -14,11 +14,12 @@ namespace liteclerk_api.DTO
         public String Address { get; set; }
         public String TIN { get; set; }
         public Int32 CurrencyId { get; set; }
+        public MstCurrencyDTO Currency { get; set; }
         public String CostMethod { get; set; }
         public Boolean IsLocked { get; set; }
-        public String CreatedByUserFullname { get; set; }
-        public String CreatedByDateTime { get; set; }
-        public String UpdatedByUserFullname { get; set; }
-        public String UpdatedByDateTime { get; set; }
+        public MstUserDTO CreatedByUser { get; set; }
+        public String CreatedDateTime { get; set; }
+        public MstUserDTO UpdatedByUser { get; set; }
+        public String UpdatedDateTime { get; set; }
     }
 }

@@ -17,10 +17,10 @@ namespace liteclerk_api.DBSets
         public virtual MstAccountCashFlowDBSet MstAccountCashFlow_AccountCashFlow { get; set; }
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUser { get; set; }
-        public DateTime CreatedByDateTime { get; set; }
+        public DateTime CreatedDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
-        public DateTime UpdatedByDateTime { get; set; }
+        public DateTime UpdatedDateTime { get; set; }
         public virtual ICollection<MstArticleCustomerDBSet> MstArticleCustomers_ReceivableAccount { get; set; }
         public virtual ICollection<MstArticleAccountGroupDBSet> MstArticleAccountGroups_AssetAccount { get; set; }
         public virtual ICollection<MstArticleAccountGroupDBSet> MstArticleAccountGroups_SalesAccount { get; set; }

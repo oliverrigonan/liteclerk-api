@@ -19,10 +19,10 @@ namespace liteclerk_api.DBSets
         public Boolean IsLocked { get; set; }
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUser { get; set; }
-        public DateTime CreatedByDateTime { get; set; }
+        public DateTime CreatedDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
-        public DateTime UpdatedByDateTime { get; set; }
+        public DateTime UpdatedDateTime { get; set; }
         public virtual ICollection<MstCompanyBranchDBSet> MstCompanyBranches_Company { get; set; }
         public virtual ICollection<MstUserDBSet> MstUsers_Company { get; set; }
     }

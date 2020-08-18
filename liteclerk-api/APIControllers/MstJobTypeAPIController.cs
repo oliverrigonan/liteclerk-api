@@ -39,10 +39,18 @@ namespace liteclerk_api.APIControllers
                         TotalNumberOfDays = d.TotalNumberOfDays,
                         Remarks = d.Remarks,
                         IsLocked = d.IsLocked,
-                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                        CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                        UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString()
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                     }
                 ).ToListAsync();
 
@@ -71,10 +79,18 @@ namespace liteclerk_api.APIControllers
                         TotalNumberOfDays = d.TotalNumberOfDays,
                         Remarks = d.Remarks,
                         IsLocked = d.IsLocked,
-                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                        CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                        UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString()
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                     }
                 ).ToListAsync();
 

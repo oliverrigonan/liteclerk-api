@@ -34,9 +34,19 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
-                        Article = d.MstArticle_Article.Article,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_Article.ArticleCode,
+                            ManualCode = d.MstArticle_Article.ManualCode,
+                            Article = d.MstArticle_Article.Article
+                        },
                         BranchId = d.BranchId,
-                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
+                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
+                            Branch = d.MstCompanyBranch_Branch.Branch
+                        },
                         InventoryCode = d.InventoryCode,
                         Quantity = d.Quantity,
                         Cost = d.Cost

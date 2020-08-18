@@ -62,25 +62,56 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = d.MstCompanyBranch_Branch.Branch,
                         CurrencyId = d.CurrencyId,
-                        Currency = d.MstCurrency_Currency.Currency,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
+                            ManualCode = d.MstCurrency_Currency.ManualCode,
+                            Currency = d.MstCurrency_Currency.Currency
+                        },
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
                         CustomerId = d.CustomerId,
-                        Customer = d.MstArticle_Customer.Article,
+                        Customer = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_Customer.ArticleCode,
+                            ManualCode = d.MstArticle_Customer.ManualCode,
+                            Article = d.MstArticle_Customer.Article
+                        },
                         TermId = d.TermId,
-                        Term = d.MstTerm_Term.Term,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_Term.TermCode,
+                            ManualCode = d.MstTerm_Term.ManualCode,
+                            Term = d.MstTerm_Term.Term
+                        },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
                         SoldByUserId = d.SoldByUserId,
-                        SoldByUserFullname = d.MstUser_SoldByUser.Fullname,
+                        SoldByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SoldByUser.Username,
+                            Fullname = d.MstUser_SoldByUser.Fullname
+                        },
                         PreparedByUserId = d.PreparedByUserId,
-                        PreparedByUserFullname = d.MstUser_PreparedByUser.Fullname,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUser.Username,
+                            Fullname = d.MstUser_PreparedByUser.Fullname
+                        },
                         CheckedByUserId = d.CheckedByUserId,
-                        CheckedByUserFullname = d.MstUser_CheckedByUser.Fullname,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUser.Username,
+                            Fullname = d.MstUser_CheckedByUser.Fullname
+                        },
                         ApprovedByUserId = d.ApprovedByUserId,
-                        ApprovedByUserFullname = d.MstUser_ApprovedByUser.Fullname,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUser.Username,
+                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                        },
                         Amount = d.Amount,
                         PaidAmount = d.PaidAmount,
                         AdjustmentAmount = d.AdjustmentAmount,
@@ -89,10 +120,18 @@ namespace liteclerk_api.APIControllers
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
                         IsLocked = d.IsLocked,
-                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                        CreatedByDateTime = d.CreatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
-                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                        UpdatedByDateTime = d.UpdatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -126,25 +165,56 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = d.MstCompanyBranch_Branch.Branch,
                         CurrencyId = d.CurrencyId,
-                        Currency = d.MstCurrency_Currency.Currency,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
+                            ManualCode = d.MstCurrency_Currency.ManualCode,
+                            Currency = d.MstCurrency_Currency.Currency
+                        },
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
                         CustomerId = d.CustomerId,
-                        Customer = d.MstArticle_Customer.Article,
+                        Customer = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_Customer.ArticleCode,
+                            ManualCode = d.MstArticle_Customer.ManualCode,
+                            Article = d.MstArticle_Customer.Article
+                        },
                         TermId = d.TermId,
-                        Term = d.MstTerm_Term.Term,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_Term.TermCode,
+                            ManualCode = d.MstTerm_Term.ManualCode,
+                            Term = d.MstTerm_Term.Term
+                        },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
                         SoldByUserId = d.SoldByUserId,
-                        SoldByUserFullname = d.MstUser_SoldByUser.Fullname,
+                        SoldByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SoldByUser.Username,
+                            Fullname = d.MstUser_SoldByUser.Fullname
+                        },
                         PreparedByUserId = d.PreparedByUserId,
-                        PreparedByUserFullname = d.MstUser_PreparedByUser.Fullname,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUser.Username,
+                            Fullname = d.MstUser_PreparedByUser.Fullname
+                        },
                         CheckedByUserId = d.CheckedByUserId,
-                        CheckedByUserFullname = d.MstUser_CheckedByUser.Fullname,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUser.Username,
+                            Fullname = d.MstUser_CheckedByUser.Fullname
+                        },
                         ApprovedByUserId = d.ApprovedByUserId,
-                        ApprovedByUserFullname = d.MstUser_ApprovedByUser.Fullname,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUser.Username,
+                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                        },
                         Amount = d.Amount,
                         PaidAmount = d.PaidAmount,
                         AdjustmentAmount = d.AdjustmentAmount,
@@ -153,10 +223,18 @@ namespace liteclerk_api.APIControllers
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
                         IsLocked = d.IsLocked,
-                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                        CreatedByDateTime = d.CreatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
-                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                        UpdatedByDateTime = d.UpdatedByDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).FirstOrDefaultAsync();
 
@@ -236,9 +314,9 @@ namespace liteclerk_api.APIControllers
                     IsPrinted = false,
                     IsLocked = false,
                     CreatedByUserId = userId,
-                    CreatedByDateTime = DateTime.Now,
+                    CreatedDateTime = DateTime.Now,
                     UpdatedByUserId = userId,
-                    UpdatedByDateTime = DateTime.Now
+                    UpdatedDateTime = DateTime.Now
                 };
 
                 _dbContext.TrnSalesInvoices.Add(newSalesInvoice);
@@ -334,7 +412,7 @@ namespace liteclerk_api.APIControllers
                 saveSalesInvoice.ApprovedByUserId = trnSalesInvoiceDTO.ApprovedByUserId;
                 saveSalesInvoice.Status = trnSalesInvoiceDTO.Status;
                 saveSalesInvoice.UpdatedByUserId = userId;
-                saveSalesInvoice.UpdatedByDateTime = DateTime.Now;
+                saveSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -429,7 +507,7 @@ namespace liteclerk_api.APIControllers
                 lockSalesInvoice.Status = trnSalesInvoiceDTO.Status;
                 lockSalesInvoice.IsLocked = true;
                 lockSalesInvoice.UpdatedByUserId = userId;
-                lockSalesInvoice.UpdatedByDateTime = DateTime.Now;
+                lockSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -478,7 +556,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.TrnSalesInvoiceDBSet unlockSalesInvoice = salesInvoice;
                 unlockSalesInvoice.IsLocked = false;
                 unlockSalesInvoice.UpdatedByUserId = userId;
-                unlockSalesInvoice.UpdatedByDateTime = DateTime.Now;
+                unlockSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -527,7 +605,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.TrnSalesInvoiceDBSet unlockSalesInvoice = salesInvoice;
                 unlockSalesInvoice.IsCancelled = true;
                 unlockSalesInvoice.UpdatedByUserId = userId;
-                unlockSalesInvoice.UpdatedByDateTime = DateTime.Now;
+                unlockSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 

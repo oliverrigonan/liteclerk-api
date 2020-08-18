@@ -14,9 +14,9 @@ namespace liteclerk_api.DTO
         public Decimal TotalNumberOfDays { get; set; }
         public String Remarks { get; set; }
         public Boolean IsLocked { get; set; }
-        public String CreatedByUserFullname { get; set; }
-        public String CreatedByDateTime { get; set; }
-        public String UpdatedByUserFullname { get; set; }
-        public String UpdatedByDateTime { get; set; }
+        public MstUserDTO CreatedByUser { get; set; }
+        public String CreatedDateTime { get; set; }
+        public MstUserDTO UpdatedByUser { get; set; }
+        public String UpdatedDateTime { get; set; }
     }
 }

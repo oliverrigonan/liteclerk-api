@@ -34,30 +34,72 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
-                        ArticleCode = d.MstArticle_Article.ArticleCode,
-                        ManualCode = d.MstArticle_Article.ManualCode,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_Article.ArticleCode,
+                            ManualCode = d.MstArticle_Article.ManualCode,
+                            Article = d.MstArticle_Article.Article
+                        },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
                         UnitId = d.UnitId,
-                        Unit = d.MstUnit_Unit.Unit,
+                        Unit = new DTO.MstUnitDTO
+                        {
+                            UnitCode = d.MstUnit_Unit.UnitCode,
+                            ManualCode = d.MstUnit_Unit.ManualCode,
+                            Unit = d.MstUnit_Unit.Unit
+                        },
                         IsJob = d.IsJob,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
-                        ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup,
+                        ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
+                        {
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                        },
                         AssetAccountId = d.AssetAccountId,
-                        AssetAccount = d.MstAccount_AssetAccount.Account,
+                        AssetAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccount.Account,
+                            Account = d.MstAccount_AssetAccount.Account
+                        },
                         SalesAccountId = d.SalesAccountId,
-                        SalesAccount = d.MstAccount_SalesAccount.Account,
+                        SalesAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccount.Account,
+                            Account = d.MstAccount_SalesAccount.Account
+                        },
                         CostAccountId = d.CostAccountId,
-                        CostAccount = d.MstAccount_CostAccount.Account,
+                        CostAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_CostAccount.AccountCode,
+                            ManualCode = d.MstAccount_CostAccount.Account,
+                            Account = d.MstAccount_CostAccount.Account
+                        },
                         ExpenseAccountId = d.ExpenseAccountId,
-                        ExpenseAccount = d.MstAccount_ExpenseAccount.Account,
+                        ExpenseAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccount.Account,
+                            Account = d.MstAccount_ExpenseAccount.Account
+                        },
                         IsLocked = d.MstArticle_Article.IsLocked,
-                        CreatedByUserFullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname,
-                        CreatedByDateTime = d.MstArticle_Article.CreatedByDateTime.ToShortDateString(),
-                        UpdatedByUserFullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname,
-                        UpdatedByDateTime = d.MstArticle_Article.UpdatedByDateTime.ToShortDateString()
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
                     }
                 ).ToListAsync();
 
@@ -81,30 +123,72 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
-                        ArticleCode = d.MstArticle_Article.ArticleCode,
-                        ManualCode = d.MstArticle_Article.ManualCode,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_Article.ArticleCode,
+                            ManualCode = d.MstArticle_Article.ManualCode,
+                            Article = d.MstArticle_Article.Article
+                        },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
                         UnitId = d.UnitId,
-                        Unit = d.MstUnit_Unit.Unit,
+                        Unit = new DTO.MstUnitDTO
+                        {
+                            UnitCode = d.MstUnit_Unit.UnitCode,
+                            ManualCode = d.MstUnit_Unit.ManualCode,
+                            Unit = d.MstUnit_Unit.Unit
+                        },
                         IsJob = d.IsJob,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
-                        ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup,
+                        ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
+                        {
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                        },
                         AssetAccountId = d.AssetAccountId,
-                        AssetAccount = d.MstAccount_AssetAccount.Account,
+                        AssetAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccount.Account,
+                            Account = d.MstAccount_AssetAccount.Account
+                        },
                         SalesAccountId = d.SalesAccountId,
-                        SalesAccount = d.MstAccount_SalesAccount.Account,
+                        SalesAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccount.Account,
+                            Account = d.MstAccount_SalesAccount.Account
+                        },
                         CostAccountId = d.CostAccountId,
-                        CostAccount = d.MstAccount_CostAccount.Account,
+                        CostAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_CostAccount.AccountCode,
+                            ManualCode = d.MstAccount_CostAccount.Account,
+                            Account = d.MstAccount_CostAccount.Account
+                        },
                         ExpenseAccountId = d.ExpenseAccountId,
-                        ExpenseAccount = d.MstAccount_ExpenseAccount.Account,
+                        ExpenseAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccount.Account,
+                            Account = d.MstAccount_ExpenseAccount.Account
+                        },
                         IsLocked = d.MstArticle_Article.IsLocked,
-                        CreatedByUserFullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname,
-                        CreatedByDateTime = d.MstArticle_Article.CreatedByDateTime.ToShortDateString(),
-                        UpdatedByUserFullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname,
-                        UpdatedByDateTime = d.MstArticle_Article.UpdatedByDateTime.ToShortDateString()
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
                     }
                 ).ToListAsync();
 

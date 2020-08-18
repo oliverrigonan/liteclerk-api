@@ -23,10 +23,10 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstAccountCashFlow_AccountCashFlow).WithMany(f => f.MstAccounts_AccountCashFlow).HasForeignKey(f => f.AccountCashFlowId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_CreatedByUser).WithMany(f => f.MstAccounts_CreatedByUser).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
-                entity.Property(e => e.CreatedByDateTime).HasColumnName("CreatedByDateTime").HasColumnType("datetime").IsRequired();
+                entity.Property(e => e.CreatedDateTime).HasColumnName("CreatedDateTime").HasColumnType("datetime").IsRequired();
                 entity.Property(e => e.UpdatedByUserId).HasColumnName("UpdatedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_UpdatedByUser).WithMany(f => f.MstAccounts_UpdatedByUser).HasForeignKey(f => f.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
-                entity.Property(e => e.UpdatedByDateTime).HasColumnName("UpdatedByDateTime").HasColumnType("datetime").IsRequired();
+                entity.Property(e => e.UpdatedDateTime).HasColumnName("UpdatedDateTime").HasColumnType("datetime").IsRequired();
             });
         }
     }

@@ -35,9 +35,19 @@ namespace liteclerk_api.APIControllers
                         Username = d.Username,
                         Fullname = d.Fullname,
                         CompanyId = d.CompanyId,
-                        Company = d.MstCompany_Company.Company,
+                        Company = new DTO.MstCompanyDTO
+                        {
+                            CompanyCode = d.MstCompany_Company.CompanyCode,
+                            ManualCode = d.MstCompany_Company.ManualCode,
+                            Company = d.MstCompany_Company.Company
+                        },
                         BranchId = d.BranchId,
-                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
+                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
+                            Branch = d.MstCompanyBranch_Branch.Branch
+                        },
                         IsActive = d.IsActive
                     }
                 ).ToListAsync();
@@ -64,9 +74,19 @@ namespace liteclerk_api.APIControllers
                         Username = d.Username,
                         Fullname = d.Fullname,
                         CompanyId = d.CompanyId,
-                        Company = d.MstCompany_Company.Company,
+                        Company = new DTO.MstCompanyDTO
+                        {
+                            CompanyCode = d.MstCompany_Company.CompanyCode,
+                            ManualCode = d.MstCompany_Company.ManualCode,
+                            Company = d.MstCompany_Company.Company
+                        },
                         BranchId = d.BranchId,
-                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
+                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
+                            Branch = d.MstCompanyBranch_Branch.Branch
+                        },
                         IsActive = d.IsActive
                     }
                 ).ToListAsync();

@@ -12,9 +12,9 @@ namespace liteclerk_api.DTO
         public String ManualCode { get; set; }
         public String Term { get; set; }
         public Decimal NumberOfDays { get; set; }
-        public String CreatedByUserFullname { get; set; }
-        public String CreatedByDateTime { get; set; }
-        public String UpdatedByUserFullname { get; set; }
-        public String UpdatedByDateTime { get; set; }
+        public MstUserDTO CreatedByUser { get; set; }
+        public String CreatedDateTime { get; set; }
+        public MstUserDTO UpdatedByUser { get; set; }
+        public String UpdatedDateTime { get; set; }
     }
 }

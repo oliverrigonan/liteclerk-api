@@ -52,12 +52,26 @@ namespace liteclerk_api.APIControllers
                         Address = d.Address,
                         TIN = d.TIN,
                         CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
+                            ManualCode = d.MstCurrency_Currency.ManualCode,
+                            Currency = d.MstCurrency_Currency.Currency
+                        },
                         CostMethod = d.CostMethod,
                         IsLocked = d.IsLocked,
-                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                        CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                        UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                     }
                 ).ToListAsync();
 
@@ -86,12 +100,26 @@ namespace liteclerk_api.APIControllers
                          Address = d.Address,
                          TIN = d.TIN,
                          CurrencyId = d.CurrencyId,
+                         Currency = new DTO.MstCurrencyDTO
+                         {
+                             CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
+                             ManualCode = d.MstCurrency_Currency.ManualCode,
+                             Currency = d.MstCurrency_Currency.Currency
+                         },
                          CostMethod = d.CostMethod,
                          IsLocked = d.IsLocked,
-                         CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                         CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                         UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                         UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
+                         CreatedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_CreatedByUser.Username,
+                             Fullname = d.MstUser_CreatedByUser.Fullname
+                         },
+                         CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
+                         UpdatedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_UpdatedByUser.Username,
+                             Fullname = d.MstUser_UpdatedByUser.Fullname
+                         },
+                         UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                      }
                 ).FirstOrDefaultAsync();
 
@@ -155,9 +183,9 @@ namespace liteclerk_api.APIControllers
                     CostMethod = "Last Purchase Cost",
                     IsLocked = false,
                     CreatedByUserId = userId,
-                    CreatedByDateTime = DateTime.Now,
+                    CreatedDateTime = DateTime.Now,
                     UpdatedByUserId = userId,
-                    UpdatedByDateTime = DateTime.Now
+                    UpdatedDateTime = DateTime.Now
                 };
 
                 _dbContext.MstCompanies.Add(newCompany);
@@ -224,7 +252,7 @@ namespace liteclerk_api.APIControllers
                 saveCompany.CurrencyId = mstCompanyDTO.CurrencyId;
                 saveCompany.CostMethod = mstCompanyDTO.CostMethod;
                 saveCompany.UpdatedByUserId = userId;
-                saveCompany.UpdatedByDateTime = DateTime.Now;
+                saveCompany.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -290,7 +318,7 @@ namespace liteclerk_api.APIControllers
                 lockCompany.CostMethod = mstCompanyDTO.CostMethod;
                 lockCompany.IsLocked = true;
                 lockCompany.UpdatedByUserId = userId;
-                lockCompany.UpdatedByDateTime = DateTime.Now;
+                lockCompany.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -339,7 +367,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCompanyDBSet unlockCompany = company;
                 unlockCompany.IsLocked = false;
                 unlockCompany.UpdatedByUserId = userId;
-                unlockCompany.UpdatedByDateTime = DateTime.Now;
+                unlockCompany.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
