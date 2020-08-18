@@ -14,6 +14,8 @@
     <Compile Remove="Migrations\20200816120338_AddedAllMstAccountingTables.Designer.cs" />
     <Compile Remove="Migrations\20200817015531_ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired.cs" />
     <Compile Remove="Migrations\20200817015531_ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired.Designer.cs" />
+    <Compile Remove="Migrations\20200818012213_ModifiedMstJobTypeTableAddedIsLockedColumn.cs" />
+    <Compile Remove="Migrations\20200818012213_ModifiedMstJobTypeTableAddedIsLockedColumn.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

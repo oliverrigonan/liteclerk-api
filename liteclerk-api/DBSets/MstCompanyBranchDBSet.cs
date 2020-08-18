@@ -16,6 +16,7 @@ namespace liteclerk_api.DBSets
         public String Address { get; set; }
         public String TIN { get; set; }
         public virtual ICollection<MstUserDBSet> MstUsers_Branch { get; set; }
+        public virtual ICollection<MstArticleItemInventoryDBSet> MstArticleItemInventories_Branch { get; set; }
         public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_Branch { get; set; }
 
     }

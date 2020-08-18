@@ -40,19 +40,19 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstCompanyBranchDTO> companyBranches = await _dbContext.MstCompanyBranches
-                    .Select(d =>
-                        new DTO.MstCompanyBranchDTO
-                        {
-                            Id = d.Id,
-                            BranchCode = d.BranchCode,
-                            ManualCode = d.ManualCode,
-                            CompanyId = d.CompanyId,
-                            Branch = d.Branch,
-                            Address = d.Address,
-                            TIN = d.TIN
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.MstCompanyBranchDTO> companyBranches = await (
+                    from d in _dbContext.MstCompanyBranches
+                    select new DTO.MstCompanyBranchDTO
+                    {
+                        Id = d.Id,
+                        BranchCode = d.BranchCode,
+                        ManualCode = d.ManualCode,
+                        CompanyId = d.CompanyId,
+                        Branch = d.Branch,
+                        Address = d.Address,
+                        TIN = d.TIN
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, companyBranches);
             }
@@ -67,9 +67,11 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies
-                    .Where(d => d.Id == mstCompanyBranchDTO.CompanyId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstCompanyDBSet company = await (
+                    from d in _dbContext.MstCompanies
+                    where d.Id == mstCompanyBranchDTO.CompanyId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (company == null)
                 {
@@ -82,10 +84,12 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String branchCode = "0000000001";
-                DBSets.MstCompanyBranchDBSet lastCompanyBranch = await _dbContext.MstCompanyBranches
-                    .Where(d => d.CompanyId == mstCompanyBranchDTO.CompanyId)
-                    .OrderByDescending(d => d.Id)
-                    .FirstOrDefaultAsync();
+                DBSets.MstCompanyBranchDBSet lastCompanyBranch = await (
+                    from d in _dbContext.MstCompanyBranches
+                    where d.CompanyId == mstCompanyBranchDTO.CompanyId
+                    orderby d.Id descending
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (lastCompanyBranch != null)
                 {
@@ -119,7 +123,11 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DBSets.MstCompanyBranchDBSet companyBranch = await _dbContext.MstCompanyBranches.FindAsync(id);
+                DBSets.MstCompanyBranchDBSet companyBranch = await (
+                    from d in _dbContext.MstCompanyBranches
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (companyBranch == null)
                 {
@@ -152,7 +160,11 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DBSets.MstCompanyBranchDBSet companyBranch = await _dbContext.MstCompanyBranches.FindAsync(id);
+                DBSets.MstCompanyBranchDBSet companyBranch = await (
+                    from d in _dbContext.MstCompanyBranches
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (companyBranch == null)
                 {

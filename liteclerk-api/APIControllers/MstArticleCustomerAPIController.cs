@@ -28,30 +28,30 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleCustomerDTO> customers = await _dbContext.MstArticleCustomers
-                    .Select(d =>
-                        new DTO.MstArticleCustomerDTO
-                        {
-                            Id = d.Id,
-                            ArticleId = d.ArticleId,
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Customer = d.Customer,
-                            Address = d.Address,
-                            ContactPerson = d.ContactPerson,
-                            ContactNumber = d.ContactNumber,
-                            ReceivableAccountId = d.ReceivableAccountId,
-                            ReceivableAccount = d.MstAccount_ReceivableAccount.Account,
-                            TermId = d.TermId,
-                            Term = d.MstTerm_Term.Term,
-                            CreditLimit = d.CreditLimit,
-                            IsLocked = d.MstArticle_Article.IsLocked,
-                            CreatedByUserFullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname,
-                            CreatedByDateTime = d.MstArticle_Article.CreatedByDateTime.ToShortDateString(),
-                            UpdatedByUserFullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname,
-                            UpdatedByDateTime = d.MstArticle_Article.UpdatedByDateTime.ToShortDateString()
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.MstArticleCustomerDTO> customers = await (
+                    from d in _dbContext.MstArticleCustomers
+                    select new DTO.MstArticleCustomerDTO
+                    {
+                        Id = d.Id,
+                        ArticleId = d.ArticleId,
+                        ArticleCode = d.MstArticle_Article.ArticleCode,
+                        ManualCode = d.MstArticle_Article.ManualCode,
+                        Customer = d.Customer,
+                        Address = d.Address,
+                        ContactPerson = d.ContactPerson,
+                        ContactNumber = d.ContactNumber,
+                        ReceivableAccountId = d.ReceivableAccountId,
+                        ReceivableAccount = d.MstAccount_ReceivableAccount.Account,
+                        TermId = d.TermId,
+                        Term = d.MstTerm_Term.Term,
+                        CreditLimit = d.CreditLimit,
+                        IsLocked = d.MstArticle_Article.IsLocked,
+                        CreatedByUserFullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname,
+                        CreatedByDateTime = d.MstArticle_Article.CreatedByDateTime.ToShortDateString(),
+                        UpdatedByUserFullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname,
+                        UpdatedByDateTime = d.MstArticle_Article.UpdatedByDateTime.ToShortDateString()
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, customers);
             }
@@ -66,31 +66,31 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleCustomerDTO> lockedCustomers = await _dbContext.MstArticleCustomers
-                    .Where(d => d.MstArticle_Article.IsLocked == true)
-                    .Select(d =>
-                        new DTO.MstArticleCustomerDTO
-                        {
-                            Id = d.Id,
-                            ArticleId = d.ArticleId,
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Customer = d.Customer,
-                            Address = d.Address,
-                            ContactPerson = d.ContactPerson,
-                            ContactNumber = d.ContactNumber,
-                            ReceivableAccountId = d.ReceivableAccountId,
-                            ReceivableAccount = d.MstAccount_ReceivableAccount.Account,
-                            TermId = d.TermId,
-                            Term = d.MstTerm_Term.Term,
-                            CreditLimit = d.CreditLimit,
-                            IsLocked = d.MstArticle_Article.IsLocked,
-                            CreatedByUserFullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname,
-                            CreatedByDateTime = d.MstArticle_Article.CreatedByDateTime.ToShortDateString(),
-                            UpdatedByUserFullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname,
-                            UpdatedByDateTime = d.MstArticle_Article.UpdatedByDateTime.ToShortDateString()
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.MstArticleCustomerDTO> lockedCustomers = await (
+                    from d in _dbContext.MstArticleCustomers
+                    where d.MstArticle_Article.IsLocked == true
+                    select new DTO.MstArticleCustomerDTO
+                    {
+                        Id = d.Id,
+                        ArticleId = d.ArticleId,
+                        ArticleCode = d.MstArticle_Article.ArticleCode,
+                        ManualCode = d.MstArticle_Article.ManualCode,
+                        Customer = d.Customer,
+                        Address = d.Address,
+                        ContactPerson = d.ContactPerson,
+                        ContactNumber = d.ContactNumber,
+                        ReceivableAccountId = d.ReceivableAccountId,
+                        ReceivableAccount = d.MstAccount_ReceivableAccount.Account,
+                        TermId = d.TermId,
+                        Term = d.MstTerm_Term.Term,
+                        CreditLimit = d.CreditLimit,
+                        IsLocked = d.MstArticle_Article.IsLocked,
+                        CreatedByUserFullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname,
+                        CreatedByDateTime = d.MstArticle_Article.CreatedByDateTime.ToShortDateString(),
+                        UpdatedByUserFullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname,
+                        UpdatedByDateTime = d.MstArticle_Article.UpdatedByDateTime.ToShortDateString()
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, lockedCustomers);
             }

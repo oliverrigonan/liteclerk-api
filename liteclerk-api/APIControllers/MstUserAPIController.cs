@@ -27,20 +27,20 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstUserDTO> users = await _dbContext.MstUsers
-                    .Select(d =>
-                        new DTO.MstUserDTO
-                        {
-                            Id = d.Id,
-                            Username = d.Username,
-                            Fullname = d.Fullname,
-                            CompanyId = d.CompanyId,
-                            Company = d.MstCompany_Company.Company,
-                            BranchId = d.BranchId,
-                            Branch = d.MstCompanyBranch_Branch.Branch,
-                            IsActive = d.IsActive
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.MstUserDTO> users = await (
+                    from d in _dbContext.MstUsers
+                    select new DTO.MstUserDTO
+                    {
+                        Id = d.Id,
+                        Username = d.Username,
+                        Fullname = d.Fullname,
+                        CompanyId = d.CompanyId,
+                        Company = d.MstCompany_Company.Company,
+                        BranchId = d.BranchId,
+                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        IsActive = d.IsActive
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, users);
             }
@@ -55,21 +55,21 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstUserDTO> activeUsers = await _dbContext.MstUsers
-                    .Where(d => d.IsActive == true)
-                    .Select(d =>
-                        new DTO.MstUserDTO
-                        {
-                            Id = d.Id,
-                            Username = d.Username,
-                            Fullname = d.Fullname,
-                            CompanyId = d.CompanyId,
-                            Company = d.MstCompany_Company.Company,
-                            BranchId = d.BranchId,
-                            Branch = d.MstCompanyBranch_Branch.Branch,
-                            IsActive = d.IsActive
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.MstUserDTO> activeUsers = await (
+                    from d in _dbContext.MstUsers
+                    where d.IsActive == true
+                    select new DTO.MstUserDTO
+                    {
+                        Id = d.Id,
+                        Username = d.Username,
+                        Fullname = d.Fullname,
+                        CompanyId = d.CompanyId,
+                        Company = d.MstCompany_Company.Company,
+                        BranchId = d.BranchId,
+                        Branch = d.MstCompanyBranch_Branch.Branch,
+                        IsActive = d.IsActive
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, activeUsers);
             }

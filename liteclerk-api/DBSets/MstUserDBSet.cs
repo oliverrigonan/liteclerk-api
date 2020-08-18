@@ -42,5 +42,11 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_ApprovedByUser { get; set; }
         public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_CreatedByUser { get; set; }
         public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_UpdatedByUser { get; set; }
+        public virtual ICollection<MstJobTypeDBSet> MstJobTypes_CreatedByUser { get; set; }
+        public virtual ICollection<MstJobTypeDBSet> MstJobTypes_UpdatedByUser { get; set; }
+        public virtual ICollection<MstDiscountDBSet> MstDiscounts_CreatedByUser { get; set; }
+        public virtual ICollection<MstDiscountDBSet> MstDiscounts_UpdatedByUser { get; set; }
+        public virtual ICollection<MstTaxDBSet> MstTaxes_CreatedByUser { get; set; }
+        public virtual ICollection<MstTaxDBSet> MstTaxes_UpdatedByUser { get; set; }
     }
 }

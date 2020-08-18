@@ -31,9 +31,12 @@ namespace liteclerk_api.Modules
 
         public async Task<SysUserAuthenticationResponseDTO> Authenticate(SysUserAuthenticationRequestDTO sysUserAuthenticationRequestDTO)
         {
-            var user = await _dbContext.MstUsers.Where(d =>
-                             d.Username == sysUserAuthenticationRequestDTO.Username &&
-                             d.Password == sysUserAuthenticationRequestDTO.Password).FirstOrDefaultAsync();
+            DBSets.MstUserDBSet user = await (
+                from d in _dbContext.MstUsers
+                where d.Username == sysUserAuthenticationRequestDTO.Username
+                && d.Password == sysUserAuthenticationRequestDTO.Password
+                select d
+            ).FirstOrDefaultAsync();
 
             if (user == null)
             {

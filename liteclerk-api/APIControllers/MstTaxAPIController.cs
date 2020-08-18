@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,28 +14,29 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MstCurrencyAPIController : ControllerBase
+    public class MstTaxAPIController : ControllerBase
     {
         private DBContext.LiteclerkDBContext _dbContext;
 
-        public MstCurrencyAPIController(DBContext.LiteclerkDBContext dbContext)
+        public MstTaxAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstCurrencyDTO>>> GetCurrencyList()
+        public async Task<ActionResult<IEnumerable<DTO.MstTaxDTO>>> GetTaxList()
         {
             try
             {
-                IEnumerable<DTO.MstCurrencyDTO> currencies = await (
-                    from d in _dbContext.MstCurrencies
-                    select new DTO.MstCurrencyDTO
+                IEnumerable<DTO.MstTaxDTO> taxes = await (
+                    from d in _dbContext.MstTaxes
+                    select new DTO.MstTaxDTO
                     {
                         Id = d.Id,
-                        CurrencyCode = d.CurrencyCode,
+                        TaxCode = d.TaxCode,
                         ManualCode = d.ManualCode,
-                        Currency = d.Currency,
+                        TaxDescription = d.TaxDescription,
+                        TaxRate = d.TaxRate,
                         CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
                         CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
                         UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
@@ -42,7 +44,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, currencies);
+                return StatusCode(200, taxes);
             }
             catch (Exception e)
             {

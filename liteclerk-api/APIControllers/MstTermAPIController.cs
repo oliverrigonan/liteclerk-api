@@ -28,21 +28,21 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstTermDTO> terms = await _dbContext.MstTerms
-                    .Select(d =>
-                        new DTO.MstTermDTO
-                        {
-                            Id = d.Id,
-                            TermCode = d.Term,
-                            ManualCode = d.ManualCode,
-                            Term = d.Term,
-                            NumberOfDays = d.NumberOfDays,
-                            CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                            CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                            UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                            UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString()
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.MstTermDTO> terms = await (
+                    from d in _dbContext.MstTerms
+                    select new DTO.MstTermDTO
+                    {
+                        Id = d.Id,
+                        TermCode = d.Term,
+                        ManualCode = d.ManualCode,
+                        Term = d.Term,
+                        NumberOfDays = d.NumberOfDays,
+                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
+                        CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
+                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
+                        UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString()
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, terms);
             }

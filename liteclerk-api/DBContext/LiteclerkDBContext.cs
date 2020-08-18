@@ -24,12 +24,17 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstCompanyBranchDBSet> MstCompanyBranches { get; set; }
         public virtual DbSet<DBSets.MstTermDBSet> MstTerms { get; set; }
         public virtual DbSet<DBSets.MstUnitDBSet> MstUnits { get; set; }
+        public virtual DbSet<DBSets.MstDiscountDBSet> MstDiscounts { get; set; }
+        public virtual DbSet<DBSets.MstTaxDBSet> MstTaxes { get; set; }
         public virtual DbSet<DBSets.MstArticleTypeDBSet> MstArticleTypes { get; set; }
         public virtual DbSet<DBSets.MstArticleDBSet> MstArticles { get; set; }
         public virtual DbSet<DBSets.MstArticleAccountGroupDBSet> MstArticleAccountGroups { get; set; }
         public virtual DbSet<DBSets.MstArticleCustomerDBSet> MstArticleCustomers { get; set; }
         public virtual DbSet<DBSets.MstArticleItemDBSet> MstArticleItems { get; set; }
+        public virtual DbSet<DBSets.MstArticleItemInventoryDBSet> MstArticleItemInventories { get; set; }
+        public virtual DbSet<DBSets.MstJobTypeDBSet> MstJobTypes { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceDBSet> TrnSalesInvoices { get; set; }
+        public virtual DbSet<DBSets.TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,12 +50,17 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstCompanyBranchModelBuilder.CreateMstCompanyBranchModel(modelBuilder);
             DBModelBuilder.MstTermModelBuilder.CreateMstTermModel(modelBuilder);
             DBModelBuilder.MstUnitModelBuilder.CreateMstUnitModel(modelBuilder);
+            DBModelBuilder.MstDiscountModelBuilder.CreateMstDiscountModel(modelBuilder);
+            DBModelBuilder.MstTaxModelBuilder.CreateMstTaxModel(modelBuilder);
             DBModelBuilder.MstArticleTypeModelBuilder.CreateMstArticleTypeModel(modelBuilder);
             DBModelBuilder.MstArticleModelBuilder.CreateMstArticleModel(modelBuilder);
             DBModelBuilder.MstArticleAccountGroupModelBuilder.CreateMstArticleAccountGroupModel(modelBuilder);
             DBModelBuilder.MstArticleCustomerModelBuilder.CreateMstArticleCustomerModel(modelBuilder);
             DBModelBuilder.MstArticleItemModelBuilder.CreateMstArticleItemModel(modelBuilder);
+            DBModelBuilder.MstArticleItemInventoryModelBuilder.CreateMstArticleItemInventoryModel(modelBuilder);
+            DBModelBuilder.MstJobTypeModelBuilder.CreateMstJobTypeModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceModelBuilder.CreateTrnSalesInvoiceModel(modelBuilder);
+            DBModelBuilder.TrnSalesInvoiceItemModelBuilder.CreateTrnSalesInvoiceItemModel(modelBuilder);
         }
     }
 }

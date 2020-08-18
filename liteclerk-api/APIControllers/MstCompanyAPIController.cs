@@ -41,25 +41,25 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstCompanyDTO> companies = await _dbContext.MstCompanies
-                    .Select(d =>
-                        new DTO.MstCompanyDTO
-                        {
-                            Id = d.Id,
-                            CompanyCode = d.CompanyCode,
-                            ManualCode = d.ManualCode,
-                            Company = d.Company,
-                            Address = d.Address,
-                            TIN = d.TIN,
-                            CurrencyId = d.CurrencyId,
-                            CostMethod = d.CostMethod,
-                            IsLocked = d.IsLocked,
-                            CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                            CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                            UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                            UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
-                        })
-                    .ToListAsync();
+                IEnumerable<DTO.MstCompanyDTO> companies = await (
+                    from d in _dbContext.MstCompanies
+                    select new DTO.MstCompanyDTO
+                    {
+                        Id = d.Id,
+                        CompanyCode = d.CompanyCode,
+                        ManualCode = d.ManualCode,
+                        Company = d.Company,
+                        Address = d.Address,
+                        TIN = d.TIN,
+                        CurrencyId = d.CurrencyId,
+                        CostMethod = d.CostMethod,
+                        IsLocked = d.IsLocked,
+                        CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
+                        CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
+                        UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
+                        UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
+                    }
+                ).ToListAsync();
 
                 return StatusCode(200, companies);
             }
@@ -74,30 +74,26 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
-
-                if (company == null)
-                {
-                    return StatusCode(404, new DTO.MstCompanyDTO());
-                }
-
-                DBSets.MstCompanyDBSet d = company;
-                DTO.MstCompanyDTO companyDetail = new DTO.MstCompanyDTO
-                {
-                    Id = d.Id,
-                    CompanyCode = d.CompanyCode,
-                    ManualCode = d.ManualCode,
-                    Company = d.Company,
-                    Address = d.Address,
-                    TIN = d.TIN,
-                    CurrencyId = d.CurrencyId,
-                    CostMethod = d.CostMethod,
-                    IsLocked = d.IsLocked,
-                    CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
-                    CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
-                    UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
-                    UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
-                };
+                DTO.MstCompanyDTO companyDetail = await (
+                     from d in _dbContext.MstCompanies
+                     where d.Id == id
+                     select new DTO.MstCompanyDTO
+                     {
+                         Id = d.Id,
+                         CompanyCode = d.CompanyCode,
+                         ManualCode = d.ManualCode,
+                         Company = d.Company,
+                         Address = d.Address,
+                         TIN = d.TIN,
+                         CurrencyId = d.CurrencyId,
+                         CostMethod = d.CostMethod,
+                         IsLocked = d.IsLocked,
+                         CreatedByUserFullname = d.MstUser_CreatedByUser.Fullname,
+                         CreatedByDateTime = d.CreatedByDateTime.ToShortDateString(),
+                         UpdatedByUserFullname = d.MstUser_UpdatedByUser.Fullname,
+                         UpdatedByDateTime = d.UpdatedByDateTime.ToShortDateString(),
+                     }
+                ).FirstOrDefaultAsync();
 
                 return StatusCode(200, companyDetail);
             }
@@ -114,7 +110,21 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies.FirstOrDefaultAsync();
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstCurrencyDBSet currency = await (
+                    from d in _dbContext.MstCurrencies
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (currency == null)
                 {
@@ -122,9 +132,11 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String companyCode = "0000000001";
-                DBSets.MstCompanyDBSet lastCompany = await _dbContext.MstCompanies
-                    .OrderByDescending(d => d.Id)
-                    .FirstOrDefaultAsync();
+                DBSets.MstCompanyDBSet lastCompany = await (
+                    from d in _dbContext.MstCompanies
+                    orderby d.Id descending
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (lastCompany != null)
                 {
@@ -166,7 +178,22 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstCompanyDBSet company = await (
+                    from d in _dbContext.MstCompanies
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (company == null)
                 {
@@ -178,9 +205,11 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a company that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies
-                    .Where(d => d.Id == mstCompanyDTO.CurrencyId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstCurrencyDBSet currency = await (
+                    from d in _dbContext.MstCurrencies
+                    where d.Id == mstCompanyDTO.CurrencyId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (currency == null)
                 {
@@ -214,7 +243,22 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstCompanyDBSet company = await (
+                    from d in _dbContext.MstCompanies
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (company == null)
                 {
@@ -226,9 +270,11 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a company that is already locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await _dbContext.MstCurrencies
-                    .Where(d => d.Id == mstCompanyDTO.CurrencyId)
-                    .FirstOrDefaultAsync();
+                DBSets.MstCurrencyDBSet currency = await (
+                    from d in _dbContext.MstCurrencies
+                    where d.Id == mstCompanyDTO.CurrencyId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (currency == null)
                 {
@@ -263,7 +309,22 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstCompanyDBSet company = await (
+                    from d in _dbContext.MstCompanies
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (company == null)
                 {
@@ -295,7 +356,19 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DBSets.MstCompanyDBSet company = await _dbContext.MstCompanies.FindAsync(id);
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                DBSets.MstCompanyDBSet company = await (
+                    from d in _dbContext.MstCompanies
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (company == null)
                 {
