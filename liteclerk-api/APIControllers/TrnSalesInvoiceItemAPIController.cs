@@ -50,7 +50,7 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnSalesInvoiceItemDTO> salesInvoices = await (
+                IEnumerable<DTO.TrnSalesInvoiceItemDTO> salesInvoiceItems = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId
                     orderby d.Id descending
@@ -61,6 +61,10 @@ namespace liteclerk_api.APIControllers
                         ItemId = d.ItemId,
                         Item = new DTO.MstArticleItemDTO
                         {
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_Item.ManualCode
+                            },
                             SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
                             Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : "",
@@ -113,13 +117,101 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, salesInvoices);
+                return StatusCode(200, salesInvoiceItems);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet("detail/{id}")]
+        public async Task<ActionResult<DTO.TrnSalesInvoiceItemDTO>> GetSalesInvoiceItemDetail(Int32 id)
+        {
+            try
+            {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                DTO.TrnSalesInvoiceItemDTO salesInvoiceItem = await (
+                    from d in _dbContext.TrnSalesInvoiceItems
+                    where d.Id == id
+                    select new DTO.TrnSalesInvoiceItemDTO
+                    {
+                        Id = d.Id,
+                        SIId = d.SIId,
+                        ItemId = d.ItemId,
+                        Item = new DTO.MstArticleItemDTO
+                        {
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_Item.ManualCode
+                            },
+                            SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : "",
+                        },
+                        ItemInventoryId = d.ItemInventoryId,
+                        ItemInventory = new DTO.MstArticleItemInventoryDTO
+                        {
+                            InventoryCode = d.MstArticleItemInventory_ItemInventory.InventoryCode
+                        },
+                        ItemJobTypeId = d.ItemJobTypeId,
+                        ItemJobType = new DTO.MstJobTypeDTO
+                        {
+                            JobType = d.MstJobType_ItemJobType.JobType
+                        },
+                        Particulars = d.Particulars,
+                        Quantity = d.Quantity,
+                        UnitId = d.UnitId,
+                        Unit = new DTO.MstUnitDTO
+                        {
+                            Unit = d.MstUnit_Unit.Unit
+                        },
+                        Price = d.Price,
+                        DiscountId = d.DiscountId,
+                        Discount = new DTO.MstDiscountDTO
+                        {
+                            Discount = d.MstDiscount_Discount.Discount
+                        },
+                        DiscountRate = d.DiscountRate,
+                        DiscountAmount = d.DiscountAmount,
+                        NetPrice = d.NetPrice,
+                        Amount = d.Amount,
+                        VATId = d.VATId,
+                        VAT = new DTO.MstTaxDTO
+                        {
+                            TaxDescription = d.MstTax_VAT.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                        },
+                        BaseUnitId = d.BaseUnitId,
+                        BaseUnit = new DTO.MstUnitDTO
+                        {
+                            Unit = d.MstUnit_Unit.Unit
+                        },
+                        BaseQuantity = d.BaseQuantity,
+                        BaseNetPrice = d.BaseNetPrice,
+                        LineTimeStamp = d.LineTimeStamp.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).FirstOrDefaultAsync();
+
+                return StatusCode(200, salesInvoiceItem);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
 
     }
 }
