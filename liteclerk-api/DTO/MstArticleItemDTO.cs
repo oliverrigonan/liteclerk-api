@@ -27,6 +27,7 @@ namespace liteclerk_api.DTO
         public MstAccountDTO CostAccount { get; set; }
         public Int32 ExpenseAccountId { get; set; }
         public MstAccountDTO ExpenseAccount { get; set; }
+        public Decimal Price { get; set; }
         public Boolean IsLocked { get; set; }
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }

@@ -87,6 +87,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstAccount_ExpenseAccount.Account,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
+                        Price = d.Price,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -176,6 +177,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstAccount_ExpenseAccount.Account,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
+                        Price = d.Price,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -266,6 +268,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstAccount_ExpenseAccount.Account,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
+                        Price = d.Price,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -356,6 +359,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstAccount_ExpenseAccount.Account,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
+                        Price = d.Price,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {

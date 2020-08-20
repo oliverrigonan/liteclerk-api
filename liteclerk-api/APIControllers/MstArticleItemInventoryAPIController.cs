@@ -49,7 +49,8 @@ namespace liteclerk_api.APIControllers
                                 UnitCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().MstUnit_Unit.UnitCode : "",
                                 ManualCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().MstUnit_Unit.ManualCode : "",
                                 Unit = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().MstUnit_Unit.Unit : ""
-                            }
+                            },
+                            Price = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().Price : 0
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
