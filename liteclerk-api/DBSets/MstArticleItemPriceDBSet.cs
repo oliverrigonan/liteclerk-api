@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DBSets
 {
-    public class MstArticleItemUnitDBSet
+    public class MstArticleItemPriceDBSet
     {
         public Int32 Id { get; set; }
         public Int32 ArticleId { get; set; }
         public virtual MstArticleDBSet MstArticle_Article { get; set; }
-        public Int32 UnitId { get; set; }
-        public virtual MstUnitDBSet MstUnit_Unit { get; set; }
-        public Decimal Multiplier { get; set; }
+        public String PriceDescription { get; set; }
+        public Decimal Price { get; set; }
     }
 }

@@ -14,24 +14,24 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MstArticleItemUnitAPIController : ControllerBase
+    public class MstArticleItemPriceAPIController : ControllerBase
     {
         private DBContext.LiteclerkDBContext _dbContext;
 
-        public MstArticleItemUnitAPIController(DBContext.LiteclerkDBContext dbContext)
+        public MstArticleItemPriceAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         [HttpGet("list/{articleId}")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleItemUnitDTO>>> GetArticleItemUnitList(Int32 articleId)
+        public async Task<ActionResult<IEnumerable<DTO.MstArticleItemPriceDTO>>> GetArticleItemPriceList(Int32 articleId)
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemUnitDTO> articleItemUnits = await (
-                    from d in _dbContext.MstArticleItemUnits
+                IEnumerable<DTO.MstArticleItemPriceDTO> articleItemPrices = await (
+                    from d in _dbContext.MstArticleItemPrices
                     where d.ArticleId == articleId
-                    select new DTO.MstArticleItemUnitDTO
+                    select new DTO.MstArticleItemPriceDTO
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
@@ -45,18 +45,12 @@ namespace liteclerk_api.APIControllers
                             BarCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
                             Description = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().Description : ""
                         },
-                        UnitId = d.UnitId,
-                        Unit = new DTO.MstUnitDTO
-                        {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
-                        },
-                        Multiplier = d.Multiplier
+                        PriceDescription = d.PriceDescription,
+                        Price = d.Price
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, articleItemUnits);
+                return StatusCode(200, articleItemPrices);
             }
             catch (Exception e)
             {

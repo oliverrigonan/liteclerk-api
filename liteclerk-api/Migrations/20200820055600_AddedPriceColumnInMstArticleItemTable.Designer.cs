@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200820055600_AddedPriceColumnInMstArticleItemTable")]
+    partial class AddedPriceColumnInMstArticleItemTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -547,34 +549,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("BranchId");
 
                     b.ToTable("MstArticleItemInventory");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemPriceDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ArticleId")
-                        .HasColumnName("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnName("Price")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<string>("PriceDescription")
-                        .IsRequired()
-                        .HasColumnName("PriceDescription")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.ToTable("MstArticleItemPrice");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemUnitDBSet", b =>
@@ -1587,15 +1561,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
                         .WithMany("MstArticleItemInventories_Branch")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemPriceDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Article")
-                        .WithMany("MstArticleItemPrices_Article")
-                        .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

@@ -33,6 +33,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstAccount_CostAccount).WithMany(f => f.MstArticleItems_CostAccount).HasForeignKey(f => f.CostAccountId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.ExpenseAccountId).HasColumnName("ExpenseAccountId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstAccount_ExpenseAccount).WithMany(f => f.MstArticleItems_ExpenseAccount).HasForeignKey(f => f.ExpenseAccountId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.Price).HasColumnName("Price").HasColumnType("decimal(18,5)").IsRequired();
             });
         }
     }

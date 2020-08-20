@@ -32,6 +32,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstArticleCustomerDBSet> MstArticleCustomers { get; set; }
         public virtual DbSet<DBSets.MstArticleItemDBSet> MstArticleItems { get; set; }
         public virtual DbSet<DBSets.MstArticleItemUnitDBSet> MstArticleItemUnits { get; set; }
+        public virtual DbSet<DBSets.MstArticleItemPriceDBSet> MstArticleItemPrices { get; set; }
         public virtual DbSet<DBSets.MstArticleItemInventoryDBSet> MstArticleItemInventories { get; set; }
         public virtual DbSet<DBSets.MstJobTypeDBSet> MstJobTypes { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceDBSet> TrnSalesInvoices { get; set; }
@@ -59,6 +60,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstArticleCustomerModelBuilder.CreateMstArticleCustomerModel(modelBuilder);
             DBModelBuilder.MstArticleItemModelBuilder.CreateMstArticleItemModel(modelBuilder);
             DBModelBuilder.MstArticleItemUnitModelBuilder.CreateMstItemUnitModel(modelBuilder);
+            DBModelBuilder.MstArticleItemPriceModelBuilder.CreateMstItemPriceModel(modelBuilder);
             DBModelBuilder.MstArticleItemInventoryModelBuilder.CreateMstArticleItemInventoryModel(modelBuilder);
             DBModelBuilder.MstJobTypeModelBuilder.CreateMstJobTypeModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceModelBuilder.CreateTrnSalesInvoiceModel(modelBuilder);

@@ -257,7 +257,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult<DTO.MstCompanyDTO>> AddSalesInvoice()
+        public async Task<IActionResult> AddSalesInvoice()
         {
             try
             {

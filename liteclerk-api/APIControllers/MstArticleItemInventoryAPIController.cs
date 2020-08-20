@@ -34,11 +34,22 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
-                        Article = new DTO.MstArticleDTO
+                        ArticleItem = new DTO.MstArticleItemDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_Article.ManualCode
+                            },
+                            SKUCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().Description : "",
+                            UnitId = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().UnitId : 0,
+                            Unit = new DTO.MstUnitDTO
+                            {
+                                UnitCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().MstUnit_Unit.UnitCode : "",
+                                ManualCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().MstUnit_Unit.ManualCode : "",
+                                Unit = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().MstUnit_Unit.Unit : ""
+                            }
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO

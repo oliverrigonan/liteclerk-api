@@ -24,11 +24,11 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleCustomerDTO>>> GetCustomerList()
+        public async Task<ActionResult<IEnumerable<DTO.MstArticleCustomerDTO>>> GetArticleCustomerList()
         {
             try
             {
-                IEnumerable<DTO.MstArticleCustomerDTO> customers = await (
+                IEnumerable<DTO.MstArticleCustomerDTO> articleCustomers = await (
                     from d in _dbContext.MstArticleCustomers
                     select new DTO.MstArticleCustomerDTO
                     {
@@ -75,7 +75,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, customers);
+                return StatusCode(200, articleCustomers);
             }
             catch (Exception e)
             {
@@ -84,11 +84,11 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("locked/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleCustomerDTO>>> GetLockedCustomerList()
+        public async Task<ActionResult<IEnumerable<DTO.MstArticleCustomerDTO>>> GetLockedArticleCustomerList()
         {
             try
             {
-                IEnumerable<DTO.MstArticleCustomerDTO> lockedCustomers = await (
+                IEnumerable<DTO.MstArticleCustomerDTO> lockedArticleCustomers = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.MstArticle_Article.IsLocked == true
                     select new DTO.MstArticleCustomerDTO
@@ -136,7 +136,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, lockedCustomers);
+                return StatusCode(200, lockedArticleCustomers);
             }
             catch (Exception e)
             {
