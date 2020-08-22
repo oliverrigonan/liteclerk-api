@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200822073241_AddedTrnJobOrderTable")]
+    partial class AddedTrnJobOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -651,7 +653,7 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("Branch")
@@ -699,7 +701,7 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("Company")
@@ -785,7 +787,7 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Currency")
                         .IsRequired()
                         .HasColumnName("Currency")
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
                     b.Property<string>("CurrencyCode")
@@ -1249,11 +1251,11 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BranchId")
+                    b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnName("CompanyId")
                         .HasColumnType("int");
 
@@ -1286,52 +1288,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("MstUser");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderAttachmentDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AttachmentCode")
-                        .IsRequired()
-                        .HasColumnName("AttachmentCode")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("AttachmentType")
-                        .IsRequired()
-                        .HasColumnName("AttachmentType")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("AttachmentURL")
-                        .IsRequired()
-                        .HasColumnName("AttachmentURL")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(255);
-
-                    b.Property<bool>("IsPrinted")
-                        .HasColumnName("IsPrinted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("JOId")
-                        .HasColumnName("JOId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(255);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JOId");
-
-                    b.ToTable("TrnJobOrderAttachment");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderDBSet", b =>
@@ -1469,61 +1425,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("TrnJobOrder");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderInformationDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("InformationByUserId")
-                        .HasColumnName("InformationByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InformationCode")
-                        .IsRequired()
-                        .HasColumnName("InformationCode")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("InformationGroup")
-                        .IsRequired()
-                        .HasColumnName("InformationGroup")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<DateTime>("InformationUpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsPrinted")
-                        .HasColumnName("IsPrinted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("JOId")
-                        .HasColumnName("JOId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnName("Value")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InformationByUserId");
-
-                    b.HasIndex("JOId");
-
-                    b.ToTable("TrnJobOrderInformation");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", b =>
@@ -2212,19 +2113,12 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
                         .WithMany("MstUsers_Branch")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstCompanyDBSet", "MstCompany_Company")
                         .WithMany("MstUsers_Company")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderAttachmentDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JobOrder")
-                        .WithMany("TrnJobOrderAttachments_JobOrder")
-                        .HasForeignKey("JOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -2287,21 +2181,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
                         .WithMany("TrnJobOrders_UpdatedByUser")
                         .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderInformationDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_InformationByUser")
-                        .WithMany("TrnJobOrderInformations_InformationByUser")
-                        .HasForeignKey("InformationByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JobOrder")
-                        .WithMany("TrnJobOrderInformations_JobOrder")
-                        .HasForeignKey("JOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

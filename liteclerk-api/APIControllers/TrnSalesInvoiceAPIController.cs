@@ -301,7 +301,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnSalesInvoiceDBSet newSalesInvoice = new DBSets.TrnSalesInvoiceDBSet()
                 {
-                    BranchId = user.BranchId,
+                    BranchId = Convert.ToInt32(user.BranchId),
                     CurrencyId = user.MstCompany_Company.CurrencyId,
                     SINumber = SINumber,
                     SIDate = DateTime.Today,

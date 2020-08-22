@@ -24,5 +24,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstJobTypeDepartmentDBSet> MstJobTypeDepartments_JobType { get; set; }
         public virtual ICollection<MstJobTypeInformationDBSet> MstJobTypeInformations_JobType { get; set; }
         public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_ItemJobType { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_ItemJobType { get; set; }
     }
 }

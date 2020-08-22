@@ -41,6 +41,9 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstJobTypeInformationDBSet> MstJobTypeInformations { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceDBSet> TrnSalesInvoices { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems { get; set; }
+        public virtual DbSet<DBSets.TrnJobOrderDBSet> TrnJobOrders { get; set; }
+        public virtual DbSet<DBSets.TrnJobOrderAttachmentDBSet> TrnJobOrderAttachments { get; set; }
+        public virtual DbSet<DBSets.TrnJobOrderInformationDBSet> TrnJobOrderInformations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -73,6 +76,9 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstJobTypeInformationModelBuilder.CreateMstJobTypeInformationModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceModelBuilder.CreateTrnSalesInvoiceModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceItemModelBuilder.CreateTrnSalesInvoiceItemModel(modelBuilder);
+            DBModelBuilder.TrnJobOrderModelBuilder.CreateTrnJobOrderModel(modelBuilder);
+            DBModelBuilder.TrnJobOrderAttachmentModelBuilder.CreateTrnJobOrderAttachmentModel(modelBuilder);
+            DBModelBuilder.TrnJobOrderInformationModelBuilder.CreateTrnJobOrderInformationModel(modelBuilder);
         }
     }
 }

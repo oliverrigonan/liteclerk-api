@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200822080809_AddedTrnJobOrderInformationTable")]
+    partial class AddedTrnJobOrderInformationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -651,7 +653,7 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("Branch")
@@ -699,7 +701,7 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("Company")
@@ -785,7 +787,7 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Currency")
                         .IsRequired()
                         .HasColumnName("Currency")
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
                     b.Property<string>("CurrencyCode")
@@ -1249,11 +1251,11 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BranchId")
+                    b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnName("CompanyId")
                         .HasColumnType("int");
 
@@ -2212,12 +2214,14 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
                         .WithMany("MstUsers_Branch")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstCompanyDBSet", "MstCompany_Company")
                         .WithMany("MstUsers_Company")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderAttachmentDBSet", b =>

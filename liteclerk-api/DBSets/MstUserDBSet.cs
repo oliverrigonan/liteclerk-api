@@ -11,9 +11,9 @@ namespace liteclerk_api.DBSets
         public String Username { get; set; }
         public String Password { get; set; }
         public String Fullname { get; set; }
-        public Int32 CompanyId { get; set; }
+        public Int32? CompanyId { get; set; }
         public virtual MstCompanyDBSet MstCompany_Company { get; set; }
-        public Int32 BranchId { get; set; }
+        public Int32? BranchId { get; set; }
         public virtual MstCompanyBranchDBSet MstCompanyBranch_Branch { get; set; }
         public Boolean IsActive { get; set; }
         public virtual ICollection<MstCompanyDBSet> MstCompanies_CreatedByUser { get; set; }
@@ -48,7 +48,13 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstDiscountDBSet> MstDiscounts_UpdatedByUser { get; set; }
         public virtual ICollection<MstTaxDBSet> MstTaxes_CreatedByUser { get; set; }
         public virtual ICollection<MstTaxDBSet> MstTaxes_UpdatedByUser { get; set; }
-        public virtual ICollection<MstJobDepartmentDBset> MstJobDepartment_CreatedByUser { get; set; }
-        public virtual ICollection<MstJobDepartmentDBset> MstJobDepartment_UpdatedByUser { get; set; }
+        public virtual ICollection<MstJobDepartmentDBset> MstJobDepartments_CreatedByUser { get; set; }
+        public virtual ICollection<MstJobDepartmentDBset> MstJobDepartments_UpdatedByUser { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_PreparedByUser { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_CheckedByUser { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_ApprovedByUser { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_CreatedByUser { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_UpdatedByUser { get; set; }
+        public virtual ICollection<TrnJobOrderInformationDBSet> TrnJobOrderInformations_InformationByUser { get; set; }
     }
 }
