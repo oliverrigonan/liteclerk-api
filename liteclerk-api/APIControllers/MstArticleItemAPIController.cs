@@ -88,6 +88,27 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_RRVAT.TaxCode,
+                            ManualCode = d.MstTax_RRVAT.ManualCode,
+                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_SIVAT.TaxCode,
+                            ManualCode = d.MstTax_SIVAT.ManualCode,
+                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAX.TaxCode,
+                            ManualCode = d.MstTax_WTAX.ManualCode,
+                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                        },
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -108,7 +129,7 @@ namespace liteclerk_api.APIControllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, e.InnerException.Message);
             }
         }
 
@@ -178,6 +199,27 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_RRVAT.TaxCode,
+                            ManualCode = d.MstTax_RRVAT.ManualCode,
+                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_SIVAT.TaxCode,
+                            ManualCode = d.MstTax_SIVAT.ManualCode,
+                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAX.TaxCode,
+                            ManualCode = d.MstTax_WTAX.ManualCode,
+                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                        },
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -198,7 +240,7 @@ namespace liteclerk_api.APIControllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, e.InnerException.Message);
             }
         }
 
@@ -269,6 +311,27 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_RRVAT.TaxCode,
+                            ManualCode = d.MstTax_RRVAT.ManualCode,
+                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_SIVAT.TaxCode,
+                            ManualCode = d.MstTax_SIVAT.ManualCode,
+                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAX.TaxCode,
+                            ManualCode = d.MstTax_WTAX.ManualCode,
+                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                        },
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -289,7 +352,7 @@ namespace liteclerk_api.APIControllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, e.InnerException.Message);
             }
         }
 
@@ -360,6 +423,27 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_RRVAT.TaxCode,
+                            ManualCode = d.MstTax_RRVAT.ManualCode,
+                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_SIVAT.TaxCode,
+                            ManualCode = d.MstTax_SIVAT.ManualCode,
+                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAX.TaxCode,
+                            ManualCode = d.MstTax_WTAX.ManualCode,
+                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                        },
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -380,7 +464,7 @@ namespace liteclerk_api.APIControllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, e.InnerException.Message);
             }
         }
     }

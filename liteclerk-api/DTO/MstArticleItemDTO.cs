@@ -33,5 +33,11 @@ namespace liteclerk_api.DTO
         public String CreatedDateTime { get; set; }
         public MstUserDTO UpdatedByUser { get; set; }
         public String UpdatedDateTime { get; set; }
+        public Int32 RRVATId { get; set; }
+        public MstTaxDTO RRVAT { get; set; }
+        public Int32 SIVATId { get; set; }
+        public MstTaxDTO SIVAT { get; set; }
+        public Int32 WTAXId { get; set; }
+        public MstTaxDTO WTAX { get; set; }
     }
 }

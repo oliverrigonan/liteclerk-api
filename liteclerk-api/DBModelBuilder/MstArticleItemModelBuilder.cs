@@ -34,6 +34,12 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ExpenseAccountId).HasColumnName("ExpenseAccountId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstAccount_ExpenseAccount).WithMany(f => f.MstArticleItems_ExpenseAccount).HasForeignKey(f => f.ExpenseAccountId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Price).HasColumnName("Price").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.RRVATId).HasColumnName("RRVATId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstTax_RRVAT).WithMany(f => f.MstArticleItemDBSet_RRVAT).HasForeignKey(f => f.RRVATId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.SIVATId).HasColumnName("SIVATId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstTax_SIVAT).WithMany(f => f.MstArticleItemDBSet_SIVAT).HasForeignKey(f => f.SIVATId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.WTAXId).HasColumnName("WTAXId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstTax_WTAX).WithMany(f => f.MstArticleItemDBSet_WTAX).HasForeignKey(f => f.WTAXId).OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

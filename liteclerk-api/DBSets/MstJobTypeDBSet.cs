@@ -20,6 +20,9 @@ namespace liteclerk_api.DBSets
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
         public DateTime UpdatedDateTime { get; set; }
+        public virtual ICollection<MstJobTypeAttachmentDBSet> MstJobTypeAttachments_JobType { get; set; }
+        public virtual ICollection<MstJobTypeDepartmentDBSet> MstJobTypeDepartments_JobType { get; set; }
+        public virtual ICollection<MstJobTypeInformationDBSet> MstJobTypeInformations_JobType { get; set; }
         public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_ItemJobType { get; set; }
     }
 }

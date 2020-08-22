@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200822064911_AddedMstJobTypeDepartmentTable")]
+    partial class AddedMstJobTypeDepartmentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1050,40 +1052,6 @@ namespace liteclerk_api.Migrations
                     b.ToTable("MstJobTypeDepartment");
                 });
 
-            modelBuilder.Entity("liteclerk_api.DBSets.MstJobTypeInformationDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("InformationCode")
-                        .IsRequired()
-                        .HasColumnName("InformationCode")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("InformationGroup")
-                        .IsRequired()
-                        .HasColumnName("InformationGroup")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<bool>("IsPrinted")
-                        .HasColumnName("IsPrinted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("JobTypeId")
-                        .HasColumnName("JobTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobTypeId");
-
-                    b.ToTable("MstJobTypeInformation");
-                });
-
             modelBuilder.Entity("liteclerk_api.DBSets.MstTaxDBSet", b =>
                 {
                     b.Property<int>("Id")
@@ -1910,15 +1878,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobType")
                         .WithMany("MstJobTypeDepartments_JobType")
-                        .HasForeignKey("JobTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.MstJobTypeInformationDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobType")
-                        .WithMany("MstJobTypeInformations_JobType")
                         .HasForeignKey("JobTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

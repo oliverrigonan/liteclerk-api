@@ -11,7 +11,7 @@ namespace liteclerk_api.DBContext
     {
         public LiteclerkDBContext(DbContextOptions<LiteclerkDBContext> options) : base(options)
         {
-
+            AppDomain.CurrentDomain.SetData("LiteclerkDataDirectory", System.IO.Directory.GetCurrentDirectory());
         }
 
         public virtual DbSet<DBSets.MstUserDBSet> MstUsers { get; set; }
@@ -34,7 +34,11 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstArticleItemUnitDBSet> MstArticleItemUnits { get; set; }
         public virtual DbSet<DBSets.MstArticleItemPriceDBSet> MstArticleItemPrices { get; set; }
         public virtual DbSet<DBSets.MstArticleItemInventoryDBSet> MstArticleItemInventories { get; set; }
+        public virtual DbSet<DBSets.MstJobDepartmentDBset> MstJobDepartments { get; set; }
         public virtual DbSet<DBSets.MstJobTypeDBSet> MstJobTypes { get; set; }
+        public virtual DbSet<DBSets.MstJobTypeAttachmentDBSet> MstJobTypeAttachments { get; set; }
+        public virtual DbSet<DBSets.MstJobTypeDepartmentDBSet> MstJobTypeDepartments { get; set; }
+        public virtual DbSet<DBSets.MstJobTypeInformationDBSet> MstJobTypeInformations { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceDBSet> TrnSalesInvoices { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems { get; set; }
 
@@ -62,7 +66,11 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstArticleItemUnitModelBuilder.CreateMstItemUnitModel(modelBuilder);
             DBModelBuilder.MstArticleItemPriceModelBuilder.CreateMstItemPriceModel(modelBuilder);
             DBModelBuilder.MstArticleItemInventoryModelBuilder.CreateMstArticleItemInventoryModel(modelBuilder);
+            DBModelBuilder.MstJobDepartmentModelBuilder.CreateMstJobDepartmentModel(modelBuilder);
             DBModelBuilder.MstJobTypeModelBuilder.CreateMstJobTypeModel(modelBuilder);
+            DBModelBuilder.MstJobTypeAttachmentModelBuilder.CreateMstJobTypeAttachmentModel(modelBuilder);
+            DBModelBuilder.MstJobTypeDepartmentModelBuilder.CreateMstJobTypeDepartmentModel(modelBuilder);
+            DBModelBuilder.MstJobTypeInformationModelBuilder.CreateMstJobTypeInformationModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceModelBuilder.CreateTrnSalesInvoiceModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceItemModelBuilder.CreateTrnSalesInvoiceItemModel(modelBuilder);
         }

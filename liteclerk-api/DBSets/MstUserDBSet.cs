@@ -48,5 +48,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstDiscountDBSet> MstDiscounts_UpdatedByUser { get; set; }
         public virtual ICollection<MstTaxDBSet> MstTaxes_CreatedByUser { get; set; }
         public virtual ICollection<MstTaxDBSet> MstTaxes_UpdatedByUser { get; set; }
+        public virtual ICollection<MstJobDepartmentDBset> MstJobDepartment_CreatedByUser { get; set; }
+        public virtual ICollection<MstJobDepartmentDBset> MstJobDepartment_UpdatedByUser { get; set; }
     }
 }

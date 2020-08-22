@@ -79,7 +79,7 @@ namespace liteclerk_api.APIControllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, e.InnerException.Message);
             }
         }
 
@@ -140,7 +140,7 @@ namespace liteclerk_api.APIControllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, e.InnerException.Message);
             }
         }
     }
