@@ -16,7 +16,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class MstArticleCustomerAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public MstArticleCustomerAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -24,7 +24,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleCustomerDTO>>> GetArticleCustomerList()
+        public async Task<ActionResult> GetArticleCustomerList()
         {
             try
             {
@@ -84,7 +84,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("locked/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleCustomerDTO>>> GetLockedArticleCustomerList()
+        public async Task<ActionResult> GetLockedArticleCustomerList()
         {
             try
             {

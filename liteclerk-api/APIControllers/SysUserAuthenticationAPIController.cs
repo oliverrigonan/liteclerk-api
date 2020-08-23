@@ -16,7 +16,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class SysUserAuthenticationAPIController : ControllerBase
     {
-        private Modules.ISysUserAuthenticationModule _userAuthentication;
+        private readonly Modules.ISysUserAuthenticationModule _userAuthentication;
 
         public SysUserAuthenticationAPIController(Modules.ISysUserAuthenticationModule iSysUserAuthenticationModule)
         {
@@ -25,7 +25,7 @@ namespace liteclerk_api.APIControllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] SysUserAuthenticationRequestDTO sysUserAuthenticationRequestDTO)
+        public async Task<ActionResult> Authenticate([FromBody] SysUserAuthenticationRequestDTO sysUserAuthenticationRequestDTO)
         {
             try
             {

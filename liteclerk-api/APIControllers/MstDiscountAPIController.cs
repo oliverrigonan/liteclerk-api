@@ -16,7 +16,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class MstDiscountAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public MstDiscountAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -24,7 +24,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstDiscountDTO>>> GetDiscountList()
+        public async Task<ActionResult> GetDiscountList()
         {
             try
             {

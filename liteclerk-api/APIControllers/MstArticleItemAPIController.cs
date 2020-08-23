@@ -16,7 +16,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class MstArticleItemAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public MstArticleItemAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -24,7 +24,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleItemDTO>>> GetArticleItemList()
+        public async Task<ActionResult> GetArticleItemList()
         {
             try
             {
@@ -134,7 +134,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("locked/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleItemDTO>>> GetLockedArticleItemList()
+        public async Task<ActionResult> GetLockedArticleItemList()
         {
             try
             {
@@ -245,7 +245,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("inventory/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleItemDTO>>> GetInventoryArticleItemList()
+        public async Task<ActionResult> GetInventoryArticleItemList()
         {
             try
             {
@@ -357,7 +357,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("non-inventory/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleItemDTO>>> GetNonInventoryArticleItemList()
+        public async Task<ActionResult> GetNonInventoryArticleItemList()
         {
             try
             {

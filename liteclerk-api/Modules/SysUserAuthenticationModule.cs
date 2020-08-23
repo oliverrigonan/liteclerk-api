@@ -19,9 +19,9 @@ namespace liteclerk_api.Modules
 
     public class SysUserAuthenticationModule : ISysUserAuthenticationModule
     {
-        private DBContext.LiteclerkDBContext _dbContext;
-        private SysUserAuthenticationSecretKeyDTO _sysUserAuthenticationSecretKeyDTO;
-        private DateTime? _tokenExpirationDate;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
+        private readonly SysUserAuthenticationSecretKeyDTO _sysUserAuthenticationSecretKeyDTO;
+        public DateTime? _tokenExpirationDate;
 
         public SysUserAuthenticationModule(DBContext.LiteclerkDBContext dbContext, IOptions<SysUserAuthenticationSecretKeyDTO> sysUserAuthenticationSecretKeyDTO)
         {

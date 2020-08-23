@@ -15,7 +15,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class MstCompanyBranchAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public MstCompanyBranchAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -36,7 +36,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstCompanyBranchDTO>>> GetCompanyBranchList()
+        public async Task<ActionResult> GetCompanyBranchList()
         {
             try
             {
@@ -63,7 +63,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult<DTO.MstCompanyBranchDTO>> AddCompanyBranch([FromBody] DTO.MstCompanyBranchDTO mstCompanyBranchDTO)
+        public async Task<ActionResult> AddCompanyBranch([FromBody] DTO.MstCompanyBranchDTO mstCompanyBranchDTO)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateCompanyBranch(int id, [FromBody] DTO.MstCompanyBranchDTO mstCompanyBranchDTO)
+        public async Task<ActionResult> UpdateCompanyBranch(int id, [FromBody] DTO.MstCompanyBranchDTO mstCompanyBranchDTO)
         {
             try
             {
@@ -156,7 +156,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteCompanyBranch(int id)
+        public async Task<ActionResult> DeleteCompanyBranch(int id)
         {
             try
             {

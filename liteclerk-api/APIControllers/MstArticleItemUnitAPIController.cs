@@ -16,7 +16,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class MstArticleItemUnitAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public MstArticleItemUnitAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -24,7 +24,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list/{articleId}")]
-        public async Task<ActionResult<IEnumerable<DTO.MstArticleItemUnitDTO>>> GetArticleItemUnitList(Int32 articleId)
+        public async Task<ActionResult> GetArticleItemUnitList(Int32 articleId)
         {
             try
             {

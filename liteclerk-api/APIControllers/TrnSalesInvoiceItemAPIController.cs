@@ -17,7 +17,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class TrnSalesInvoiceItemAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public TrnSalesInvoiceItemAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -38,7 +38,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list/{SIId}")]
-        public async Task<ActionResult<IEnumerable<DTO.TrnSalesInvoiceItemDTO>>> GetSalesInvoiceItemList(Int32 SIId)
+        public async Task<ActionResult> GetSalesInvoiceItemListBySalesInvoice(Int32 SIId)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult<DTO.TrnSalesInvoiceItemDTO>> GetSalesInvoiceItemDetail(Int32 id)
+        public async Task<ActionResult> GetSalesInvoiceItemDetail(Int32 id)
         {
             try
             {
@@ -213,7 +213,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddSalesInvoiceItem([FromBody] DTO.TrnSalesInvoiceItemDTO trnSalesInvoiceItemDTO)
+        public async Task<ActionResult> AddSalesInvoiceItem([FromBody] DTO.TrnSalesInvoiceItemDTO trnSalesInvoiceItemDTO)
         {
             try
             {
@@ -373,7 +373,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateSalesInvoiceItem(Int32 id, [FromBody] DTO.TrnSalesInvoiceItemDTO trnSalesInvoiceItemDTO)
+        public async Task<ActionResult> UpdateSalesInvoiceItem(Int32 id, [FromBody] DTO.TrnSalesInvoiceItemDTO trnSalesInvoiceItemDTO)
         {
             try
             {
@@ -540,7 +540,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> GetSalesInvoiceItem(int id)
+        public async Task<ActionResult> GetSalesInvoiceItem(int id)
         {
             try
             {

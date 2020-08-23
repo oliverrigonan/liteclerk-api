@@ -17,7 +17,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class TrnSalesInvoiceAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public TrnSalesInvoiceAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -37,8 +37,8 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("list/{startDate}/{endDate}")]
-        public async Task<ActionResult<IEnumerable<DTO.TrnSalesInvoiceDTO>>> GetSalesInvoiceListFilteredByDateRanged(String startDate, String endDate)
+        [HttpGet("listByDateRanged/{startDate}/{endDate}")]
+        public async Task<ActionResult> GetSalesInvoiceListByDateRanged(String startDate, String endDate)
         {
             try
             {
@@ -78,11 +78,13 @@ namespace liteclerk_api.APIControllers
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
                         CustomerId = d.CustomerId,
-                        Customer = new DTO.MstArticleDTO
+                        Customer = new DTO.MstArticleCustomerDTO
                         {
-                            ArticleCode = d.MstArticle_Customer.ArticleCode,
-                            ManualCode = d.MstArticle_Customer.ManualCode,
-                            Article = d.MstArticle_Customer.Article
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_Customer.ManualCode
+                            },
+                            Customer = d.MstArticle_Customer.MstArticleCustomers_Article.Any() ? d.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().Customer : "",
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
@@ -149,7 +151,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult<DTO.TrnSalesInvoiceDTO>> GetSalesInvoiceDetail(Int32 id)
+        public async Task<ActionResult> GetSalesInvoiceDetail(Int32 id)
         {
             try
             {
@@ -186,11 +188,13 @@ namespace liteclerk_api.APIControllers
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
                         CustomerId = d.CustomerId,
-                        Customer = new DTO.MstArticleDTO
+                        Customer = new DTO.MstArticleCustomerDTO
                         {
-                            ArticleCode = d.MstArticle_Customer.ArticleCode,
-                            ManualCode = d.MstArticle_Customer.ManualCode,
-                            Article = d.MstArticle_Customer.Article
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_Customer.ManualCode
+                            },
+                            Customer = d.MstArticle_Customer.MstArticleCustomers_Article.Any() ? d.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().Customer : "",
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
@@ -257,7 +261,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddSalesInvoice()
+        public async Task<ActionResult> AddSalesInvoice()
         {
             try
             {
@@ -341,7 +345,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("save/{id}")]
-        public async Task<IActionResult> SaveSalesInvoice(Int32 id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
+        public async Task<ActionResult> SaveSalesInvoice(Int32 id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
         {
             try
             {
@@ -435,7 +439,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("lock/{id}")]
-        public async Task<IActionResult> LockSalesInvoice(Int32 id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
+        public async Task<ActionResult> LockSalesInvoice(Int32 id, [FromBody] DTO.TrnSalesInvoiceDTO trnSalesInvoiceDTO)
         {
             try
             {
@@ -530,7 +534,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("unlock/{id}")]
-        public async Task<IActionResult> UnlockSalesInvoice(Int32 id)
+        public async Task<ActionResult> UnlockSalesInvoice(Int32 id)
         {
             try
             {
@@ -579,7 +583,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("cancel/{id}")]
-        public async Task<IActionResult> CancelSalesInvoice(Int32 id)
+        public async Task<ActionResult> CancelSalesInvoice(Int32 id)
         {
             try
             {
@@ -628,7 +632,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteSalesInvoice(Int32 id)
+        public async Task<ActionResult> DeleteSalesInvoice(Int32 id)
         {
             try
             {

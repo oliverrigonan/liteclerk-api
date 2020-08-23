@@ -15,7 +15,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class MstUserAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public MstUserAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -23,7 +23,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstUserDTO>>> GetUserList()
+        public async Task<ActionResult> GetUserList()
         {
             try
             {
@@ -61,7 +61,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("active/list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstUserDTO>>> GetActiveUserList()
+        public async Task<ActionResult> GetActiveUserList()
         {
             try
             {

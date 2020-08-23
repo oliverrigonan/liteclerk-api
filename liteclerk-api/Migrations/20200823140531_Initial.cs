@@ -74,7 +74,6 @@ namespace liteclerk_api.Migrations
                     BarCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     UnitId = table.Column<int>(type: "int", nullable: false),
-                    IsJob = table.Column<bool>(type: "bit", nullable: false),
                     IsInventory = table.Column<bool>(type: "bit", nullable: false),
                     ArticleAccountGroupId = table.Column<int>(type: "int", nullable: false),
                     AssetAccountId = table.Column<int>(nullable: false),
@@ -84,7 +83,8 @@ namespace liteclerk_api.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,5)", nullable: false),
                     RRVATId = table.Column<int>(type: "int", nullable: false),
                     SIVATId = table.Column<int>(type: "int", nullable: false),
-                    WTAXId = table.Column<int>(type: "int", nullable: false)
+                    WTAXId = table.Column<int>(type: "int", nullable: false),
+                    Kitting = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -695,7 +695,7 @@ namespace liteclerk_api.Migrations
                     Particulars = table.Column<string>(type: "nvarchar(max)", maxLength: 255, nullable: false),
                     IsPrinted = table.Column<bool>(type: "bit", nullable: false),
                     InformationByUserId = table.Column<int>(type: "int", nullable: false),
-                    InformationUpdatedDateTime = table.Column<DateTime>(nullable: false)
+                    InformationUpdatedDateTime = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -751,6 +751,42 @@ namespace liteclerk_api.Migrations
                     table.ForeignKey(
                         name: "FK_MstCompany_MstUser_UpdatedByUserId",
                         column: x => x.UpdatedByUserId,
+                        principalTable: "MstUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TrnJobOrderDepartment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JOId = table.Column<int>(type: "int", nullable: false),
+                    JobDepartmentId = table.Column<int>(type: "int", nullable: false),
+                    Particulars = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    StatusByUserId = table.Column<int>(type: "int", nullable: false),
+                    StatusUpdatedDateTime = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrnJobOrderDepartment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TrnJobOrderDepartment_TrnJobOrder_JOId",
+                        column: x => x.JOId,
+                        principalTable: "TrnJobOrder",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TrnJobOrderDepartment_MstJobDepartment_JobDepartmentId",
+                        column: x => x.JobDepartmentId,
+                        principalTable: "MstJobDepartment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TrnJobOrderDepartment_MstUser_StatusByUserId",
+                        column: x => x.StatusByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -1196,6 +1232,21 @@ namespace liteclerk_api.Migrations
                 name: "IX_TrnJobOrderAttachment_JOId",
                 table: "TrnJobOrderAttachment",
                 column: "JOId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrnJobOrderDepartment_JOId",
+                table: "TrnJobOrderDepartment",
+                column: "JOId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrnJobOrderDepartment_JobDepartmentId",
+                table: "TrnJobOrderDepartment",
+                column: "JobDepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrnJobOrderDepartment_StatusByUserId",
+                table: "TrnJobOrderDepartment",
+                column: "StatusByUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TrnJobOrderInformation_InformationByUserId",
@@ -1840,6 +1891,9 @@ namespace liteclerk_api.Migrations
 
             migrationBuilder.DropTable(
                 name: "TrnJobOrderAttachment");
+
+            migrationBuilder.DropTable(
+                name: "TrnJobOrderDepartment");
 
             migrationBuilder.DropTable(
                 name: "TrnJobOrderInformation");

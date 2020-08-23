@@ -20,6 +20,5 @@ namespace liteclerk_api.DBSets
         public DateTime UpdatedDateTime { get; set; }
         public virtual ICollection<MstJobTypeDepartmentDBSet> MstJobTypeDepartments_JobDepartment { get; set; }
         public virtual ICollection<TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments_JobDepartment { get; set; }
-        public virtual ICollection<TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments_StatusByUser { get; set; }
     }
 }

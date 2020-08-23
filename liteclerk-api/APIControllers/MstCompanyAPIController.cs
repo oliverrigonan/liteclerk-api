@@ -16,7 +16,7 @@ namespace liteclerk_api.APIControllers
     [ApiController]
     public class MstCompanyAPIController : ControllerBase
     {
-        private DBContext.LiteclerkDBContext _dbContext;
+        private readonly DBContext.LiteclerkDBContext _dbContext;
 
         public MstCompanyAPIController(DBContext.LiteclerkDBContext dbContext)
         {
@@ -37,7 +37,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<DTO.MstCompanyDTO>>> GetCompanyList()
+        public async Task<ActionResult> GetCompanyList()
         {
             try
             {
@@ -84,7 +84,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult<DTO.MstCompanyDTO>> GetCompanyDetail(int id)
+        public async Task<ActionResult> GetCompanyDetail(int id)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult<DTO.MstCompanyDTO>> AddCompany()
+        public async Task<ActionResult> AddCompany()
         {
             try
             {
@@ -200,7 +200,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("save/{id}")]
-        public async Task<IActionResult> SaveCompany(int id, [FromBody] DTO.MstCompanyDTO mstCompanyDTO)
+        public async Task<ActionResult> SaveCompany(int id, [FromBody] DTO.MstCompanyDTO mstCompanyDTO)
         {
             try
             {
@@ -265,7 +265,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("lock/{id}")]
-        public async Task<IActionResult> LockCompany(int id, [FromBody] DTO.MstCompanyDTO mstCompanyDTO)
+        public async Task<ActionResult> LockCompany(int id, [FromBody] DTO.MstCompanyDTO mstCompanyDTO)
         {
             try
             {
@@ -331,7 +331,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("unlock/{id}")]
-        public async Task<IActionResult> UnlockCompany(int id)
+        public async Task<ActionResult> UnlockCompany(int id)
         {
             try
             {
@@ -380,7 +380,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteCompany(int id)
+        public async Task<ActionResult> DeleteCompany(int id)
         {
             try
             {

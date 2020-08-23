@@ -17,7 +17,7 @@ namespace liteclerk_api.DTO
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
         public Int32 CustomerId { get; set; }
-        public MstArticleDTO Customer { get; set; }
+        public MstArticleCustomerDTO Customer { get; set; }
         public Int32 TermId { get; set; }
         public MstTermDTO Term { get; set; }
         public String DateNeeded { get; set; }

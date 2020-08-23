@@ -18,8 +18,10 @@ namespace liteclerk_api.DTO
         public String DocumentReference { get; set; }
         public String DateScheduled { get; set; }
         public String DateNeeded { get; set; }
+        public Int32? SIId { get; set; }
+        public TrnSalesInvoiceDTO SalesInvoice { get; set; }
         public Int32? SIItemId { get; set; }
-        public TrnSalesInvoiceItemDTO SIItem { get; set; }
+        public TrnSalesInvoiceItemDTO SalesInvoiceItem { get; set; }
         public Int32 ItemId { get; set; }
         public MstArticleItemDTO Item { get; set; }
         public Int32 ItemJobTypeId { get; set; }

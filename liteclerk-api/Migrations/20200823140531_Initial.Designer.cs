@@ -10,8 +10,8 @@ using liteclerk_api.DBContext;
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    [Migration("20200823093212_ModifiedStatusUpdatedDateTimeColumnTrnJobOrderDepartmentTable")]
-    partial class ModifiedStatusUpdatedDateTimeColumnTrnJobOrderDepartmentTable
+    [Migration("20200823140531_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1496,9 +1496,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("JobDepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MstJobDepartmentDBsetId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Particulars")
                         .IsRequired()
                         .HasColumnName("Particulars")
@@ -1518,16 +1515,11 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("StatusUpdatedDateTime")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("JOId");
 
                     b.HasIndex("JobDepartmentId");
-
-                    b.HasIndex("MstJobDepartmentDBsetId");
 
                     b.HasIndex("StatusByUserId");
 
@@ -1558,7 +1550,8 @@ namespace liteclerk_api.Migrations
                         .HasMaxLength(255);
 
                     b.Property<DateTime>("InformationUpdatedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnName("InformationUpdatedDateTime")
+                        .HasColumnType("datetime");
 
                     b.Property<bool>("IsPrinted")
                         .HasColumnName("IsPrinted")
@@ -2372,10 +2365,6 @@ namespace liteclerk_api.Migrations
                         .HasForeignKey("JobDepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstJobDepartmentDBset", null)
-                        .WithMany("TrnJobOrderDepartments_StatusByUser")
-                        .HasForeignKey("MstJobDepartmentDBsetId");
 
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_StatusByUser")
                         .WithMany("TrnJobOrderDepartments_StatusByUser")
