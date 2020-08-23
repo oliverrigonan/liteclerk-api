@@ -7,21 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200815100251_ChangedModelForeignKeyProperties.cs" />
-    <Compile Remove="Migrations\20200815100251_ChangedModelForeignKeyProperties.Designer.cs" />
-    <Compile Remove="Migrations\20200816114901_AddedMstAccountTable.cs" />
-    <Compile Remove="Migrations\20200816114901_AddedMstAccountTable.Designer.cs" />
-    <Compile Remove="Migrations\20200816120338_AddedAllMstAccountingTables.cs" />
-    <Compile Remove="Migrations\20200816120338_AddedAllMstAccountingTables.Designer.cs" />
-    <Compile Remove="Migrations\20200817015531_ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired.cs" />
-    <Compile Remove="Migrations\20200817015531_ModifiedCompanyIdAndBranchIdInMstUserTableSetToRequired.Designer.cs" />
-    <Compile Remove="Migrations\20200818012213_ModifiedMstJobTypeTableAddedIsLockedColumn.cs" />
-    <Compile Remove="Migrations\20200818012213_ModifiedMstJobTypeTableAddedIsLockedColumn.Designer.cs" />
-    <Compile Remove="Migrations\20200822064753_AddedMstJobTypeDepartmentTable.cs" />
-    <Compile Remove="Migrations\20200822064753_AddedMstJobTypeDepartmentTable.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />

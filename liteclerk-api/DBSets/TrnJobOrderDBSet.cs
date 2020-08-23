@@ -18,8 +18,10 @@ namespace liteclerk_api.DBSets
         public String DocumentReference { get; set; }
         public DateTime DateScheduled { get; set; }
         public DateTime DateNeeded { get; set; }
+        public Int32? SIId { get; set; }
+        public virtual TrnSalesInvoiceDBSet TrnSalesInvoice_SalesInvoice { get; set; }
         public Int32? SIItemId { get; set; }
-        public virtual TrnSalesInvoiceItemDBSet TrnSalesInvoiceItem_SIItem { get; set; }
+        public virtual TrnSalesInvoiceItemDBSet TrnSalesInvoiceItem_SalesInvoiceItem { get; set; }
         public Int32 ItemId { get; set; }
         public virtual MstArticleDBSet MstArticle_Item { get; set; }
         public Int32 ItemJobTypeId { get; set; }
@@ -44,5 +46,6 @@ namespace liteclerk_api.DBSets
         public DateTime UpdatedDateTime { get; set; }
         public virtual ICollection<TrnJobOrderAttachmentDBSet> TrnJobOrderAttachments_JobOrder { get; set; }
         public virtual ICollection<TrnJobOrderInformationDBSet> TrnJobOrderInformations_JobOrder { get; set; }
+        public virtual ICollection<TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments_JobOrder { get; set; }
     }
 }

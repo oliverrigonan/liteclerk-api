@@ -36,6 +36,6 @@ namespace liteclerk_api.DBSets
         public Decimal BaseQuantity { get; set; }
         public Decimal BaseNetPrice { get; set; }
         public DateTime LineTimeStamp { get; set; }
-        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_SIItem { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_SalesInvoiceItem { get; set; }
     }
 }

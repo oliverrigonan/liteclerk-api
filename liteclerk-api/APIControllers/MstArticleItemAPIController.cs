@@ -50,7 +50,6 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_Unit.ManualCode,
                             Unit = d.MstUnit_Unit.Unit
                         },
-                        IsJob = d.IsJob,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -109,6 +108,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        Kitting = d.Kitting,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -161,7 +161,6 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_Unit.ManualCode,
                             Unit = d.MstUnit_Unit.Unit
                         },
-                        IsJob = d.IsJob,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -220,6 +219,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        Kitting = d.Kitting,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -273,7 +273,6 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_Unit.ManualCode,
                             Unit = d.MstUnit_Unit.Unit
                         },
-                        IsJob = d.IsJob,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -332,6 +331,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        Kitting = d.Kitting,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -385,7 +385,6 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_Unit.ManualCode,
                             Unit = d.MstUnit_Unit.Unit
                         },
-                        IsJob = d.IsJob,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -444,6 +443,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        Kitting = d.Kitting,
                         IsLocked = d.MstArticle_Article.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {

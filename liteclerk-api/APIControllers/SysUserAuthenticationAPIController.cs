@@ -37,7 +37,7 @@ namespace liteclerk_api.APIControllers
                 var response = await _userAuthentication.Authenticate(sysUserAuthenticationRequestDTO);
                 if (response == null)
                 {
-                    return BadRequest(new { message = "Username or password is incorrect" });
+                    return StatusCode(400, "Username or password is incorrect");
                 }
 
                 return StatusCode(200, response);

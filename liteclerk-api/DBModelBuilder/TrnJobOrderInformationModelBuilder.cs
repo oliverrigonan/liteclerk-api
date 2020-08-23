@@ -23,6 +23,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.IsPrinted).HasColumnName("IsPrinted").HasColumnType("bit").IsRequired();
                 entity.Property(e => e.InformationByUserId).HasColumnName("InformationByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_InformationByUser).WithMany(f => f.TrnJobOrderInformations_InformationByUser).HasForeignKey(f => f.InformationByUserId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.InformationUpdatedDateTime).HasColumnName("InformationUpdatedDateTime").HasColumnType("datetime").IsRequired();
             });
         }
     }

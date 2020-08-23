@@ -15,7 +15,6 @@ namespace liteclerk_api.DTO
         public String Description { get; set; }
         public Int32 UnitId { get; set; }
         public MstUnitDTO Unit { get; set; }
-        public Boolean IsJob { get; set; }
         public Boolean IsInventory { get; set; }
         public Int32 ArticleAccountGroupId { get; set; }
         public MstArticleAccountGroupDTO ArticleAccountGroup { get; set; }
@@ -39,5 +38,6 @@ namespace liteclerk_api.DTO
         public MstTaxDTO SIVAT { get; set; }
         public Int32 WTAXId { get; set; }
         public MstTaxDTO WTAX { get; set; }
+        public String Kitting { get; set; }
     }
 }

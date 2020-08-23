@@ -21,7 +21,6 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.Description).HasColumnName("Description").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.UnitId).HasColumnName("UnitId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUnit_Unit).WithMany(f => f.MstArticleItems_Unit).HasForeignKey(f => f.UnitId).OnDelete(DeleteBehavior.Restrict);
-                entity.Property(e => e.IsJob).HasColumnName("IsJob").HasColumnType("bit").IsRequired();
                 entity.Property(e => e.IsInventory).HasColumnName("IsInventory").HasColumnType("bit").IsRequired();
                 entity.Property(e => e.ArticleAccountGroupId).HasColumnName("ArticleAccountGroupId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstArticleAccountGroup_ArticleAccountGroup).WithMany(f => f.MstArticleItems_ArticleAccountGroup).HasForeignKey(f => f.ArticleAccountGroupId).OnDelete(DeleteBehavior.Restrict);
@@ -40,6 +39,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstTax_SIVAT).WithMany(f => f.MstArticleItemDBSet_SIVAT).HasForeignKey(f => f.SIVATId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.WTAXId).HasColumnName("WTAXId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstTax_WTAX).WithMany(f => f.MstArticleItemDBSet_WTAX).HasForeignKey(f => f.WTAXId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.Kitting).HasColumnName("Kitting").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
             });
         }
     }

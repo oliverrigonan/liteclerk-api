@@ -15,7 +15,6 @@ namespace liteclerk_api.DBSets
         public String Description { get; set; }
         public Int32 UnitId { get; set; }
         public virtual MstUnitDBSet MstUnit_Unit { get; set; }
-        public Boolean IsJob { get; set; }
         public Boolean IsInventory { get; set; }
         public Int32 ArticleAccountGroupId { get; set; }
         public virtual MstArticleAccountGroupDBSet MstArticleAccountGroup_ArticleAccountGroup { get; set; }
@@ -34,5 +33,6 @@ namespace liteclerk_api.DBSets
         public virtual MstTaxDBSet MstTax_SIVAT { get; set; }
         public Int32 WTAXId { get; set; }
         public virtual MstTaxDBSet MstTax_WTAX { get; set; }
+        public String Kitting { get; set; }
     }
 }

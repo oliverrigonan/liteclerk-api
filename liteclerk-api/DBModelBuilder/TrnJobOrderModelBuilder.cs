@@ -24,8 +24,10 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.DocumentReference).HasColumnName("DocumentReference").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.DateScheduled).HasColumnName("DateScheduled").HasColumnType("datetime").IsRequired();
                 entity.Property(e => e.DateNeeded).HasColumnName("DateNeeded").HasColumnType("datetime").IsRequired();
+                entity.Property(e => e.SIId).HasColumnName("SIId").HasColumnType("int");
+                entity.HasOne(f => f.TrnSalesInvoice_SalesInvoice).WithMany(f => f.TrnJobOrders_SalesInvoice).HasForeignKey(f => f.SIId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.SIItemId).HasColumnName("SIItemId").HasColumnType("int");
-                entity.HasOne(f => f.TrnSalesInvoiceItem_SIItem).WithMany(f => f.TrnJobOrders_SIItem).HasForeignKey(f => f.SIItemId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.TrnSalesInvoiceItem_SalesInvoiceItem).WithMany(f => f.TrnJobOrders_SalesInvoiceItem).HasForeignKey(f => f.SIItemId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.ItemId).HasColumnName("ItemId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstArticle_Item).WithMany(f => f.TrnJobOrders_Item).HasForeignKey(f => f.ItemId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.ItemJobTypeId).HasColumnName("ItemJobTypeId").HasColumnType("int");

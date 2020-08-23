@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200823092056_AddedTrnJobOrderDepartmentTable")]
+    partial class AddedTrnJobOrderDepartmentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1513,14 +1515,14 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StatusUpdatedDateTime")
-                        .HasColumnName("StatusUpdatedDateTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("JOId");
-
-                    b.HasIndex("JobDepartmentId");
 
                     b.HasIndex("MstJobDepartmentDBsetId");
 
@@ -1553,8 +1555,7 @@ namespace liteclerk_api.Migrations
                         .HasMaxLength(255);
 
                     b.Property<DateTime>("InformationUpdatedDateTime")
-                        .HasColumnName("InformationUpdatedDateTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsPrinted")
                         .HasColumnName("IsPrinted")
@@ -2357,15 +2358,15 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderDepartmentDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JobOrder")
-                        .WithMany("TrnJobOrderDepartments_JobOrder")
+                    b.HasOne("liteclerk_api.DBSets.MstJobDepartmentDBset", "MstJobDepartment_JobDepartment")
+                        .WithMany("TrnJobOrderDepartments_JobDepartment")
                         .HasForeignKey("JOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstJobDepartmentDBset", "MstJobDepartment_JobDepartment")
-                        .WithMany("TrnJobOrderDepartments_JobDepartment")
-                        .HasForeignKey("JobDepartmentId")
+                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JobOrder")
+                        .WithMany("TrnJobOrderDepartments_JobOrder")
+                        .HasForeignKey("JOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
