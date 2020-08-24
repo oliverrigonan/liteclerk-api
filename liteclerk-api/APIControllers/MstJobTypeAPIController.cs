@@ -62,7 +62,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("list")]
+        [HttpGet("locked/list")]
         public async Task<ActionResult> GetLockedJobTypeList()
         {
             try
