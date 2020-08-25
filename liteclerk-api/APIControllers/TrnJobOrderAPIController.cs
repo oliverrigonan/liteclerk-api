@@ -191,6 +191,11 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Sales invoice not found.");
                 }
 
+                if (salesInvoice.IsLocked == true)
+                {
+                    return StatusCode(404, "Cannot create job orders if the referenced sales invoice is unlocked.");
+                }
+
                 IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId

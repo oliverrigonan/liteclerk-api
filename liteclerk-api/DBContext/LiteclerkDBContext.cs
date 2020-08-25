@@ -13,7 +13,7 @@ namespace liteclerk_api.DBContext
         {
             AppDomain.CurrentDomain.SetData("LiteclerkDataDirectory", System.IO.Directory.GetCurrentDirectory());
         }
-
+        public virtual DbSet<DBSets.MstCodeTableDBSet> MstCodeTables { get; set; }
         public virtual DbSet<DBSets.MstUserDBSet> MstUsers { get; set; }
         public virtual DbSet<DBSets.MstCurrencyDBSet> MstCurrencies { get; set; }
         public virtual DbSet<DBSets.MstAccountCashFlowDBSet> MstAccountCashFlows { get; set; }
@@ -50,6 +50,7 @@ namespace liteclerk_api.DBContext
         {
             base.OnModelCreating(modelBuilder);
 
+            DBModelBuilder.MstCodeTableModelBuilder.CreateMstCodeTableModel(modelBuilder);
             DBModelBuilder.MstUserModelBuilder.CreateMstUserModel(modelBuilder);
             DBModelBuilder.MstCurrencyModelBuilder.CreateMstCurrencyModel(modelBuilder);
             DBModelBuilder.MstAccountCashFlowModelBuilder.CreateMstAccountCashFlowModel(modelBuilder);
