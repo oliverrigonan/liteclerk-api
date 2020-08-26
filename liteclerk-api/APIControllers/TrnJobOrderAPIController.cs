@@ -37,6 +37,133 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
+        [HttpGet("listByDateRanged/{startDate}/{endDate}")]
+        public async Task<ActionResult> GetJobOrderListByDateRanged(String startDate, String endDate)
+        {
+            try
+            {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                IEnumerable<DTO.TrnJobOrderDTO> jobOrders = await (
+                    from d in _dbContext.TrnJobOrders
+                    where d.BranchId == user.BranchId
+                    && d.JODate >= Convert.ToDateTime(startDate)
+                    && d.JODate <= Convert.ToDateTime(endDate)
+                    orderby d.Id descending
+                    select new DTO.TrnJobOrderDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
+                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
+                            Branch = d.MstCompanyBranch_Branch.Branch
+                        },
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
+                            ManualCode = d.MstCurrency_Currency.ManualCode,
+                            Currency = d.MstCurrency_Currency.Currency
+                        },
+                        JONumber = d.JONumber,
+                        JODate = d.JODate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        DateScheduled = d.DateScheduled.ToShortDateString(),
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
+                        SIId = d.SIId,
+                        SalesInvoice = new DTO.TrnSalesInvoiceDTO
+                        {
+                            SINumber = d.TrnSalesInvoice_SalesInvoice.SINumber,
+                            SIDate = d.TrnSalesInvoice_SalesInvoice.SIDate.ToShortDateString(),
+                            ManualNumber = d.TrnSalesInvoice_SalesInvoice.ManualNumber,
+                            DocumentReference = d.DocumentReference
+                        },
+                        SIItemId = d.SIItemId,
+                        SalesInvoiceItem = new DTO.TrnSalesInvoiceItemDTO
+                        {
+                            Item = new DTO.MstArticleItemDTO
+                            {
+                                Article = new DTO.MstArticleDTO
+                                {
+                                    ManualCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.ManualCode
+                                },
+                                SKUCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                                BarCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                                Description = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            }
+                        },
+                        ItemId = d.ItemId,
+                        Item = new DTO.MstArticleItemDTO
+                        {
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_Item.ManualCode
+                            },
+                            SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                        },
+                        ItemJobTypeId = d.ItemJobTypeId,
+                        ItemJobType = new DTO.MstJobTypeDTO
+                        {
+                            JobType = d.MstJobType_ItemJobType.JobType
+                        },
+                        Quantity = d.Quantity,
+                        Remarks = d.Remarks,
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUser.Username,
+                            Fullname = d.MstUser_PreparedByUser.Fullname
+                        },
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUser.Username,
+                            Fullname = d.MstUser_CheckedByUser.Fullname
+                        },
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUser.Username,
+                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                        },
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, jobOrders);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("listBySalesInvoice/{SIId}")]
         public async Task<ActionResult> GetJobOrderListBySalesInvoice(Int32 SIId)
         {
