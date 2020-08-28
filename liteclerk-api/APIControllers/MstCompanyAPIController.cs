@@ -392,6 +392,11 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).FirstOrDefaultAsync();
 
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
                 DBSets.MstCompanyDBSet company = await (
                     from d in _dbContext.MstCompanies
                     where d.Id == id

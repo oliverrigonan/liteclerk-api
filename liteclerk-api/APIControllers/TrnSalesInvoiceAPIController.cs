@@ -61,7 +61,7 @@ namespace liteclerk_api.APIControllers
                         Id = d.Id,
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
-                        { 
+                        {
                             BranchCode = d.MstCompanyBranch_Branch.BranchCode,
                             ManualCode = d.MstCompanyBranch_Branch.ManualCode,
                             Branch = d.MstCompanyBranch_Branch.Branch
@@ -155,14 +155,6 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
-
-                DBSets.MstUserDBSet user = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == userId
-                    select d
-                ).FirstOrDefaultAsync();
-
                 DTO.TrnSalesInvoiceDTO salesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
                     where d.Id == id

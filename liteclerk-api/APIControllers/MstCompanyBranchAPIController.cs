@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -67,6 +68,19 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
                 DBSets.MstCompanyDBSet company = await (
                     from d in _dbContext.MstCompanies
                     where d.Id == mstCompanyBranchDTO.CompanyId
@@ -123,6 +137,19 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
                 DBSets.MstCompanyBranchDBSet companyBranch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == id
@@ -160,6 +187,19 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
                 DBSets.MstCompanyBranchDBSet companyBranch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == id

@@ -42,14 +42,6 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
-
-                DBSets.MstUserDBSet user = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == userId
-                    select d
-                ).FirstOrDefaultAsync();
-
                 IEnumerable<DTO.TrnSalesInvoiceItemDTO> salesInvoiceItems = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId
@@ -142,14 +134,6 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
-
-                DBSets.MstUserDBSet user = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == userId
-                    select d
-                ).FirstOrDefaultAsync();
-
                 DTO.TrnSalesInvoiceItemDTO salesInvoiceItem = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.Id == id
@@ -248,6 +232,11 @@ namespace liteclerk_api.APIControllers
                     where d.Id == userId
                     select d
                 ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
 
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
@@ -408,6 +397,11 @@ namespace liteclerk_api.APIControllers
                     where d.Id == userId
                     select d
                 ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
 
                 DBSets.TrnSalesInvoiceItemDBSet salesInvoiceItem = await (
                     from d in _dbContext.TrnSalesInvoiceItems

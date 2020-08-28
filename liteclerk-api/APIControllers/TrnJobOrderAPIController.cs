@@ -184,14 +184,6 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
-
-                DBSets.MstUserDBSet user = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == userId
-                    select d
-                ).FirstOrDefaultAsync();
-
                 IEnumerable<DTO.TrnJobOrderDTO> jobOrders = await (
                     from d in _dbContext.TrnJobOrders
                     where d.SIId == SIId
@@ -324,14 +316,6 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
-
-                DBSets.MstUserDBSet user = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == userId
-                    select d
-                ).FirstOrDefaultAsync();
-
                 DTO.TrnJobOrderDTO jobOrder = await (
                     from d in _dbContext.TrnJobOrders
                     where d.Id == id
