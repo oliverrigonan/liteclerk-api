@@ -37,9 +37,9 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstTax_VAT).WithMany(f => f.TrnSalesInvoiceItems_VAT).HasForeignKey(f => f.VATId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.WTAXId).HasColumnName("WTAXId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstTax_WTAX).WithMany(f => f.TrnSalesInvoiceItems_WTAX).HasForeignKey(f => f.WTAXId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.BaseQuantity).HasColumnName("BaseQuantity").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.BaseUnitId).HasColumnName("BaseUnitId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUnit_BaseUnit).WithMany(f => f.TrnSalesInvoiceItems_BaseUnit).HasForeignKey(f => f.BaseUnitId).OnDelete(DeleteBehavior.Restrict);
-                entity.Property(e => e.BaseQuantity).HasColumnName("BaseQuantity").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.BaseNetPrice).HasColumnName("BaseNetPrice").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.LineTimeStamp).HasColumnName("LineTimeStamp").HasColumnType("datetime").IsRequired();
             });

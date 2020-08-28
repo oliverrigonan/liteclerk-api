@@ -27,7 +27,12 @@ namespace liteclerk_api.DTO
         public Int32 ItemJobTypeId { get; set; }
         public MstJobTypeDTO ItemJobType { get; set; }
         public Decimal Quantity { get; set; }
+        public Int32 UnitId { get; set; }
+        public MstUnitDTO Unit { get; set; }
         public String Remarks { get; set; }
+        public Decimal BaseQuantity { get; set; }
+        public Int32 BaseUnitId { get; set; }
+        public MstUnitDTO BaseUnit { get; set; }
         public Int32 PreparedByUserId { get; set; }
         public MstUserDTO PreparedByUser { get; set; }
         public Int32 CheckedByUserId { get; set; }

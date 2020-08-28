@@ -30,9 +30,9 @@ namespace liteclerk_api.DTO
         public MstTaxDTO VAT { get; set; }
         public Int32 WTAXId { get; set; }
         public MstTaxDTO WTAX { get; set; }
+        public Decimal BaseQuantity { get; set; }
         public Int32 BaseUnitId { get; set; }
         public MstUnitDTO BaseUnit { get; set; }
-        public Decimal BaseQuantity { get; set; }
         public Decimal BaseNetPrice { get; set; }
         public String LineTimeStamp { get; set; }
     }

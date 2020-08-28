@@ -77,6 +77,8 @@ namespace liteclerk_api.APIControllers
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
                         {
+                            JobTypeCode = d.MstJobType_ItemJobType.JobTypeCode,
+                            ManualCode = d.MstJobType_ItemJobType.ManualCode,
                             JobType = d.MstJobType_ItemJobType.JobType
                         },
                         Particulars = d.Particulars,
@@ -84,12 +86,16 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
+                            UnitCode = d.MstUnit_Unit.UnitCode,
+                            ManualCode = d.MstUnit_Unit.ManualCode,
                             Unit = d.MstUnit_Unit.Unit
                         },
                         Price = d.Price,
                         DiscountId = d.DiscountId,
                         Discount = new DTO.MstDiscountDTO
                         {
+                            DiscountCode = d.MstDiscount_Discount.DiscountCode,
+                            ManualCode = d.MstDiscount_Discount.ManualCode,
                             Discount = d.MstDiscount_Discount.Discount
                         },
                         DiscountRate = d.DiscountRate,
@@ -99,19 +105,25 @@ namespace liteclerk_api.APIControllers
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
+                            TaxCode = d.MstTax_VAT.TaxCode,
+                            ManualCode = d.MstTax_VAT.ManualCode,
                             TaxDescription = d.MstTax_VAT.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
+                            TaxCode = d.MstTax_WTAX.TaxCode,
+                            ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_BaseUnit.UnitCode,
+                            ManualCode = d.MstUnit_BaseUnit.ManualCode,
+                            Unit = d.MstUnit_BaseUnit.Unit
                         },
-                        BaseQuantity = d.BaseQuantity,
                         BaseNetPrice = d.BaseNetPrice,
                         LineTimeStamp = d.LineTimeStamp.ToString("MMMM dd, yyyy hh:mm tt")
                     }
@@ -154,7 +166,7 @@ namespace liteclerk_api.APIControllers
                             },
                             SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : "",
+                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
                         },
                         ItemInventoryId = d.ItemInventoryId,
                         ItemInventory = new DTO.MstArticleItemInventoryDTO
@@ -164,6 +176,8 @@ namespace liteclerk_api.APIControllers
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
                         {
+                            JobTypeCode = d.MstJobType_ItemJobType.JobTypeCode,
+                            ManualCode = d.MstJobType_ItemJobType.ManualCode,
                             JobType = d.MstJobType_ItemJobType.JobType
                         },
                         Particulars = d.Particulars,
@@ -171,12 +185,16 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
+                            UnitCode = d.MstUnit_Unit.UnitCode,
+                            ManualCode = d.MstUnit_Unit.ManualCode,
                             Unit = d.MstUnit_Unit.Unit
                         },
                         Price = d.Price,
                         DiscountId = d.DiscountId,
                         Discount = new DTO.MstDiscountDTO
                         {
+                            DiscountCode = d.MstDiscount_Discount.DiscountCode,
+                            ManualCode = d.MstDiscount_Discount.ManualCode,
                             Discount = d.MstDiscount_Discount.Discount
                         },
                         DiscountRate = d.DiscountRate,
@@ -186,19 +204,25 @@ namespace liteclerk_api.APIControllers
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
+                            TaxCode = d.MstTax_VAT.TaxCode,
+                            ManualCode = d.MstTax_VAT.ManualCode,
                             TaxDescription = d.MstTax_VAT.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
+                            TaxCode = d.MstTax_WTAX.TaxCode,
+                            ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_BaseUnit.UnitCode,
+                            ManualCode = d.MstUnit_BaseUnit.ManualCode,
+                            Unit = d.MstUnit_BaseUnit.Unit
                         },
-                        BaseQuantity = d.BaseQuantity,
                         BaseNetPrice = d.BaseNetPrice,
                         LineTimeStamp = d.LineTimeStamp.ToString("MMMM dd, yyyy hh:mm tt")
                     }
@@ -355,8 +379,8 @@ namespace liteclerk_api.APIControllers
                     Amount = trnSalesInvoiceItemDTO.Amount,
                     VATId = trnSalesInvoiceItemDTO.VATId,
                     WTAXId = trnSalesInvoiceItemDTO.WTAXId,
-                    BaseUnitId = item.UnitId,
                     BaseQuantity = baseQuantity,
+                    BaseUnitId = item.UnitId,
                     BaseNetPrice = baseNetPrice,
                     LineTimeStamp = DateTime.Now
                 };
@@ -524,8 +548,8 @@ namespace liteclerk_api.APIControllers
                 updateSalesInvoiceItems.Amount = trnSalesInvoiceItemDTO.Amount;
                 updateSalesInvoiceItems.VATId = trnSalesInvoiceItemDTO.VATId;
                 updateSalesInvoiceItems.WTAXId = trnSalesInvoiceItemDTO.WTAXId;
-                updateSalesInvoiceItems.BaseUnitId = item.UnitId;
                 updateSalesInvoiceItems.BaseQuantity = baseQuantity;
+                updateSalesInvoiceItems.BaseUnitId = item.UnitId;
                 updateSalesInvoiceItems.BaseNetPrice = baseNetPrice;
                 updateSalesInvoiceItems.LineTimeStamp = DateTime.Now;
 

@@ -21,5 +21,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstArticleItemUnitDBSet> MstArticleItemUnits_Unit { get; set; }
         public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_Unit { get; set; }
         public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_BaseUnit { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_Unit { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_BaseUnit { get; set; }
     }
 }

@@ -33,7 +33,12 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ItemJobTypeId).HasColumnName("ItemJobTypeId").HasColumnType("int");
                 entity.HasOne(f => f.MstJobType_ItemJobType).WithMany(f => f.TrnJobOrders_ItemJobType).HasForeignKey(f => f.ItemJobTypeId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Quantity).HasColumnName("Quantity").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.UnitId).HasColumnName("UnitId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstUnit_Unit).WithMany(f => f.TrnJobOrders_Unit).HasForeignKey(f => f.UnitId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Remarks).HasColumnName("Remarks").HasColumnType("nvarchar(max)").IsRequired();
+                entity.Property(e => e.BaseQuantity).HasColumnName("BaseQuantity").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.BaseUnitId).HasColumnName("BaseUnitId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstUnit_BaseUnit).WithMany(f => f.TrnJobOrders_BaseUnit).HasForeignKey(f => f.BaseUnitId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.PreparedByUserId).HasColumnName("PreparedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_PreparedByUser).WithMany(f => f.TrnJobOrders_PreparedByUser).HasForeignKey(f => f.PreparedByUserId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.CheckedByUserId).HasColumnName("CheckedByUserId").HasColumnType("int").IsRequired();

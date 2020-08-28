@@ -31,9 +31,9 @@ namespace liteclerk_api.DBSets
         public virtual MstTaxDBSet MstTax_VAT { get; set; }
         public Int32 WTAXId { get; set; }
         public virtual MstTaxDBSet MstTax_WTAX { get; set; }
+        public Decimal BaseQuantity { get; set; }
         public Int32 BaseUnitId { get; set; }
         public virtual MstUnitDBSet MstUnit_BaseUnit { get; set; }
-        public Decimal BaseQuantity { get; set; }
         public Decimal BaseNetPrice { get; set; }
         public DateTime LineTimeStamp { get; set; }
         public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_SalesInvoiceItem { get; set; }

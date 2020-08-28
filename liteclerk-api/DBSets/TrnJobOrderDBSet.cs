@@ -27,7 +27,12 @@ namespace liteclerk_api.DBSets
         public Int32 ItemJobTypeId { get; set; }
         public virtual MstJobTypeDBSet MstJobType_ItemJobType { get; set; }
         public Decimal Quantity { get; set; }
+        public Int32 UnitId { get; set; }
+        public virtual MstUnitDBSet MstUnit_Unit { get; set; }
         public String Remarks { get; set; }
+        public Decimal BaseQuantity { get; set; }
+        public Int32 BaseUnitId { get; set; }
+        public virtual MstUnitDBSet MstUnit_BaseUnit { get; set; }
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUser { get; set; }
         public Int32 CheckedByUserId { get; set; }

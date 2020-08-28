@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200828103021_AddedUnitIdInTrnJobOrderTable")]
+    partial class AddedUnitIdInTrnJobOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1377,14 +1379,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseQuantity")
-                        .HasColumnName("BaseQuantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("BaseUnitId")
-                        .HasColumnName("BaseUnitId")
-                        .HasColumnType("int");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -1497,8 +1491,6 @@ namespace liteclerk_api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApprovedByUserId");
-
-                    b.HasIndex("BaseUnitId");
 
                     b.HasIndex("BranchId");
 
@@ -2334,12 +2326,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUser")
                         .WithMany("TrnJobOrders_ApprovedByUser")
                         .HasForeignKey("ApprovedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnit")
-                        .WithMany("TrnJobOrders_BaseUnit")
-                        .HasForeignKey("BaseUnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
