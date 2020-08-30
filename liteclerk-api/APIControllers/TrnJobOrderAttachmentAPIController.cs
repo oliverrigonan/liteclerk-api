@@ -121,7 +121,7 @@ namespace liteclerk_api.APIControllers
                     AttachmentType = trnJobOrderAttachmentDTO.AttachmentType,
                     AttachmentURL = trnJobOrderAttachmentDTO.AttachmentURL,
                     Particulars = trnJobOrderAttachmentDTO.Particulars,
-                    IsPrinted = false
+                    IsPrinted = trnJobOrderAttachmentDTO.IsPrinted
                 };
 
                 _dbContext.TrnJobOrderAttachments.Add(newJobOrderAttachment);
@@ -187,6 +187,7 @@ namespace liteclerk_api.APIControllers
                 updateJobOrderAttachments.AttachmentType = trnJobOrderAttachmentDTO.AttachmentType;
                 updateJobOrderAttachments.AttachmentURL = trnJobOrderAttachmentDTO.AttachmentURL;
                 updateJobOrderAttachments.Particulars = trnJobOrderAttachmentDTO.Particulars;
+                updateJobOrderAttachments.IsPrinted = trnJobOrderAttachmentDTO.IsPrinted;
 
                 await _dbContext.SaveChangesAsync();
 

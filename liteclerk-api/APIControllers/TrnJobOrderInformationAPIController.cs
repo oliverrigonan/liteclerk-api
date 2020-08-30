@@ -135,7 +135,7 @@ namespace liteclerk_api.APIControllers
                     InformationGroup = trnJobOrderInformationDTO.InformationGroup,
                     Value = trnJobOrderInformationDTO.Value,
                     Particulars = trnJobOrderInformationDTO.Particulars,
-                    IsPrinted = false,
+                    IsPrinted = trnJobOrderInformationDTO.IsPrinted,
                     InformationByUserId = userId,
                     InformationUpdatedDateTime = DateTime.Now
                 };
@@ -202,6 +202,7 @@ namespace liteclerk_api.APIControllers
                 updateJobOrderInformations.InformationGroup = trnJobOrderInformationDTO.InformationGroup;
                 updateJobOrderInformations.Value = trnJobOrderInformationDTO.Value;
                 updateJobOrderInformations.Particulars = trnJobOrderInformationDTO.Particulars;
+                updateJobOrderInformations.IsPrinted = trnJobOrderInformationDTO.IsPrinted;
                 updateJobOrderInformations.InformationByUserId = userId;
                 updateJobOrderInformations.InformationUpdatedDateTime = DateTime.Now;
 
