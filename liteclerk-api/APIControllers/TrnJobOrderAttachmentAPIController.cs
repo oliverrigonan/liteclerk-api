@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace liteclerk_api.APIControllers
 {
@@ -18,10 +21,12 @@ namespace liteclerk_api.APIControllers
     public class TrnJobOrderAttachmentAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
+        private IConfiguration _configuration { get; }
 
-        public TrnJobOrderAttachmentAPIController(DBContext.LiteclerkDBContext dbContext)
+        public TrnJobOrderAttachmentAPIController(DBContext.LiteclerkDBContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         [HttpGet("list/{JOId}")]
@@ -237,6 +242,37 @@ namespace liteclerk_api.APIControllers
                 await _dbContext.SaveChangesAsync();
 
                 return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpPost("upload")]
+        public async Task<ActionResult> UploadJobOrderAttachment(IFormFile file)
+        {
+            try
+            {
+                String cloudStorageConnectionString = _configuration["CloudStorage:ConnectionString"];
+                String cloudStorageContainerName = _configuration["CloudStorage:ContainerName"];
+
+                if (CloudStorageAccount.TryParse(cloudStorageConnectionString, out CloudStorageAccount storageAccount))
+                {
+                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(cloudStorageConnectionString);
+                    CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+                    CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(cloudStorageContainerName);
+
+                    await cloudBlobContainer.CreateIfNotExistsAsync();
+
+                    var picBlob = cloudBlobContainer.GetBlockBlobReference(file.FileName);
+
+                    await picBlob.UploadFromStreamAsync(file.OpenReadStream());
+
+                    return Ok(picBlob.Uri);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (Exception e)
             {
