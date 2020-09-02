@@ -101,6 +101,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_VAT.ManualCode,
                             TaxDescription = d.MstTax_VAT.TaxDescription
                         },
+                        VATRate = d.MstTax_VAT.TaxRate,
+                        VATAmount = d.Amount / (1 + (d.MstTax_VAT.TaxRate / 100)) * (d.MstTax_VAT.TaxRate / 100),
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
@@ -108,6 +110,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        WTAXRate = d.MstTax_WTAX.TaxRate,
+                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAX.TaxRate / 100)) * (d.MstTax_WTAX.TaxRate / 100),
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -192,6 +196,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_VAT.ManualCode,
                             TaxDescription = d.MstTax_VAT.TaxDescription
                         },
+                        VATRate = d.MstTax_VAT.TaxRate,
+                        VATAmount = d.Amount / (1 + (d.MstTax_VAT.TaxRate / 100)) * (d.MstTax_VAT.TaxRate / 100),
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
@@ -199,6 +205,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAX.ManualCode,
                             TaxDescription = d.MstTax_WTAX.TaxDescription
                         },
+                        WTAXRate = d.MstTax_WTAX.TaxRate,
+                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAX.TaxRate / 100)) * (d.MstTax_WTAX.TaxRate / 100),
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
