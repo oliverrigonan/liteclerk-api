@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -21,6 +22,19 @@ namespace liteclerk_api.APIControllers
         public MstArticleItemAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public String PadZeroes(Int32 number, Int32 length)
+        {
+            var result = number.ToString();
+            var pad = length - result.Length;
+            while (pad > 0)
+            {
+                result = '0' + result;
+                pad--;
+            }
+
+            return result;
         }
 
         [HttpGet("list")]
@@ -62,28 +76,28 @@ namespace liteclerk_api.APIControllers
                         AssetAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.Account,
+                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
                             Account = d.MstAccount_AssetAccount.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.Account,
+                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
                             Account = d.MstAccount_SalesAccount.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.Account,
+                            ManualCode = d.MstAccount_CostAccount.ManualCode,
                             Account = d.MstAccount_CostAccount.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.Account,
+                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
@@ -115,13 +129,13 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -173,28 +187,28 @@ namespace liteclerk_api.APIControllers
                         AssetAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.Account,
+                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
                             Account = d.MstAccount_AssetAccount.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.Account,
+                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
                             Account = d.MstAccount_SalesAccount.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.Account,
+                            ManualCode = d.MstAccount_CostAccount.ManualCode,
                             Account = d.MstAccount_CostAccount.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.Account,
+                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
@@ -226,13 +240,13 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -286,28 +300,28 @@ namespace liteclerk_api.APIControllers
                         AssetAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.Account,
+                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
                             Account = d.MstAccount_AssetAccount.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.Account,
+                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
                             Account = d.MstAccount_SalesAccount.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.Account,
+                            ManualCode = d.MstAccount_CostAccount.ManualCode,
                             Account = d.MstAccount_CostAccount.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.Account,
+                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
@@ -339,13 +353,13 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -399,28 +413,28 @@ namespace liteclerk_api.APIControllers
                         AssetAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.Account,
+                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
                             Account = d.MstAccount_AssetAccount.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.Account,
+                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
                             Account = d.MstAccount_SalesAccount.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.Account,
+                            ManualCode = d.MstAccount_CostAccount.ManualCode,
                             Account = d.MstAccount_CostAccount.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.Account,
+                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
@@ -452,13 +466,13 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -512,28 +526,28 @@ namespace liteclerk_api.APIControllers
                         AssetAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.Account,
+                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
                             Account = d.MstAccount_AssetAccount.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.Account,
+                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
                             Account = d.MstAccount_SalesAccount.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.Account,
+                            ManualCode = d.MstAccount_CostAccount.ManualCode,
                             Account = d.MstAccount_CostAccount.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.Account,
+                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
                             Account = d.MstAccount_ExpenseAccount.Account
                         },
                         Price = d.Price,
@@ -565,17 +579,640 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
                             Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
                 return StatusCode(200, producedArticleItems);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("detail/{id}")]
+        public async Task<ActionResult> GetArticleItemDetail(Int32 id)
+        {
+            try
+            {
+                DTO.MstArticleItemDTO producedArticleItem = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.Id == id
+                    select new DTO.MstArticleItemDTO
+                    {
+                        Id = d.Id,
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_Article.ArticleCode,
+                            ManualCode = d.MstArticle_Article.ManualCode,
+                            Article = d.MstArticle_Article.Article
+                        },
+                        SKUCode = d.SKUCode,
+                        BarCode = d.BarCode,
+                        Description = d.Description,
+                        UnitId = d.UnitId,
+                        Unit = new DTO.MstUnitDTO
+                        {
+                            UnitCode = d.MstUnit_Unit.UnitCode,
+                            ManualCode = d.MstUnit_Unit.ManualCode,
+                            Unit = d.MstUnit_Unit.Unit
+                        },
+                        IsInventory = d.IsInventory,
+                        ArticleAccountGroupId = d.ArticleAccountGroupId,
+                        ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
+                        {
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                        },
+                        AssetAccountId = d.AssetAccountId,
+                        AssetAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
+                            Account = d.MstAccount_AssetAccount.Account
+                        },
+                        SalesAccountId = d.SalesAccountId,
+                        SalesAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
+                            Account = d.MstAccount_SalesAccount.Account
+                        },
+                        CostAccountId = d.CostAccountId,
+                        CostAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_CostAccount.AccountCode,
+                            ManualCode = d.MstAccount_CostAccount.ManualCode,
+                            Account = d.MstAccount_CostAccount.Account
+                        },
+                        ExpenseAccountId = d.ExpenseAccountId,
+                        ExpenseAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
+                            Account = d.MstAccount_ExpenseAccount.Account
+                        },
+                        Price = d.Price,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_RRVAT.TaxCode,
+                            ManualCode = d.MstTax_RRVAT.ManualCode,
+                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_SIVAT.TaxCode,
+                            ManualCode = d.MstTax_SIVAT.ManualCode,
+                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAX.TaxCode,
+                            ManualCode = d.MstTax_WTAX.ManualCode,
+                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                        },
+                        Kitting = d.Kitting,
+                        IsLocked = d.MstArticle_Article.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
+                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                        },
+                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
+                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                        },
+                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).FirstOrDefaultAsync();
+
+                return StatusCode(200, producedArticleItem);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpPost("add")]
+        public async Task<ActionResult> AddArticleItem()
+        {
+            try
+            {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUnitDBSet unit = await (
+                    from d in _dbContext.MstUnits
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (unit == null)
+                {
+                    return StatusCode(404, "Unit not found.");
+                }
+
+                DBSets.MstArticleAccountGroupDBSet articleAccountGroup = await (
+                    from d in _dbContext.MstArticleAccountGroups
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (articleAccountGroup == null)
+                {
+                    return StatusCode(404, "Account group not found.");
+                }
+
+                DBSets.MstTaxDBSet tax = await (
+                    from d in _dbContext.MstTaxes
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (tax == null)
+                {
+                    return StatusCode(404, "Tax not found.");
+                }
+
+                DBSets.MstCodeTableDBSet kitting = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.Category == "ITEM KITTING"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (kitting == null)
+                {
+                    return StatusCode(404, "Kitting not found.");
+                }
+
+                String articleCode = "0000000001";
+                DBSets.MstArticleDBSet lastArticle = await (
+                    from d in _dbContext.MstArticles
+                    where d.ArticleTypeId == 1
+                    orderby d.Id descending
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (lastArticle != null)
+                {
+                    Int32 lastArticleCode = Convert.ToInt32(lastArticle.ArticleCode) + 0000000001;
+                    articleCode = PadZeroes(lastArticleCode, 10);
+                }
+
+                DBSets.MstArticleDBSet newArticle = new DBSets.MstArticleDBSet()
+                {
+                    ArticleCode = articleCode,
+                    ManualCode = articleCode,
+                    ArticleTypeId = 1,
+                    Article = "",
+                    IsLocked = false,
+                    CreatedByUserId = userId,
+                    CreatedDateTime = DateTime.Now,
+                    UpdatedByUserId = userId,
+                    UpdatedDateTime = DateTime.Now
+                };
+
+                _dbContext.MstArticles.Add(newArticle);
+                await _dbContext.SaveChangesAsync();
+
+                DBSets.MstArticleItemDBSet newArticleItem = new DBSets.MstArticleItemDBSet()
+                {
+                    ArticleId = newArticle.Id,
+                    SKUCode = articleCode,
+                    BarCode = articleCode,
+                    Description = "",
+                    UnitId = unit.Id,
+                    IsInventory = true,
+                    ArticleAccountGroupId = articleAccountGroup.Id,
+                    AssetAccountId = articleAccountGroup.AssetAccountId,
+                    SalesAccountId = articleAccountGroup.SalesAccountId,
+                    CostAccountId = articleAccountGroup.CostAccountId,
+                    ExpenseAccountId = articleAccountGroup.ExpenseAccountId,
+                    Price = 0,
+                    RRVATId = tax.Id,
+                    SIVATId = tax.Id,
+                    WTAXId = tax.Id,
+                    Kitting = "NONE"
+                };
+
+                _dbContext.MstArticleItems.Add(newArticleItem);
+                await _dbContext.SaveChangesAsync();
+
+                return StatusCode(200, newArticleItem.Id);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpPut("save/{id}")]
+        public async Task<ActionResult> SaveArticleItem(Int32 id, [FromBody] DTO.MstArticleItemDTO mstArticleItemDTO)
+        {
+            try
+            {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstArticleItemDBSet articleItem = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync(); ;
+
+                if (articleItem == null)
+                {
+                    return StatusCode(404, "Item not found.");
+                }
+
+                if (articleItem.MstArticle_Article.IsLocked == true)
+                {
+                    return StatusCode(400, "Cannot save or make any changes to an item that is locked.");
+                }
+
+                DBSets.MstUnitDBSet unit = await (
+                    from d in _dbContext.MstUnits
+                    where d.Id == mstArticleItemDTO.UnitId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (unit == null)
+                {
+                    return StatusCode(404, "Unit not found.");
+                }
+
+                DBSets.MstArticleAccountGroupDBSet articleAccountGroup = await (
+                    from d in _dbContext.MstArticleAccountGroups
+                    where d.Id == mstArticleItemDTO.ArticleAccountGroupId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (articleAccountGroup == null)
+                {
+                    return StatusCode(404, "Account group not found.");
+                }
+
+                DBSets.MstTaxDBSet RRVAT = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == mstArticleItemDTO.RRVATId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (RRVAT == null)
+                {
+                    return StatusCode(404, "RR VAT not found.");
+                }
+
+                DBSets.MstTaxDBSet SIVAT = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == mstArticleItemDTO.SIVATId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (SIVAT == null)
+                {
+                    return StatusCode(404, "SI VAT not found.");
+                }
+
+                DBSets.MstCodeTableDBSet kitting = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == mstArticleItemDTO.Kitting
+                    && d.Category == "ITEM KITTING"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (kitting == null)
+                {
+                    return StatusCode(404, "Kitting not found.");
+                }
+
+                DBSets.MstArticleItemDBSet saveArticleItem = articleItem;
+                saveArticleItem.SKUCode = mstArticleItemDTO.SKUCode;
+                saveArticleItem.BarCode = mstArticleItemDTO.BarCode;
+                saveArticleItem.Description = mstArticleItemDTO.Description;
+                saveArticleItem.UnitId = mstArticleItemDTO.UnitId;
+                saveArticleItem.IsInventory = mstArticleItemDTO.IsInventory;
+                saveArticleItem.ArticleAccountGroupId = mstArticleItemDTO.ArticleAccountGroupId;
+                saveArticleItem.AssetAccountId = mstArticleItemDTO.AssetAccountId;
+                saveArticleItem.SalesAccountId = mstArticleItemDTO.SalesAccountId;
+                saveArticleItem.CostAccountId = mstArticleItemDTO.CostAccountId;
+                saveArticleItem.ExpenseAccountId = mstArticleItemDTO.ExpenseAccountId;
+                saveArticleItem.Price = mstArticleItemDTO.Price;
+                saveArticleItem.RRVATId = mstArticleItemDTO.RRVATId;
+                saveArticleItem.SIVATId = mstArticleItemDTO.SIVATId;
+                saveArticleItem.WTAXId = mstArticleItemDTO.WTAXId;
+                saveArticleItem.Kitting = mstArticleItemDTO.Kitting;
+
+                await _dbContext.SaveChangesAsync();
+
+                DBSets.MstArticleDBSet article = await (
+                    from d in _dbContext.MstArticles
+                    where d.Id == articleItem.ArticleId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (article == null)
+                {
+                    return StatusCode(404, "Article not found.");
+                }
+
+                DBSets.MstArticleDBSet saveArticle = article;
+                saveArticle.ManualCode = mstArticleItemDTO.SKUCode;
+                saveArticle.Article = mstArticleItemDTO.Description;
+                saveArticle.UpdatedByUserId = user.Id;
+                saveArticle.UpdatedDateTime = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpPut("lock/{id}")]
+        public async Task<ActionResult> LockArticleItem(Int32 id, [FromBody] DTO.MstArticleItemDTO mstArticleItemDTO)
+        {
+            try
+            {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstArticleItemDBSet articleItem = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync(); ;
+
+                if (articleItem == null)
+                {
+                    return StatusCode(404, "Item not found.");
+                }
+
+                if (articleItem.MstArticle_Article.IsLocked == true)
+                {
+                    return StatusCode(400, "Cannot lock an item that is locked.");
+                }
+
+                DBSets.MstUnitDBSet unit = await (
+                    from d in _dbContext.MstUnits
+                    where d.Id == mstArticleItemDTO.UnitId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (unit == null)
+                {
+                    return StatusCode(404, "Unit not found.");
+                }
+
+                DBSets.MstArticleAccountGroupDBSet articleAccountGroup = await (
+                    from d in _dbContext.MstArticleAccountGroups
+                    where d.Id == mstArticleItemDTO.ArticleAccountGroupId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (articleAccountGroup == null)
+                {
+                    return StatusCode(404, "Account group not found.");
+                }
+
+                DBSets.MstTaxDBSet RRVAT = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == mstArticleItemDTO.RRVATId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (RRVAT == null)
+                {
+                    return StatusCode(404, "RR VAT not found.");
+                }
+
+                DBSets.MstTaxDBSet SIVAT = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == mstArticleItemDTO.SIVATId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (SIVAT == null)
+                {
+                    return StatusCode(404, "SI VAT not found.");
+                }
+
+                DBSets.MstCodeTableDBSet kitting = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == mstArticleItemDTO.Kitting
+                    && d.Category == "ITEM KITTING"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (kitting == null)
+                {
+                    return StatusCode(404, "Kitting not found.");
+                }
+
+                DBSets.MstArticleItemDBSet lockArticleItem = articleItem;
+                lockArticleItem.SKUCode = mstArticleItemDTO.SKUCode;
+                lockArticleItem.BarCode = mstArticleItemDTO.BarCode;
+                lockArticleItem.Description = mstArticleItemDTO.Description;
+                lockArticleItem.UnitId = mstArticleItemDTO.UnitId;
+                lockArticleItem.IsInventory = mstArticleItemDTO.IsInventory;
+                lockArticleItem.ArticleAccountGroupId = mstArticleItemDTO.ArticleAccountGroupId;
+                lockArticleItem.AssetAccountId = mstArticleItemDTO.AssetAccountId;
+                lockArticleItem.SalesAccountId = mstArticleItemDTO.SalesAccountId;
+                lockArticleItem.CostAccountId = mstArticleItemDTO.CostAccountId;
+                lockArticleItem.ExpenseAccountId = mstArticleItemDTO.ExpenseAccountId;
+                lockArticleItem.Price = mstArticleItemDTO.Price;
+                lockArticleItem.RRVATId = mstArticleItemDTO.RRVATId;
+                lockArticleItem.SIVATId = mstArticleItemDTO.SIVATId;
+                lockArticleItem.WTAXId = mstArticleItemDTO.WTAXId;
+                lockArticleItem.Kitting = mstArticleItemDTO.Kitting;
+
+                await _dbContext.SaveChangesAsync();
+
+                DBSets.MstArticleDBSet article = await (
+                    from d in _dbContext.MstArticles
+                    where d.Id == articleItem.ArticleId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (article == null)
+                {
+                    return StatusCode(404, "Article not found.");
+                }
+
+                DBSets.MstArticleDBSet lockArticle = article;
+                lockArticle.ManualCode = mstArticleItemDTO.SKUCode;
+                lockArticle.Article = mstArticleItemDTO.Description;
+                lockArticle.IsLocked = true;
+                lockArticle.UpdatedByUserId = user.Id;
+                lockArticle.UpdatedDateTime = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpPut("unlock/{id}")]
+        public async Task<ActionResult> UnlockArticleItem(Int32 id)
+        {
+            try
+            {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstArticleItemDBSet articleItem = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync(); ;
+
+                if (articleItem == null)
+                {
+                    return StatusCode(404, "Item not found.");
+                }
+
+                if (articleItem.MstArticle_Article.IsLocked == false)
+                {
+                    return StatusCode(400, "Cannot unlock an item that is unlocked.");
+                }
+
+                DBSets.MstArticleDBSet article = await (
+                    from d in _dbContext.MstArticles
+                    where d.Id == articleItem.ArticleId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (article == null)
+                {
+                    return StatusCode(404, "Article not found.");
+                }
+
+                DBSets.MstArticleDBSet unlockArticle = article;
+                unlockArticle.IsLocked = false;
+                unlockArticle.UpdatedByUserId = user.Id;
+                unlockArticle.UpdatedDateTime = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<ActionResult> DeleteArticleItem(Int32 id)
+        {
+            try
+            {
+                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == userId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstArticleItemDBSet articleItem = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.Id == id
+                    select d
+                ).FirstOrDefaultAsync(); ;
+
+                if (articleItem == null)
+                {
+                    return StatusCode(404, "Item not found.");
+                }
+
+                if (articleItem.MstArticle_Article.IsLocked == true)
+                {
+                    return StatusCode(400, "Cannot delete an item that is locked.");
+                }
+
+                _dbContext.MstArticleItems.Remove(articleItem);
+                await _dbContext.SaveChangesAsync();
+
+                DBSets.MstArticleDBSet article = await (
+                    from d in _dbContext.MstArticles
+                    where d.Id == articleItem.ArticleId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (article == null)
+                {
+                    return StatusCode(404, "Article not found.");
+                }
+
+                _dbContext.MstArticles.Remove(article);
+                await _dbContext.SaveChangesAsync();
+
+                return StatusCode(200);
             }
             catch (Exception e)
             {
