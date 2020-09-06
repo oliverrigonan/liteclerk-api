@@ -26,6 +26,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstUnitDBSet> MstUnits { get; set; }
         public virtual DbSet<DBSets.MstDiscountDBSet> MstDiscounts { get; set; }
         public virtual DbSet<DBSets.MstTaxDBSet> MstTaxes { get; set; }
+        public virtual DbSet<DBSets.MstPayTypeDBSet> MstPayTypes { get; set; }
         public virtual DbSet<DBSets.MstArticleTypeDBSet> MstArticleTypes { get; set; }
         public virtual DbSet<DBSets.MstArticleDBSet> MstArticles { get; set; }
         public virtual DbSet<DBSets.MstArticleAccountGroupDBSet> MstArticleAccountGroups { get; set; }
@@ -45,6 +46,8 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnJobOrderAttachmentDBSet> TrnJobOrderAttachments { get; set; }
         public virtual DbSet<DBSets.TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments { get; set; }
         public virtual DbSet<DBSets.TrnJobOrderInformationDBSet> TrnJobOrderInformations { get; set; }
+        public virtual DbSet<DBSets.TrnCollectionDBSet> TrnCollections { get; set; }
+        public virtual DbSet<DBSets.TrnCollectionLineDBSet> TrnCollectionLines { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,6 +66,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstUnitModelBuilder.CreateMstUnitModel(modelBuilder);
             DBModelBuilder.MstDiscountModelBuilder.CreateMstDiscountModel(modelBuilder);
             DBModelBuilder.MstTaxModelBuilder.CreateMstTaxModel(modelBuilder);
+            DBModelBuilder.MstPayTypeModelBuilder.CreateMstPayTypeModel(modelBuilder);
             DBModelBuilder.MstArticleTypeModelBuilder.CreateMstArticleTypeModel(modelBuilder);
             DBModelBuilder.MstArticleModelBuilder.CreateMstArticleModel(modelBuilder);
             DBModelBuilder.MstArticleAccountGroupModelBuilder.CreateMstArticleAccountGroupModel(modelBuilder);
@@ -82,6 +86,8 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnJobOrderDepartmentModelBuilder.CreateTrnJobOrderDepartmentModel(modelBuilder);
             DBModelBuilder.TrnJobOrderAttachmentModelBuilder.CreateTrnJobOrderAttachmentModel(modelBuilder);
             DBModelBuilder.TrnJobOrderInformationModelBuilder.CreateTrnJobOrderInformationModel(modelBuilder);
+            DBModelBuilder.TrnCollectionModelBuilder.CreateTrnCollectionModel(modelBuilder);
+            DBModelBuilder.TrnCollectionLineModelBuilder.CreateTrnCollectionLineModel(modelBuilder);
         }
     }
 }

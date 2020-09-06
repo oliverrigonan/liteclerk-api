@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200906052234_AddedTrnCollectionTable")]
+    partial class AddedTrnCollectionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1116,62 +1118,6 @@ namespace liteclerk_api.Migrations
                     b.ToTable("MstJobTypeInformation");
                 });
 
-            modelBuilder.Entity("liteclerk_api.DBSets.MstPayTypeDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AccountId")
-                        .HasColumnName("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnName("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnName("CreatedDateTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("ManualCode")
-                        .IsRequired()
-                        .HasColumnName("ManualCode")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("PayType")
-                        .IsRequired()
-                        .HasColumnName("PayType")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("PayTypeCode")
-                        .IsRequired()
-                        .HasColumnName("PayTypeCode")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("UpdatedByUserId")
-                        .HasColumnName("UpdatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedDateTime")
-                        .HasColumnName("UpdatedDateTime")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("UpdatedByUserId");
-
-                    b.ToTable("MstPayType");
-                });
-
             modelBuilder.Entity("liteclerk_api.DBSets.MstTaxDBSet", b =>
                 {
                     b.Property<int>("Id")
@@ -1383,10 +1329,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("ApprovedByUserId")
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
@@ -1491,97 +1433,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("TrnCollection");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnCollectionLineDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AccountId")
-                        .HasColumnName("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("ArticleId")
-                        .HasColumnName("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BankId")
-                        .HasColumnName("BankId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BranchId")
-                        .HasColumnName("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CIId")
-                        .HasColumnName("CIId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CheckBank")
-                        .IsRequired()
-                        .HasColumnName("CheckBank")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(50);
-
-                    b.Property<DateTime?>("CheckDate")
-                        .IsRequired()
-                        .HasColumnName("CheckDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("CheckNumber")
-                        .IsRequired()
-                        .HasColumnName("CheckNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<bool>("IsClear")
-                        .HasColumnName("IsClear")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PayTypeId")
-                        .HasColumnName("PayTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SIId")
-                        .IsRequired()
-                        .HasColumnName("SIId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WTAXId")
-                        .HasColumnName("WTAXId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("BankId");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("CIId");
-
-                    b.HasIndex("PayTypeId");
-
-                    b.HasIndex("SIId");
-
-                    b.HasIndex("WTAXId");
-
-                    b.ToTable("TrnCollectionLine");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderAttachmentDBSet", b =>
@@ -2334,13 +2185,13 @@ namespace liteclerk_api.Migrations
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_RRVAT")
-                        .WithMany("MstArticleItems_RRVAT")
+                        .WithMany("MstArticleItemDBSet_RRVAT")
                         .HasForeignKey("RRVATId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_SIVAT")
-                        .WithMany("MstArticleItems_SIVAT")
+                        .WithMany("MstArticleItemDBSet_SIVAT")
                         .HasForeignKey("SIVATId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2358,7 +2209,7 @@ namespace liteclerk_api.Migrations
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAX")
-                        .WithMany("MstArticleItems_WTAX")
+                        .WithMany("MstArticleItemDBSet_WTAX")
                         .HasForeignKey("WTAXId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2526,27 +2377,6 @@ namespace liteclerk_api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("liteclerk_api.DBSets.MstPayTypeDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_Account")
-                        .WithMany("MstPayTypes_Account")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstPayTypes_CreatedByUser")
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstPayTypes_UpdatedByUser")
-                        .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("liteclerk_api.DBSets.MstTaxDBSet", b =>
                 {
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
@@ -2652,57 +2482,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
                         .WithMany("TrnCollections_UpdatedByUser")
                         .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnCollectionLineDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_Account")
-                        .WithMany("TrnCollectionLines_Account")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Article")
-                        .WithMany("TrnCollectionLines_Article")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Bank")
-                        .WithMany("TrnCollectionLines_Bank")
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
-                        .WithMany("TrnCollectionLines_Branch")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnCollectionDBSet", "TrnCollection_Collection")
-                        .WithMany("TrnCollectionLines_Collection")
-                        .HasForeignKey("CIId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstPayTypeDBSet", "MstPayType_PayType")
-                        .WithMany("TrnCollectionLines_PayType")
-                        .HasForeignKey("PayTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", "TrnSalesInvoice_SalesInvoice")
-                        .WithMany("TrnCollectionLines_SalesInvoice")
-                        .HasForeignKey("SIId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAX")
-                        .WithMany("TrnCollectionLines_WTAX")
-                        .HasForeignKey("WTAXId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

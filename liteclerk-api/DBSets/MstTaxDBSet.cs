@@ -20,8 +20,9 @@ namespace liteclerk_api.DBSets
         public DateTime UpdatedDateTime { get; set; }
         public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_VAT { get; set; }
         public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_WTAX { get; set; }
-        public virtual ICollection<MstArticleItemDBSet> MstArticleItemDBSet_RRVAT { get; set; }
-        public virtual ICollection<MstArticleItemDBSet> MstArticleItemDBSet_SIVAT { get; set; }
-        public virtual ICollection<MstArticleItemDBSet> MstArticleItemDBSet_WTAX { get; set; }
+        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_RRVAT { get; set; }
+        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_SIVAT { get; set; }
+        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_WTAX { get; set; }
+        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_WTAX { get; set; }
     }
 }

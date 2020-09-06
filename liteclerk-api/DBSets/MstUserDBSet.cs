@@ -57,5 +57,12 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_UpdatedByUser { get; set; }
         public virtual ICollection<TrnJobOrderInformationDBSet> TrnJobOrderInformations_InformationByUser { get; set; }
         public virtual ICollection<TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments_StatusByUser { get; set; }
+        public virtual ICollection<TrnCollectionDBSet> TrnCollections_PreparedByUser { get; set; }
+        public virtual ICollection<TrnCollectionDBSet> TrnCollections_CheckedByUser { get; set; }
+        public virtual ICollection<TrnCollectionDBSet> TrnCollections_ApprovedByUser { get; set; }
+        public virtual ICollection<TrnCollectionDBSet> TrnCollections_CreatedByUser { get; set; }
+        public virtual ICollection<TrnCollectionDBSet> TrnCollections_UpdatedByUser { get; set; }
+        public virtual ICollection<MstPayTypeDBSet> MstPayTypes_CreatedByUser { get; set; }
+        public virtual ICollection<MstPayTypeDBSet> MstPayTypes_UpdatedByUser { get; set; }
     }
 }

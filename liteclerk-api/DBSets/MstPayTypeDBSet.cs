@@ -5,21 +5,20 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DBSets
 {
-    public class MstCurrencyDBSet
+    public class MstPayTypeDBSet
     {
         public Int32 Id { get; set; }
-        public String CurrencyCode { get; set; }
+        public String PayTypeCode { get; set; }
         public String ManualCode { get; set; }
-        public String Currency { get; set; }
+        public String PayType { get; set; }
+        public Int32 AccountId { get; set; }
+        public virtual MstAccountDBSet MstAccount_Account { get; set; }
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUser { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
         public DateTime UpdatedDateTime { get; set; }
-        public virtual ICollection<MstCompanyDBSet> MstCompanies_Currency { get; set; }
-        public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_Currency { get; set; }
-        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_Currency { get; set; }
-        public virtual ICollection<TrnCollectionDBSet> TrnCollections_Currency { get; set; }
+        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_PayType { get; set; }
     }
 }

@@ -5,25 +5,20 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DBSets
 {
-    public class TrnSalesInvoiceDBSet
+    public class TrnCollectionDBSet
     {
         public Int32 Id { get; set; }
         public Int32 BranchId { get; set; }
         public virtual MstCompanyBranchDBSet MstCompanyBranch_Branch { get; set; }
         public Int32 CurrencyId { get; set; }
         public virtual MstCurrencyDBSet MstCurrency_Currency { get; set; }
-        public String SINumber { get; set; }
-        public DateTime SIDate { get; set; }
+        public String CINumber { get; set; }
+        public DateTime CIDate { get; set; }
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
         public Int32 CustomerId { get; set; }
         public virtual MstArticleDBSet MstArticle_Customer { get; set; }
-        public Int32 TermId { get; set; }
-        public virtual MstTermDBSet MstTerm_Term { get; set; }
-        public DateTime DateNeeded { get; set; }
         public String Remarks { get; set; }
-        public Int32 SoldByUserId { get; set; }
-        public virtual MstUserDBSet MstUser_SoldByUser { get; set; }
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUser { get; set; }
         public Int32 CheckedByUserId { get; set; }
@@ -31,9 +26,6 @@ namespace liteclerk_api.DBSets
         public Int32 ApprovedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_ApprovedByUser { get; set; }
         public Decimal Amount { get; set; }
-        public Decimal PaidAmount { get; set; }
-        public Decimal AdjustmentAmount { get; set; }
-        public Decimal BalanceAmount { get; set; }
         public String Status { get; set; }
         public Boolean IsCancelled { get; set; }
         public Boolean IsPrinted { get; set; }
@@ -44,8 +36,6 @@ namespace liteclerk_api.DBSets
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
         public DateTime UpdatedDateTime { get; set; }
-        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_SalesInvoice { get; set; }
-        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_SalesInvoice { get; set; }
-        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_SalesInvoice { get; set; }
+        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_Collection { get; set; }
     }
 }
