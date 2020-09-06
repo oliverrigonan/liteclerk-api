@@ -36,9 +36,9 @@ namespace liteclerk_api.APIControllers
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         Customer = d.Customer,
                         Address = d.Address,
@@ -47,31 +47,31 @@ namespace liteclerk_api.APIControllers
                         ReceivableAccountId = d.ReceivableAccountId,
                         ReceivableAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ReceivableAccount.AccountCode,
-                            ManualCode = d.MstAccount_ReceivableAccount.Account,
-                            Account = d.MstAccount_ReceivableAccount.Account
+                            AccountCode = d.MstAccount_ReceivableAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ReceivableAccountId.Account,
+                            Account = d.MstAccount_ReceivableAccountId.Account
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
                         {
-                            TermCode = d.MstTerm_Term.TermCode,
-                            ManualCode = d.MstTerm_Term.ManualCode,
-                            Term = d.MstTerm_Term.Term
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
                         CreditLimit = d.CreditLimit,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToShortDateString(),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToShortDateString()
                     }
                 ).ToListAsync();
 
@@ -90,16 +90,16 @@ namespace liteclerk_api.APIControllers
             {
                 IEnumerable<DTO.MstArticleCustomerDTO> lockedArticleCustomers = await (
                     from d in _dbContext.MstArticleCustomers
-                    where d.MstArticle_Article.IsLocked == true
+                    where d.MstArticle_ArticleId.IsLocked == true
                     select new DTO.MstArticleCustomerDTO
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         Customer = d.Customer,
                         Address = d.Address,
@@ -108,31 +108,31 @@ namespace liteclerk_api.APIControllers
                         ReceivableAccountId = d.ReceivableAccountId,
                         ReceivableAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ReceivableAccount.AccountCode,
-                            ManualCode = d.MstAccount_ReceivableAccount.Account,
-                            Account = d.MstAccount_ReceivableAccount.Account
+                            AccountCode = d.MstAccount_ReceivableAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ReceivableAccountId.Account,
+                            Account = d.MstAccount_ReceivableAccountId.Account
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
                         {
-                            TermCode = d.MstTerm_Term.TermCode,
-                            ManualCode = d.MstTerm_Term.ManualCode,
-                            Term = d.MstTerm_Term.Term
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
                         CreditLimit = d.CreditLimit,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToShortDateString(),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToShortDateString()
                     }
                 ).ToListAsync();
 

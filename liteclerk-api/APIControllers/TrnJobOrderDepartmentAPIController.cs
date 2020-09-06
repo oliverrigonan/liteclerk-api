@@ -39,17 +39,17 @@ namespace liteclerk_api.APIControllers
                         JobDepartmentId = d.JobDepartmentId,
                         JobDepartment = new DTO.MstJobDepartmentDTO
                         {
-                            JobDepartmentCode = d.MstJobDepartment_JobDepartment.JobDepartmentCode,
-                            ManualCode = d.MstJobDepartment_JobDepartment.ManualCode,
-                            JobDepartment = d.MstJobDepartment_JobDepartment.JobDepartment,
+                            JobDepartmentCode = d.MstJobDepartment_JobDepartmentId.JobDepartmentCode,
+                            ManualCode = d.MstJobDepartment_JobDepartmentId.ManualCode,
+                            JobDepartment = d.MstJobDepartment_JobDepartmentId.JobDepartment,
                         },
                         Particulars = d.Particulars,
                         Status = d.Status,
                         StatusByUserId = d.StatusByUserId,
                         StatusByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_StatusByUser.Username,
-                            Fullname = d.MstUser_StatusByUser.Fullname
+                            Username = d.MstUser_StatusByUserId.Username,
+                            Fullname = d.MstUser_StatusByUserId.Fullname
                         },
                         StatusUpdatedDateTime = d.StatusUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                     }
@@ -78,17 +78,17 @@ namespace liteclerk_api.APIControllers
                         JobDepartmentId = d.JobDepartmentId,
                         JobDepartment = new DTO.MstJobDepartmentDTO
                         {
-                            JobDepartmentCode = d.MstJobDepartment_JobDepartment.JobDepartmentCode,
-                            ManualCode = d.MstJobDepartment_JobDepartment.ManualCode,
-                            JobDepartment = d.MstJobDepartment_JobDepartment.JobDepartment,
+                            JobDepartmentCode = d.MstJobDepartment_JobDepartmentId.JobDepartmentCode,
+                            ManualCode = d.MstJobDepartment_JobDepartmentId.ManualCode,
+                            JobDepartment = d.MstJobDepartment_JobDepartmentId.JobDepartment,
                         },
                         Particulars = d.Particulars,
                         Status = d.Status,
                         StatusByUserId = d.StatusByUserId,
                         StatusByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_StatusByUser.Username,
-                            Fullname = d.MstUser_StatusByUser.Fullname
+                            Username = d.MstUser_StatusByUserId.Username,
+                            Fullname = d.MstUser_StatusByUserId.Fullname
                         },
                         StatusUpdatedDateTime = d.StatusUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                     }
@@ -271,7 +271,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job order attachment not found.");
                 }
 
-                if (jobOrderDepartment.TrnJobOrder_JobOrder.IsLocked == true)
+                if (jobOrderDepartment.TrnJobOrder_JOId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete job order departments if the current job order is locked.");
                 }

@@ -44,8 +44,8 @@ namespace liteclerk_api.APIControllers
                         InformationByUserId = d.InformationByUserId,
                         InformationByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_InformationByUser.Username,
-                            Fullname = d.MstUser_InformationByUser.Fullname
+                            Username = d.MstUser_InformationByUserId.Username,
+                            Fullname = d.MstUser_InformationByUserId.Fullname
                         },
                         InformationUpdatedDateTime = d.InformationUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                     }
@@ -79,8 +79,8 @@ namespace liteclerk_api.APIControllers
                         InformationByUserId = d.InformationByUserId,
                         InformationByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_InformationByUser.Username,
-                            Fullname = d.MstUser_InformationByUser.Fullname
+                            Username = d.MstUser_InformationByUserId.Username,
+                            Fullname = d.MstUser_InformationByUserId.Fullname
                         },
                         InformationUpdatedDateTime = d.InformationUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                     }
@@ -245,7 +245,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job order information not found.");
                 }
 
-                if (jobOrderInformation.TrnJobOrder_JobOrder.IsLocked == true)
+                if (jobOrderInformation.TrnJobOrder_JOId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete job order information(s) if the current job order is locked.");
                 }

@@ -54,22 +54,22 @@ namespace liteclerk_api.APIControllers
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
-                            ManualCode = d.MstCurrency_Currency.ManualCode,
-                            Currency = d.MstCurrency_Currency.Currency
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         CostMethod = d.CostMethod,
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                     }
@@ -102,22 +102,22 @@ namespace liteclerk_api.APIControllers
                          CurrencyId = d.CurrencyId,
                          Currency = new DTO.MstCurrencyDTO
                          {
-                             CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
-                             ManualCode = d.MstCurrency_Currency.ManualCode,
-                             Currency = d.MstCurrency_Currency.Currency
+                             CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                             Currency = d.MstCurrency_CurrencyId.Currency
                          },
                          CostMethod = d.CostMethod,
                          IsLocked = d.IsLocked,
                          CreatedByUser = new DTO.MstUserDTO
                          {
-                             Username = d.MstUser_CreatedByUser.Username,
-                             Fullname = d.MstUser_CreatedByUser.Fullname
+                             Username = d.MstUser_CreatedByUserId.Username,
+                             Fullname = d.MstUser_CreatedByUserId.Fullname
                          },
                          CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
                          UpdatedByUser = new DTO.MstUserDTO
                          {
-                             Username = d.MstUser_UpdatedByUser.Username,
-                             Fullname = d.MstUser_UpdatedByUser.Fullname
+                             Username = d.MstUser_UpdatedByUserId.Username,
+                             Fullname = d.MstUser_UpdatedByUserId.Fullname
                          },
                          UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                      }

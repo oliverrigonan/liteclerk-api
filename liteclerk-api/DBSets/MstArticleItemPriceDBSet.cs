@@ -9,7 +9,7 @@ namespace liteclerk_api.DBSets
     {
         public Int32 Id { get; set; }
         public Int32 ArticleId { get; set; }
-        public virtual MstArticleDBSet MstArticle_Article { get; set; }
+        public virtual MstArticleDBSet MstArticle_ArticleId { get; set; }
         public String PriceDescription { get; set; }
         public Decimal Price { get; set; }
     }

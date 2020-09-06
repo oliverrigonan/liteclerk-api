@@ -55,40 +55,40 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Item.ManualCode
+                                ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         ItemInventoryId = d.ItemInventoryId,
                         ItemInventory = new DTO.MstArticleItemInventoryDTO
                         {
-                            InventoryCode = d.MstArticleItemInventory_ItemInventory.InventoryCode
+                            InventoryCode = d.MstArticleItemInventory_ItemInventoryId.InventoryCode
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
                         {
-                            JobTypeCode = d.MstJobType_ItemJobType.JobTypeCode,
-                            ManualCode = d.MstJobType_ItemJobType.ManualCode,
-                            JobType = d.MstJobType_ItemJobType.JobType
+                            JobTypeCode = d.MstJobType_ItemJobTypeId.JobTypeCode,
+                            ManualCode = d.MstJobType_ItemJobTypeId.ManualCode,
+                            JobType = d.MstJobType_ItemJobTypeId.JobType
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         Price = d.Price,
                         DiscountId = d.DiscountId,
                         Discount = new DTO.MstDiscountDTO
                         {
-                            DiscountCode = d.MstDiscount_Discount.DiscountCode,
-                            ManualCode = d.MstDiscount_Discount.ManualCode,
-                            Discount = d.MstDiscount_Discount.Discount
+                            DiscountCode = d.MstDiscount_DiscountId.DiscountCode,
+                            ManualCode = d.MstDiscount_DiscountId.ManualCode,
+                            Discount = d.MstDiscount_DiscountId.Discount
                         },
                         DiscountRate = d.DiscountRate,
                         DiscountAmount = d.DiscountAmount,
@@ -97,28 +97,28 @@ namespace liteclerk_api.APIControllers
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_VAT.TaxCode,
-                            ManualCode = d.MstTax_VAT.ManualCode,
-                            TaxDescription = d.MstTax_VAT.TaxDescription
+                            TaxCode = d.MstTax_VATId.TaxCode,
+                            ManualCode = d.MstTax_VATId.ManualCode,
+                            TaxDescription = d.MstTax_VATId.TaxDescription
                         },
-                        VATRate = d.MstTax_VAT.TaxRate,
-                        VATAmount = d.Amount / (1 + (d.MstTax_VAT.TaxRate / 100)) * (d.MstTax_VAT.TaxRate / 100),
+                        VATRate = d.MstTax_VATId.TaxRate,
+                        VATAmount = d.Amount / (1 + (d.MstTax_VATId.TaxRate / 100)) * (d.MstTax_VATId.TaxRate / 100),
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
-                        WTAXRate = d.MstTax_WTAX.TaxRate,
-                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAX.TaxRate / 100)) * (d.MstTax_WTAX.TaxRate / 100),
+                        WTAXRate = d.MstTax_WTAXId.TaxRate,
+                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAXId.TaxRate / 100)) * (d.MstTax_WTAXId.TaxRate / 100),
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnit.UnitCode,
-                            ManualCode = d.MstUnit_BaseUnit.ManualCode,
-                            Unit = d.MstUnit_BaseUnit.Unit
+                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
+                            ManualCode = d.MstUnit_BaseUnitId.ManualCode,
+                            Unit = d.MstUnit_BaseUnitId.Unit
                         },
                         BaseNetPrice = d.BaseNetPrice,
                         LineTimeStamp = d.LineTimeStamp.ToString("MMMM dd, yyyy hh:mm tt")
@@ -150,40 +150,40 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Item.ManualCode
+                                ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         ItemInventoryId = d.ItemInventoryId,
                         ItemInventory = new DTO.MstArticleItemInventoryDTO
                         {
-                            InventoryCode = d.MstArticleItemInventory_ItemInventory.InventoryCode
+                            InventoryCode = d.MstArticleItemInventory_ItemInventoryId.InventoryCode
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
                         {
-                            JobTypeCode = d.MstJobType_ItemJobType.JobTypeCode,
-                            ManualCode = d.MstJobType_ItemJobType.ManualCode,
-                            JobType = d.MstJobType_ItemJobType.JobType
+                            JobTypeCode = d.MstJobType_ItemJobTypeId.JobTypeCode,
+                            ManualCode = d.MstJobType_ItemJobTypeId.ManualCode,
+                            JobType = d.MstJobType_ItemJobTypeId.JobType
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         Price = d.Price,
                         DiscountId = d.DiscountId,
                         Discount = new DTO.MstDiscountDTO
                         {
-                            DiscountCode = d.MstDiscount_Discount.DiscountCode,
-                            ManualCode = d.MstDiscount_Discount.ManualCode,
-                            Discount = d.MstDiscount_Discount.Discount
+                            DiscountCode = d.MstDiscount_DiscountId.DiscountCode,
+                            ManualCode = d.MstDiscount_DiscountId.ManualCode,
+                            Discount = d.MstDiscount_DiscountId.Discount
                         },
                         DiscountRate = d.DiscountRate,
                         DiscountAmount = d.DiscountAmount,
@@ -192,28 +192,28 @@ namespace liteclerk_api.APIControllers
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_VAT.TaxCode,
-                            ManualCode = d.MstTax_VAT.ManualCode,
-                            TaxDescription = d.MstTax_VAT.TaxDescription
+                            TaxCode = d.MstTax_VATId.TaxCode,
+                            ManualCode = d.MstTax_VATId.ManualCode,
+                            TaxDescription = d.MstTax_VATId.TaxDescription
                         },
-                        VATRate = d.MstTax_VAT.TaxRate,
-                        VATAmount = d.Amount / (1 + (d.MstTax_VAT.TaxRate / 100)) * (d.MstTax_VAT.TaxRate / 100),
+                        VATRate = d.MstTax_VATId.TaxRate,
+                        VATAmount = d.Amount / (1 + (d.MstTax_VATId.TaxRate / 100)) * (d.MstTax_VATId.TaxRate / 100),
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
-                        WTAXRate = d.MstTax_WTAX.TaxRate,
-                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAX.TaxRate / 100)) * (d.MstTax_WTAX.TaxRate / 100),
+                        WTAXRate = d.MstTax_WTAXId.TaxRate,
+                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAXId.TaxRate / 100)) * (d.MstTax_WTAXId.TaxRate / 100),
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnit.UnitCode,
-                            ManualCode = d.MstUnit_BaseUnit.ManualCode,
-                            Unit = d.MstUnit_BaseUnit.Unit
+                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
+                            ManualCode = d.MstUnit_BaseUnitId.ManualCode,
+                            Unit = d.MstUnit_BaseUnitId.Unit
                         },
                         BaseNetPrice = d.BaseNetPrice,
                         LineTimeStamp = d.LineTimeStamp.ToString("MMMM dd, yyyy hh:mm tt")
@@ -265,7 +265,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleItemDBSet item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnSalesInvoiceItemDTO.ItemId
-                    && d.MstArticle_Article.IsLocked == true
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -441,7 +441,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleItemDBSet item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnSalesInvoiceItemDTO.ItemId
-                    && d.MstArticle_Article.IsLocked == true
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -589,7 +589,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Sales invoice item not found.");
                 }
 
-                if (salesInvoiceItem.TrnSalesInvoice_SalesInvoice.IsLocked == true)
+                if (salesInvoiceItem.TrnSalesInvoice_SIId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete sales invoice items if the current sales invoice is locked.");
                 }

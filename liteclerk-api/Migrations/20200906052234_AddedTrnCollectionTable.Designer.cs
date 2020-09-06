@@ -1995,14 +1995,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstAccountCashFlowDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstAccountCashFlows_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstAccountCashFlows_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstAccountCashFlows_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstAccountCashFlows_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2010,14 +2010,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstAccountCategoryDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstAccountCategories_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstAccountCategories_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstAccountCategories_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstAccountCategories_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2025,26 +2025,26 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstAccountDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstAccountCashFlowDBSet", "MstAccountCashFlow_AccountCashFlow")
-                        .WithMany("MstAccounts_AccountCashFlow")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountCashFlowDBSet", "MstAccountCashFlow_AccountCashFlowId")
+                        .WithMany("MstAccounts_AccountCashFlowId")
                         .HasForeignKey("AccountCashFlowId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountTypeDBSet", "MstAccountType_AccountType")
-                        .WithMany("MstAccounts_AccountType")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountTypeDBSet", "MstAccountType_AccountTypeId")
+                        .WithMany("MstAccounts_AccountTypeId")
                         .HasForeignKey("AccountTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstAccounts_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstAccounts_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstAccounts_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstAccounts_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2052,20 +2052,20 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstAccountTypeDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstAccountCategoryDBSet", "MstAccountCategory_AccountCategory")
-                        .WithMany("MstAccountTypes_AccountCategory")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountCategoryDBSet", "MstAccountCategory_AccountCategoryId")
+                        .WithMany("MstAccountTypes_AccountCategoryId")
                         .HasForeignKey("AccountCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstAccountTypes_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstAccountTypes_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstAccountTypes_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstAccountTypes_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2073,38 +2073,38 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleAccountGroupDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_AssetAccount")
-                        .WithMany("MstArticleAccountGroups_AssetAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_AssetAccountId")
+                        .WithMany("MstArticleAccountGroups_AssetAccountId")
                         .HasForeignKey("AssetAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_CostAccount")
-                        .WithMany("MstArticleAccountGroups_CostAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_CostAccountId")
+                        .WithMany("MstArticleAccountGroups_CostAccountId")
                         .HasForeignKey("CostAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstArticleAccountGroups_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstArticleAccountGroups_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_ExpenseAccount")
-                        .WithMany("MstArticleAccountGroups_ExpenseAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_ExpenseAccountId")
+                        .WithMany("MstArticleAccountGroups_ExpenseAccountId")
                         .HasForeignKey("ExpenseAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_SalesAccount")
-                        .WithMany("MstArticleAccountGroups_SalesAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_SalesAccountId")
+                        .WithMany("MstArticleAccountGroups_SalesAccountId")
                         .HasForeignKey("SalesAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstArticleAccountGroups_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstArticleAccountGroups_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2112,20 +2112,20 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleCustomerDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Article")
-                        .WithMany("MstArticleCustomers_Article")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
+                        .WithMany("MstArticleCustomers_ArticleId")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_ReceivableAccount")
-                        .WithMany("MstArticleCustomers_ReceivableAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_ReceivableAccountId")
+                        .WithMany("MstArticleCustomers_ReceivableAccountId")
                         .HasForeignKey("ReceivableAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstTermDBSet", "MstTerm_Term")
-                        .WithMany("MstArticleCustomers_Term")
+                    b.HasOne("liteclerk_api.DBSets.MstTermDBSet", "MstTerm_TermId")
+                        .WithMany("MstArticleCustomers_TermId")
                         .HasForeignKey("TermId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2133,20 +2133,20 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleTypeDBSet", "MstArticleType_ArticleType")
-                        .WithMany("MstArticles_ArticleType")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleTypeDBSet", "MstArticleType_ArticleTypeId")
+                        .WithMany("MstArticles_ArticleTypeId")
                         .HasForeignKey("ArticleTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstArticles_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstArticles_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstArticles_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstArticles_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2154,61 +2154,61 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleAccountGroupDBSet", "MstArticleAccountGroup_ArticleAccountGroup")
-                        .WithMany("MstArticleItems_ArticleAccountGroup")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleAccountGroupDBSet", "MstArticleAccountGroup_ArticleAccountGroupId")
+                        .WithMany("MstArticleItems_ArticleAccountGroupId")
                         .HasForeignKey("ArticleAccountGroupId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Article")
-                        .WithMany("MstArticleItems_Article")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
+                        .WithMany("MstArticleItems_ArticleId")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_AssetAccount")
-                        .WithMany("MstArticleItems_AssetAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_AssetAccountId")
+                        .WithMany("MstArticleItems_AssetAccountId")
                         .HasForeignKey("AssetAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_CostAccount")
-                        .WithMany("MstArticleItems_CostAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_CostAccountId")
+                        .WithMany("MstArticleItems_CostAccountId")
                         .HasForeignKey("CostAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_ExpenseAccount")
-                        .WithMany("MstArticleItems_ExpenseAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_ExpenseAccountId")
+                        .WithMany("MstArticleItems_ExpenseAccountId")
                         .HasForeignKey("ExpenseAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_RRVAT")
+                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_RRVATId")
                         .WithMany("MstArticleItemDBSet_RRVAT")
                         .HasForeignKey("RRVATId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_SIVAT")
+                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_SIVATId")
                         .WithMany("MstArticleItemDBSet_SIVAT")
                         .HasForeignKey("SIVATId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_SalesAccount")
-                        .WithMany("MstArticleItems_SalesAccount")
+                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_SalesAccountId")
+                        .WithMany("MstArticleItems_SalesAccountId")
                         .HasForeignKey("SalesAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_Unit")
-                        .WithMany("MstArticleItems_Unit")
+                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
+                        .WithMany("MstArticleItems_UnitId")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAX")
+                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAXId")
                         .WithMany("MstArticleItemDBSet_WTAX")
                         .HasForeignKey("WTAXId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2217,14 +2217,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Article")
-                        .WithMany("MstArticleItemInventories_Article")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
+                        .WithMany("MstArticleItemInventories_ArticleId")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
-                        .WithMany("MstArticleItemInventories_Branch")
+                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
+                        .WithMany("MstArticleItemInventories_BranchId")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2232,8 +2232,8 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemPriceDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Article")
-                        .WithMany("MstArticleItemPrices_Article")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
+                        .WithMany("MstArticleItemPrices_ArticleId")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2241,14 +2241,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemUnitDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Article")
-                        .WithMany("MstArticleItemUnits_Article")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
+                        .WithMany("MstArticleItemUnits_ArticleId")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_Unit")
-                        .WithMany("MstArticleItemUnits_Unit")
+                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
+                        .WithMany("MstArticleItemUnits_UnitId")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2256,8 +2256,8 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstCompanyBranchDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyDBSet", "MstCompany_Company")
-                        .WithMany("MstCompanyBranches_Company")
+                    b.HasOne("liteclerk_api.DBSets.MstCompanyDBSet", "MstCompany_CompanyId")
+                        .WithMany("MstCompanyBranches_CompanyId")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2265,20 +2265,20 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstCompanyDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstCompanies_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstCompanies_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_Currency")
-                        .WithMany("MstCompanies_Currency")
+                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
+                        .WithMany("MstCompanies_CurrencyId")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstCompanies_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstCompanies_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2286,14 +2286,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstCurrencyDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstCurrencies_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstCurrencies_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstCurrencies_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstCurrencies_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2301,14 +2301,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstDiscountDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstDiscounts_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstDiscounts_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstDiscounts_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstDiscounts_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2316,14 +2316,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstJobDepartmentDBset", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstJobDepartments_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstJobDepartments_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstJobDepartments_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstJobDepartments_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2331,8 +2331,8 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstJobTypeAttachmentDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobType")
-                        .WithMany("MstJobTypeAttachments_JobType")
+                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobTypeId")
+                        .WithMany("MstJobTypeAttachments_JobTypeId")
                         .HasForeignKey("JobTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2340,14 +2340,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstJobTypeDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstJobTypes_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstJobTypes_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstJobTypes_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstJobTypes_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2355,14 +2355,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstJobTypeDepartmentDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstJobDepartmentDBset", "MstJobDepartment_JobDepartment")
-                        .WithMany("MstJobTypeDepartments_JobDepartment")
+                    b.HasOne("liteclerk_api.DBSets.MstJobDepartmentDBset", "MstJobDepartment_JobDepartmentId")
+                        .WithMany("MstJobTypeDepartments_JobDepartmentId")
                         .HasForeignKey("JobDepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobType")
-                        .WithMany("MstJobTypeDepartments_JobType")
+                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobTypeId")
+                        .WithMany("MstJobTypeDepartments_JobTypeId")
                         .HasForeignKey("JobTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2370,8 +2370,8 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstJobTypeInformationDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobType")
-                        .WithMany("MstJobTypeInformations_JobType")
+                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobTypeId")
+                        .WithMany("MstJobTypeInformations_JobTypeId")
                         .HasForeignKey("JobTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2379,14 +2379,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstTaxDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstTaxes_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstTaxes_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstTaxes_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstTaxes_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2394,14 +2394,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstTermDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstTerms_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstTerms_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstTerms_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstTerms_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2409,14 +2409,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstUnitDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("MstUnits_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("MstUnits_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("MstUnits_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("MstUnits_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2424,63 +2424,63 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstUserDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
-                        .WithMany("MstUsers_Branch")
+                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
+                        .WithMany("MstUsers_BranchId")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyDBSet", "MstCompany_Company")
-                        .WithMany("MstUsers_Company")
+                    b.HasOne("liteclerk_api.DBSets.MstCompanyDBSet", "MstCompany_CompanyId")
+                        .WithMany("MstUsers_CompanyId")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnCollectionDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUser")
-                        .WithMany("TrnCollections_ApprovedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUserId")
+                        .WithMany("TrnCollections_ApprovedByUserId")
                         .HasForeignKey("ApprovedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
-                        .WithMany("TrnCollections_Branch")
+                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
+                        .WithMany("TrnCollections_BranchId")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CheckedByUser")
-                        .WithMany("TrnCollections_CheckedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CheckedByUserId")
+                        .WithMany("TrnCollections_CheckedByUserId")
                         .HasForeignKey("CheckedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("TrnCollections_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("TrnCollections_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_Currency")
-                        .WithMany("TrnCollections_Currency")
+                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
+                        .WithMany("TrnCollections_CurrencyId")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Customer")
-                        .WithMany("TrnCollections_Customer")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_CustomerId")
+                        .WithMany("TrnCollections_CustomerId")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUser")
-                        .WithMany("TrnCollections_PreparedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
+                        .WithMany("TrnCollections_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("TrnCollections_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("TrnCollections_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2488,8 +2488,8 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderAttachmentDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JobOrder")
-                        .WithMany("TrnJobOrderAttachments_JobOrder")
+                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JOId")
+                        .WithMany("TrnJobOrderAttachments_JOId")
                         .HasForeignKey("JOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2497,78 +2497,78 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUser")
-                        .WithMany("TrnJobOrders_ApprovedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUserId")
+                        .WithMany("TrnJobOrders_ApprovedByUserId")
                         .HasForeignKey("ApprovedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnit")
-                        .WithMany("TrnJobOrders_BaseUnit")
+                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnitId")
+                        .WithMany("TrnJobOrders_BaseUnitId")
                         .HasForeignKey("BaseUnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
-                        .WithMany("TrnJobOrders_Branch")
+                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
+                        .WithMany("TrnJobOrders_BranchId")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CheckedByUser")
-                        .WithMany("TrnJobOrders_CheckedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CheckedByUserId")
+                        .WithMany("TrnJobOrders_CheckedByUserId")
                         .HasForeignKey("CheckedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("TrnJobOrders_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("TrnJobOrders_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_Currency")
-                        .WithMany("TrnJobOrders_Currency")
+                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
+                        .WithMany("TrnJobOrders_CurrencyId")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Item")
-                        .WithMany("TrnJobOrders_Item")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ItemId")
+                        .WithMany("TrnJobOrders_ItemId")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_ItemJobType")
-                        .WithMany("TrnJobOrders_ItemJobType")
+                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_ItemJobTypeId")
+                        .WithMany("TrnJobOrders_ItemJobTypeId")
                         .HasForeignKey("ItemJobTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUser")
-                        .WithMany("TrnJobOrders_PreparedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
+                        .WithMany("TrnJobOrders_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", "TrnSalesInvoice_SalesInvoice")
-                        .WithMany("TrnJobOrders_SalesInvoice")
+                    b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", "TrnSalesInvoice_SIId")
+                        .WithMany("TrnJobOrders_SIId")
                         .HasForeignKey("SIId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceItemDBSet", "TrnSalesInvoiceItem_SalesInvoiceItem")
-                        .WithMany("TrnJobOrders_SalesInvoiceItem")
+                    b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceItemDBSet", "TrnSalesInvoiceItem_SIItemId")
+                        .WithMany("TrnJobOrders_SIIdItem")
                         .HasForeignKey("SIItemId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_Unit")
-                        .WithMany("TrnJobOrders_Unit")
+                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
+                        .WithMany("TrnJobOrders_UnitId")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("TrnJobOrders_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("TrnJobOrders_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2576,20 +2576,20 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderDepartmentDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JobOrder")
-                        .WithMany("TrnJobOrderDepartments_JobOrder")
+                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JOId")
+                        .WithMany("TrnJobOrderDepartments_JOId")
                         .HasForeignKey("JOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstJobDepartmentDBset", "MstJobDepartment_JobDepartment")
-                        .WithMany("TrnJobOrderDepartments_JobDepartment")
+                    b.HasOne("liteclerk_api.DBSets.MstJobDepartmentDBset", "MstJobDepartment_JobDepartmentId")
+                        .WithMany("TrnJobOrderDepartments_JobDepartmentId")
                         .HasForeignKey("JobDepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_StatusByUser")
-                        .WithMany("TrnJobOrderDepartments_StatusByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_StatusByUserId")
+                        .WithMany("TrnJobOrderDepartments_StatusByUserId")
                         .HasForeignKey("StatusByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2597,14 +2597,14 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnJobOrderInformationDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_InformationByUser")
-                        .WithMany("TrnJobOrderInformations_InformationByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_InformationByUserId")
+                        .WithMany("TrnJobOrderInformations_InformationByUserId")
                         .HasForeignKey("InformationByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JobOrder")
-                        .WithMany("TrnJobOrderInformations_JobOrder")
+                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JOId")
+                        .WithMany("TrnJobOrderInformations_JOId")
                         .HasForeignKey("JOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2612,62 +2612,62 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUser")
-                        .WithMany("TrnSalesInvoices_ApprovedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUserId")
+                        .WithMany("TrnSalesInvoices_ApprovedByUserId")
                         .HasForeignKey("ApprovedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_Branch")
-                        .WithMany("TrnSalesInvoices_Branch")
+                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
+                        .WithMany("TrnSalesInvoices_BranchId")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CheckedByUser")
-                        .WithMany("TrnSalesInvoices_CheckedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CheckedByUserId")
+                        .WithMany("TrnSalesInvoices_CheckedByUserId")
                         .HasForeignKey("CheckedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUser")
-                        .WithMany("TrnSalesInvoices_CreatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
+                        .WithMany("TrnSalesInvoices_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_Currency")
-                        .WithMany("TrnSalesInvoices_Currency")
+                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
+                        .WithMany("TrnSalesInvoices_CurrencyId")
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Customer")
-                        .WithMany("TrnSalesInvoices_Customer")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_CustomerId")
+                        .WithMany("TrnSalesInvoices_CustomerId")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUser")
-                        .WithMany("TrnSalesInvoices_PreparedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
+                        .WithMany("TrnSalesInvoices_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_SoldByUser")
-                        .WithMany("TrnSalesInvoices_SoldByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_SoldByUserId")
+                        .WithMany("TrnSalesInvoices_SoldByUserId")
                         .HasForeignKey("SoldByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstTermDBSet", "MstTerm_Term")
-                        .WithMany("TrnSalesInvoices_Term")
+                    b.HasOne("liteclerk_api.DBSets.MstTermDBSet", "MstTerm_TermId")
+                        .WithMany("TrnSalesInvoices_TermId")
                         .HasForeignKey("TermId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUser")
-                        .WithMany("TrnSalesInvoices_UpdatedByUser")
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
+                        .WithMany("TrnSalesInvoices_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2675,54 +2675,54 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnSalesInvoiceItemDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnit")
-                        .WithMany("TrnSalesInvoiceItems_BaseUnit")
+                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnitId")
+                        .WithMany("TrnSalesInvoiceItems_BaseUnitId")
                         .HasForeignKey("BaseUnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstDiscountDBSet", "MstDiscount_Discount")
-                        .WithMany("TrnSalesInvoiceItems_Discount")
+                    b.HasOne("liteclerk_api.DBSets.MstDiscountDBSet", "MstDiscount_DiscountId")
+                        .WithMany("TrnSalesInvoiceItems_DiscountId")
                         .HasForeignKey("DiscountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_Item")
-                        .WithMany("TrnSalesInvoiceItems_Item")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ItemId")
+                        .WithMany("TrnSalesInvoiceItems_ItemId")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", "MstArticleItemInventory_ItemInventory")
-                        .WithMany("TrnSalesInvoiceItems_ItemInventory")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", "MstArticleItemInventory_ItemInventoryId")
+                        .WithMany("TrnSalesInvoiceItems_ItemInventoryId")
                         .HasForeignKey("ItemInventoryId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_ItemJobType")
-                        .WithMany("TrnSalesInvoiceItems_ItemJobType")
+                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_ItemJobTypeId")
+                        .WithMany("TrnSalesInvoiceItems_ItemJobTypeId")
                         .HasForeignKey("ItemJobTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", "TrnSalesInvoice_SalesInvoice")
-                        .WithMany("TrnSalesInvoiceItems_SalesInvoice")
+                    b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", "TrnSalesInvoice_SIId")
+                        .WithMany("TrnSalesInvoiceItems_SIId")
                         .HasForeignKey("SIId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_Unit")
-                        .WithMany("TrnSalesInvoiceItems_Unit")
+                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
+                        .WithMany("TrnSalesInvoiceItems_UnitId")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_VAT")
-                        .WithMany("TrnSalesInvoiceItems_VAT")
+                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_VATId")
+                        .WithMany("TrnSalesInvoiceItems_VATId")
                         .HasForeignKey("VATId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAX")
-                        .WithMany("TrnSalesInvoiceItems_WTAX")
+                    b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAXId")
+                        .WithMany("TrnSalesInvoiceItems_WTAXId")
                         .HasForeignKey("WTAXId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

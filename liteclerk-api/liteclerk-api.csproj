@@ -9,6 +9,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200823142104_OrderColumns.cs" />
     <Compile Remove="Migrations\20200823142104_OrderColumns.Designer.cs" />
+    <Compile Remove="Migrations\20200906063030_TestMigrations.cs" />
+    <Compile Remove="Migrations\20200906063030_TestMigrations.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

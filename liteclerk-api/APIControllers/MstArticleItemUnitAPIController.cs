@@ -40,18 +40,18 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Article.ManualCode
+                                ManualCode = d.MstArticle_ArticleId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         Multiplier = d.Multiplier
                     }
@@ -81,18 +81,18 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Article.ManualCode
+                                ManualCode = d.MstArticle_ArticleId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         Multiplier = d.Multiplier
                     }
@@ -209,7 +209,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item unit not found.");
                 }
 
-                if (itemUnit.MstArticle_Article.IsLocked == true)
+                if (itemUnit.MstArticle_ArticleId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot update an item unit if the current item is locked.");
                 }
@@ -279,7 +279,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item unit not found.");
                 }
 
-                if (itemUnit.MstArticle_Article.IsLocked == true)
+                if (itemUnit.MstArticle_ArticleId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete an item unit if the current item is locked.");
                 }

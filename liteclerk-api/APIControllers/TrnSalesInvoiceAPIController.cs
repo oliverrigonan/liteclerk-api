@@ -65,16 +65,16 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
-                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
-                            Branch = d.MstCompanyBranch_Branch.Branch
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
-                            ManualCode = d.MstCurrency_Currency.ManualCode,
-                            Currency = d.MstCurrency_Currency.Currency
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
@@ -85,42 +85,42 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Customer.ManualCode
+                                ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
-                            Customer = d.MstArticle_Customer.MstArticleCustomers_Article.Any() ? d.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().Customer : "",
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
                         {
-                            TermCode = d.MstTerm_Term.TermCode,
-                            ManualCode = d.MstTerm_Term.ManualCode,
-                            Term = d.MstTerm_Term.Term
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
                         SoldByUserId = d.SoldByUserId,
                         SoldByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_SoldByUser.Username,
-                            Fullname = d.MstUser_SoldByUser.Fullname
+                            Username = d.MstUser_SoldByUserId.Username,
+                            Fullname = d.MstUser_SoldByUserId.Fullname
                         },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_PreparedByUser.Username,
-                            Fullname = d.MstUser_PreparedByUser.Fullname
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
                         },
                         CheckedByUserId = d.CheckedByUserId,
                         CheckedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CheckedByUser.Username,
-                            Fullname = d.MstUser_CheckedByUser.Fullname
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
                         },
                         ApprovedByUserId = d.ApprovedByUserId,
                         ApprovedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_ApprovedByUser.Username,
-                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
                         Amount = d.Amount,
                         PaidAmount = d.PaidAmount,
@@ -132,14 +132,14 @@ namespace liteclerk_api.APIControllers
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
@@ -167,16 +167,16 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
-                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
-                            Branch = d.MstCompanyBranch_Branch.Branch
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
-                            ManualCode = d.MstCurrency_Currency.ManualCode,
-                            Currency = d.MstCurrency_Currency.Currency
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
@@ -187,42 +187,42 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Customer.ManualCode
+                                ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
-                            Customer = d.MstArticle_Customer.MstArticleCustomers_Article.Any() ? d.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().Customer : "",
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
                         {
-                            TermCode = d.MstTerm_Term.TermCode,
-                            ManualCode = d.MstTerm_Term.ManualCode,
-                            Term = d.MstTerm_Term.Term
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
                         SoldByUserId = d.SoldByUserId,
                         SoldByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_SoldByUser.Username,
-                            Fullname = d.MstUser_SoldByUser.Fullname
+                            Username = d.MstUser_SoldByUserId.Username,
+                            Fullname = d.MstUser_SoldByUserId.Fullname
                         },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_PreparedByUser.Username,
-                            Fullname = d.MstUser_PreparedByUser.Fullname
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
                         },
                         CheckedByUserId = d.CheckedByUserId,
                         CheckedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CheckedByUser.Username,
-                            Fullname = d.MstUser_CheckedByUser.Fullname
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
                         },
                         ApprovedByUserId = d.ApprovedByUserId,
                         ApprovedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_ApprovedByUser.Username,
-                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
                         Amount = d.Amount,
                         PaidAmount = d.PaidAmount,
@@ -234,14 +234,14 @@ namespace liteclerk_api.APIControllers
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
@@ -275,7 +275,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
-                    where d.MstArticle_Article.IsLocked == true
+                    where d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -301,7 +301,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.TrnSalesInvoiceDBSet newSalesInvoice = new DBSets.TrnSalesInvoiceDBSet()
                 {
                     BranchId = Convert.ToInt32(user.BranchId),
-                    CurrencyId = user.MstCompany_Company.CurrencyId,
+                    CurrencyId = user.MstCompany_CompanyId.CurrencyId,
                     SINumber = SINumber,
                     SIDate = DateTime.Today,
                     ManualNumber = SINumber,
@@ -387,7 +387,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.ArticleId == trnSalesInvoiceDTO.CustomerId
-                    && d.MstArticle_Article.IsLocked == true
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -481,7 +481,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.ArticleId == trnSalesInvoiceDTO.CustomerId
-                    && d.MstArticle_Article.IsLocked == true
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -720,9 +720,9 @@ namespace liteclerk_api.APIControllers
 
                 if (user.CompanyId != null)
                 {
-                    companyName = user.MstCompany_Company.Company;
-                    companyAddress = user.MstCompany_Company.Address;
-                    companyTaxNumber = user.MstCompany_Company.TIN;
+                    companyName = user.MstCompany_CompanyId.Company;
+                    companyAddress = user.MstCompany_CompanyId.Address;
+                    companyTaxNumber = user.MstCompany_CompanyId.TIN;
                 }
 
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -752,20 +752,20 @@ namespace liteclerk_api.APIControllers
                     tableHeader.AddCell(new PdfPCell(new Phrase(headerLine)) { Border = 0, Colspan = 2 });
                     document.Add(tableHeader);
 
-                    String branch = salesInvoice.MstCompanyBranch_Branch.Branch;
-                    String SINumber = "SI-" + salesInvoice.MstCompanyBranch_Branch.ManualCode + "-" + salesInvoice.SINumber;
+                    String branch = salesInvoice.MstCompanyBranch_BranchId.Branch;
+                    String SINumber = "SI-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
                     String SIDate = salesInvoice.SIDate.ToString("MMMM dd, yyyy");
                     String manualNumber = salesInvoice.ManualNumber;
                     String documentReference = salesInvoice.DocumentReference;
-                    String salesPerson = salesInvoice.MstUser_SoldByUser.Fullname;
+                    String salesPerson = salesInvoice.MstUser_SoldByUserId.Fullname;
 
-                    String customer = salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.Any() ?
-                                      salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().Customer : "";
-                    String customerContactNumber = salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.Any() ?
-                                                   salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().ContactNumber : "";
-                    String customerContactPerson = salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.Any() ?
-                                                   salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().ContactPerson : "";
-                    String term = salesInvoice.MstTerm_Term.Term;
+                    String customer = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                      salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "";
+                    String customerContactNumber = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactNumber : "";
+                    String customerContactPerson = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactPerson : "";
+                    String term = salesInvoice.MstTerm_TermId.Term;
                     String remarks = salesInvoice.Remarks;
 
                     PdfPTable tableSalesInvoice = new PdfPTable(4);
@@ -818,15 +818,15 @@ namespace liteclerk_api.APIControllers
 
                         foreach (var salesInvoiceItem in salesInvoiceItems)
                         {
-                            String SKUCode = salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ?
-                                             salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "";
-                            String barCode = salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ?
-                                             salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().BarCode : "";
-                            String itemDescription = salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ?
-                                                     salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : "";
+                            String SKUCode = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                             salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
+                            String barCode = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                             salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
+                            String itemDescription = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
 
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.MstUnit_Unit.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.NetPrice.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
@@ -839,9 +839,9 @@ namespace liteclerk_api.APIControllers
                         document.Add(tableJobOrders);
                     }
 
-                    String preparedBy = salesInvoice.MstUser_PreparedByUser.Fullname;
-                    String checkedBy = salesInvoice.MstUser_CheckedByUser.Fullname;
-                    String approvedBy = salesInvoice.MstUser_ApprovedByUser.Fullname;
+                    String preparedBy = salesInvoice.MstUser_PreparedByUserId.Fullname;
+                    String checkedBy = salesInvoice.MstUser_CheckedByUserId.Fullname;
+                    String approvedBy = salesInvoice.MstUser_ApprovedByUserId.Fullname;
 
                     PdfPTable tableUsers = new PdfPTable(4);
                     tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });
@@ -925,9 +925,9 @@ namespace liteclerk_api.APIControllers
 
                 if (user.CompanyId != null)
                 {
-                    companyName = user.MstCompany_Company.Company;
-                    companyAddress = user.MstCompany_Company.Address;
-                    companyTaxNumber = user.MstCompany_Company.TIN;
+                    companyName = user.MstCompany_CompanyId.Company;
+                    companyAddress = user.MstCompany_CompanyId.Address;
+                    companyTaxNumber = user.MstCompany_CompanyId.TIN;
                 }
 
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -957,20 +957,20 @@ namespace liteclerk_api.APIControllers
                     tableHeader.AddCell(new PdfPCell(new Phrase(headerLine)) { Border = 0, Colspan = 2 });
                     document.Add(tableHeader);
 
-                    String branch = salesInvoice.MstCompanyBranch_Branch.Branch;
-                    String SINumber = "SI-" + salesInvoice.MstCompanyBranch_Branch.ManualCode + "-" + salesInvoice.SINumber;
+                    String branch = salesInvoice.MstCompanyBranch_BranchId.Branch;
+                    String SINumber = "SI-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
                     String SIDate = salesInvoice.SIDate.ToString("MMMM dd, yyyy");
                     String manualNumber = salesInvoice.ManualNumber;
                     String documentReference = salesInvoice.DocumentReference;
-                    String salesPerson = salesInvoice.MstUser_SoldByUser.Fullname;
+                    String salesPerson = salesInvoice.MstUser_SoldByUserId.Fullname;
 
-                    String customer = salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.Any() ?
-                                      salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().Customer : "";
-                    String customerContactNumber = salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.Any() ?
-                                                   salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().ContactNumber : "";
-                    String customerContactPerson = salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.Any() ?
-                                                   salesInvoice.MstArticle_Customer.MstArticleCustomers_Article.FirstOrDefault().ContactPerson : "";
-                    String term = salesInvoice.MstTerm_Term.Term;
+                    String customer = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                      salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "";
+                    String customerContactNumber = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactNumber : "";
+                    String customerContactPerson = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactPerson : "";
+                    String term = salesInvoice.MstTerm_TermId.Term;
                     String remarks = salesInvoice.Remarks;
 
                     PdfPTable tableSalesInvoice = new PdfPTable(4);
@@ -1024,18 +1024,18 @@ namespace liteclerk_api.APIControllers
                             tableJobOrders.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase("Job Type", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
 
-                            String SKUCode = jobOrder.MstArticle_Item.MstArticleItems_Article.Any() ?
-                                             jobOrder.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "";
-                            String barCode = jobOrder.MstArticle_Item.MstArticleItems_Article.Any() ?
-                                             jobOrder.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().BarCode : "";
-                            String itemDescription = jobOrder.MstArticle_Item.MstArticleItems_Article.Any() ?
-                                                     jobOrder.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : "";
-                            String jobType = jobOrder.MstJobType_ItemJobType.JobType;
+                            String SKUCode = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                             jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
+                            String barCode = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                             jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
+                            String itemDescription = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
+                            String jobType = jobOrder.MstJobType_ItemJobTypeId.JobType;
 
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JONumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JODate.ToString("MM/dd/yyyy"), fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.MstUnit_Unit.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Remarks, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
@@ -1113,9 +1113,9 @@ namespace liteclerk_api.APIControllers
                         }
                     }
 
-                    String preparedBy = salesInvoice.MstUser_PreparedByUser.Fullname;
-                    String checkedBy = salesInvoice.MstUser_CheckedByUser.Fullname;
-                    String approvedBy = salesInvoice.MstUser_ApprovedByUser.Fullname;
+                    String preparedBy = salesInvoice.MstUser_PreparedByUserId.Fullname;
+                    String checkedBy = salesInvoice.MstUser_CheckedByUserId.Fullname;
+                    String approvedBy = salesInvoice.MstUser_ApprovedByUserId.Fullname;
 
                     PdfPTable tableUsers = new PdfPTable(4);
                     tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });

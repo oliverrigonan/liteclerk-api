@@ -161,7 +161,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                if (companyBranch.MstCompany_Company.IsLocked == true)
+                if (companyBranch.MstCompany_CompanyId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot update a branch if the current company is locked.");
                 }
@@ -211,7 +211,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                if (companyBranch.MstCompany_Company.IsLocked == true)
+                if (companyBranch.MstCompany_CompanyId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete a branch if the current company is locked.");
                 }

@@ -90,7 +90,7 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstArticleItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstArticleItem_MstArticleAccountGroup_ArticleAccountGroupId",
+                        name: "FK_MstArticleItem_MstArticleAccountGroup_ArticleAccountGroupIdId",
                         column: x => x.ArticleAccountGroupId,
                         principalTable: "MstArticleAccountGroup",
                         principalColumn: "Id",
@@ -314,7 +314,7 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_TrnSalesInvoiceItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TrnSalesInvoiceItem_MstArticleItemInventory_ItemInventoryId",
+                        name: "FK_TrnSalesInvoiceItem_MstArticleItemInventory_ItemInventoryIdId",
                         column: x => x.ItemInventoryId,
                         principalTable: "MstArticleItemInventory",
                         principalColumn: "Id",
@@ -347,7 +347,7 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstArticle", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstArticle_MstArticleType_ArticleTypeId",
+                        name: "FK_MstArticle_MstArticleType_ArticleTypeIdId",
                         column: x => x.ArticleTypeId,
                         principalTable: "MstArticleType",
                         principalColumn: "Id",
@@ -389,7 +389,7 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstUser", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstUser_MstCompanyBranch_BranchId",
+                        name: "FK_MstUser_MstCompanyBranch_BranchIdId",
                         column: x => x.BranchId,
                         principalTable: "MstCompanyBranch",
                         principalColumn: "Id",
@@ -414,13 +414,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstAccountCashFlow", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstAccountCashFlow_MstUser_CreatedByUserId",
+                        name: "FK_MstAccountCashFlow_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstAccountCashFlow_MstUser_UpdatedByUserId",
+                        name: "FK_MstAccountCashFlow_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -445,13 +445,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstAccountCategory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstAccountCategory_MstUser_CreatedByUserId",
+                        name: "FK_MstAccountCategory_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstAccountCategory_MstUser_UpdatedByUserId",
+                        name: "FK_MstAccountCategory_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -476,13 +476,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstCurrency", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstCurrency_MstUser_CreatedByUserId",
+                        name: "FK_MstCurrency_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstCurrency_MstUser_UpdatedByUserId",
+                        name: "FK_MstCurrency_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -508,13 +508,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstDiscount", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstDiscount_MstUser_CreatedByUserId",
+                        name: "FK_MstDiscount_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstDiscount_MstUser_UpdatedByUserId",
+                        name: "FK_MstDiscount_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -540,13 +540,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstJobDepartment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstJobDepartment_MstUser_CreatedByUserId",
+                        name: "FK_MstJobDepartment_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstJobDepartment_MstUser_UpdatedByUserId",
+                        name: "FK_MstJobDepartment_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -574,13 +574,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstJobType", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstJobType_MstUser_CreatedByUserId",
+                        name: "FK_MstJobType_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstJobType_MstUser_UpdatedByUserId",
+                        name: "FK_MstJobType_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -606,13 +606,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstTax", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstTax_MstUser_CreatedByUserId",
+                        name: "FK_MstTax_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstTax_MstUser_UpdatedByUserId",
+                        name: "FK_MstTax_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -638,13 +638,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstTerm", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstTerm_MstUser_CreatedByUserId",
+                        name: "FK_MstTerm_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstTerm_MstUser_UpdatedByUserId",
+                        name: "FK_MstTerm_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -669,13 +669,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstUnit", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstUnit_MstUser_CreatedByUserId",
+                        name: "FK_MstUnit_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstUnit_MstUser_UpdatedByUserId",
+                        name: "FK_MstUnit_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -701,7 +701,7 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_TrnJobOrderInformation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TrnJobOrderInformation_MstUser_InformationByUserId",
+                        name: "FK_TrnJobOrderInformation_MstUser_InformationByUserIdId",
                         column: x => x.InformationByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -737,19 +737,19 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstCompany", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstCompany_MstUser_CreatedByUserId",
+                        name: "FK_MstCompany_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstCompany_MstCurrency_CurrencyId",
+                        name: "FK_MstCompany_MstCurrency_CurrencyIdId",
                         column: x => x.CurrencyId,
                         principalTable: "MstCurrency",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstCompany_MstUser_UpdatedByUserId",
+                        name: "FK_MstCompany_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -779,13 +779,13 @@ namespace liteclerk_api.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnJobOrderDepartment_MstJobDepartment_JobDepartmentId",
+                        name: "FK_TrnJobOrderDepartment_MstJobDepartment_JobDepartmentIdId",
                         column: x => x.JobDepartmentId,
                         principalTable: "MstJobDepartment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnJobOrderDepartment_MstUser_StatusByUserId",
+                        name: "FK_TrnJobOrderDepartment_MstUser_StatusByUserIdId",
                         column: x => x.StatusByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -807,7 +807,7 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstJobTypeAttachment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstJobTypeAttachment_MstJobType_JobTypeId",
+                        name: "FK_MstJobTypeAttachment_MstJobType_JobTypeIdId",
                         column: x => x.JobTypeId,
                         principalTable: "MstJobType",
                         principalColumn: "Id",
@@ -828,13 +828,13 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstJobTypeDepartment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstJobTypeDepartment_MstJobDepartment_JobDepartmentId",
+                        name: "FK_MstJobTypeDepartment_MstJobDepartment_JobDepartmentIdId",
                         column: x => x.JobDepartmentId,
                         principalTable: "MstJobDepartment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstJobTypeDepartment_MstJobType_JobTypeId",
+                        name: "FK_MstJobTypeDepartment_MstJobType_JobTypeIdId",
                         column: x => x.JobTypeId,
                         principalTable: "MstJobType",
                         principalColumn: "Id",
@@ -856,7 +856,7 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstJobTypeInformation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstJobTypeInformation_MstJobType_JobTypeId",
+                        name: "FK_MstJobTypeInformation_MstJobType_JobTypeIdId",
                         column: x => x.JobTypeId,
                         principalTable: "MstJobType",
                         principalColumn: "Id",
@@ -864,12 +864,12 @@ namespace liteclerk_api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MstAccount_AccountCashFlowId",
+                name: "IX_MstAccount_AccountIdCashFlowId",
                 table: "MstAccount",
                 column: "AccountCashFlowId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MstAccount_AccountTypeId",
+                name: "IX_MstAccount_AccountIdTypeId",
                 table: "MstAccount",
                 column: "AccountTypeId");
 
@@ -919,7 +919,7 @@ namespace liteclerk_api.Migrations
                 column: "UpdatedByUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MstArticle_ArticleTypeId",
+                name: "IX_MstArticle_ArticleIdTypeId",
                 table: "MstArticle",
                 column: "ArticleTypeId");
 
@@ -1354,7 +1354,7 @@ namespace liteclerk_api.Migrations
                 column: "WTAXId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleAccountGroup_MstUser_CreatedByUserId",
+                name: "FK_MstArticleAccountGroup_MstUser_CreatedByUserIdId",
                 table: "MstArticleAccountGroup",
                 column: "CreatedByUserId",
                 principalTable: "MstUser",
@@ -1362,7 +1362,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleAccountGroup_MstUser_UpdatedByUserId",
+                name: "FK_MstArticleAccountGroup_MstUser_UpdatedByUserIdId",
                 table: "MstArticleAccountGroup",
                 column: "UpdatedByUserId",
                 principalTable: "MstUser",
@@ -1370,7 +1370,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleAccountGroup_MstAccount_AssetAccountId",
+                name: "FK_MstArticleAccountGroup_MstAccount_AssetAccountIdId",
                 table: "MstArticleAccountGroup",
                 column: "AssetAccountId",
                 principalTable: "MstAccount",
@@ -1378,7 +1378,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleAccountGroup_MstAccount_CostAccountId",
+                name: "FK_MstArticleAccountGroup_MstAccount_CostAccountIdId",
                 table: "MstArticleAccountGroup",
                 column: "CostAccountId",
                 principalTable: "MstAccount",
@@ -1386,7 +1386,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleAccountGroup_MstAccount_ExpenseAccountId",
+                name: "FK_MstArticleAccountGroup_MstAccount_ExpenseAccountIdId",
                 table: "MstArticleAccountGroup",
                 column: "ExpenseAccountId",
                 principalTable: "MstAccount",
@@ -1394,7 +1394,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleAccountGroup_MstAccount_SalesAccountId",
+                name: "FK_MstArticleAccountGroup_MstAccount_SalesAccountIdId",
                 table: "MstArticleAccountGroup",
                 column: "SalesAccountId",
                 principalTable: "MstAccount",
@@ -1402,7 +1402,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleCustomer_MstAccount_ReceivableAccountId",
+                name: "FK_MstArticleCustomer_MstAccount_ReceivableAccountIdId",
                 table: "MstArticleCustomer",
                 column: "ReceivableAccountId",
                 principalTable: "MstAccount",
@@ -1410,7 +1410,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleCustomer_MstArticle_ArticleId",
+                name: "FK_MstArticleCustomer_MstArticle_ArticleIdId",
                 table: "MstArticleCustomer",
                 column: "ArticleId",
                 principalTable: "MstArticle",
@@ -1418,7 +1418,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleCustomer_MstTerm_TermId",
+                name: "FK_MstArticleCustomer_MstTerm_TermIdId",
                 table: "MstArticleCustomer",
                 column: "TermId",
                 principalTable: "MstTerm",
@@ -1426,7 +1426,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstAccount_AssetAccountId",
+                name: "FK_MstArticleItem_MstAccount_AssetAccountIdId",
                 table: "MstArticleItem",
                 column: "AssetAccountId",
                 principalTable: "MstAccount",
@@ -1434,7 +1434,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstAccount_CostAccountId",
+                name: "FK_MstArticleItem_MstAccount_CostAccountIdId",
                 table: "MstArticleItem",
                 column: "CostAccountId",
                 principalTable: "MstAccount",
@@ -1442,7 +1442,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstAccount_ExpenseAccountId",
+                name: "FK_MstArticleItem_MstAccount_ExpenseAccountIdId",
                 table: "MstArticleItem",
                 column: "ExpenseAccountId",
                 principalTable: "MstAccount",
@@ -1450,7 +1450,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstAccount_SalesAccountId",
+                name: "FK_MstArticleItem_MstAccount_SalesAccountIdId",
                 table: "MstArticleItem",
                 column: "SalesAccountId",
                 principalTable: "MstAccount",
@@ -1458,7 +1458,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstArticle_ArticleId",
+                name: "FK_MstArticleItem_MstArticle_ArticleIdId",
                 table: "MstArticleItem",
                 column: "ArticleId",
                 principalTable: "MstArticle",
@@ -1466,7 +1466,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstTax_RRVATId",
+                name: "FK_MstArticleItem_MstTax_RRVATIdId",
                 table: "MstArticleItem",
                 column: "RRVATId",
                 principalTable: "MstTax",
@@ -1474,7 +1474,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstTax_SIVATId",
+                name: "FK_MstArticleItem_MstTax_SIVATIdId",
                 table: "MstArticleItem",
                 column: "SIVATId",
                 principalTable: "MstTax",
@@ -1482,7 +1482,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstTax_WTAXId",
+                name: "FK_MstArticleItem_MstTax_WTAXIdId",
                 table: "MstArticleItem",
                 column: "WTAXId",
                 principalTable: "MstTax",
@@ -1490,7 +1490,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItem_MstUnit_UnitId",
+                name: "FK_MstArticleItem_MstUnit_UnitIdId",
                 table: "MstArticleItem",
                 column: "UnitId",
                 principalTable: "MstUnit",
@@ -1498,7 +1498,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstAccount_MstAccountCashFlow_AccountCashFlowId",
+                name: "FK_MstAccount_MstAccountCashFlow_AccountCashFlowIdId",
                 table: "MstAccount",
                 column: "AccountCashFlowId",
                 principalTable: "MstAccountCashFlow",
@@ -1506,7 +1506,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstAccount_MstAccountType_AccountTypeId",
+                name: "FK_MstAccount_MstAccountType_AccountTypeIdId",
                 table: "MstAccount",
                 column: "AccountTypeId",
                 principalTable: "MstAccountType",
@@ -1514,7 +1514,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstAccount_MstUser_CreatedByUserId",
+                name: "FK_MstAccount_MstUser_CreatedByUserIdId",
                 table: "MstAccount",
                 column: "CreatedByUserId",
                 principalTable: "MstUser",
@@ -1522,7 +1522,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstAccount_MstUser_UpdatedByUserId",
+                name: "FK_MstAccount_MstUser_UpdatedByUserIdId",
                 table: "MstAccount",
                 column: "UpdatedByUserId",
                 principalTable: "MstUser",
@@ -1530,7 +1530,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstAccountType_MstUser_CreatedByUserId",
+                name: "FK_MstAccountType_MstUser_CreatedByUserIdId",
                 table: "MstAccountType",
                 column: "CreatedByUserId",
                 principalTable: "MstUser",
@@ -1538,7 +1538,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstAccountType_MstUser_UpdatedByUserId",
+                name: "FK_MstAccountType_MstUser_UpdatedByUserIdId",
                 table: "MstAccountType",
                 column: "UpdatedByUserId",
                 principalTable: "MstUser",
@@ -1546,7 +1546,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstAccountType_MstAccountCategory_AccountCategoryId",
+                name: "FK_MstAccountType_MstAccountCategory_AccountCategoryIdId",
                 table: "MstAccountType",
                 column: "AccountCategoryId",
                 principalTable: "MstAccountCategory",
@@ -1554,7 +1554,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItemInventory_MstArticle_ArticleId",
+                name: "FK_MstArticleItemInventory_MstArticle_ArticleIdId",
                 table: "MstArticleItemInventory",
                 column: "ArticleId",
                 principalTable: "MstArticle",
@@ -1562,7 +1562,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItemInventory_MstCompanyBranch_BranchId",
+                name: "FK_MstArticleItemInventory_MstCompanyBranch_BranchIdId",
                 table: "MstArticleItemInventory",
                 column: "BranchId",
                 principalTable: "MstCompanyBranch",
@@ -1570,7 +1570,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItemPrice_MstArticle_ArticleId",
+                name: "FK_MstArticleItemPrice_MstArticle_ArticleIdId",
                 table: "MstArticleItemPrice",
                 column: "ArticleId",
                 principalTable: "MstArticle",
@@ -1578,7 +1578,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItemUnit_MstArticle_ArticleId",
+                name: "FK_MstArticleItemUnit_MstArticle_ArticleIdId",
                 table: "MstArticleItemUnit",
                 column: "ArticleId",
                 principalTable: "MstArticle",
@@ -1586,7 +1586,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticleItemUnit_MstUnit_UnitId",
+                name: "FK_MstArticleItemUnit_MstUnit_UnitIdId",
                 table: "MstArticleItemUnit",
                 column: "UnitId",
                 principalTable: "MstUnit",
@@ -1594,7 +1594,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstUser_ApprovedByUserId",
+                name: "FK_TrnJobOrder_MstUser_ApprovedByUserIdId",
                 table: "TrnJobOrder",
                 column: "ApprovedByUserId",
                 principalTable: "MstUser",
@@ -1602,7 +1602,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstUser_CheckedByUserId",
+                name: "FK_TrnJobOrder_MstUser_CheckedByUserIdId",
                 table: "TrnJobOrder",
                 column: "CheckedByUserId",
                 principalTable: "MstUser",
@@ -1610,7 +1610,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstUser_CreatedByUserId",
+                name: "FK_TrnJobOrder_MstUser_CreatedByUserIdId",
                 table: "TrnJobOrder",
                 column: "CreatedByUserId",
                 principalTable: "MstUser",
@@ -1618,7 +1618,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstUser_PreparedByUserId",
+                name: "FK_TrnJobOrder_MstUser_PreparedByUserIdId",
                 table: "TrnJobOrder",
                 column: "PreparedByUserId",
                 principalTable: "MstUser",
@@ -1626,7 +1626,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstUser_UpdatedByUserId",
+                name: "FK_TrnJobOrder_MstUser_UpdatedByUserIdId",
                 table: "TrnJobOrder",
                 column: "UpdatedByUserId",
                 principalTable: "MstUser",
@@ -1634,7 +1634,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstArticle_ItemId",
+                name: "FK_TrnJobOrder_MstArticle_ItemIdId",
                 table: "TrnJobOrder",
                 column: "ItemId",
                 principalTable: "MstArticle",
@@ -1642,7 +1642,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstCompanyBranch_BranchId",
+                name: "FK_TrnJobOrder_MstCompanyBranch_BranchIdId",
                 table: "TrnJobOrder",
                 column: "BranchId",
                 principalTable: "MstCompanyBranch",
@@ -1650,7 +1650,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstCurrency_CurrencyId",
+                name: "FK_TrnJobOrder_MstCurrency_CurrencyIdId",
                 table: "TrnJobOrder",
                 column: "CurrencyId",
                 principalTable: "MstCurrency",
@@ -1658,7 +1658,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstJobType_ItemJobTypeId",
+                name: "FK_TrnJobOrder_MstJobType_ItemJobTypeIdId",
                 table: "TrnJobOrder",
                 column: "ItemJobTypeId",
                 principalTable: "MstJobType",
@@ -1682,7 +1682,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstUser_ApprovedByUserId",
+                name: "FK_TrnSalesInvoice_MstUser_ApprovedByUserIdId",
                 table: "TrnSalesInvoice",
                 column: "ApprovedByUserId",
                 principalTable: "MstUser",
@@ -1690,7 +1690,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstUser_CheckedByUserId",
+                name: "FK_TrnSalesInvoice_MstUser_CheckedByUserIdId",
                 table: "TrnSalesInvoice",
                 column: "CheckedByUserId",
                 principalTable: "MstUser",
@@ -1698,7 +1698,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstUser_CreatedByUserId",
+                name: "FK_TrnSalesInvoice_MstUser_CreatedByUserIdId",
                 table: "TrnSalesInvoice",
                 column: "CreatedByUserId",
                 principalTable: "MstUser",
@@ -1706,7 +1706,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstUser_PreparedByUserId",
+                name: "FK_TrnSalesInvoice_MstUser_PreparedByUserIdId",
                 table: "TrnSalesInvoice",
                 column: "PreparedByUserId",
                 principalTable: "MstUser",
@@ -1714,7 +1714,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstUser_SoldByUserId",
+                name: "FK_TrnSalesInvoice_MstUser_SoldByUserIdId",
                 table: "TrnSalesInvoice",
                 column: "SoldByUserId",
                 principalTable: "MstUser",
@@ -1722,7 +1722,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstUser_UpdatedByUserId",
+                name: "FK_TrnSalesInvoice_MstUser_UpdatedByUserIdId",
                 table: "TrnSalesInvoice",
                 column: "UpdatedByUserId",
                 principalTable: "MstUser",
@@ -1730,7 +1730,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstArticle_CustomerId",
+                name: "FK_TrnSalesInvoice_MstArticle_CustomerIdId",
                 table: "TrnSalesInvoice",
                 column: "CustomerId",
                 principalTable: "MstArticle",
@@ -1738,7 +1738,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstTerm_TermId",
+                name: "FK_TrnSalesInvoice_MstTerm_TermIdId",
                 table: "TrnSalesInvoice",
                 column: "TermId",
                 principalTable: "MstTerm",
@@ -1746,7 +1746,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstCompanyBranch_BranchId",
+                name: "FK_TrnSalesInvoice_MstCompanyBranch_BranchIdId",
                 table: "TrnSalesInvoice",
                 column: "BranchId",
                 principalTable: "MstCompanyBranch",
@@ -1754,7 +1754,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoice_MstCurrency_CurrencyId",
+                name: "FK_TrnSalesInvoice_MstCurrency_CurrencyIdId",
                 table: "TrnSalesInvoice",
                 column: "CurrencyId",
                 principalTable: "MstCurrency",
@@ -1762,7 +1762,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoiceItem_MstArticle_ItemId",
+                name: "FK_TrnSalesInvoiceItem_MstArticle_ItemIdId",
                 table: "TrnSalesInvoiceItem",
                 column: "ItemId",
                 principalTable: "MstArticle",
@@ -1770,7 +1770,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoiceItem_MstTax_VATId",
+                name: "FK_TrnSalesInvoiceItem_MstTax_VATIdId",
                 table: "TrnSalesInvoiceItem",
                 column: "VATId",
                 principalTable: "MstTax",
@@ -1778,7 +1778,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoiceItem_MstTax_WTAXId",
+                name: "FK_TrnSalesInvoiceItem_MstTax_WTAXIdId",
                 table: "TrnSalesInvoiceItem",
                 column: "WTAXId",
                 principalTable: "MstTax",
@@ -1786,7 +1786,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoiceItem_MstUnit_BaseUnitId",
+                name: "FK_TrnSalesInvoiceItem_MstUnit_BaseUnitIdId",
                 table: "TrnSalesInvoiceItem",
                 column: "BaseUnitId",
                 principalTable: "MstUnit",
@@ -1794,7 +1794,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoiceItem_MstUnit_UnitId",
+                name: "FK_TrnSalesInvoiceItem_MstUnit_UnitIdId",
                 table: "TrnSalesInvoiceItem",
                 column: "UnitId",
                 principalTable: "MstUnit",
@@ -1802,7 +1802,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoiceItem_MstJobType_ItemJobTypeId",
+                name: "FK_TrnSalesInvoiceItem_MstJobType_ItemJobTypeIdId",
                 table: "TrnSalesInvoiceItem",
                 column: "ItemJobTypeId",
                 principalTable: "MstJobType",
@@ -1810,7 +1810,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnSalesInvoiceItem_MstDiscount_DiscountId",
+                name: "FK_TrnSalesInvoiceItem_MstDiscount_DiscountIdId",
                 table: "TrnSalesInvoiceItem",
                 column: "DiscountId",
                 principalTable: "MstDiscount",
@@ -1818,7 +1818,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticle_MstUser_CreatedByUserId",
+                name: "FK_MstArticle_MstUser_CreatedByUserIdId",
                 table: "MstArticle",
                 column: "CreatedByUserId",
                 principalTable: "MstUser",
@@ -1826,7 +1826,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstArticle_MstUser_UpdatedByUserId",
+                name: "FK_MstArticle_MstUser_UpdatedByUserIdId",
                 table: "MstArticle",
                 column: "UpdatedByUserId",
                 principalTable: "MstUser",
@@ -1834,7 +1834,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstCompanyBranch_MstCompany_CompanyId",
+                name: "FK_MstCompanyBranch_MstCompany_CompanyIdId",
                 table: "MstCompanyBranch",
                 column: "CompanyId",
                 principalTable: "MstCompany",
@@ -1842,7 +1842,7 @@ namespace liteclerk_api.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MstUser_MstCompany_CompanyId",
+                name: "FK_MstUser_MstCompany_CompanyIdId",
                 table: "MstUser",
                 column: "CompanyId",
                 principalTable: "MstCompany",
@@ -1853,19 +1853,19 @@ namespace liteclerk_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_MstCompany_MstUser_CreatedByUserId",
+                name: "FK_MstCompany_MstUser_CreatedByUserIdId",
                 table: "MstCompany");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_MstCompany_MstUser_UpdatedByUserId",
+                name: "FK_MstCompany_MstUser_UpdatedByUserIdId",
                 table: "MstCompany");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_MstCurrency_MstUser_CreatedByUserId",
+                name: "FK_MstCurrency_MstUser_CreatedByUserIdId",
                 table: "MstCurrency");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_MstCurrency_MstUser_UpdatedByUserId",
+                name: "FK_MstCurrency_MstUser_UpdatedByUserIdId",
                 table: "MstCurrency");
 
             migrationBuilder.DropTable(

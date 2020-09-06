@@ -15,9 +15,9 @@ namespace liteclerk_api.DBModelBuilder
                 entity.ToTable("MstArticleItemUnit");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.ArticleId).HasColumnName("ArticleId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstArticle_Article).WithMany(f => f.MstArticleItemUnits_Article).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.MstArticleItemUnits_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.UnitId).HasColumnName("UnitId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstUnit_Unit).WithMany(f => f.MstArticleItemUnits_Unit).HasForeignKey(f => f.UnitId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstUnit_UnitId).WithMany(f => f.MstArticleItemUnits_UnitId).HasForeignKey(f => f.UnitId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Multiplier).HasColumnName("Multiplier").HasColumnType("decimal(18,5)").IsRequired();
             });
         }

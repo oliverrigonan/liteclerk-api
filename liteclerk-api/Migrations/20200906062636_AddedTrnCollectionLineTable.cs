@@ -33,19 +33,19 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_MstPayType", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MstPayType_MstAccount_AccountId",
+                        name: "FK_MstPayType_MstAccount_AccountIdId",
                         column: x => x.AccountId,
                         principalTable: "MstAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstPayType_MstUser_CreatedByUserId",
+                        name: "FK_MstPayType_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MstPayType_MstUser_UpdatedByUserId",
+                        name: "FK_MstPayType_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
@@ -77,25 +77,25 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_TrnCollectionLine", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TrnCollectionLine_MstAccount_AccountId",
+                        name: "FK_TrnCollectionLine_MstAccount_AccountIdId",
                         column: x => x.AccountId,
                         principalTable: "MstAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollectionLine_MstArticle_ArticleId",
+                        name: "FK_TrnCollectionLine_MstArticle_ArticleIdId",
                         column: x => x.ArticleId,
                         principalTable: "MstArticle",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollectionLine_MstArticle_BankId",
+                        name: "FK_TrnCollectionLine_MstArticle_BankIdId",
                         column: x => x.BankId,
                         principalTable: "MstArticle",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollectionLine_MstCompanyBranch_BranchId",
+                        name: "FK_TrnCollectionLine_MstCompanyBranch_BranchIdId",
                         column: x => x.BranchId,
                         principalTable: "MstCompanyBranch",
                         principalColumn: "Id",
@@ -107,7 +107,7 @@ namespace liteclerk_api.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollectionLine_MstPayType_PayTypeId",
+                        name: "FK_TrnCollectionLine_MstPayType_PayTypeIdId",
                         column: x => x.PayTypeId,
                         principalTable: "MstPayType",
                         principalColumn: "Id",
@@ -119,7 +119,7 @@ namespace liteclerk_api.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollectionLine_MstTax_WTAXId",
+                        name: "FK_TrnCollectionLine_MstTax_WTAXIdId",
                         column: x => x.WTAXId,
                         principalTable: "MstTax",
                         principalColumn: "Id",

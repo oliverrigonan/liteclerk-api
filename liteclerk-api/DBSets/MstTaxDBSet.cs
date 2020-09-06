@@ -13,16 +13,16 @@ namespace liteclerk_api.DBSets
         public String TaxDescription { get; set; }
         public Decimal TaxRate { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public virtual MstUserDBSet MstUser_CreatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_CreatedByUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
-        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_VAT { get; set; }
-        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_WTAX { get; set; }
-        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_RRVAT { get; set; }
-        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_SIVAT { get; set; }
-        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_WTAX { get; set; }
-        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_WTAX { get; set; }
+        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_VATId { get; set; }
+        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_WTAXId { get; set; }
+        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_RRVATId { get; set; }
+        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_SIVATId { get; set; }
+        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_WTAXId { get; set; }
+        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_WTAXId { get; set; }
     }
 }

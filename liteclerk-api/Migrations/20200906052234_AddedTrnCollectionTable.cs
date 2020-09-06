@@ -37,49 +37,49 @@ namespace liteclerk_api.Migrations
                 {
                     table.PrimaryKey("PK_TrnCollection", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstUser_ApprovedByUserId",
+                        name: "FK_TrnCollection_MstUser_ApprovedByUserIdId",
                         column: x => x.ApprovedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstCompanyBranch_BranchId",
+                        name: "FK_TrnCollection_MstCompanyBranch_BranchIdId",
                         column: x => x.BranchId,
                         principalTable: "MstCompanyBranch",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstUser_CheckedByUserId",
+                        name: "FK_TrnCollection_MstUser_CheckedByUserIdId",
                         column: x => x.CheckedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstUser_CreatedByUserId",
+                        name: "FK_TrnCollection_MstUser_CreatedByUserIdId",
                         column: x => x.CreatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstCurrency_CurrencyId",
+                        name: "FK_TrnCollection_MstCurrency_CurrencyIdId",
                         column: x => x.CurrencyId,
                         principalTable: "MstCurrency",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstArticle_CustomerId",
+                        name: "FK_TrnCollection_MstArticle_CustomerIdId",
                         column: x => x.CustomerId,
                         principalTable: "MstArticle",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstUser_PreparedByUserId",
+                        name: "FK_TrnCollection_MstUser_PreparedByUserIdId",
                         column: x => x.PreparedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TrnCollection_MstUser_UpdatedByUserId",
+                        name: "FK_TrnCollection_MstUser_UpdatedByUserIdId",
                         column: x => x.UpdatedByUserId,
                         principalTable: "MstUser",
                         principalColumn: "Id",

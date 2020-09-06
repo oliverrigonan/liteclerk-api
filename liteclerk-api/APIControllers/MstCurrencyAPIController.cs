@@ -37,14 +37,14 @@ namespace liteclerk_api.APIControllers
                         Currency = d.Currency,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                     }

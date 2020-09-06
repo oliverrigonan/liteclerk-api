@@ -37,16 +37,16 @@ namespace liteclerk_api.APIControllers
                         CompanyId = d.CompanyId,
                         Company = new DTO.MstCompanyDTO
                         {
-                            CompanyCode = d.MstCompany_Company.CompanyCode,
-                            ManualCode = d.MstCompany_Company.ManualCode,
-                            Company = d.MstCompany_Company.Company
+                            CompanyCode = d.MstCompany_CompanyId.CompanyCode,
+                            ManualCode = d.MstCompany_CompanyId.ManualCode,
+                            Company = d.MstCompany_CompanyId.Company
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
-                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
-                            Branch = d.MstCompanyBranch_Branch.Branch
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         IsActive = d.IsActive
                     }
@@ -76,16 +76,16 @@ namespace liteclerk_api.APIControllers
                         CompanyId = d.CompanyId,
                         Company = new DTO.MstCompanyDTO
                         {
-                            CompanyCode = d.MstCompany_Company.CompanyCode,
-                            ManualCode = d.MstCompany_Company.ManualCode,
-                            Company = d.MstCompany_Company.Company
+                            CompanyCode = d.MstCompany_CompanyId.CompanyCode,
+                            ManualCode = d.MstCompany_CompanyId.ManualCode,
+                            Company = d.MstCompany_CompanyId.Company
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
-                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
-                            Branch = d.MstCompanyBranch_Branch.Branch
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         IsActive = d.IsActive
                     }

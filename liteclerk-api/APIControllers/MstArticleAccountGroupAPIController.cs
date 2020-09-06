@@ -39,41 +39,41 @@ namespace liteclerk_api.APIControllers
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.Account,
-                            Account = d.MstAccount_AssetAccount.Account
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.Account,
+                            Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.Account,
-                            Account = d.MstAccount_SalesAccount.Account
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.Account,
+                            Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.Account,
-                            Account = d.MstAccount_CostAccount.Account
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.Account,
+                            Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.Account,
-                            Account = d.MstAccount_ExpenseAccount.Account
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.Account,
+                            Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
                     }

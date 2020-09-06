@@ -9,7 +9,7 @@ namespace liteclerk_api.DBSets
     {
         public Int32 Id { get; set; }
         public Int32 JOId { get; set; }
-        public virtual TrnJobOrderDBSet TrnJobOrder_JobOrder { get; set; }
+        public virtual TrnJobOrderDBSet TrnJobOrder_JOId { get; set; }
         public String AttachmentCode { get; set; }
         public String AttachmentType { get; set; }
         public String AttachmentURL { get; set; }

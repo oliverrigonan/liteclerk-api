@@ -9,9 +9,9 @@ namespace liteclerk_api.DBSets
     {
         public Int32 Id { get; set; }
         public Int32 JobTypeId { get; set; }
-        public virtual MstJobTypeDBSet MstJobType_JobType { get; set; }
+        public virtual MstJobTypeDBSet MstJobType_JobTypeId { get; set; }
         public Int32 JobDepartmentId { get; set; }
-        public virtual MstJobDepartmentDBset MstJobDepartment_JobDepartment { get; set; }
+        public virtual MstJobDepartmentDBset MstJobDepartment_JobDepartmentId { get; set; }
         public Decimal NumberOfDays { get; set; }
     }
 }

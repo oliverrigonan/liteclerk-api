@@ -40,11 +40,11 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Article.ManualCode
+                                ManualCode = d.MstArticle_ArticleId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         PriceDescription = d.PriceDescription,
                         Price = d.Price
@@ -75,11 +75,11 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Article.ManualCode
+                                ManualCode = d.MstArticle_ArticleId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Article.MstArticleItems_Article.Any() ? d.MstArticle_Article.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         PriceDescription = d.PriceDescription,
                         Price = d.Price
@@ -186,7 +186,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item price not found.");
                 }
 
-                if (itemPrice.MstArticle_Article.IsLocked == true)
+                if (itemPrice.MstArticle_ArticleId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot update an item price if the current item is locked.");
                 }
@@ -245,7 +245,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item price not found.");
                 }
 
-                if (itemPrice.MstArticle_Article.IsLocked == true)
+                if (itemPrice.MstArticle_ArticleId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete an item price if the current item is locked.");
                 }

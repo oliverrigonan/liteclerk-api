@@ -62,16 +62,16 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
-                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
-                            Branch = d.MstCompanyBranch_Branch.Branch
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
-                            ManualCode = d.MstCurrency_Currency.ManualCode,
-                            Currency = d.MstCurrency_Currency.Currency
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         JONumber = d.JONumber,
                         JODate = d.JODate.ToShortDateString(),
@@ -82,9 +82,9 @@ namespace liteclerk_api.APIControllers
                         SIId = d.SIId,
                         SalesInvoice = new DTO.TrnSalesInvoiceDTO
                         {
-                            SINumber = d.TrnSalesInvoice_SalesInvoice.SINumber,
-                            SIDate = d.TrnSalesInvoice_SalesInvoice.SIDate.ToShortDateString(),
-                            ManualNumber = d.TrnSalesInvoice_SalesInvoice.ManualNumber,
+                            SINumber = d.TrnSalesInvoice_SIId.SINumber,
+                            SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
+                            ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
                             DocumentReference = d.DocumentReference
                         },
                         SIItemId = d.SIItemId,
@@ -94,11 +94,11 @@ namespace liteclerk_api.APIControllers
                             {
                                 Article = new DTO.MstArticleDTO
                                 {
-                                    ManualCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.ManualCode
+                                    ManualCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.ManualCode
                                 },
-                                SKUCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                                BarCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                                Description = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                             }
                         },
                         ItemId = d.ItemId,
@@ -106,51 +106,51 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Item.ManualCode
+                                ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
                         {
-                            JobType = d.MstJobType_ItemJobType.JobType
+                            JobType = d.MstJobType_ItemJobTypeId.JobType
                         },
                         Quantity = d.Quantity,
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         Remarks = d.Remarks,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnit.UnitCode,
-                            ManualCode = d.MstUnit_BaseUnit.ManualCode,
-                            Unit = d.MstUnit_BaseUnit.Unit
+                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
+                            ManualCode = d.MstUnit_BaseUnitId.ManualCode,
+                            Unit = d.MstUnit_BaseUnitId.Unit
                         },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_PreparedByUser.Username,
-                            Fullname = d.MstUser_PreparedByUser.Fullname
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
                         },
                         CheckedByUserId = d.CheckedByUserId,
                         CheckedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CheckedByUser.Username,
-                            Fullname = d.MstUser_CheckedByUser.Fullname
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
                         },
                         ApprovedByUserId = d.ApprovedByUserId,
                         ApprovedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_ApprovedByUser.Username,
-                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
@@ -158,14 +158,14 @@ namespace liteclerk_api.APIControllers
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
@@ -194,16 +194,16 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
-                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
-                            Branch = d.MstCompanyBranch_Branch.Branch
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
-                            ManualCode = d.MstCurrency_Currency.ManualCode,
-                            Currency = d.MstCurrency_Currency.Currency
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         JONumber = d.JONumber,
                         JODate = d.JODate.ToShortDateString(),
@@ -214,9 +214,9 @@ namespace liteclerk_api.APIControllers
                         SIId = d.SIId,
                         SalesInvoice = new DTO.TrnSalesInvoiceDTO
                         {
-                            SINumber = d.TrnSalesInvoice_SalesInvoice.SINumber,
-                            SIDate = d.TrnSalesInvoice_SalesInvoice.SIDate.ToShortDateString(),
-                            ManualNumber = d.TrnSalesInvoice_SalesInvoice.ManualNumber,
+                            SINumber = d.TrnSalesInvoice_SIId.SINumber,
+                            SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
+                            ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
                             DocumentReference = d.DocumentReference
                         },
                         SIItemId = d.SIItemId,
@@ -226,11 +226,11 @@ namespace liteclerk_api.APIControllers
                             {
                                 Article = new DTO.MstArticleDTO
                                 {
-                                    ManualCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.ManualCode
+                                    ManualCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.ManualCode
                                 },
-                                SKUCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                                BarCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                                Description = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                             }
                         },
                         ItemId = d.ItemId,
@@ -238,51 +238,51 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Item.ManualCode
+                                ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
                         {
-                            JobType = d.MstJobType_ItemJobType.JobType
+                            JobType = d.MstJobType_ItemJobTypeId.JobType
                         },
                         Quantity = d.Quantity,
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         Remarks = d.Remarks,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnit.UnitCode,
-                            ManualCode = d.MstUnit_BaseUnit.ManualCode,
-                            Unit = d.MstUnit_BaseUnit.Unit
+                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
+                            ManualCode = d.MstUnit_BaseUnitId.ManualCode,
+                            Unit = d.MstUnit_BaseUnitId.Unit
                         },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_PreparedByUser.Username,
-                            Fullname = d.MstUser_PreparedByUser.Fullname
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
                         },
                         CheckedByUserId = d.CheckedByUserId,
                         CheckedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CheckedByUser.Username,
-                            Fullname = d.MstUser_CheckedByUser.Fullname
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
                         },
                         ApprovedByUserId = d.ApprovedByUserId,
                         ApprovedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_ApprovedByUser.Username,
-                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
@@ -290,14 +290,14 @@ namespace liteclerk_api.APIControllers
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
@@ -325,16 +325,16 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_Branch.BranchCode,
-                            ManualCode = d.MstCompanyBranch_Branch.ManualCode,
-                            Branch = d.MstCompanyBranch_Branch.Branch
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_Currency.CurrencyCode,
-                            ManualCode = d.MstCurrency_Currency.ManualCode,
-                            Currency = d.MstCurrency_Currency.Currency
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         JONumber = d.JONumber,
                         JODate = d.JODate.ToShortDateString(),
@@ -345,9 +345,9 @@ namespace liteclerk_api.APIControllers
                         SIId = d.SIId,
                         SalesInvoice = new DTO.TrnSalesInvoiceDTO
                         {
-                            SINumber = d.TrnSalesInvoice_SalesInvoice.SINumber,
-                            SIDate = d.TrnSalesInvoice_SalesInvoice.SIDate.ToShortDateString(),
-                            ManualNumber = d.TrnSalesInvoice_SalesInvoice.ManualNumber,
+                            SINumber = d.TrnSalesInvoice_SIId.SINumber,
+                            SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
+                            ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
                             DocumentReference = d.DocumentReference
                         },
                         SIItemId = d.SIItemId,
@@ -357,11 +357,11 @@ namespace liteclerk_api.APIControllers
                             {
                                 Article = new DTO.MstArticleDTO
                                 {
-                                    ManualCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.ManualCode
+                                    ManualCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.ManualCode
                                 },
-                                SKUCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                                BarCode = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                                Description = d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? d.TrnSalesInvoiceItem_SalesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                             }
                         },
                         ItemId = d.ItemId,
@@ -369,51 +369,51 @@ namespace liteclerk_api.APIControllers
                         {
                             Article = new DTO.MstArticleDTO
                             {
-                                ManualCode = d.MstArticle_Item.ManualCode
+                                ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_Item.MstArticleItems_Article.Any() ? d.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
                         {
-                            JobType = d.MstJobType_ItemJobType.JobType
+                            JobType = d.MstJobType_ItemJobTypeId.JobType
                         },
                         Quantity = d.Quantity,
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         Remarks = d.Remarks,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnit.UnitCode,
-                            ManualCode = d.MstUnit_BaseUnit.ManualCode,
-                            Unit = d.MstUnit_BaseUnit.Unit
+                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
+                            ManualCode = d.MstUnit_BaseUnitId.ManualCode,
+                            Unit = d.MstUnit_BaseUnitId.Unit
                         },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_PreparedByUser.Username,
-                            Fullname = d.MstUser_PreparedByUser.Fullname
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
                         },
                         CheckedByUserId = d.CheckedByUserId,
                         CheckedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CheckedByUser.Username,
-                            Fullname = d.MstUser_CheckedByUser.Fullname
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
                         },
                         ApprovedByUserId = d.ApprovedByUserId,
                         ApprovedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_ApprovedByUser.Username,
-                            Fullname = d.MstUser_ApprovedByUser.Fullname
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
@@ -421,14 +421,14 @@ namespace liteclerk_api.APIControllers
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstUser_CreatedByUser.Fullname
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
                         CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
@@ -462,7 +462,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstArticleItemDBSet item = await (
                     from d in _dbContext.MstArticleItems
-                    where d.MstArticle_Article.IsLocked == true
+                    where d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -499,7 +499,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.TrnJobOrderDBSet newJobOrder = new DBSets.TrnJobOrderDBSet()
                 {
                     BranchId = Convert.ToInt32(user.BranchId),
-                    CurrencyId = user.MstCompany_Company.CurrencyId,
+                    CurrencyId = user.MstCompany_CompanyId.CurrencyId,
                     JONumber = JONumber,
                     JODate = DateTime.Today,
                     ManualNumber = JONumber,
@@ -587,7 +587,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleItemDBSet item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnJobOrderDTO.ItemId
-                    && d.MstArticle_Article.IsLocked == true
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -714,7 +714,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleItemDBSet item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnJobOrderDTO.ItemId
-                    && d.MstArticle_Article.IsLocked == true
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -1025,12 +1025,12 @@ namespace liteclerk_api.APIControllers
                             baseQuantity = salesInvoiceItem.Quantity * (1 / itemUnit.Multiplier);
                         }
 
-                        Int32 baseUnitId = salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.Any() ? salesInvoiceItem.MstArticle_Item.MstArticleItems_Article.FirstOrDefault().UnitId : 0;
+                        Int32 baseUnitId = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().UnitId : 0;
 
                         DBSets.TrnJobOrderDBSet newJobOrder = new DBSets.TrnJobOrderDBSet()
                         {
                             BranchId = Convert.ToInt32(user.BranchId),
-                            CurrencyId = user.MstCompany_Company.CurrencyId,
+                            CurrencyId = user.MstCompany_CompanyId.CurrencyId,
                             JONumber = JONumber,
                             JODate = DateTime.Today,
                             ManualNumber = JONumber,

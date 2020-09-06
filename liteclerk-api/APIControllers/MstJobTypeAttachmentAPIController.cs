@@ -37,9 +37,9 @@ namespace liteclerk_api.APIControllers
                         JobTypeId = d.JobTypeId,
                         JobType = new DTO.MstJobTypeDTO
                         {
-                            JobTypeCode = d.MstJobType_JobType.JobTypeCode,
-                            ManualCode = d.MstJobType_JobType.ManualCode,
-                            JobType = d.MstJobType_JobType.JobType
+                            JobTypeCode = d.MstJobType_JobTypeId.JobTypeCode,
+                            ManualCode = d.MstJobType_JobTypeId.ManualCode,
+                            JobType = d.MstJobType_JobTypeId.JobType
                         },
                         AttachmentCode = d.AttachmentCode,
                         AttachmentType = d.AttachmentType,

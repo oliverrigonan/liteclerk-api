@@ -50,9 +50,9 @@ namespace liteclerk_api.APIControllers
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
@@ -60,82 +60,82 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
-                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
-                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
-                            Account = d.MstAccount_AssetAccount.Account
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
-                            Account = d.MstAccount_SalesAccount.Account
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.ManualCode,
-                            Account = d.MstAccount_CostAccount.Account
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
-                            Account = d.MstAccount_ExpenseAccount.Account
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVAT.TaxCode,
-                            ManualCode = d.MstTax_RRVAT.ManualCode,
-                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVAT.TaxCode,
-                            ManualCode = d.MstTax_SIVAT.ManualCode,
-                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -154,16 +154,16 @@ namespace liteclerk_api.APIControllers
             {
                 IEnumerable<DTO.MstArticleItemDTO> lockedArticleItems = await (
                     from d in _dbContext.MstArticleItems
-                    where d.MstArticle_Article.IsLocked == true
+                    where d.MstArticle_ArticleId.IsLocked == true
                     select new DTO.MstArticleItemDTO
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
@@ -171,82 +171,82 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
-                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
-                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
-                            Account = d.MstAccount_AssetAccount.Account
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
-                            Account = d.MstAccount_SalesAccount.Account
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.ManualCode,
-                            Account = d.MstAccount_CostAccount.Account
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
-                            Account = d.MstAccount_ExpenseAccount.Account
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVAT.TaxCode,
-                            ManualCode = d.MstTax_RRVAT.ManualCode,
-                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVAT.TaxCode,
-                            ManualCode = d.MstTax_SIVAT.ManualCode,
-                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -265,7 +265,7 @@ namespace liteclerk_api.APIControllers
             {
                 IEnumerable<DTO.MstArticleItemDTO> inventoryArticleItems = await (
                     from d in _dbContext.MstArticleItems
-                    where d.MstArticle_Article.IsLocked == true
+                    where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == true
                     && (d.Kitting == "NONE" || d.Kitting == "PRODUCED")
                     select new DTO.MstArticleItemDTO
@@ -274,9 +274,9 @@ namespace liteclerk_api.APIControllers
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
@@ -284,82 +284,82 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
-                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
-                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
-                            Account = d.MstAccount_AssetAccount.Account
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
-                            Account = d.MstAccount_SalesAccount.Account
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.ManualCode,
-                            Account = d.MstAccount_CostAccount.Account
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
-                            Account = d.MstAccount_ExpenseAccount.Account
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVAT.TaxCode,
-                            ManualCode = d.MstTax_RRVAT.ManualCode,
-                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVAT.TaxCode,
-                            ManualCode = d.MstTax_SIVAT.ManualCode,
-                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -378,7 +378,7 @@ namespace liteclerk_api.APIControllers
             {
                 IEnumerable<DTO.MstArticleItemDTO> nonInventoryArticleItems = await (
                     from d in _dbContext.MstArticleItems
-                    where d.MstArticle_Article.IsLocked == true
+                    where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == false
                     && (d.Kitting == "NONE" || d.Kitting == "PACKAGE")
                     select new DTO.MstArticleItemDTO
@@ -387,9 +387,9 @@ namespace liteclerk_api.APIControllers
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
@@ -397,82 +397,82 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
-                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
-                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
-                            Account = d.MstAccount_AssetAccount.Account
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
-                            Account = d.MstAccount_SalesAccount.Account
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.ManualCode,
-                            Account = d.MstAccount_CostAccount.Account
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
-                            Account = d.MstAccount_ExpenseAccount.Account
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVAT.TaxCode,
-                            ManualCode = d.MstTax_RRVAT.ManualCode,
-                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVAT.TaxCode,
-                            ManualCode = d.MstTax_SIVAT.ManualCode,
-                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -491,7 +491,7 @@ namespace liteclerk_api.APIControllers
             {
                 IEnumerable<DTO.MstArticleItemDTO> producedArticleItems = await (
                     from d in _dbContext.MstArticleItems
-                    where d.MstArticle_Article.IsLocked == true
+                    where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == true
                     && d.Kitting == "PRODUCED"
                     select new DTO.MstArticleItemDTO
@@ -500,9 +500,9 @@ namespace liteclerk_api.APIControllers
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
@@ -510,82 +510,82 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
-                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
-                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
-                            Account = d.MstAccount_AssetAccount.Account
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
-                            Account = d.MstAccount_SalesAccount.Account
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.ManualCode,
-                            Account = d.MstAccount_CostAccount.Account
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
-                            Account = d.MstAccount_ExpenseAccount.Account
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVAT.TaxCode,
-                            ManualCode = d.MstTax_RRVAT.ManualCode,
-                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVAT.TaxCode,
-                            ManualCode = d.MstTax_SIVAT.ManualCode,
-                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -611,9 +611,9 @@ namespace liteclerk_api.APIControllers
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_Article.ArticleCode,
-                            ManualCode = d.MstArticle_Article.ManualCode,
-                            Article = d.MstArticle_Article.Article
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
                         },
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
@@ -621,82 +621,82 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_Unit.UnitCode,
-                            ManualCode = d.MstUnit_Unit.ManualCode,
-                            Unit = d.MstUnit_Unit.Unit
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
                         },
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroupCode,
-                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroup.ManualCode,
-                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroup.ArticleAccountGroup
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccount.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccount.ManualCode,
-                            Account = d.MstAccount_AssetAccount.Account
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccount.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccount.ManualCode,
-                            Account = d.MstAccount_SalesAccount.Account
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccount.AccountCode,
-                            ManualCode = d.MstAccount_CostAccount.ManualCode,
-                            Account = d.MstAccount_CostAccount.Account
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccount.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccount.ManualCode,
-                            Account = d.MstAccount_ExpenseAccount.Account
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVAT.TaxCode,
-                            ManualCode = d.MstTax_RRVAT.ManualCode,
-                            TaxDescription = d.MstTax_RRVAT.TaxDescription
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVAT.TaxCode,
-                            ManualCode = d.MstTax_SIVAT.ManualCode,
-                            TaxDescription = d.MstTax_SIVAT.TaxDescription
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAX.TaxCode,
-                            ManualCode = d.MstTax_WTAX.ManualCode,
-                            TaxDescription = d.MstTax_WTAX.TaxDescription
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
-                        IsLocked = d.MstArticle_Article.IsLocked,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_CreatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_CreatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_Article.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
-                            Username = d.MstArticle_Article.MstUser_UpdatedByUser.Username,
-                            Fullname = d.MstArticle_Article.MstUser_UpdatedByUser.Fullname
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_Article.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).FirstOrDefaultAsync();
 
@@ -857,7 +857,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                if (articleItem.MstArticle_Article.IsLocked == true)
+                if (articleItem.MstArticle_ArticleId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot save or make any changes to an item that is locked.");
                 }
@@ -993,7 +993,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                if (articleItem.MstArticle_Article.IsLocked == true)
+                if (articleItem.MstArticle_ArticleId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot lock an item that is locked.");
                 }
@@ -1130,7 +1130,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                if (articleItem.MstArticle_Article.IsLocked == false)
+                if (articleItem.MstArticle_ArticleId.IsLocked == false)
                 {
                     return StatusCode(400, "Cannot unlock an item that is unlocked.");
                 }
@@ -1190,7 +1190,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                if (articleItem.MstArticle_Article.IsLocked == true)
+                if (articleItem.MstArticle_ArticleId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete an item that is locked.");
                 }

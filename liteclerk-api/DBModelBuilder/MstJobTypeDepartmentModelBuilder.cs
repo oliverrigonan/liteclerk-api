@@ -15,9 +15,9 @@ namespace liteclerk_api.DBModelBuilder
                 entity.ToTable("MstJobTypeDepartment");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.JobTypeId).HasColumnName("JobTypeId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstJobType_JobType).WithMany(f => f.MstJobTypeDepartments_JobType).HasForeignKey(f => f.JobTypeId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstJobType_JobTypeId).WithMany(f => f.MstJobTypeDepartments_JobTypeId).HasForeignKey(f => f.JobTypeId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.JobDepartmentId).HasColumnName("JobDepartmentId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstJobDepartment_JobDepartment).WithMany(f => f.MstJobTypeDepartments_JobDepartment).HasForeignKey(f => f.JobDepartmentId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstJobDepartment_JobDepartmentId).WithMany(f => f.MstJobTypeDepartments_JobDepartmentId).HasForeignKey(f => f.JobDepartmentId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.NumberOfDays).HasColumnName("NumberOfDays").HasColumnType("decimal(18,5)").IsRequired();
             });
         }

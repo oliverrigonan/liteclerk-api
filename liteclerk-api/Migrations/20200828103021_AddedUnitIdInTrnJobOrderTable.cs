@@ -19,7 +19,7 @@ namespace liteclerk_api.Migrations
                 column: "UnitId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_TrnJobOrder_MstUnit_UnitId",
+                name: "FK_TrnJobOrder_MstUnit_UnitIdId",
                 table: "TrnJobOrder",
                 column: "UnitId",
                 principalTable: "MstUnit",
@@ -30,7 +30,7 @@ namespace liteclerk_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_TrnJobOrder_MstUnit_UnitId",
+                name: "FK_TrnJobOrder_MstUnit_UnitIdId",
                 table: "TrnJobOrder");
 
             migrationBuilder.DropIndex(

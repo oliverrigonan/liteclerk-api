@@ -9,12 +9,12 @@ namespace liteclerk_api.DBSets
     {
         public Int32 Id { get; set; }
         public Int32 ArticleId { get; set; }
-        public virtual MstArticleDBSet MstArticle_Article { get; set; }
+        public virtual MstArticleDBSet MstArticle_ArticleId { get; set; }
         public Int32 BranchId { get; set; }
-        public virtual MstCompanyBranchDBSet MstCompanyBranch_Branch { get; set; }
+        public virtual MstCompanyBranchDBSet MstCompanyBranch_BranchId { get; set; }
         public String InventoryCode { get; set; }
         public Decimal Quantity { get; set; }
         public Decimal Cost { get; set; }
-        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_ItemInventory { get; set; }
+        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_ItemInventoryId { get; set; }
     }
 }

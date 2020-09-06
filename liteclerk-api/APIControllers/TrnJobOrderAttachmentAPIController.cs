@@ -233,7 +233,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job order attachment not found.");
                 }
 
-                if (jobOrderAttachment.TrnJobOrder_JobOrder.IsLocked == true)
+                if (jobOrderAttachment.TrnJobOrder_JOId.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete job order attachments if the current job order is locked.");
                 }

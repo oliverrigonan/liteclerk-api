@@ -18,14 +18,14 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ManualCode).HasColumnName("ManualCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Account).HasColumnName("Account").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.AccountTypeId).HasColumnName("AccountTypeId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstAccountType_AccountType).WithMany(f => f.MstAccounts_AccountType).HasForeignKey(f => f.AccountTypeId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstAccountType_AccountTypeId).WithMany(f => f.MstAccounts_AccountTypeId).HasForeignKey(f => f.AccountTypeId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.AccountCashFlowId).HasColumnName("AccountCashFlowId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstAccountCashFlow_AccountCashFlow).WithMany(f => f.MstAccounts_AccountCashFlow).HasForeignKey(f => f.AccountCashFlowId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstAccountCashFlow_AccountCashFlowId).WithMany(f => f.MstAccounts_AccountCashFlowId).HasForeignKey(f => f.AccountCashFlowId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstUser_CreatedByUser).WithMany(f => f.MstAccounts_CreatedByUser).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstUser_CreatedByUserId).WithMany(f => f.MstAccounts_CreatedByUserId).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.CreatedDateTime).HasColumnName("CreatedDateTime").HasColumnType("datetime").IsRequired();
                 entity.Property(e => e.UpdatedByUserId).HasColumnName("UpdatedByUserId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstUser_UpdatedByUser).WithMany(f => f.MstAccounts_UpdatedByUser).HasForeignKey(f => f.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstUser_UpdatedByUserId).WithMany(f => f.MstAccounts_UpdatedByUserId).HasForeignKey(f => f.UpdatedByUserId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.UpdatedDateTime).HasColumnName("UpdatedDateTime").HasColumnType("datetime").IsRequired();
             });
         }

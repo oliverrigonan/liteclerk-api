@@ -12,24 +12,24 @@ namespace liteclerk_api.DBSets
         public String ManualCode { get; set; }
         public String Article { get; set; }
         public Int32 ArticleTypeId { get; set; }
-        public virtual MstArticleTypeDBSet MstArticleType_ArticleType { get; set; }
+        public virtual MstArticleTypeDBSet MstArticleType_ArticleTypeId { get; set; }
         public Boolean IsLocked { get; set; }
         public Int32 CreatedByUserId { get; set; }
-        public virtual MstUserDBSet MstUser_CreatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_CreatedByUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public Int32 UpdatedByUserId { get; set; }
-        public virtual MstUserDBSet MstUser_UpdatedByUser { get; set; }
+        public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
-        public virtual ICollection<MstArticleCustomerDBSet> MstArticleCustomers_Article { get; set; }
-        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_Article { get; set; }
-        public virtual ICollection<MstArticleItemUnitDBSet> MstArticleItemUnits_Article { get; set; }
-        public virtual ICollection<MstArticleItemPriceDBSet> MstArticleItemPrices_Article { get; set; }
-        public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_Customer { get; set; }
-        public virtual ICollection<MstArticleItemInventoryDBSet> MstArticleItemInventories_Article { get; set; }
-        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_Item { get; set; }
-        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_Item { get; set; }
-        public virtual ICollection<TrnCollectionDBSet> TrnCollections_Customer { get; set; }
-        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_Article { get; set; }
-        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_Bank { get; set; }
+        public virtual ICollection<MstArticleCustomerDBSet> MstArticleCustomers_ArticleId { get; set; }
+        public virtual ICollection<MstArticleItemDBSet> MstArticleItems_ArticleId { get; set; }
+        public virtual ICollection<MstArticleItemUnitDBSet> MstArticleItemUnits_ArticleId { get; set; }
+        public virtual ICollection<MstArticleItemPriceDBSet> MstArticleItemPrices_ArticleId { get; set; }
+        public virtual ICollection<TrnSalesInvoiceDBSet> TrnSalesInvoices_CustomerId { get; set; }
+        public virtual ICollection<MstArticleItemInventoryDBSet> MstArticleItemInventories_ArticleId { get; set; }
+        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_ItemId { get; set; }
+        public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_ItemId { get; set; }
+        public virtual ICollection<TrnCollectionDBSet> TrnCollections_CustomerId { get; set; }
+        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_ArticleId { get; set; }
+        public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_BankId { get; set; }
     }
 }

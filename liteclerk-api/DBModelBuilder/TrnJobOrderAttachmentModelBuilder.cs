@@ -15,7 +15,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.ToTable("TrnJobOrderAttachment");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.JOId).HasColumnName("JOId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.TrnJobOrder_JobOrder).WithMany(f => f.TrnJobOrderAttachments_JobOrder).HasForeignKey(f => f.JOId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.TrnJobOrder_JOId).WithMany(f => f.TrnJobOrderAttachments_JOId).HasForeignKey(f => f.JOId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.AttachmentCode).HasColumnName("AttachmentCode").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.AttachmentType).HasColumnName("AttachmentType").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.AttachmentURL).HasColumnName("AttachmentURL").HasColumnType("nvarchar(max)").HasMaxLength(255).IsRequired();
