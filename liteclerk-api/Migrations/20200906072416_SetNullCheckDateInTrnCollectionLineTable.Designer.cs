@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200906072416_SetNullCheckDateInTrnCollectionLineTable")]
+    partial class SetNullCheckDateInTrnCollectionLineTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -309,65 +311,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("MstArticleAccountGroup");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.MstArticleBankDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AccountNumber")
-                        .IsRequired()
-                        .HasColumnName("AccountNumber")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ArticleId")
-                        .HasColumnName("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Bank")
-                        .IsRequired()
-                        .HasColumnName("Bank")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<int>("CashInBankAccountId")
-                        .HasColumnName("CashInBankAccountId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnName("ContactNumber")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("ContactPerson")
-                        .IsRequired()
-                        .HasColumnName("ContactPerson")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("TypeOfAccount")
-                        .IsRequired()
-                        .HasColumnName("TypeOfAccount")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("CashInBankAccountId");
-
-                    b.ToTable("MstArticleBank");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleCustomerDBSet", b =>
@@ -1584,12 +1527,12 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CheckBank")
-                        .IsRequired()
                         .HasColumnName("CheckBank")
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(50);
 
                     b.Property<DateTime?>("CheckDate")
+                        .IsRequired()
                         .HasColumnName("CheckDate")
                         .HasColumnType("datetime");
 
@@ -1613,6 +1556,7 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("SIId")
+                        .IsRequired()
                         .HasColumnName("SIId")
                         .HasColumnType("int");
 
@@ -2316,21 +2260,6 @@ namespace liteclerk_api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("liteclerk_api.DBSets.MstArticleBankDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
-                        .WithMany("MstArticleBanks_ArticleId")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_CashInBankAccountId")
-                        .WithMany("MstArticleBanks_CashInBankAccountId")
-                        .HasForeignKey("CashInBankAccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleCustomerDBSet", b =>
                 {
                     b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
@@ -2769,7 +2698,8 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", "TrnSalesInvoice_SIId")
                         .WithMany("TrnCollectionLines_SIId")
                         .HasForeignKey("SIId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAXId")
                         .WithMany("TrnCollectionLines_WTAXId")

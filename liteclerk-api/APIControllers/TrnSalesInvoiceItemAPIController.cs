@@ -24,19 +24,6 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
-        public String PadZeroes(Int32 number, Int32 length)
-        {
-            var result = number.ToString();
-            var pad = length - result.Length;
-            while (pad > 0)
-            {
-                result = '0' + result;
-                pad--;
-            }
-
-            return result;
-        }
-
         [HttpGet("list/{SIId}")]
         public async Task<ActionResult> GetSalesInvoiceItemListBySalesInvoice(Int32 SIId)
         {
@@ -566,7 +553,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> GetSalesInvoiceItem(int id)
+        public async Task<ActionResult> DeleteSalesInvoiceItem(int id)
         {
             try
             {

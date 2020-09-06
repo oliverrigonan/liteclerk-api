@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace liteclerk_api.APIControllers
 {
-    //[Authorize]
+    [Authorize]
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]

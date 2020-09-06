@@ -205,7 +205,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> GetJobOrderAttachment(int id)
+        public async Task<ActionResult> DeleteJobOrderAttachment(int id)
         {
             try
             {
