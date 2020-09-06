@@ -12,10 +12,11 @@ namespace liteclerk_api.DTO
         public String ManualCode { get; set; }
         public String Article { get; set; }
         public Int32 ArticleTypeId { get; set; }
+        public MstArticleTypeDTO ArticleType { get; set; }
         public Boolean IsLocked { get; set; }
-        public Int32 CreatedUserFullname { get; set; }
-        public DateTime CreatedDateTime { get; set; }
-        public Int32 UpdatedUserFullname { get; set; }
-        public DateTime UpdatedDateTime { get; set; }
+        public MstUserDTO CreatedByUser { get; set; }
+        public String CreatedDateTime { get; set; }
+        public MstUserDTO UpdatedByUser { get; set; }
+        public String UpdatedDateTime { get; set; }
     }
 }

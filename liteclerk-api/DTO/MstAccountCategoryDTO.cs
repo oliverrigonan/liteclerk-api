@@ -5,16 +5,12 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DTO
 {
-    public class MstAccountDTO
+    public class MstAccountCategoryDTO
     {
         public Int32 Id { get; set; }
-        public String AccountCode { get; set; }
+        public String AccountCategoryCode { get; set; }
         public String ManualCode { get; set; }
-        public String Account { get; set; }
-        public Int32 AccountTypeId { get; set; }
-        public MstAccountTypeDTO AccountType { get; set; }
-        public Int32 AccountCashFlowId { get; set; }
-        public MstAccountCashFlowDTO AccountCashFlow { get; set; }
+        public String AccountCategory { get; set; }
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }
         public MstUserDTO UpdatedByUser { get; set; }
