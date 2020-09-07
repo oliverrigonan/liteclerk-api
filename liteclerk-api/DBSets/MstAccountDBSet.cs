@@ -33,5 +33,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstArticleItemDBSet> MstArticleItems_ExpenseAccountId { get; set; }
         public virtual ICollection<MstPayTypeDBSet> MstPayTypes_AccountId { get; set; }
         public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_AccountId { get; set; }
+        public virtual ICollection<MstAccountArticleTypeDBSet> MstAccountArticleTypes_AccountId { get; set; }
     }
 }

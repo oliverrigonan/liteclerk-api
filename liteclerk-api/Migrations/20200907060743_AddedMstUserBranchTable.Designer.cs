@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200907060743_AddedMstUserBranchTable")]
+    partial class AddedMstUserBranchTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1421,20 +1423,24 @@ namespace liteclerk_api.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("BranchId")
-                        .HasColumnName("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MstCompanyBranch_BranchIdId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MstUser_UserIdId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
-                        .HasColumnName("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchId");
+                    b.HasIndex("MstCompanyBranch_BranchIdId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("MstUser_UserIdId");
 
-                    b.ToTable("MstUserBranch");
+                    b.ToTable("MstUserBranchDBSet");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstUserDBSet", b =>
@@ -2731,15 +2737,11 @@ namespace liteclerk_api.Migrations
                 {
                     b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
                         .WithMany("MstUserBranches_BranchId")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("MstCompanyBranch_BranchIdId");
 
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UserId")
                         .WithMany("MstUserBranches_UserId")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("MstUser_UserIdId");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstUserDBSet", b =>

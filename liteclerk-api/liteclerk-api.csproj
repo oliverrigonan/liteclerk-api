@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20200823142104_OrderColumns.Designer.cs" />
     <Compile Remove="Migrations\20200906063030_TestMigrations.cs" />
     <Compile Remove="Migrations\20200906063030_TestMigrations.Designer.cs" />
+    <Compile Remove="Migrations\20200907061131_ModifedMstUserBranchTable.cs" />
+    <Compile Remove="Migrations\20200907061131_ModifedMstUserBranchTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
