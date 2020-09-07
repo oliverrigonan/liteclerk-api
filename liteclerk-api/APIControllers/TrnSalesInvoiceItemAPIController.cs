@@ -372,6 +372,26 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnSalesInvoiceItems.Add(newSalesInvoiceItems);
                 await _dbContext.SaveChangesAsync();
 
+                Decimal amount = 0;
+
+                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItemsByCurrentSalesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoiceItems
+                    where d.SIId == trnSalesInvoiceItemDTO.SIId
+                    select d
+                ).ToListAsync();
+
+                if (salesInvoiceItemsByCurrentSalesInvoice.Any())
+                {
+                    amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                }
+
+                DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
+                updateSalesInvoice.Amount = amount;
+                updateSalesInvoice.UpdatedByUserId = userId;
+                updateSalesInvoice.UpdatedDateTime = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -544,6 +564,26 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                Decimal amount = 0;
+
+                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItemsByCurrentSalesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoiceItems
+                    where d.SIId == trnSalesInvoiceItemDTO.SIId
+                    select d
+                ).ToListAsync();
+
+                if (salesInvoiceItemsByCurrentSalesInvoice.Any())
+                {
+                    amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                }
+
+                DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
+                updateSalesInvoice.Amount = amount;
+                updateSalesInvoice.UpdatedByUserId = userId;
+                updateSalesInvoice.UpdatedDateTime = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -565,6 +605,13 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).FirstOrDefaultAsync();
 
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                Int32 SIId = 0;
+
                 DBSets.TrnSalesInvoiceItemDBSet salesInvoiceItem = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.Id == id
@@ -576,12 +623,45 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Sales invoice item not found.");
                 }
 
-                if (salesInvoiceItem.TrnSalesInvoice_SIId.IsLocked == true)
+                SIId = salesInvoiceItem.SIId;
+
+                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoices
+                    where d.Id == SIId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (salesInvoice == null)
+                {
+                    return StatusCode(404, "Sales invoice not found.");
+                }
+
+                if (salesInvoice.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete sales invoice items if the current sales invoice is locked.");
                 }
 
                 _dbContext.TrnSalesInvoiceItems.Remove(salesInvoiceItem);
+                await _dbContext.SaveChangesAsync();
+
+                Decimal amount = 0;
+
+                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItemsByCurrentSalesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoiceItems
+                    where d.SIId == SIId
+                    select d
+                ).ToListAsync();
+
+                if (salesInvoiceItemsByCurrentSalesInvoice.Any())
+                {
+                    amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                }
+
+                DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
+                updateSalesInvoice.Amount = amount;
+                updateSalesInvoice.UpdatedByUserId = userId;
+                updateSalesInvoice.UpdatedDateTime = DateTime.Now;
+
                 await _dbContext.SaveChangesAsync();
 
                 return StatusCode(200);

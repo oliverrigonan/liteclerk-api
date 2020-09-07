@@ -21,10 +21,12 @@ namespace liteclerk_api.APIControllers
     public class TrnSalesInvoiceAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
+        private readonly Business.SysAccountsReceivable _sysAccountsReceivable;
 
         public TrnSalesInvoiceAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+            _sysAccountsReceivable = new Business.SysAccountsReceivable(dbContext);
         }
 
         public String PadZeroes(Int32 number, Int32 length)
@@ -633,6 +635,8 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                await _sysAccountsReceivable.UpdateAccountsReceivable(id);
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -682,6 +686,8 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                await _sysAccountsReceivable.UpdateAccountsReceivable(id);
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -730,6 +736,8 @@ namespace liteclerk_api.APIControllers
                 unlockSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
+
+                await _sysAccountsReceivable.UpdateAccountsReceivable(id);
 
                 return StatusCode(200);
             }

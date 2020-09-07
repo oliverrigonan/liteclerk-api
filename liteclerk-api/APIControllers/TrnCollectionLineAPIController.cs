@@ -336,6 +336,26 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnCollectionLines.Add(newCollectionLines);
                 await _dbContext.SaveChangesAsync();
 
+                Decimal amount = 0;
+
+                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                    from d in _dbContext.TrnCollectionLines
+                    where d.CIId == trnCollectionLineDTO.CIId
+                    select d
+                ).ToListAsync();
+
+                if (collectionLinesByCurrentCollection.Any())
+                {
+                    amount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                }
+
+                DBSets.TrnCollectionDBSet updateCollection = collection;
+                updateCollection.Amount = amount;
+                updateCollection.UpdatedByUserId = userId;
+                updateCollection.UpdatedDateTime = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -497,6 +517,26 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                Decimal amount = 0;
+
+                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                    from d in _dbContext.TrnCollectionLines
+                    where d.CIId == trnCollectionLineDTO.CIId
+                    select d
+                ).ToListAsync();
+
+                if (collectionLinesByCurrentCollection.Any())
+                {
+                    amount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                }
+
+                DBSets.TrnCollectionDBSet updateCollection = collection;
+                updateCollection.Amount = amount;
+                updateCollection.UpdatedByUserId = userId;
+                updateCollection.UpdatedDateTime = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -518,6 +558,13 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).FirstOrDefaultAsync();
 
+                if (user == null)
+                {
+                    return StatusCode(404, "User login not found.");
+                }
+
+                Int32 CIId = 0;
+
                 DBSets.TrnCollectionLineDBSet collectionLine = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.Id == id
@@ -529,12 +576,45 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Collection line not found.");
                 }
 
-                if (collectionLine.TrnCollection_CIId.IsLocked == true)
+                CIId = collectionLine.CIId;
+
+                DBSets.TrnCollectionDBSet collection = await (
+                    from d in _dbContext.TrnCollections
+                    where d.Id == CIId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (collection == null)
+                {
+                    return StatusCode(404, "Collection not found.");
+                }
+
+                if (collection.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete collection line if the current collection is locked.");
                 }
 
                 _dbContext.TrnCollectionLines.Remove(collectionLine);
+                await _dbContext.SaveChangesAsync();
+
+                Decimal amount = 0;
+
+                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                    from d in _dbContext.TrnCollectionLines
+                    where d.CIId == CIId
+                    select d
+                ).ToListAsync();
+
+                if (collectionLinesByCurrentCollection.Any())
+                {
+                    amount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                }
+
+                DBSets.TrnCollectionDBSet updateCollection = collection;
+                updateCollection.Amount = amount;
+                updateCollection.UpdatedByUserId = userId;
+                updateCollection.UpdatedDateTime = DateTime.Now;
+
                 await _dbContext.SaveChangesAsync();
 
                 return StatusCode(200);

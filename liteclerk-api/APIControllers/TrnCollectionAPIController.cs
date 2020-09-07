@@ -18,10 +18,12 @@ namespace liteclerk_api.APIControllers
     public class TrnCollectionAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
+        private readonly Business.SysAccountsReceivable _sysAccountsReceivable;
 
         public TrnCollectionAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+            _sysAccountsReceivable = new Business.SysAccountsReceivable(dbContext);
         }
 
         public String PadZeroes(Int32 number, Int32 length)
@@ -449,6 +451,21 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                    from d in _dbContext.TrnCollectionLines
+                    where d.CIId == id
+                    && d.SIId != null
+                    select d
+                ).ToListAsync();
+
+                if (collectionLinesByCurrentCollection.Any())
+                {
+                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
+                    {
+                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
+                    }
+                }
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -497,6 +514,21 @@ namespace liteclerk_api.APIControllers
                 unlockCollection.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
+
+                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                    from d in _dbContext.TrnCollectionLines
+                    where d.CIId == id
+                    && d.SIId != null
+                    select d
+                ).ToListAsync();
+
+                if (collectionLinesByCurrentCollection.Any())
+                {
+                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
+                    {
+                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
+                    }
+                }
 
                 return StatusCode(200);
             }
@@ -547,6 +579,21 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                    from d in _dbContext.TrnCollectionLines
+                    where d.CIId == id
+                    && d.SIId != null
+                    select d
+                ).ToListAsync();
+
+                if (collectionLinesByCurrentCollection.Any())
+                {
+                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
+                    {
+                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
+                    }
+                }
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -591,6 +638,21 @@ namespace liteclerk_api.APIControllers
 
                 _dbContext.TrnCollections.Remove(salesInvoice);
                 await _dbContext.SaveChangesAsync();
+
+                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                    from d in _dbContext.TrnCollectionLines
+                    where d.CIId == id
+                    && d.SIId != null
+                    select d
+                ).ToListAsync();
+
+                if (collectionLinesByCurrentCollection.Any())
+                {
+                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
+                    {
+                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
+                    }
+                }
 
                 return StatusCode(200);
             }
