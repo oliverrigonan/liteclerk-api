@@ -16,6 +16,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstCodeTableDBSet> MstCodeTables { get; set; }
         public virtual DbSet<DBSets.MstUserDBSet> MstUsers { get; set; }
         public virtual DbSet<DBSets.MstUserBranchDBSet> MstUserBranches { get; set; }
+        public virtual DbSet<DBSets.MstUserJobDepartmentDBSet> MstUserJobDepartments { get; set; }
         public virtual DbSet<DBSets.MstCurrencyDBSet> MstCurrencies { get; set; }
         public virtual DbSet<DBSets.MstAccountCashFlowDBSet> MstAccountCashFlows { get; set; }
         public virtual DbSet<DBSets.MstAccountCategoryDBSet> MstAccountCategories { get; set; }
@@ -59,6 +60,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstCodeTableModelBuilder.CreateMstCodeTableModel(modelBuilder);
             DBModelBuilder.MstUserModelBuilder.CreateMstUserModel(modelBuilder);
             DBModelBuilder.MstUserBranchModelBuilder.CreateMstUserBranchModel(modelBuilder);
+            DBModelBuilder.MstUserJobDepartmentModelBuilder.CreateMstUserJobDepartmentModel(modelBuilder);
             DBModelBuilder.MstCurrencyModelBuilder.CreateMstCurrencyModel(modelBuilder);
             DBModelBuilder.MstAccountCashFlowModelBuilder.CreateMstAccountCashFlowModel(modelBuilder);
             DBModelBuilder.MstAccountCategoryModelBuilder.CreateMstAccountCategoryModel(modelBuilder);

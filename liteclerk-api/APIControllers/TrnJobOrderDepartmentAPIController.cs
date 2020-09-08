@@ -326,7 +326,7 @@ namespace liteclerk_api.APIControllers
 
                 if (jobOrderDepartment == null)
                 {
-                    return StatusCode(404, "Job order attachment not found.");
+                    return StatusCode(404, "Job order department not found.");
                 }
 
                 if (jobOrderDepartment.TrnJobOrder_JOId.IsLocked == true)
