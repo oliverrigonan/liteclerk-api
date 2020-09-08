@@ -51,6 +51,12 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_StatusByUserId.Username,
                             Fullname = d.MstUser_StatusByUserId.Fullname
                         },
+                        AssignedToUserId = d.AssignedToUserId,
+                        AssignedToUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_AssignedToUserId.Username,
+                            Fullname = d.MstUser_AssignedToUserId.Fullname
+                        },
                         StatusUpdatedDateTime = d.StatusUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                     }
                 ).ToListAsync();
@@ -89,6 +95,12 @@ namespace liteclerk_api.APIControllers
                         {
                             Username = d.MstUser_StatusByUserId.Username,
                             Fullname = d.MstUser_StatusByUserId.Fullname
+                        },
+                        AssignedToUserId = d.AssignedToUserId,
+                        AssignedToUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_AssignedToUserId.Username,
+                            Fullname = d.MstUser_AssignedToUserId.Fullname
                         },
                         StatusUpdatedDateTime = d.StatusUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                     }
@@ -147,14 +159,37 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job department not found.");
                 }
 
+                DBSets.MstUserDBSet statusByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDepartmentDTO.StatusByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (statusByUser == null)
+                {
+                    return StatusCode(404, "Status by user not found.");
+                }
+
+                DBSets.MstUserDBSet assignedToUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDepartmentDTO.AssignedToUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (assignedToUser == null)
+                {
+                    return StatusCode(404, "Assigned to user not found.");
+                }
+
                 DBSets.TrnJobOrderDepartmentDBSet newJobOrderDepartment = new DBSets.TrnJobOrderDepartmentDBSet()
                 {
                     JOId = trnJobOrderDepartmentDTO.JOId,
                     JobDepartmentId = trnJobOrderDepartmentDTO.JobDepartmentId,
                     Particulars = trnJobOrderDepartmentDTO.Particulars,
                     Status = trnJobOrderDepartmentDTO.Status,
-                    StatusByUserId = userId,
-                    StatusUpdatedDateTime = DateTime.Now
+                    StatusByUserId = trnJobOrderDepartmentDTO.StatusByUserId,
+                    StatusUpdatedDateTime = DateTime.Now,
+                    AssignedToUserId = trnJobOrderDepartmentDTO.AssignedToUserId
                 };
 
                 _dbContext.TrnJobOrderDepartments.Add(newJobOrderDepartment);
@@ -224,12 +259,35 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job department not found.");
                 }
 
+                DBSets.MstUserDBSet statusByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDepartmentDTO.StatusByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (statusByUser == null)
+                {
+                    return StatusCode(404, "Status by user not found.");
+                }
+
+                DBSets.MstUserDBSet assignedToUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDepartmentDTO.AssignedToUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (assignedToUser == null)
+                {
+                    return StatusCode(404, "Assigned to user not found.");
+                }
+
                 DBSets.TrnJobOrderDepartmentDBSet updateJobOrderDepartments = jobOrderDepartment;
                 updateJobOrderDepartments.JOId = trnJobOrderDepartmentDTO.JOId;
                 updateJobOrderDepartments.JobDepartmentId = trnJobOrderDepartmentDTO.JobDepartmentId;
                 updateJobOrderDepartments.Particulars = trnJobOrderDepartmentDTO.Particulars;
                 updateJobOrderDepartments.Status = trnJobOrderDepartmentDTO.Status;
-                updateJobOrderDepartments.StatusByUserId = userId;
+                updateJobOrderDepartments.StatusByUserId = trnJobOrderDepartmentDTO.StatusByUserId;
+                updateJobOrderDepartments.AssignedToUserId = trnJobOrderDepartmentDTO.AssignedToUserId;
                 updateJobOrderDepartments.StatusUpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();

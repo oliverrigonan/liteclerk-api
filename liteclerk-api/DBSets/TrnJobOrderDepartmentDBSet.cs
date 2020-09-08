@@ -17,5 +17,7 @@ namespace liteclerk_api.DBSets
         public Int32 StatusByUserId { get; set; }
         public virtual MstUserDBSet MstUser_StatusByUserId { get; set; }
         public DateTime StatusUpdatedDateTime { get; set; }
+        public Int32 AssignedToUserId { get; set; }
+        public virtual MstUserDBSet MstUser_AssignedToUserId { get; set; }
     }
 }

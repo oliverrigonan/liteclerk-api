@@ -42,13 +42,13 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_CreatedByUserId.Username,
                             Fullname = d.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstUser_UpdatedByUserId.Username,
                             Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 

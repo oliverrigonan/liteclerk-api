@@ -59,13 +59,13 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
                             Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
                             Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 
@@ -114,13 +114,13 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
                             Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
                         },
-                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToShortDateString(),
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
                         UpdatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
                             Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
                         },
-                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToShortDateString()
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                     }
                 ).ToListAsync();
 

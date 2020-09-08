@@ -17,5 +17,7 @@ namespace liteclerk_api.DTO
         public Int32 StatusByUserId { get; set; }
         public MstUserDTO StatusByUser { get; set; }
         public String StatusUpdatedDateTime { get; set; }
+        public Int32 AssignedToUserId { get; set; }
+        public MstUserDTO AssignedToUser { get; set; }
     }
 }

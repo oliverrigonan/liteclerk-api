@@ -23,6 +23,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.StatusByUserId).HasColumnName("StatusByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_StatusByUserId).WithMany(f => f.TrnJobOrderDepartments_StatusByUserId).HasForeignKey(f => f.StatusByUserId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.StatusUpdatedDateTime).HasColumnName("StatusUpdatedDateTime").HasColumnType("datetime").IsRequired();
+                entity.Property(e => e.AssignedToUserId).HasColumnName("AssignedToUserId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstUser_AssignedToUserId).WithMany(f => f.TrnJobOrderDepartments_AssignedToUserId).HasForeignKey(f => f.AssignedToUserId).OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

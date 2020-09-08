@@ -21,12 +21,12 @@ namespace liteclerk_api.APIControllers
     public class TrnSalesInvoiceAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
-        private readonly Business.SysAccountsReceivable _sysAccountsReceivable;
+        private readonly Modules.SysAccountsReceivableModule _sysAccountsReceivable;
 
         public TrnSalesInvoiceAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
-            _sysAccountsReceivable = new Business.SysAccountsReceivable(dbContext);
+            _sysAccountsReceivable = new Modules.SysAccountsReceivableModule(dbContext);
         }
 
         public String PadZeroes(Int32 number, Int32 length)
@@ -522,6 +522,39 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Term not found.");
                 }
 
+                DBSets.MstUserDBSet soldByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesInvoiceDTO.SoldByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (soldByUser == null)
+                {
+                    return StatusCode(404, "Sold by user not found.");
+                }
+
+                DBSets.MstUserDBSet checkedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesInvoiceDTO.CheckedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (checkedByUser == null)
+                {
+                    return StatusCode(404, "Checked by user not found.");
+                }
+
+                DBSets.MstUserDBSet approvedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesInvoiceDTO.ApprovedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (approvedByUser == null)
+                {
+                    return StatusCode(404, "Approved by user not found.");
+                }
+
                 DBSets.TrnSalesInvoiceDBSet saveSalesInvoice = salesInvoice;
                 saveSalesInvoice.CurrencyId = trnSalesInvoiceDTO.CurrencyId;
                 saveSalesInvoice.SIDate = Convert.ToDateTime(trnSalesInvoiceDTO.SIDate);
@@ -614,6 +647,39 @@ namespace liteclerk_api.APIControllers
                 if (term == null)
                 {
                     return StatusCode(404, "Term not found.");
+                }
+
+                DBSets.MstUserDBSet soldByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesInvoiceDTO.SoldByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (soldByUser == null)
+                {
+                    return StatusCode(404, "Sold by user not found.");
+                }
+
+                DBSets.MstUserDBSet checkedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesInvoiceDTO.CheckedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (checkedByUser == null)
+                {
+                    return StatusCode(404, "Checked by user not found.");
+                }
+
+                DBSets.MstUserDBSet approvedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesInvoiceDTO.ApprovedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (approvedByUser == null)
+                {
+                    return StatusCode(404, "Approved by user not found.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet lockSalesInvoice = salesInvoice;

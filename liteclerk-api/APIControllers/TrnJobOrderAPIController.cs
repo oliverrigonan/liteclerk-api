@@ -636,6 +636,28 @@ namespace liteclerk_api.APIControllers
                     baseQuantity = trnJobOrderDTO.Quantity * (1 / itemUnit.Multiplier);
                 }
 
+                DBSets.MstUserDBSet checkedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDTO.CheckedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (checkedByUser == null)
+                {
+                    return StatusCode(404, "Checked by user not found.");
+                }
+
+                DBSets.MstUserDBSet approvedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDTO.ApprovedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (approvedByUser == null)
+                {
+                    return StatusCode(404, "Approved by user not found.");
+                }
+
                 DBSets.TrnJobOrderDBSet saveJobOrder = jobOrder;
                 saveJobOrder.CurrencyId = trnJobOrderDTO.CurrencyId;
                 saveJobOrder.JODate = Convert.ToDateTime(trnJobOrderDTO.JODate);
@@ -761,6 +783,28 @@ namespace liteclerk_api.APIControllers
                 if (itemUnit.Multiplier > 0)
                 {
                     baseQuantity = trnJobOrderDTO.Quantity * (1 / itemUnit.Multiplier);
+                }
+
+                DBSets.MstUserDBSet checkedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDTO.CheckedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (checkedByUser == null)
+                {
+                    return StatusCode(404, "Checked by user not found.");
+                }
+
+                DBSets.MstUserDBSet approvedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderDTO.ApprovedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (approvedByUser == null)
+                {
+                    return StatusCode(404, "Approved by user not found.");
                 }
 
                 DBSets.TrnJobOrderDBSet lockJobOrder = jobOrder;
@@ -1112,7 +1156,8 @@ namespace liteclerk_api.APIControllers
                                         Particulars = "",
                                         Status = "",
                                         StatusByUserId = userId,
-                                        StatusUpdatedDateTime = DateTime.Now
+                                        StatusUpdatedDateTime = DateTime.Now,
+                                        AssignedToUserId = userId,
                                     };
 
                                     _dbContext.TrnJobOrderDepartments.Add(newJobOrderDepartment);

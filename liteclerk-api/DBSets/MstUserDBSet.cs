@@ -57,6 +57,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnJobOrderDBSet> TrnJobOrders_UpdatedByUserId { get; set; }
         public virtual ICollection<TrnJobOrderInformationDBSet> TrnJobOrderInformations_InformationByUserId { get; set; }
         public virtual ICollection<TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments_StatusByUserId { get; set; }
+        public virtual ICollection<TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments_AssignedToUserId { get; set; }
         public virtual ICollection<TrnCollectionDBSet> TrnCollections_PreparedByUserId { get; set; }
         public virtual ICollection<TrnCollectionDBSet> TrnCollections_CheckedByUserId { get; set; }
         public virtual ICollection<TrnCollectionDBSet> TrnCollections_ApprovedByUserId { get; set; }

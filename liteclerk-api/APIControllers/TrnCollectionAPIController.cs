@@ -18,12 +18,12 @@ namespace liteclerk_api.APIControllers
     public class TrnCollectionAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
-        private readonly Business.SysAccountsReceivable _sysAccountsReceivable;
+        private readonly Modules.SysAccountsReceivableModule _sysAccountsReceivable;
 
         public TrnCollectionAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
-            _sysAccountsReceivable = new Business.SysAccountsReceivable(dbContext);
+            _sysAccountsReceivable = new Modules.SysAccountsReceivableModule(dbContext);
         }
 
         public String PadZeroes(Int32 number, Int32 length)
@@ -355,6 +355,28 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
+                DBSets.MstUserDBSet checkedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnCollectionDTO.CheckedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (checkedByUser == null)
+                {
+                    return StatusCode(404, "Checked by user not found.");
+                }
+
+                DBSets.MstUserDBSet approvedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnCollectionDTO.ApprovedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (approvedByUser == null)
+                {
+                    return StatusCode(404, "Approved by user not found.");
+                }
+
                 DBSets.TrnCollectionDBSet saveCollection = salesInvoice;
                 saveCollection.CurrencyId = trnCollectionDTO.CurrencyId;
                 saveCollection.CIDate = Convert.ToDateTime(trnCollectionDTO.CIDate);
@@ -433,6 +455,28 @@ namespace liteclerk_api.APIControllers
                 if (customer == null)
                 {
                     return StatusCode(404, "Customer not found.");
+                }
+
+                DBSets.MstUserDBSet checkedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnCollectionDTO.CheckedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (checkedByUser == null)
+                {
+                    return StatusCode(404, "Checked by user not found.");
+                }
+
+                DBSets.MstUserDBSet approvedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnCollectionDTO.ApprovedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (approvedByUser == null)
+                {
+                    return StatusCode(404, "Approved by user not found.");
                 }
 
                 DBSets.TrnCollectionDBSet lockCollection = salesInvoice;

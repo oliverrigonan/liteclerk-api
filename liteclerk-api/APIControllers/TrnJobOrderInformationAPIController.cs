@@ -128,6 +128,17 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add job order information(s) if the current job order is locked.");
                 }
 
+                DBSets.MstUserDBSet informationByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderInformationDTO.InformationByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (informationByUser == null)
+                {
+                    return StatusCode(404, "Information by user not found.");
+                }
+
                 DBSets.TrnJobOrderInformationDBSet newJobOrderInformation = new DBSets.TrnJobOrderInformationDBSet()
                 {
                     JOId = trnJobOrderInformationDTO.JOId,
@@ -136,7 +147,7 @@ namespace liteclerk_api.APIControllers
                     Value = trnJobOrderInformationDTO.Value,
                     Particulars = trnJobOrderInformationDTO.Particulars,
                     IsPrinted = trnJobOrderInformationDTO.IsPrinted,
-                    InformationByUserId = userId,
+                    InformationByUserId = trnJobOrderInformationDTO.InformationByUserId,
                     InformationUpdatedDateTime = DateTime.Now
                 };
 
@@ -196,6 +207,17 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update job order information(s) if the current job order is locked.");
                 }
 
+                DBSets.MstUserDBSet informationByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnJobOrderInformationDTO.InformationByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (informationByUser == null)
+                {
+                    return StatusCode(404, "Information by user not found.");
+                }
+
                 DBSets.TrnJobOrderInformationDBSet updateJobOrderInformations = jobOrderInformation;
                 updateJobOrderInformations.JOId = trnJobOrderInformationDTO.JOId;
                 updateJobOrderInformations.InformationCode = trnJobOrderInformationDTO.InformationCode;
@@ -203,7 +225,7 @@ namespace liteclerk_api.APIControllers
                 updateJobOrderInformations.Value = trnJobOrderInformationDTO.Value;
                 updateJobOrderInformations.Particulars = trnJobOrderInformationDTO.Particulars;
                 updateJobOrderInformations.IsPrinted = trnJobOrderInformationDTO.IsPrinted;
-                updateJobOrderInformations.InformationByUserId = userId;
+                updateJobOrderInformations.InformationByUserId = trnJobOrderInformationDTO.InformationByUserId;
                 updateJobOrderInformations.InformationUpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();

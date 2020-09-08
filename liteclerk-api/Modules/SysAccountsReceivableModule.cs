@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace liteclerk_api.Business
+namespace liteclerk_api.Modules
 {
-    public class SysAccountsReceivable
+    public class SysAccountsReceivableModule
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
 
-        public SysAccountsReceivable(DBContext.LiteclerkDBContext dbContext)
+        public SysAccountsReceivableModule(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
