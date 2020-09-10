@@ -65,7 +65,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("locked/list")]
+        [HttpGet("list/locked")]
         public async Task<ActionResult> GetLockedArticleList()
         {
             try
@@ -108,7 +108,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("listByAccountArticleType/{accountId}")]
+        [HttpGet("list/byAccountArticleType/{accountId}")]
         public async Task<ActionResult> GetArticleListByAccountArticleType(Int32 accountId)
         {
             try

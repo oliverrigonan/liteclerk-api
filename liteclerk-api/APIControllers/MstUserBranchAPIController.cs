@@ -23,8 +23,8 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("listByUser")]
-        public async Task<ActionResult> GetUserBranchListByUser()
+        [HttpGet("list/byCurrentUser")]
+        public async Task<ActionResult> GetUserBranchListByCurrentUser()
         {
             try
             {

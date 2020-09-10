@@ -42,7 +42,7 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("listByCustomer/{customerId}")]
+        [HttpGet("list/byCustomer/{customerId}")]
         public async Task<ActionResult> GetSalesInvoiceListByCustomer(Int32 customerId)
         {
             try
@@ -155,7 +155,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("listByDateRanged/{startDate}/{endDate}")]
+        [HttpGet("list/byDateRange/{startDate}/{endDate}")]
         public async Task<ActionResult> GetSalesInvoiceListByDateRanged(String startDate, String endDate)
         {
             try
@@ -1076,7 +1076,7 @@ namespace liteclerk_api.APIControllers
             return new FileStreamResult(workStream, "application/pdf");
         }
 
-        [HttpGet("printSalesInvoiceJobOrders/{SIId}")]
+        [HttpGet("print/salesInvoiceJobOrders/{SIId}")]
         public async Task<ActionResult> PrintSalesInvoiceJobOrders(Int32 SIId)
         {
             FontFactory.RegisterDirectories();
@@ -1245,13 +1245,13 @@ namespace liteclerk_api.APIControllers
                                                      jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
                             String jobType = jobOrder.MstJobType_ItemJobTypeId.JobType;
 
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JONumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JODate.ToString("MM/dd/yyyy"), fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Remarks, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableJobOrders.AddCell(new PdfPCell(new Phrase(jobType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JONumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JODate.ToString("MM/dd/yyyy"), fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
 
                             PdfPTable tableJobOrderInformationAndAttachment = new PdfPTable(3);
                             tableJobOrderInformationAndAttachment.SetWidths(new float[] { 50f, 3f, 50f });
@@ -1270,10 +1270,6 @@ namespace liteclerk_api.APIControllers
                             PdfPTable tableJobOrderInformation = new PdfPTable(3);
                             tableJobOrderInformation.SetWidths(new float[] { 10f, 50f, 70f });
                             tableJobOrderInformation.WidthPercentage = 100;
-
-                            //tableJobOrderInformation.AddCell(new PdfPCell(new Phrase("Group", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            //tableJobOrderInformation.AddCell(new PdfPCell(new Phrase("Value", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            //tableJobOrderInformation.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
 
                             if (jobOrderInformations.Any())
                             {
@@ -1335,7 +1331,6 @@ namespace liteclerk_api.APIControllers
                                     else
                                     {
                                         Image attachmentPhoto = Image.GetInstance(new Uri(jobOrderAttachment.AttachmentURL));
-                                        //attachmentPhoto.ScalePercent(24f);
                                         PdfPCell attachmentPhotoPdfCell = new PdfPCell(attachmentPhoto, true) { };
                                         attachmentPhotoPdfCell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
 
@@ -1352,7 +1347,6 @@ namespace liteclerk_api.APIControllers
                             tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 3 });
 
                             tableJobOrders.AddCell(new PdfPCell(tableJobOrderInformationAndAttachment) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 7 });
-                            //tableJobOrders.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 7 });
                             document.Add(tableJobOrders);
                         }
                     }

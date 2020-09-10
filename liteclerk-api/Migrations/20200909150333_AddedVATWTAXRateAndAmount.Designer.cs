@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200909150333_AddedVATWTAXRateAndAmount")]
+    partial class AddedVATWTAXRateAndAmount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -766,7 +768,8 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(255);
 
                     b.Property<string>("Branch")
                         .IsRequired()
@@ -813,7 +816,8 @@ namespace liteclerk_api.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(255);
 
                     b.Property<string>("Company")
                         .IsRequired()
@@ -1481,58 +1485,6 @@ namespace liteclerk_api.Migrations
                     b.ToTable("MstUser");
                 });
 
-            modelBuilder.Entity("liteclerk_api.DBSets.MstUserFormDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("CanAdd")
-                        .HasColumnName("CanAdd")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanCancel")
-                        .HasColumnName("CanCancel")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanDelete")
-                        .HasColumnName("CanDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanEdit")
-                        .HasColumnName("CanEdit")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanLock")
-                        .HasColumnName("CanLock")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanPrint")
-                        .HasColumnName("CanPrint")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CanUnlock")
-                        .HasColumnName("CanUnlock")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("FormId")
-                        .HasColumnName("FormId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnName("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FormId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MstUserForm");
-                });
-
             modelBuilder.Entity("liteclerk_api.DBSets.MstUserJobDepartmentDBSet", b =>
                 {
                     b.Property<int>("Id")
@@ -1555,30 +1507,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("MstUserJobDepartment");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.SysFormDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnName("Description")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("Form")
-                        .IsRequired()
-                        .HasColumnName("Form")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SysForm");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnCollectionDBSet", b =>
@@ -2881,21 +2809,6 @@ namespace liteclerk_api.Migrations
                         .WithMany("MstUsers_CompanyId")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.MstUserFormDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.SysFormDBSet", "SysForm_FormId")
-                        .WithMany("MstUserForms_FormId")
-                        .HasForeignKey("FormId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UserId")
-                        .WithMany("MstUserForms_UserId")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstUserJobDepartmentDBSet", b =>

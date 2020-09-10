@@ -88,8 +88,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_VATId.ManualCode,
                             TaxDescription = d.MstTax_VATId.TaxDescription
                         },
-                        VATRate = d.MstTax_VATId.TaxRate,
-                        VATAmount = d.Amount / (1 + (d.MstTax_VATId.TaxRate / 100)) * (d.MstTax_VATId.TaxRate / 100),
+                        VATRate = d.VATRate,
+                        VATAmount = d.VATAmount,
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
@@ -97,8 +97,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
-                        WTAXRate = d.MstTax_WTAXId.TaxRate,
-                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAXId.TaxRate / 100)) * (d.MstTax_WTAXId.TaxRate / 100),
+                        WTAXRate = d.WTAXRate,
+                        WTAXAmount = d.WTAXAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -183,8 +183,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_VATId.ManualCode,
                             TaxDescription = d.MstTax_VATId.TaxDescription
                         },
-                        VATRate = d.MstTax_VATId.TaxRate,
-                        VATAmount = d.Amount / (1 + (d.MstTax_VATId.TaxRate / 100)) * (d.MstTax_VATId.TaxRate / 100),
+                        VATRate = d.VATRate,
+                        VATAmount = d.VATAmount,
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
@@ -192,8 +192,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
-                        WTAXRate = d.MstTax_WTAXId.TaxRate,
-                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAXId.TaxRate / 100)) * (d.MstTax_WTAXId.TaxRate / 100),
+                        WTAXRate = d.WTAXRate,
+                        WTAXAmount = d.WTAXAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -362,7 +362,11 @@ namespace liteclerk_api.APIControllers
                     NetPrice = trnSalesInvoiceItemDTO.NetPrice,
                     Amount = trnSalesInvoiceItemDTO.Amount,
                     VATId = trnSalesInvoiceItemDTO.VATId,
+                    VATRate = trnSalesInvoiceItemDTO.VATRate,
+                    VATAmount = trnSalesInvoiceItemDTO.VATAmount,
                     WTAXId = trnSalesInvoiceItemDTO.WTAXId,
+                    WTAXRate = trnSalesInvoiceItemDTO.WTAXRate,
+                    WTAXAmount = trnSalesInvoiceItemDTO.WTAXAmount,
                     BaseQuantity = baseQuantity,
                     BaseUnitId = item.UnitId,
                     BaseNetPrice = baseNetPrice,
@@ -556,7 +560,11 @@ namespace liteclerk_api.APIControllers
                 updateSalesInvoiceItems.NetPrice = trnSalesInvoiceItemDTO.NetPrice;
                 updateSalesInvoiceItems.Amount = trnSalesInvoiceItemDTO.Amount;
                 updateSalesInvoiceItems.VATId = trnSalesInvoiceItemDTO.VATId;
+                updateSalesInvoiceItems.VATRate = trnSalesInvoiceItemDTO.VATRate;
+                updateSalesInvoiceItems.VATAmount = trnSalesInvoiceItemDTO.VATAmount;
                 updateSalesInvoiceItems.WTAXId = trnSalesInvoiceItemDTO.WTAXId;
+                updateSalesInvoiceItems.WTAXRate = trnSalesInvoiceItemDTO.WTAXRate;
+                updateSalesInvoiceItems.WTAXAmount = trnSalesInvoiceItemDTO.WTAXAmount;
                 updateSalesInvoiceItems.BaseQuantity = baseQuantity;
                 updateSalesInvoiceItems.BaseUnitId = item.UnitId;
                 updateSalesInvoiceItems.BaseNetPrice = baseNetPrice;

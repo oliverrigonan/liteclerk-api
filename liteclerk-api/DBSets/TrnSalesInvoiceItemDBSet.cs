@@ -29,8 +29,12 @@ namespace liteclerk_api.DBSets
         public Decimal Amount { get; set; }
         public Int32 VATId { get; set; }
         public virtual MstTaxDBSet MstTax_VATId { get; set; }
+        public Decimal VATRate { get; set; }
+        public Decimal VATAmount { get; set; }
         public Int32 WTAXId { get; set; }
         public virtual MstTaxDBSet MstTax_WTAXId { get; set; }
+        public Decimal WTAXRate { get; set; }
+        public Decimal WTAXAmount { get; set; }
         public Decimal BaseQuantity { get; set; }
         public Int32 BaseUnitId { get; set; }
         public virtual MstUnitDBSet MstUnit_BaseUnitId { get; set; }

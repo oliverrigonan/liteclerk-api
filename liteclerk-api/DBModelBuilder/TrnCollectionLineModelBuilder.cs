@@ -36,6 +36,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.IsClear).HasColumnName("IsClear").HasColumnType("bit").IsRequired();
                 entity.Property(e => e.WTAXId).HasColumnName("WTAXId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstTax_WTAXId).WithMany(f => f.TrnCollectionLines_WTAXId).HasForeignKey(f => f.WTAXId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.WTAXRate).HasColumnName("WTAXRate").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.WTAXAmount).HasColumnName("WTAXAmount").HasColumnType("decimal(18,5)").IsRequired();
             });
         }
     }

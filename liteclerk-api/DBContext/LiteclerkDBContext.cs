@@ -17,6 +17,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstUserDBSet> MstUsers { get; set; }
         public virtual DbSet<DBSets.MstUserBranchDBSet> MstUserBranches { get; set; }
         public virtual DbSet<DBSets.MstUserJobDepartmentDBSet> MstUserJobDepartments { get; set; }
+        public virtual DbSet<DBSets.MstUserFormDBSet> MstUserForms { get; set; }
         public virtual DbSet<DBSets.MstCurrencyDBSet> MstCurrencies { get; set; }
         public virtual DbSet<DBSets.MstAccountCashFlowDBSet> MstAccountCashFlows { get; set; }
         public virtual DbSet<DBSets.MstAccountCategoryDBSet> MstAccountCategories { get; set; }
@@ -52,6 +53,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnJobOrderInformationDBSet> TrnJobOrderInformations { get; set; }
         public virtual DbSet<DBSets.TrnCollectionDBSet> TrnCollections { get; set; }
         public virtual DbSet<DBSets.TrnCollectionLineDBSet> TrnCollectionLines { get; set; }
+        public virtual DbSet<DBSets.SysFormDBSet> SysForms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -61,6 +63,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstUserModelBuilder.CreateMstUserModel(modelBuilder);
             DBModelBuilder.MstUserBranchModelBuilder.CreateMstUserBranchModel(modelBuilder);
             DBModelBuilder.MstUserJobDepartmentModelBuilder.CreateMstUserJobDepartmentModel(modelBuilder);
+            DBModelBuilder.MstUserFormModelBuilder.CreateMstUserFormModel(modelBuilder);
             DBModelBuilder.MstCurrencyModelBuilder.CreateMstCurrencyModel(modelBuilder);
             DBModelBuilder.MstAccountCashFlowModelBuilder.CreateMstAccountCashFlowModel(modelBuilder);
             DBModelBuilder.MstAccountCategoryModelBuilder.CreateMstAccountCategoryModel(modelBuilder);
@@ -96,6 +99,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnJobOrderInformationModelBuilder.CreateTrnJobOrderInformationModel(modelBuilder);
             DBModelBuilder.TrnCollectionModelBuilder.CreateTrnCollectionModel(modelBuilder);
             DBModelBuilder.TrnCollectionLineModelBuilder.CreateTrnCollectionLineModel(modelBuilder);
+            DBModelBuilder.SysFormModelBuilder.CreateSysFormModel(modelBuilder);
         }
     }
 }

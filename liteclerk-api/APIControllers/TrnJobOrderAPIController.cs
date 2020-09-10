@@ -37,7 +37,7 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("listByDateRanged/{startDate}/{endDate}")]
+        [HttpGet("list/byDateRange/{startDate}/{endDate}")]
         public async Task<ActionResult> GetJobOrderListByDateRanged(String startDate, String endDate)
         {
             try
@@ -179,7 +179,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("listBySalesInvoice/{SIId}")]
+        [HttpGet("list/bySalesInvoice/{SIId}")]
         public async Task<ActionResult> GetJobOrderListBySalesInvoice(Int32 SIId)
         {
             try
@@ -981,7 +981,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpPost("createJobOrderFromSalesInvoice/{SIId}")]
+        [HttpPost("create/fromSalesInvoice/{SIId}")]
         public async Task<ActionResult> CreateJobOrderFromSalesInvoice(Int32 SIId)
         {
             try

@@ -30,5 +30,7 @@ namespace liteclerk_api.DBSets
         public Boolean IsClear { get; set; }
         public Int32 WTAXId { get; set; }
         public virtual MstTaxDBSet MstTax_WTAXId { get; set; }
+        public Decimal WTAXRate { get; set; }
+        public Decimal WTAXAmount { get; set; }
     }
 }

@@ -140,7 +140,6 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-
         [HttpPut("update/{id}")]
         public async Task<ActionResult> UpdateJobOrderAttachment(Int32 id, [FromBody] DTO.TrnJobOrderAttachmentDTO trnJobOrderAttachmentDTO)
         {

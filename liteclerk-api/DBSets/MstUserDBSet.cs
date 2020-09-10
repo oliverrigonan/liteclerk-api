@@ -67,5 +67,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstPayTypeDBSet> MstPayTypes_UpdatedByUserId { get; set; }
         public virtual ICollection<MstUserBranchDBSet> MstUserBranches_UserId { get; set; }
         public virtual ICollection<MstUserJobDepartmentDBSet> MstUserJobDepartments_UserId { get; set; }
+        public virtual ICollection<MstUserFormDBSet> MstUserForms_UserId { get; set; }
     }
 }

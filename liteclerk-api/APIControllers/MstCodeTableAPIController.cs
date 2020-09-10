@@ -23,7 +23,7 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("listByCategory/{category}")]
+        [HttpGet("list/{category}")]
         public async Task<ActionResult> GetCodeTableListByCategory(String category)
         {
             try

@@ -37,7 +37,7 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("listByDateRangedAndJobDeparment/{startDate}/{endDate}/{jobDepartmentId}")]
+        [HttpGet("list/byDateRange/byJobDeparment/{startDate}/{endDate}/{jobDepartmentId}")]
         public async Task<ActionResult> GetProductionListByDateRangedAndJobDeparment(String startDate, String endDate, Int32 jobDepartmentId)
         {
             try
@@ -126,8 +126,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-
-        [HttpPut("updateStatus/{jobOrderDepartmentId}/{status}")]
+        [HttpPut("update/status/{jobOrderDepartmentId}/{status}")]
         public async Task<ActionResult> UpdateJobOrderDepartmentStatus(Int32 jobOrderDepartmentId, String status)
         {
             try
@@ -170,6 +169,5 @@ namespace liteclerk_api.APIControllers
                 return StatusCode(500, e.InnerException.Message);
             }
         }
-
     }
 }

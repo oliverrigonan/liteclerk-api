@@ -147,7 +147,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("locked/list")]
+        [HttpGet("list/locked")]
         public async Task<ActionResult> GetLockedArticleItemList()
         {
             try
@@ -258,7 +258,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("inventory/list")]
+        [HttpGet("list/inventory")]
         public async Task<ActionResult> GetInventoryArticleItemList()
         {
             try
@@ -371,7 +371,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("non-inventory/list")]
+        [HttpGet("list/non-inventory")]
         public async Task<ActionResult> GetNonInventoryArticleItemList()
         {
             try
@@ -484,7 +484,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("produced/list")]
+        [HttpGet("list/produced")]
         public async Task<ActionResult> GetProducedArticleItemList()
         {
             try

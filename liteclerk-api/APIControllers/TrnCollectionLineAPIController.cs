@@ -95,8 +95,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
-                        WTAXRate = d.MstTax_WTAXId.TaxRate,
-                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAXId.TaxRate / 100)) * (d.MstTax_WTAXId.TaxRate / 100)
+                        WTAXRate = d.WTAXRate,
+                        WTAXAmount = d.WTAXAmount
                     }
                 ).ToListAsync();
 
@@ -178,8 +178,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
-                        WTAXRate = d.MstTax_WTAXId.TaxRate,
-                        WTAXAmount = d.Amount / (1 + (d.MstTax_WTAXId.TaxRate / 100)) * (d.MstTax_WTAXId.TaxRate / 100)
+                        WTAXRate = d.WTAXRate,
+                        WTAXAmount = d.WTAXAmount
                     }
                 ).FirstOrDefaultAsync();
 
@@ -330,7 +330,9 @@ namespace liteclerk_api.APIControllers
                     CheckBank = trnCollectionLineDTO.CheckBank,
                     BankId = trnCollectionLineDTO.BankId,
                     IsClear = trnCollectionLineDTO.IsClear,
-                    WTAXId = trnCollectionLineDTO.WTAXId
+                    WTAXId = trnCollectionLineDTO.WTAXId,
+                    WTAXRate = trnCollectionLineDTO.WTAXRate,
+                    WTAXAmount = trnCollectionLineDTO.WTAXAmount
                 };
 
                 _dbContext.TrnCollectionLines.Add(newCollectionLines);
@@ -514,6 +516,8 @@ namespace liteclerk_api.APIControllers
                 updateCollectionLines.BankId = trnCollectionLineDTO.BankId;
                 updateCollectionLines.IsClear = trnCollectionLineDTO.IsClear;
                 updateCollectionLines.WTAXId = trnCollectionLineDTO.WTAXId;
+                updateCollectionLines.WTAXRate = trnCollectionLineDTO.WTAXRate;
+                updateCollectionLines.WTAXAmount = trnCollectionLineDTO.WTAXAmount;
 
                 await _dbContext.SaveChangesAsync();
 

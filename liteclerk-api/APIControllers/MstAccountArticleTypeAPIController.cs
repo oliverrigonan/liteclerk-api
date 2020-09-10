@@ -24,8 +24,8 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("listByAccount/{accountId}")]
-        public async Task<ActionResult> GetAccountArticleTypeListByUser(Int32 accountId)
+        [HttpGet("list/{accountId}")]
+        public async Task<ActionResult> GetAccountArticleTypeList(Int32 accountId)
         {
             try
             {

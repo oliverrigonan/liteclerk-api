@@ -14,17 +14,17 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MstUserJobDepartmentAPIController : ControllerBase
+    public class MstUserFormAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
 
-        public MstUserJobDepartmentAPIController(DBContext.LiteclerkDBContext dbContext)
+        public MstUserFormAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        [HttpGet("list/byCurrentUser")]
-        public async Task<ActionResult> GetUserJobDepartmentListByCurrentUser()
+        [HttpGet("detail/byCurrentUser/byForm/{form}")]
+        public async Task<ActionResult> GetUserFormDetailByCurrentUserForm(String form)
         {
             try
             {
@@ -36,10 +36,11 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.MstUserJobDepartmentDTO> userJobDepartmentes = await (
-                    from d in _dbContext.MstUserJobDepartments
+                DTO.MstUserFormDTO userForm = await (
+                    from d in _dbContext.MstUserForms
                     where d.UserId == userId
-                    select new DTO.MstUserJobDepartmentDTO
+                    && d.SysForm_FormId.Form == form
+                    select new DTO.MstUserFormDTO
                     {
                         Id = d.Id,
                         UserId = d.UserId,
@@ -48,17 +49,23 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_UserId.Username,
                             Fullname = d.MstUser_UserId.Fullname
                         },
-                        JobDepartmentId = d.JobDepartmentId,
-                        JobDepartment = new DTO.MstJobDepartmentDTO
+                        FormId = d.FormId,
+                        Form = new DTO.SysFormDTO
                         {
-                            JobDepartmentCode = d.MstJobDepartment_JobDepartmentId.JobDepartmentCode,
-                            ManualCode = d.MstJobDepartment_JobDepartmentId.ManualCode,
-                            JobDepartment = d.MstJobDepartment_JobDepartmentId.JobDepartment
-                        }
+                            Form = d.SysForm_FormId.Form,
+                            Description = d.SysForm_FormId.Description
+                        },
+                        CanAdd = d.CanAdd,
+                        CanEdit = d.CanEdit,
+                        CanDelete = d.CanDelete,
+                        CanLock = d.CanLock,
+                        CanUnlock = d.CanUnlock,
+                        CanCancel = d.CanCancel,
+                        CanPrint = d.CanPrint
                     }
-                ).ToListAsync();
+                ).FirstOrDefaultAsync();
 
-                return StatusCode(200, userJobDepartmentes);
+                return StatusCode(200, userForm);
             }
             catch (Exception e)
             {

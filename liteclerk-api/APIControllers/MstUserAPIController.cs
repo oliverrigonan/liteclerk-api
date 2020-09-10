@@ -60,7 +60,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("active/list")]
+        [HttpGet("list/active")]
         public async Task<ActionResult> GetActiveUserList()
         {
             try

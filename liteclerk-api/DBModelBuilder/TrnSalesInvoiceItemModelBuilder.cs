@@ -35,8 +35,12 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.VATId).HasColumnName("VATId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstTax_VATId).WithMany(f => f.TrnSalesInvoiceItems_VATId).HasForeignKey(f => f.VATId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.VATRate).HasColumnName("VATRate").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.VATAmount).HasColumnName("VATAmount").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.WTAXId).HasColumnName("WTAXId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstTax_WTAXId).WithMany(f => f.TrnSalesInvoiceItems_WTAXId).HasForeignKey(f => f.WTAXId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.WTAXRate).HasColumnName("WTAXRate").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.WTAXAmount).HasColumnName("WTAXAmount").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.BaseQuantity).HasColumnName("BaseQuantity").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.BaseUnitId).HasColumnName("BaseUnitId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUnit_BaseUnitId).WithMany(f => f.TrnSalesInvoiceItems_BaseUnitId).HasForeignKey(f => f.BaseUnitId).OnDelete(DeleteBehavior.Restrict);

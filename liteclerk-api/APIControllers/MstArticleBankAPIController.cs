@@ -77,7 +77,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("locked/list")]
+        [HttpGet("list/locked")]
         public async Task<ActionResult> GetLockedArticleBankList()
         {
             try

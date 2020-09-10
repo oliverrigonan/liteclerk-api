@@ -39,7 +39,7 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("listByDateRanged/{startDate}/{endDate}")]
+        [HttpGet("list/byDateRange/{startDate}/{endDate}")]
         public async Task<ActionResult> GetCollectionListByDateRanged(String startDate, String endDate)
         {
             try
