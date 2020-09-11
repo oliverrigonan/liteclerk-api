@@ -29,6 +29,7 @@ namespace liteclerk_api.APIControllers
             _sysAccountsReceivable = new Modules.SysAccountsReceivableModule(dbContext);
         }
 
+        [NonAction]
         public String PadZeroes(Int32 number, Int32 length)
         {
             var result = number.ToString();

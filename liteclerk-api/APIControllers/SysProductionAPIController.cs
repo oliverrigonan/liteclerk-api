@@ -24,19 +24,6 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
-        public String PadZeroes(Int32 number, Int32 length)
-        {
-            var result = number.ToString();
-            var pad = length - result.Length;
-            while (pad > 0)
-            {
-                result = '0' + result;
-                pad--;
-            }
-
-            return result;
-        }
-
         [HttpGet("list/byDateRange/byJobDeparment/{startDate}/{endDate}/{jobDepartmentId}")]
         public async Task<ActionResult> GetProductionListByDateRangedAndJobDeparment(String startDate, String endDate, Int32 jobDepartmentId)
         {

@@ -23,6 +23,7 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
+        [NonAction]
         public String PadZeroes(Int32 number, Int32 length)
         {
             var result = number.ToString();
