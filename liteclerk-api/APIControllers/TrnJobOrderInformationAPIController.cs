@@ -114,7 +114,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstUserFormDBSet userForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.Id == userId
+                    where d.UserId == userId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
@@ -199,7 +199,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstUserFormDBSet userForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.Id == userId
+                    where d.UserId == userId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
@@ -292,7 +292,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstUserFormDBSet userForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.Id == userId
+                    where d.UserId == userId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
