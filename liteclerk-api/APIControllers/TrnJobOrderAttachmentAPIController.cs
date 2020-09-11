@@ -103,6 +103,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to add a job order attachment.");
+                }
+
+                if (userForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add a job order attachment.");
+                }
+
                 DBSets.TrnJobOrderDBSet jobOrder = await (
                     from d in _dbContext.TrnJobOrders
                     where d.Id == trnJobOrderAttachmentDTO.JOId
@@ -156,6 +173,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to edit or update a job order attachment.");
+                }
+
+                if (userForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to edit or update a job order attachment.");
                 }
 
                 DBSets.TrnJobOrderAttachmentDBSet jobOrderAttachment = await (
@@ -219,6 +253,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to delete a job order attachment.");
+                }
+
+                if (userForm.CanDelete == false)
+                {
+                    return StatusCode(400, "No rights to delete a job order attachment.");
                 }
 
                 DBSets.TrnJobOrderAttachmentDBSet jobOrderAttachment = await (

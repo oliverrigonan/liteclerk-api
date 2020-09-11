@@ -209,6 +209,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to add a collection line.");
+                }
+
+                if (userForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add a collection line.");
+                }
+
                 DBSets.TrnCollectionDBSet collection = await (
                     from d in _dbContext.TrnCollections
                     where d.Id == trnCollectionLineDTO.CIId
@@ -382,6 +399,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to edit or update a collection line.");
+                }
+
+                if (userForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to edit or update a collection line.");
                 }
 
                 DBSets.TrnCollectionLineDBSet collectionLine = await (
@@ -565,6 +599,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to delete a collection line.");
+                }
+
+                if (userForm.CanDelete == false)
+                {
+                    return StatusCode(400, "No rights to delete a collection line.");
                 }
 
                 Int32 CIId = 0;

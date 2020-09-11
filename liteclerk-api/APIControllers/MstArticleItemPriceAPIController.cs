@@ -112,6 +112,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to add an item price.");
+                }
+
+                if (userForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add an item price.");
+                }
+
                 DBSets.MstArticleDBSet article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == mstArticleItemPriceDTO.ArticleId
@@ -175,6 +192,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to edit or update an item price.");
+                }
+
+                if (userForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to edit or update an item price.");
+                }
+
                 DBSets.MstArticleItemPriceDBSet itemPrice = await (
                     from d in _dbContext.MstArticleItemPrices
                     where d.Id == id
@@ -232,6 +266,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to delete an item price.");
+                }
+
+                if (userForm.CanDelete == false)
+                {
+                    return StatusCode(400, "No rights to delete an item price.");
                 }
 
                 DBSets.MstArticleItemPriceDBSet itemPrice = await (

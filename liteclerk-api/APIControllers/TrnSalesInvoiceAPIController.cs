@@ -389,6 +389,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to add a sales invoice.");
+                }
+
+                if (userForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add a sales invoice.");
+                }
+
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.MstArticle_ArticleId.IsLocked == true
@@ -471,6 +488,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to edit or save a sales invoice.");
+                }
+
+                if (userForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to edit or save a sales invoice.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -598,6 +632,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to lock a sales invoice.");
+                }
+
+                if (userForm.CanLock == false)
+                {
+                    return StatusCode(400, "No rights to lock a sales invoice.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -730,6 +781,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to unlock a sales invoice.");
+                }
+
+                if (userForm.CanUnlock == false)
+                {
+                    return StatusCode(400, "No rights to unlock a sales invoice.");
+                }
+
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
                      from d in _dbContext.TrnSalesInvoices
                      where d.Id == id
@@ -781,6 +849,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to cancel a sales invoice.");
+                }
+
+                if (userForm.CanCancel == false)
+                {
+                    return StatusCode(400, "No rights to cancel a sales invoice.");
+                }
+
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
                      from d in _dbContext.TrnSalesInvoices
                      where d.Id == id
@@ -830,6 +915,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to delete a sales invoice.");
+                }
+
+                if (userForm.CanDelete == false)
+                {
+                    return StatusCode(400, "No rights to delete a sales invoice.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -902,164 +1004,191 @@ namespace liteclerk_api.APIControllers
 
             if (user != null)
             {
-                String companyName = "";
-                String companyAddress = "";
-                String companyTaxNumber = "";
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
+                    select d
+                ).FirstOrDefaultAsync();
 
-                if (user.CompanyId != null)
+                if (userForm != null)
                 {
-                    companyName = user.MstCompany_CompanyId.Company;
-                    companyAddress = user.MstCompany_CompanyId.Address;
-                    companyTaxNumber = user.MstCompany_CompanyId.TIN;
-                }
-
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
-                     from d in _dbContext.TrnSalesInvoices
-                     where d.Id == id
-                     && d.IsLocked == true
-                     select d
-                 ).FirstOrDefaultAsync(); ;
-
-                if (salesInvoice != null)
-                {
-                    String reprinted = "";
-                    if (salesInvoice.IsPrinted == true)
+                    if (userForm.CanPrint == true)
                     {
-                        reprinted = "(REPRINTED)";
-                    }
+                        String companyName = "";
+                        String companyAddress = "";
+                        String companyTaxNumber = "";
 
-                    PdfPTable tableHeader = new PdfPTable(2);
-                    tableHeader.SetWidths(new float[] { 70f, 30f });
-                    tableHeader.WidthPercentage = 100f;
-                    tableHeader.AddCell(new PdfPCell(new Phrase(companyName, fontSegoeUI13Bold)) { Border = 0 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase("LOGO", fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 3f, Rowspan = 4 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase(companyAddress, fontSegoeUI09)) { Border = 0 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase(companyTaxNumber, fontSegoeUI09)) { Border = 0 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase("Printed " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt") + " " + reprinted, fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 3f });
-                    tableHeader.AddCell(new PdfPCell(new Phrase("SALES INVOICE", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
-                    document.Add(tableHeader);
-
-                    String customer = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                      salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "";
-                    String customerAddress = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Address : "";
-                    String customerContactNumber = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactNumber : "";
-                    String customerContactPerson = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactPerson : "";
-                    String term = salesInvoice.MstTerm_TermId.Term;
-                    String remarks = salesInvoice.Remarks;
-
-                    String branch = salesInvoice.MstCompanyBranch_BranchId.Branch;
-                    String SINumber = "SI-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
-                    String SIDate = salesInvoice.SIDate.ToString("MMMM dd, yyyy");
-                    String DateNeeded = salesInvoice.DateNeeded.ToString("MMMM dd, yyyy");
-                    String manualNumber = salesInvoice.ManualNumber;
-                    String documentReference = salesInvoice.DocumentReference;
-                    String salesPerson = salesInvoice.MstUser_SoldByUserId.Fullname;
-
-                    PdfPTable tableSalesInvoice = new PdfPTable(4);
-                    tableSalesInvoice.SetWidths(new float[] { 55f, 130f, 50f, 100f });
-                    tableSalesInvoice.WidthPercentage = 100;
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Customer:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customer, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SINumber, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Address:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerAddress, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Branch:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(branch, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SIDate, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact Person:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date Needed:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(DateNeeded, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Business Style:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("", fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Manual No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(manualNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Term:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(term, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Document Ref:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(documentReference, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Remarks:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Sales:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    document.Add(tableSalesInvoice);
-
-                    IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
-                        from d in _dbContext.TrnSalesInvoiceItems
-                        where d.SIId == id
-                        select d
-                    ).ToListAsync();
-
-                    if (salesInvoiceItems.Any())
-                    {
-                        PdfPTable tableJobOrders = new PdfPTable(6);
-                        tableJobOrders.SetWidths(new float[] { 70f, 70f, 150f, 120f, 80f, 80f });
-                        tableJobOrders.WidthPercentage = 100;
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase("Qty.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase("Unit", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase("Item", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase("Price", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase("Amount", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-
-                        foreach (var salesInvoiceItem in salesInvoiceItems)
+                        if (user.CompanyId != null)
                         {
-                            String SKUCode = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                             salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
-                            String barCode = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                             salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
-                            String itemDescription = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                                     salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
-
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.NetPrice.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Amount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            companyName = user.MstCompany_CompanyId.Company;
+                            companyAddress = user.MstCompany_CompanyId.Address;
+                            companyTaxNumber = user.MstCompany_CompanyId.TIN;
                         }
 
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 5 });
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItems.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
-                        tableJobOrders.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 6 });
-                        document.Add(tableJobOrders);
+                        DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                             from d in _dbContext.TrnSalesInvoices
+                             where d.Id == id
+                             && d.IsLocked == true
+                             select d
+                         ).FirstOrDefaultAsync(); ;
+
+                        if (salesInvoice != null)
+                        {
+                            String reprinted = "";
+                            if (salesInvoice.IsPrinted == true)
+                            {
+                                reprinted = "(REPRINTED)";
+                            }
+
+                            PdfPTable tableHeader = new PdfPTable(2);
+                            tableHeader.SetWidths(new float[] { 70f, 30f });
+                            tableHeader.WidthPercentage = 100f;
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyName, fontSegoeUI13Bold)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("LOGO", fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 3f, Rowspan = 4 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyAddress, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyTaxNumber, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("Printed " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt") + " " + reprinted, fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 3f });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("SALES INVOICE", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
+                            document.Add(tableHeader);
+
+                            String customer = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                              salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "";
+                            String customerAddress = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                           salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Address : "";
+                            String customerContactNumber = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                           salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactNumber : "";
+                            String customerContactPerson = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                           salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactPerson : "";
+                            String term = salesInvoice.MstTerm_TermId.Term;
+                            String remarks = salesInvoice.Remarks;
+
+                            String branch = salesInvoice.MstCompanyBranch_BranchId.Branch;
+                            String SINumber = "SI-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
+                            String SIDate = salesInvoice.SIDate.ToString("MMMM dd, yyyy");
+                            String DateNeeded = salesInvoice.DateNeeded.ToString("MMMM dd, yyyy");
+                            String manualNumber = salesInvoice.ManualNumber;
+                            String documentReference = salesInvoice.DocumentReference;
+                            String salesPerson = salesInvoice.MstUser_SoldByUserId.Fullname;
+
+                            PdfPTable tableSalesInvoice = new PdfPTable(4);
+                            tableSalesInvoice.SetWidths(new float[] { 55f, 130f, 50f, 100f });
+                            tableSalesInvoice.WidthPercentage = 100;
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Customer:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customer, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SINumber, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Address:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerAddress, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Branch:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(branch, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SIDate, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact Person:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date Needed:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(DateNeeded, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Business Style:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("", fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Manual No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(manualNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Term:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(term, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Document Ref:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(documentReference, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Remarks:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Sales:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            document.Add(tableSalesInvoice);
+
+                            IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
+                                from d in _dbContext.TrnSalesInvoiceItems
+                                where d.SIId == id
+                                select d
+                            ).ToListAsync();
+
+                            if (salesInvoiceItems.Any())
+                            {
+                                PdfPTable tableJobOrders = new PdfPTable(6);
+                                tableJobOrders.SetWidths(new float[] { 70f, 70f, 150f, 120f, 80f, 80f });
+                                tableJobOrders.WidthPercentage = 100;
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase("Qty.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase("Unit", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase("Item", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase("Price", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase("Amount", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+
+                                foreach (var salesInvoiceItem in salesInvoiceItems)
+                                {
+                                    String SKUCode = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
+                                    String barCode = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
+                                    String itemDescription = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                             salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
+
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.NetPrice.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItem.Amount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                }
+
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 5 });
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItems.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableJobOrders.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 6 });
+                                document.Add(tableJobOrders);
+                            }
+
+                            String preparedBy = salesInvoice.MstUser_PreparedByUserId.Fullname;
+                            String checkedBy = salesInvoice.MstUser_CheckedByUserId.Fullname;
+                            String approvedBy = salesInvoice.MstUser_ApprovedByUserId.Fullname;
+
+                            PdfPTable tableUsers = new PdfPTable(4);
+                            tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });
+                            tableUsers.WidthPercentage = 100;
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Prepared by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Checked by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Approved by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Received by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(preparedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(checkedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            document.Add(tableUsers);
+                        }
                     }
+                    else
+                    {
+                        Paragraph paragraph = new Paragraph();
+                        paragraph.Add("No rights to print sales invoice");
 
-                    String preparedBy = salesInvoice.MstUser_PreparedByUserId.Fullname;
-                    String checkedBy = salesInvoice.MstUser_CheckedByUserId.Fullname;
-                    String approvedBy = salesInvoice.MstUser_ApprovedByUserId.Fullname;
+                        document.Add(paragraph);
+                    }
+                }
+                else
+                {
+                    Paragraph paragraph = new Paragraph();
+                    paragraph.Add("No rights to print sales invoice");
 
-                    PdfPTable tableUsers = new PdfPTable(4);
-                    tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });
-                    tableUsers.WidthPercentage = 100;
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Prepared by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Checked by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Approved by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Received by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(preparedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(checkedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    document.Add(tableUsers);
+                    document.Add(paragraph);
                 }
             }
             else
@@ -1120,258 +1249,285 @@ namespace liteclerk_api.APIControllers
 
             if (user != null)
             {
-                String companyName = "";
-                String companyAddress = "";
-                String companyTaxNumber = "";
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
+                    select d
+                ).FirstOrDefaultAsync();
 
-                if (user.CompanyId != null)
+                if (userForm != null)
                 {
-                    companyName = user.MstCompany_CompanyId.Company;
-                    companyAddress = user.MstCompany_CompanyId.Address;
-                    companyTaxNumber = user.MstCompany_CompanyId.TIN;
-                }
-
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
-                     from d in _dbContext.TrnSalesInvoices
-                     where d.Id == SIId
-                     && d.IsLocked == true
-                     select d
-                 ).FirstOrDefaultAsync(); ;
-
-                if (salesInvoice != null)
-                {
-                    String reprinted = "";
-                    if (salesInvoice.IsPrinted == true)
+                    if (userForm.CanPrint == true)
                     {
-                        reprinted = "(REPRINTED)";
-                    }
+                        String companyName = "";
+                        String companyAddress = "";
+                        String companyTaxNumber = "";
 
-                    PdfPTable tableHeader = new PdfPTable(2);
-                    tableHeader.SetWidths(new float[] { 70f, 30f });
-                    tableHeader.WidthPercentage = 100f;
-                    tableHeader.AddCell(new PdfPCell(new Phrase(companyName, fontSegoeUI13Bold)) { Border = 0 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase("LOGO", fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 3f, Rowspan = 4 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase(companyAddress, fontSegoeUI09)) { Border = 0 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase(companyTaxNumber, fontSegoeUI09)) { Border = 0 });
-                    tableHeader.AddCell(new PdfPCell(new Phrase("Printed " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt") + " " + reprinted, fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 3f });
-                    tableHeader.AddCell(new PdfPCell(new Phrase("SALES INVOICE - JOB ORDERS", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
-                    document.Add(tableHeader);
-
-                    String customer = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                      salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "";
-                    String customerAddress = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Address : "";
-                    String customerContactNumber = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactNumber : "";
-                    String customerContactPerson = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                                   salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactPerson : "";
-                    String term = salesInvoice.MstTerm_TermId.Term;
-                    String remarks = salesInvoice.Remarks;
-
-                    String branch = salesInvoice.MstCompanyBranch_BranchId.Branch;
-                    String SINumber = "SI-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
-                    String SIDate = salesInvoice.SIDate.ToString("MMMM dd, yyyy");
-                    String DateNeeded = salesInvoice.DateNeeded.ToString("MMMM dd, yyyy");
-                    String manualNumber = salesInvoice.ManualNumber;
-                    String documentReference = salesInvoice.DocumentReference;
-                    String salesPerson = salesInvoice.MstUser_SoldByUserId.Fullname;
-
-                    PdfPTable tableSalesInvoice = new PdfPTable(4);
-                    tableSalesInvoice.SetWidths(new float[] { 55f, 130f, 50f, 100f });
-                    tableSalesInvoice.WidthPercentage = 100;
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Customer:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customer, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SINumber, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Address:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerAddress, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Branch:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(branch, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SIDate, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact Person:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date Needed:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(DateNeeded, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Business Style:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("", fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Manual No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(manualNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Term:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(term, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Document Ref:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(documentReference, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Remarks:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Sales:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                    document.Add(tableSalesInvoice);
-
-                    IEnumerable<DBSets.TrnJobOrderDBSet> jobOrders = await (
-                        from d in _dbContext.TrnJobOrders
-                        where d.SIId == SIId
-                        select d
-                    ).ToListAsync();
-
-                    if (jobOrders.Any())
-                    {
-                        foreach (var jobOrder in jobOrders)
+                        if (user.CompanyId != null)
                         {
-                            PdfPTable tableJobOrders = new PdfPTable(7);
-                            tableJobOrders.SetWidths(new float[] { 70f, 50f, 150f, 120f, 130f, 70f, 65f });
-                            tableJobOrders.WidthPercentage = 100;
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase("Qty.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase("Unit", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase("Item", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase("Job Type", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase("JO No.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase("JO Date", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            companyName = user.MstCompany_CompanyId.Company;
+                            companyAddress = user.MstCompany_CompanyId.Address;
+                            companyTaxNumber = user.MstCompany_CompanyId.TIN;
+                        }
 
-                            String SKUCode = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                             jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
-                            String barCode = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                             jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
-                            String itemDescription = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                                     jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
-                            String jobType = jobOrder.MstJobType_ItemJobTypeId.JobType;
+                        DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                             from d in _dbContext.TrnSalesInvoices
+                             where d.Id == SIId
+                             && d.IsLocked == true
+                             select d
+                         ).FirstOrDefaultAsync(); ;
 
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Remarks, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JONumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JODate.ToString("MM/dd/yyyy"), fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                        if (salesInvoice != null)
+                        {
+                            String reprinted = "";
+                            if (salesInvoice.IsPrinted == true)
+                            {
+                                reprinted = "(REPRINTED)";
+                            }
 
-                            PdfPTable tableJobOrderInformationAndAttachment = new PdfPTable(3);
-                            tableJobOrderInformationAndAttachment.SetWidths(new float[] { 50f, 3f, 50f });
-                            tableJobOrderInformationAndAttachment.WidthPercentage = 100;
-                            tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("Information", fontSegoeUI09Bold)) { Border = PdfCell.TOP_BORDER | PdfCell.BOTTOM_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f });
-                            tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("Attachment", fontSegoeUI09Bold)) { Border = PdfCell.TOP_BORDER | PdfCell.BOTTOM_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            PdfPTable tableHeader = new PdfPTable(2);
+                            tableHeader.SetWidths(new float[] { 70f, 30f });
+                            tableHeader.WidthPercentage = 100f;
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyName, fontSegoeUI13Bold)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("LOGO", fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 3f, Rowspan = 4 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyAddress, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyTaxNumber, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("Printed " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt") + " " + reprinted, fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 3f });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("SALES INVOICE - JOB ORDERS", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
+                            document.Add(tableHeader);
 
-                            IEnumerable<DBSets.TrnJobOrderInformationDBSet> jobOrderInformations = await (
-                                from d in _dbContext.TrnJobOrderInformations
-                                where d.JOId == jobOrder.Id
-                                && d.Value != String.Empty
+                            String customer = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                              salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "";
+                            String customerAddress = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                           salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Address : "";
+                            String customerContactNumber = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                           salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactNumber : "";
+                            String customerContactPerson = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                                           salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactPerson : "";
+                            String term = salesInvoice.MstTerm_TermId.Term;
+                            String remarks = salesInvoice.Remarks;
+
+                            String branch = salesInvoice.MstCompanyBranch_BranchId.Branch;
+                            String SINumber = "SI-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
+                            String SIDate = salesInvoice.SIDate.ToString("MMMM dd, yyyy");
+                            String DateNeeded = salesInvoice.DateNeeded.ToString("MMMM dd, yyyy");
+                            String manualNumber = salesInvoice.ManualNumber;
+                            String documentReference = salesInvoice.DocumentReference;
+                            String salesPerson = salesInvoice.MstUser_SoldByUserId.Fullname;
+
+                            PdfPTable tableSalesInvoice = new PdfPTable(4);
+                            tableSalesInvoice.SetWidths(new float[] { 55f, 130f, 50f, 100f });
+                            tableSalesInvoice.WidthPercentage = 100;
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Customer:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customer, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SINumber, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Address:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerAddress, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Branch:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(branch, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(SIDate, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Contact Person:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(customerContactPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Date Needed:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(DateNeeded, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Business Style:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("", fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Manual No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(manualNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Term:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(term, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Document Ref:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(documentReference, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Remarks:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Sales:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesPerson, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            document.Add(tableSalesInvoice);
+
+                            IEnumerable<DBSets.TrnJobOrderDBSet> jobOrders = await (
+                                from d in _dbContext.TrnJobOrders
+                                where d.SIId == SIId
                                 select d
                             ).ToListAsync();
 
-                            PdfPTable tableJobOrderInformation = new PdfPTable(3);
-                            tableJobOrderInformation.SetWidths(new float[] { 10f, 50f, 70f });
-                            tableJobOrderInformation.WidthPercentage = 100;
-
-                            if (jobOrderInformations.Any())
+                            if (jobOrders.Any())
                             {
-                                var groupedJobOrderInformationGroups = from d in jobOrderInformations
-                                                                       group d by new
-                                                                       {
-                                                                           d.InformationGroup
-                                                                       }
-                                                                       into g
-                                                                       select new
-                                                                       {
-                                                                           g.Key.InformationGroup
-                                                                       };
-
-                                if (groupedJobOrderInformationGroups.ToList().Any())
+                                foreach (var jobOrder in jobOrders)
                                 {
-                                    foreach (var groupedJobOrderInformationGroup in groupedJobOrderInformationGroups)
+                                    PdfPTable tableJobOrders = new PdfPTable(7);
+                                    tableJobOrders.SetWidths(new float[] { 70f, 50f, 150f, 120f, 130f, 70f, 65f });
+                                    tableJobOrders.WidthPercentage = 100;
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase("Qty.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase("Unit", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase("Item", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase("Job Type", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase("JO No.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase("JO Date", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+
+                                    String SKUCode = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
+                                    String barCode = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
+                                    String itemDescription = jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                             jobOrder.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
+                                    String jobType = jobOrder.MstJobType_ItemJobTypeId.JobType;
+
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.Remarks, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(jobType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JONumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrders.AddCell(new PdfPCell(new Phrase(jobOrder.JODate.ToString("MM/dd/yyyy"), fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                                    PdfPTable tableJobOrderInformationAndAttachment = new PdfPTable(3);
+                                    tableJobOrderInformationAndAttachment.SetWidths(new float[] { 50f, 3f, 50f });
+                                    tableJobOrderInformationAndAttachment.WidthPercentage = 100;
+                                    tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("Information", fontSegoeUI09Bold)) { Border = PdfCell.TOP_BORDER | PdfCell.BOTTOM_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f });
+                                    tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("Attachment", fontSegoeUI09Bold)) { Border = PdfCell.TOP_BORDER | PdfCell.BOTTOM_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+
+                                    IEnumerable<DBSets.TrnJobOrderInformationDBSet> jobOrderInformations = await (
+                                        from d in _dbContext.TrnJobOrderInformations
+                                        where d.JOId == jobOrder.Id
+                                        && d.Value != String.Empty
+                                        select d
+                                    ).ToListAsync();
+
+                                    PdfPTable tableJobOrderInformation = new PdfPTable(3);
+                                    tableJobOrderInformation.SetWidths(new float[] { 10f, 50f, 70f });
+                                    tableJobOrderInformation.WidthPercentage = 100;
+
+                                    if (jobOrderInformations.Any())
                                     {
-                                        tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationGroup.InformationGroup, fontSegoeUI09Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 3 });
+                                        var groupedJobOrderInformationGroups = from d in jobOrderInformations
+                                                                               group d by new
+                                                                               {
+                                                                                   d.InformationGroup
+                                                                               }
+                                                                               into g
+                                                                               select new
+                                                                               {
+                                                                                   g.Key.InformationGroup
+                                                                               };
 
-                                        var groupedJobOrderInformationValues = from d in jobOrderInformations
-                                                                               where d.InformationGroup == groupedJobOrderInformationGroup.InformationGroup
-                                                                               select d;
-
-                                        if (groupedJobOrderInformationValues.Any())
+                                        if (groupedJobOrderInformationGroups.ToList().Any())
                                         {
-                                            foreach (var groupedJobOrderInformationValue in groupedJobOrderInformationValues)
+                                            foreach (var groupedJobOrderInformationGroup in groupedJobOrderInformationGroups)
                                             {
-                                                tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                                tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationValue.Value, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                                tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationValue.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                                tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationGroup.InformationGroup, fontSegoeUI09Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 3 });
+
+                                                var groupedJobOrderInformationValues = from d in jobOrderInformations
+                                                                                       where d.InformationGroup == groupedJobOrderInformationGroup.InformationGroup
+                                                                                       select d;
+
+                                                if (groupedJobOrderInformationValues.Any())
+                                                {
+                                                    foreach (var groupedJobOrderInformationValue in groupedJobOrderInformationValues)
+                                                    {
+                                                        tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                                        tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationValue.Value, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                                        tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationValue.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                                    }
+                                                }
                                             }
                                         }
                                     }
+
+                                    IEnumerable<DBSets.TrnJobOrderAttachmentDBSet> jobOrderAttachments = await (
+                                        from d in _dbContext.TrnJobOrderAttachments
+                                        where d.JOId == jobOrder.Id
+                                        && d.AttachmentURL != String.Empty
+                                        select d
+                                    ).ToListAsync();
+
+                                    PdfPTable tableJobOrderAttachment = new PdfPTable(1);
+                                    tableJobOrderAttachment.SetWidths(new float[] { 100f });
+                                    tableJobOrderAttachment.WidthPercentage = 100;
+
+                                    if (jobOrderAttachments.Any())
+                                    {
+                                        foreach (var jobOrderAttachment in jobOrderAttachments)
+                                        {
+                                            tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase(jobOrderAttachment.AttachmentCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                                            if (String.IsNullOrEmpty(jobOrderAttachment.AttachmentURL) == true)
+                                            {
+                                                tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                            }
+                                            else
+                                            {
+                                                Image attachmentPhoto = Image.GetInstance(new Uri(jobOrderAttachment.AttachmentURL));
+                                                PdfPCell attachmentPhotoPdfCell = new PdfPCell(attachmentPhoto, true) { };
+                                                attachmentPhotoPdfCell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+
+                                                tableJobOrderAttachment.AddCell(new PdfPCell(attachmentPhotoPdfCell) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                            }
+
+                                            tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase(jobOrderAttachment.AttachmentType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                        }
+                                    }
+
+                                    tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(tableJobOrderInformation) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = 2, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(tableJobOrderAttachment) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = 2, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 3 });
+
+                                    tableJobOrders.AddCell(new PdfPCell(tableJobOrderInformationAndAttachment) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 7 });
+                                    document.Add(tableJobOrders);
                                 }
                             }
 
-                            IEnumerable<DBSets.TrnJobOrderAttachmentDBSet> jobOrderAttachments = await (
-                                from d in _dbContext.TrnJobOrderAttachments
-                                where d.JOId == jobOrder.Id
-                                && d.AttachmentURL != String.Empty
-                                select d
-                            ).ToListAsync();
+                            String preparedBy = salesInvoice.MstUser_PreparedByUserId.Fullname;
+                            String checkedBy = salesInvoice.MstUser_CheckedByUserId.Fullname;
+                            String approvedBy = salesInvoice.MstUser_ApprovedByUserId.Fullname;
 
-                            PdfPTable tableJobOrderAttachment = new PdfPTable(1);
-                            tableJobOrderAttachment.SetWidths(new float[] { 100f });
-                            tableJobOrderAttachment.WidthPercentage = 100;
-
-                            if (jobOrderAttachments.Any())
-                            {
-                                foreach (var jobOrderAttachment in jobOrderAttachments)
-                                {
-                                    tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase(jobOrderAttachment.AttachmentCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                                    if (String.IsNullOrEmpty(jobOrderAttachment.AttachmentURL) == true)
-                                    {
-                                        tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    }
-                                    else
-                                    {
-                                        Image attachmentPhoto = Image.GetInstance(new Uri(jobOrderAttachment.AttachmentURL));
-                                        PdfPCell attachmentPhotoPdfCell = new PdfPCell(attachmentPhoto, true) { };
-                                        attachmentPhotoPdfCell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
-
-                                        tableJobOrderAttachment.AddCell(new PdfPCell(attachmentPhotoPdfCell) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    }
-
-                                    tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase(jobOrderAttachment.AttachmentType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                }
-                            }
-
-                            tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(tableJobOrderInformation) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = 2, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(tableJobOrderAttachment) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = 2, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                            tableJobOrderInformationAndAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, PaddingTop = 5f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 3 });
-
-                            tableJobOrders.AddCell(new PdfPCell(tableJobOrderInformationAndAttachment) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 7 });
-                            document.Add(tableJobOrders);
+                            PdfPTable tableUsers = new PdfPTable(4);
+                            tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });
+                            tableUsers.WidthPercentage = 100;
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Prepared by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Checked by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Approved by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Received by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(preparedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(checkedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            document.Add(tableUsers);
                         }
                     }
+                    else
+                    {
+                        Paragraph paragraph = new Paragraph();
+                        paragraph.Add("No rights to print sales invoice - job orders");
 
-                    String preparedBy = salesInvoice.MstUser_PreparedByUserId.Fullname;
-                    String checkedBy = salesInvoice.MstUser_CheckedByUserId.Fullname;
-                    String approvedBy = salesInvoice.MstUser_ApprovedByUserId.Fullname;
+                        document.Add(paragraph);
+                    }
+                }
+                else
+                {
+                    Paragraph paragraph = new Paragraph();
+                    paragraph.Add("No rights to print sales invoice - job orders");
 
-                    PdfPTable tableUsers = new PdfPTable(4);
-                    tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });
-                    tableUsers.WidthPercentage = 100;
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Prepared by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Checked by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Approved by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Received by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(preparedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(checkedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
-                    document.Add(tableUsers);
+                    document.Add(paragraph);
                 }
             }
             else

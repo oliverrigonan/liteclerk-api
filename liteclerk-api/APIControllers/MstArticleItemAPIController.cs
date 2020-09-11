@@ -727,6 +727,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to add an item.");
+                }
+
+                if (userForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add an item.");
+                }
+
                 DBSets.MstUnitDBSet unit = await (
                     from d in _dbContext.MstUnits
                     select d
@@ -845,6 +862,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to edit or save an item.");
+                }
+
+                if (userForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to edit or save an item.");
                 }
 
                 DBSets.MstArticleItemDBSet articleItem = await (
@@ -981,6 +1015,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to lock an item.");
+                }
+
+                if (userForm.CanLock == false)
+                {
+                    return StatusCode(400, "No rights to lock an item.");
                 }
 
                 DBSets.MstArticleItemDBSet articleItem = await (
@@ -1120,6 +1171,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to unlock an item.");
+                }
+
+                if (userForm.CanUnlock == false)
+                {
+                    return StatusCode(400, "No rights to unlock an item.");
+                }
+
                 DBSets.MstArticleItemDBSet articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.Id == id
@@ -1178,6 +1246,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "SetupItemList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to delete an item.");
+                }
+
+                if (userForm.CanDelete == false)
+                {
+                    return StatusCode(400, "No rights to delete an item.");
                 }
 
                 DBSets.MstArticleItemDBSet articleItem = await (

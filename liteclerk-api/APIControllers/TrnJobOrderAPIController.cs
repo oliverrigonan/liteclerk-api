@@ -461,6 +461,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to add a job order.");
+                }
+
+                if (userForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add a job order.");
+                }
+
                 DBSets.MstArticleItemDBSet item = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
@@ -556,6 +573,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to edit or save a job order.");
+                }
+
+                if (userForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to edit or save a job order.");
                 }
 
                 DBSets.TrnJobOrderDBSet jobOrder = await (
@@ -705,6 +739,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to lock a job order.");
+                }
+
+                if (userForm.CanLock == false)
+                {
+                    return StatusCode(400, "No rights to lock a job order.");
                 }
 
                 DBSets.TrnJobOrderDBSet jobOrder = await (
@@ -857,6 +908,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to unlock a job order.");
+                }
+
+                if (userForm.CanUnlock == false)
+                {
+                    return StatusCode(400, "No rights to unlock a job order.");
+                }
+
                 DBSets.TrnJobOrderDBSet jobOrder = await (
                      from d in _dbContext.TrnJobOrders
                      where d.Id == id
@@ -906,6 +974,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to cancel a job order.");
+                }
+
+                if (userForm.CanCancel == false)
+                {
+                    return StatusCode(400, "No rights to cancel a job order.");
+                }
+
                 DBSets.TrnJobOrderDBSet jobOrder = await (
                      from d in _dbContext.TrnJobOrders
                      where d.Id == id
@@ -953,6 +1038,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.Id == userId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to delete a job order.");
+                }
+
+                if (userForm.CanDelete == false)
+                {
+                    return StatusCode(400, "No rights to delete a job order.");
                 }
 
                 DBSets.TrnJobOrderDBSet jobOrder = await (

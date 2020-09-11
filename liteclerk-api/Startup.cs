@@ -91,14 +91,14 @@ namespace liteclerk_api
                     TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact
                     {
-                        Name = "Shayne Boyer",
+                        Name = "Harold Glenn Minerva",
                         Email = string.Empty,
-                        Url = new Uri("https://twitter.com/spboyer"),
+                        Url = new Uri("https://hgminerva.wordpress.com"),
                     },
                     License = new OpenApiLicense
                     {
-                        Name = "Use under LICX",
-                        Url = new Uri("https://example.com/license"),
+                        Name = "EasyFIS Corporation",
+                        Url = new Uri("https://www.easyfis.com"),
                     }
                 });
             });
