@@ -37,19 +37,26 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("list")]
-        public async Task<ActionResult> GetCompanyBranchList()
+        [HttpGet("list/{companyId}")]
+        public async Task<ActionResult> GetCompanyBranchList(Int32 companyId)
         {
             try
             {
                 IEnumerable<DTO.MstCompanyBranchDTO> companyBranches = await (
                     from d in _dbContext.MstCompanyBranches
+                    where d.CompanyId == companyId
                     select new DTO.MstCompanyBranchDTO
                     {
                         Id = d.Id,
                         BranchCode = d.BranchCode,
                         ManualCode = d.ManualCode,
                         CompanyId = d.CompanyId,
+                        Company = new DTO.MstCompanyDTO
+                        {
+                            CompanyCode = d.MstCompany_CompanyId.CompanyCode,
+                            ManualCode = d.MstCompany_CompanyId.ManualCode,
+                            Company = d.MstCompany_CompanyId.Company
+                        },
                         Branch = d.Branch,
                         Address = d.Address,
                         TIN = d.TIN
@@ -69,17 +76,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCompanyDBSet company = await (
@@ -138,17 +145,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCompanyBranchDBSet companyBranch = await (
@@ -188,17 +195,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCompanyBranchDBSet companyBranch = await (

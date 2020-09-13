@@ -29,17 +29,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
                 IEnumerable<DTO.SysProductionDTO> productions = await (
                     from d in _dbContext.TrnJobOrderDepartments
-                    where d.TrnJobOrder_JOId.BranchId == user.BranchId
+                    where d.TrnJobOrder_JOId.BranchId == loginUser.BranchId
                     && d.TrnJobOrder_JOId.JODate >= Convert.ToDateTime(startDate)
                     && d.TrnJobOrder_JOId.JODate <= Convert.ToDateTime(endDate)
                     && d.TrnJobOrder_JOId.IsLocked == true
@@ -118,17 +118,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.TrnJobOrderDepartmentDBSet jobOrderDepartment = await (
@@ -144,7 +144,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnJobOrderDepartmentDBSet updateJobOrderDepartments = jobOrderDepartment;
                 updateJobOrderDepartments.Status = status;
-                updateJobOrderDepartments.StatusByUserId = userId;
+                updateJobOrderDepartments.StatusByUserId = loginUserId;
                 updateJobOrderDepartments.StatusUpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();

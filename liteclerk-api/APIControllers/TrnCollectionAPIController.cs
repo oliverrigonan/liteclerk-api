@@ -45,17 +45,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
                 IEnumerable<DTO.TrnCollectionDTO> collections = await (
                     from d in _dbContext.TrnCollections
-                    where d.BranchId == user.BranchId
+                    where d.BranchId == loginUser.BranchId
                     && d.CIDate >= Convert.ToDateTime(startDate)
                     && d.CIDate <= Convert.ToDateTime(endDate)
                     orderby d.Id descending
@@ -226,32 +226,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionList"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to add a collection.");
                 }
 
-                if (userForm.CanAdd == false)
+                if (loginUserForm.CanAdd == false)
                 {
                     return StatusCode(400, "No rights to add a collection.");
                 }
@@ -270,7 +270,7 @@ namespace liteclerk_api.APIControllers
                 String CINumber = "0000000001";
                 DBSets.TrnCollectionDBSet lastCollection = await (
                     from d in _dbContext.TrnCollections
-                    where d.BranchId == user.BranchId
+                    where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
                     select d
                 ).FirstOrDefaultAsync();
@@ -283,25 +283,25 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnCollectionDBSet newCollection = new DBSets.TrnCollectionDBSet()
                 {
-                    BranchId = Convert.ToInt32(user.BranchId),
-                    CurrencyId = user.MstCompany_CompanyId.CurrencyId,
+                    BranchId = Convert.ToInt32(loginUser.BranchId),
+                    CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
                     CINumber = CINumber,
                     CIDate = DateTime.Today,
                     ManualNumber = CINumber,
                     DocumentReference = "",
                     CustomerId = customer.ArticleId,
                     Remarks = "",
-                    PreparedByUserId = userId,
-                    CheckedByUserId = userId,
-                    ApprovedByUserId = userId,
+                    PreparedByUserId = loginUserId,
+                    CheckedByUserId = loginUserId,
+                    ApprovedByUserId = loginUserId,
                     Amount = 0,
                     Status = "",
                     IsCancelled = false,
                     IsPrinted = false,
                     IsLocked = false,
-                    CreatedByUserId = userId,
+                    CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
-                    UpdatedByUserId = userId,
+                    UpdatedByUserId = loginUserId,
                     UpdatedDateTime = DateTime.Now
                 };
 
@@ -321,32 +321,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to edit or save a collection.");
                 }
 
-                if (userForm.CanEdit == false)
+                if (loginUserForm.CanEdit == false)
                 {
                     return StatusCode(400, "No rights to edit or save a collection.");
                 }
@@ -398,7 +398,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by user not found.");
+                    return StatusCode(404, "Checked by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -409,7 +409,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by user not found.");
+                    return StatusCode(404, "Approved by loginUser not found.");
                 }
 
                 DBSets.TrnCollectionDBSet saveCollection = salesInvoice;
@@ -422,7 +422,7 @@ namespace liteclerk_api.APIControllers
                 saveCollection.CheckedByUserId = trnCollectionDTO.CheckedByUserId;
                 saveCollection.ApprovedByUserId = trnCollectionDTO.ApprovedByUserId;
                 saveCollection.Status = trnCollectionDTO.Status;
-                saveCollection.UpdatedByUserId = userId;
+                saveCollection.UpdatedByUserId = loginUserId;
                 saveCollection.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -440,32 +440,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to lock a collection.");
                 }
 
-                if (userForm.CanLock == false)
+                if (loginUserForm.CanLock == false)
                 {
                     return StatusCode(400, "No rights to lock a collection.");
                 }
@@ -517,7 +517,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by user not found.");
+                    return StatusCode(404, "Checked by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -528,7 +528,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by user not found.");
+                    return StatusCode(404, "Approved by loginUser not found.");
                 }
 
                 DBSets.TrnCollectionDBSet lockCollection = salesInvoice;
@@ -542,7 +542,7 @@ namespace liteclerk_api.APIControllers
                 lockCollection.ApprovedByUserId = trnCollectionDTO.ApprovedByUserId;
                 lockCollection.Status = trnCollectionDTO.Status;
                 lockCollection.IsLocked = true;
-                lockCollection.UpdatedByUserId = userId;
+                lockCollection.UpdatedByUserId = loginUserId;
                 lockCollection.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -575,32 +575,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to unlock a collection.");
                 }
 
-                if (userForm.CanUnlock == false)
+                if (loginUserForm.CanUnlock == false)
                 {
                     return StatusCode(400, "No rights to unlock a collection.");
                 }
@@ -623,7 +623,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnCollectionDBSet unlockCollection = salesInvoice;
                 unlockCollection.IsLocked = false;
-                unlockCollection.UpdatedByUserId = userId;
+                unlockCollection.UpdatedByUserId = loginUserId;
                 unlockCollection.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -656,32 +656,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to cancel a collection.");
                 }
 
-                if (userForm.CanCancel == false)
+                if (loginUserForm.CanCancel == false)
                 {
                     return StatusCode(400, "No rights to cancel a collection.");
                 }
@@ -704,7 +704,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnCollectionDBSet unlockCollection = salesInvoice;
                 unlockCollection.IsCancelled = true;
-                unlockCollection.UpdatedByUserId = userId;
+                unlockCollection.UpdatedByUserId = loginUserId;
                 unlockCollection.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -737,32 +737,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionList"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to delete a collection.");
                 }
 
-                if (userForm.CanDelete == false)
+                if (loginUserForm.CanDelete == false)
                 {
                     return StatusCode(400, "No rights to delete a collection.");
                 }

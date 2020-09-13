@@ -16,6 +16,7 @@ namespace liteclerk_api.DBSets
         public Int32? BranchId { get; set; }
         public virtual MstCompanyBranchDBSet MstCompanyBranch_BranchId { get; set; }
         public Boolean IsActive { get; set; }
+        public Boolean IsLocked { get; set; }
         public virtual ICollection<MstCompanyDBSet> MstCompanies_CreatedByUserId { get; set; }
         public virtual ICollection<MstCompanyDBSet> MstCompanies_UpdatedByUserId { get; set; }
         public virtual ICollection<MstCurrencyDBSet> MstCurrencies_CreatedByUserId { get; set; }
