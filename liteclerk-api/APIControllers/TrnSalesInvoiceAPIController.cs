@@ -43,8 +43,8 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
-        [HttpGet("list/byCustomer/{customerId}")]
-        public async Task<ActionResult> GetSalesInvoiceListByCustomer(Int32 customerId)
+        [HttpGet("list/byDateRange/{startDate}/{endDate}")]
+        public async Task<ActionResult> GetSalesInvoiceListByDateRanged(String startDate, String endDate)
         {
             try
             {
@@ -59,8 +59,8 @@ namespace liteclerk_api.APIControllers
                 IEnumerable<DTO.TrnSalesInvoiceDTO> salesInvoices = await (
                     from d in _dbContext.TrnSalesInvoices
                     where d.BranchId == loginUser.BranchId
-                    && d.CustomerId == customerId
-                    && d.IsLocked == true
+                    && d.SIDate >= Convert.ToDateTime(startDate)
+                    && d.SIDate <= Convert.ToDateTime(endDate)
                     orderby d.Id descending
                     select new DTO.TrnSalesInvoiceDTO
                     {
@@ -156,8 +156,8 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("list/byDateRange/{startDate}/{endDate}")]
-        public async Task<ActionResult> GetSalesInvoiceListByDateRanged(String startDate, String endDate)
+        [HttpGet("list/byCustomer/{customerId}")]
+        public async Task<ActionResult> GetSalesInvoiceListByCustomer(Int32 customerId)
         {
             try
             {
@@ -172,8 +172,8 @@ namespace liteclerk_api.APIControllers
                 IEnumerable<DTO.TrnSalesInvoiceDTO> salesInvoices = await (
                     from d in _dbContext.TrnSalesInvoices
                     where d.BranchId == loginUser.BranchId
-                    && d.SIDate >= Convert.ToDateTime(startDate)
-                    && d.SIDate <= Convert.ToDateTime(endDate)
+                    && d.CustomerId == customerId
+                    && d.IsLocked == true
                     orderby d.Id descending
                     select new DTO.TrnSalesInvoiceDTO
                     {
@@ -204,6 +204,13 @@ namespace liteclerk_api.APIControllers
                                 ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            ReceivableAccountId = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId : 0,
+                            ReceivableAccount = new DTO.MstAccountDTO
+                            {
+                                AccountCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.AccountCode : "",
+                                ManualCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.ManualCode : "",
+                                Account = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.Account : ""
+                            }
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO

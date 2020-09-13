@@ -86,7 +86,16 @@ namespace liteclerk_api.APIControllers
                             SINumber = d.TrnSalesInvoice_SIId.SINumber,
                             SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
                             ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
-                            DocumentReference = d.DocumentReference
+                            DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference,
+                            CustomerId = d.TrnSalesInvoice_SIId.CustomerId,
+                            Customer = new DTO.MstArticleCustomerDTO
+                            {
+                                Article = new DTO.MstArticleDTO
+                                {
+                                    ManualCode = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.ManualCode
+                                },
+                                Customer = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            }
                         },
                         SIItemId = d.SIItemId,
                         SalesInvoiceItem = new DTO.TrnSalesInvoiceItemDTO
@@ -218,7 +227,7 @@ namespace liteclerk_api.APIControllers
                             SINumber = d.TrnSalesInvoice_SIId.SINumber,
                             SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
                             ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
-                            DocumentReference = d.DocumentReference
+                            DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
                         },
                         SIItemId = d.SIItemId,
                         SalesInvoiceItem = new DTO.TrnSalesInvoiceItemDTO
@@ -349,7 +358,16 @@ namespace liteclerk_api.APIControllers
                             SINumber = d.TrnSalesInvoice_SIId.SINumber,
                             SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
                             ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
-                            DocumentReference = d.DocumentReference
+                            DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference,
+                            CustomerId = d.TrnSalesInvoice_SIId.CustomerId,
+                            Customer = new DTO.MstArticleCustomerDTO
+                            {
+                                Article = new DTO.MstArticleDTO
+                                {
+                                    ManualCode = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.ManualCode
+                                },
+                                Customer = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            }
                         },
                         SIItemId = d.SIItemId,
                         SalesInvoiceItem = new DTO.TrnSalesInvoiceItemDTO

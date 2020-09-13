@@ -58,8 +58,8 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("list/byCurrentUser")]
-        public async Task<ActionResult> GetUserBranchListByCurrentUser()
+        [HttpGet("list/byLoginUser")]
+        public async Task<ActionResult> GetUserBranchListByLoginUser()
         {
             try
             {
