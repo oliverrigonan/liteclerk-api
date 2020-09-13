@@ -43,17 +43,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
                 IEnumerable<DTO.TrnJobOrderDTO> jobOrders = await (
                     from d in _dbContext.TrnJobOrders
-                    where d.BranchId == user.BranchId
+                    where d.BranchId == loginUser.BranchId
                     && d.JODate >= Convert.ToDateTime(startDate)
                     && d.JODate <= Convert.ToDateTime(endDate)
                     orderby d.Id descending
@@ -448,32 +448,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderList"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to add a job order.");
                 }
 
-                if (userForm.CanAdd == false)
+                if (loginUserForm.CanAdd == false)
                 {
                     return StatusCode(400, "No rights to add a job order.");
                 }
@@ -503,7 +503,7 @@ namespace liteclerk_api.APIControllers
                 String JONumber = "0000000001";
                 DBSets.TrnJobOrderDBSet lastJobOrder = await (
                     from d in _dbContext.TrnJobOrders
-                    where d.BranchId == user.BranchId
+                    where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
                     select d
                 ).FirstOrDefaultAsync();
@@ -516,8 +516,8 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnJobOrderDBSet newJobOrder = new DBSets.TrnJobOrderDBSet()
                 {
-                    BranchId = Convert.ToInt32(user.BranchId),
-                    CurrencyId = user.MstCompany_CompanyId.CurrencyId,
+                    BranchId = Convert.ToInt32(loginUser.BranchId),
+                    CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
                     JONumber = JONumber,
                     JODate = DateTime.Today,
                     ManualNumber = JONumber,
@@ -533,16 +533,16 @@ namespace liteclerk_api.APIControllers
                     Remarks = "",
                     BaseQuantity = 0,
                     BaseUnitId = item.UnitId,
-                    PreparedByUserId = userId,
-                    CheckedByUserId = userId,
-                    ApprovedByUserId = userId,
+                    PreparedByUserId = loginUserId,
+                    CheckedByUserId = loginUserId,
+                    ApprovedByUserId = loginUserId,
                     Status = "",
                     IsCancelled = false,
                     IsPrinted = false,
                     IsLocked = false,
-                    CreatedByUserId = userId,
+                    CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
-                    UpdatedByUserId = userId,
+                    UpdatedByUserId = loginUserId,
                     UpdatedDateTime = DateTime.Now
                 };
 
@@ -562,32 +562,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to edit or save a job order.");
                 }
 
-                if (userForm.CanEdit == false)
+                if (loginUserForm.CanEdit == false)
                 {
                     return StatusCode(400, "No rights to edit or save a job order.");
                 }
@@ -679,7 +679,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by user not found.");
+                    return StatusCode(404, "Checked by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -690,7 +690,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by user not found.");
+                    return StatusCode(404, "Approved by loginUser not found.");
                 }
 
                 DBSets.TrnJobOrderDBSet saveJobOrder = jobOrder;
@@ -710,7 +710,7 @@ namespace liteclerk_api.APIControllers
                 saveJobOrder.CheckedByUserId = trnJobOrderDTO.CheckedByUserId;
                 saveJobOrder.ApprovedByUserId = trnJobOrderDTO.ApprovedByUserId;
                 saveJobOrder.Status = trnJobOrderDTO.Status;
-                saveJobOrder.UpdatedByUserId = userId;
+                saveJobOrder.UpdatedByUserId = loginUserId;
                 saveJobOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -728,32 +728,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to lock a job order.");
                 }
 
-                if (userForm.CanLock == false)
+                if (loginUserForm.CanLock == false)
                 {
                     return StatusCode(400, "No rights to lock a job order.");
                 }
@@ -845,7 +845,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by user not found.");
+                    return StatusCode(404, "Checked by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -856,7 +856,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by user not found.");
+                    return StatusCode(404, "Approved by loginUser not found.");
                 }
 
                 DBSets.TrnJobOrderDBSet lockJobOrder = jobOrder;
@@ -877,7 +877,7 @@ namespace liteclerk_api.APIControllers
                 lockJobOrder.ApprovedByUserId = trnJobOrderDTO.ApprovedByUserId;
                 lockJobOrder.Status = trnJobOrderDTO.Status;
                 lockJobOrder.IsLocked = true;
-                lockJobOrder.UpdatedByUserId = userId;
+                lockJobOrder.UpdatedByUserId = loginUserId;
                 lockJobOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -895,32 +895,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to unlock a job order.");
                 }
 
-                if (userForm.CanUnlock == false)
+                if (loginUserForm.CanUnlock == false)
                 {
                     return StatusCode(400, "No rights to unlock a job order.");
                 }
@@ -943,7 +943,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnJobOrderDBSet unlockJobOrder = jobOrder;
                 unlockJobOrder.IsLocked = false;
-                unlockJobOrder.UpdatedByUserId = userId;
+                unlockJobOrder.UpdatedByUserId = loginUserId;
                 unlockJobOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -961,32 +961,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to cancel a job order.");
                 }
 
-                if (userForm.CanCancel == false)
+                if (loginUserForm.CanCancel == false)
                 {
                     return StatusCode(400, "No rights to cancel a job order.");
                 }
@@ -1009,7 +1009,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnJobOrderDBSet unlockJobOrder = jobOrder;
                 unlockJobOrder.IsCancelled = true;
-                unlockJobOrder.UpdatedByUserId = userId;
+                unlockJobOrder.UpdatedByUserId = loginUserId;
                 unlockJobOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -1027,32 +1027,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderList"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to delete a job order.");
                 }
 
-                if (userForm.CanDelete == false)
+                if (loginUserForm.CanDelete == false)
                 {
                     return StatusCode(400, "No rights to delete a job order.");
                 }
@@ -1089,17 +1089,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -1143,7 +1143,7 @@ namespace liteclerk_api.APIControllers
                         String JONumber = "0000000001";
                         DBSets.TrnJobOrderDBSet lastJobOrder = await (
                             from d in _dbContext.TrnJobOrders
-                            where d.BranchId == user.BranchId
+                            where d.BranchId == loginUser.BranchId
                             orderby d.Id descending
                             select d
                         ).FirstOrDefaultAsync();
@@ -1176,8 +1176,8 @@ namespace liteclerk_api.APIControllers
 
                         DBSets.TrnJobOrderDBSet newJobOrder = new DBSets.TrnJobOrderDBSet()
                         {
-                            BranchId = Convert.ToInt32(user.BranchId),
-                            CurrencyId = user.MstCompany_CompanyId.CurrencyId,
+                            BranchId = Convert.ToInt32(loginUser.BranchId),
+                            CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
                             JONumber = JONumber,
                             JODate = DateTime.Today,
                             ManualNumber = JONumber,
@@ -1200,9 +1200,9 @@ namespace liteclerk_api.APIControllers
                             IsCancelled = false,
                             IsPrinted = false,
                             IsLocked = true,
-                            CreatedByUserId = user.Id,
+                            CreatedByUserId = loginUser.Id,
                             CreatedDateTime = DateTime.Now,
-                            UpdatedByUserId = user.Id,
+                            UpdatedByUserId = loginUser.Id,
                             UpdatedDateTime = DateTime.Now
                         };
 
@@ -1258,9 +1258,9 @@ namespace liteclerk_api.APIControllers
                                         JobDepartmentId = jobTypeDepartment.JobDepartmentId,
                                         Particulars = "",
                                         Status = "",
-                                        StatusByUserId = userId,
+                                        StatusByUserId = loginUserId,
                                         StatusUpdatedDateTime = DateTime.Now,
-                                        AssignedToUserId = userId,
+                                        AssignedToUserId = loginUserId,
                                     };
 
                                     _dbContext.TrnJobOrderDepartments.Add(newJobOrderDepartment);
@@ -1286,7 +1286,7 @@ namespace liteclerk_api.APIControllers
                                         Value = "",
                                         Particulars = "",
                                         IsPrinted = false,
-                                        InformationByUserId = userId,
+                                        InformationByUserId = loginUserId,
                                         InformationUpdatedDateTime = DateTime.Now,
                                     };
 

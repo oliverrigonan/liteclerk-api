@@ -220,32 +220,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to add a sales invoice item.");
                 }
 
-                if (userForm.CanAdd == false)
+                if (loginUserForm.CanAdd == false)
                 {
                     return StatusCode(400, "No rights to add a sales invoice item.");
                 }
@@ -408,7 +408,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
                 updateSalesInvoice.Amount = amount;
-                updateSalesInvoice.UpdatedByUserId = userId;
+                updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -426,32 +426,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to edit or update a sales invoice item.");
                 }
 
-                if (userForm.CanEdit == false)
+                if (loginUserForm.CanEdit == false)
                 {
                     return StatusCode(400, "No rights to edit or update a sales invoice item.");
                 }
@@ -621,7 +621,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
                 updateSalesInvoice.Amount = amount;
-                updateSalesInvoice.UpdatedByUserId = userId;
+                updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -639,32 +639,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to delete a sales invoice item.");
                 }
 
-                if (userForm.CanDelete == false)
+                if (loginUserForm.CanDelete == false)
                 {
                     return StatusCode(400, "No rights to delete a sales invoice item.");
                 }
@@ -718,7 +718,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
                 updateSalesInvoice.Amount = amount;
-                updateSalesInvoice.UpdatedByUserId = userId;
+                updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();

@@ -137,17 +137,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCurrencyDBSet currency = await (
@@ -183,9 +183,9 @@ namespace liteclerk_api.APIControllers
                     CurrencyId = currency.Id,
                     CostMethod = "Last Purchase Cost",
                     IsLocked = false,
-                    CreatedByUserId = userId,
+                    CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
-                    UpdatedByUserId = userId,
+                    UpdatedByUserId = loginUserId,
                     UpdatedDateTime = DateTime.Now
                 };
 
@@ -205,17 +205,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCompanyDBSet company = await (
@@ -252,7 +252,7 @@ namespace liteclerk_api.APIControllers
                 saveCompany.TIN = mstCompanyDTO.TIN;
                 saveCompany.CurrencyId = mstCompanyDTO.CurrencyId;
                 saveCompany.CostMethod = mstCompanyDTO.CostMethod;
-                saveCompany.UpdatedByUserId = userId;
+                saveCompany.UpdatedByUserId = loginUserId;
                 saveCompany.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -270,17 +270,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCompanyDBSet company = await (
@@ -318,7 +318,7 @@ namespace liteclerk_api.APIControllers
                 lockCompany.CurrencyId = mstCompanyDTO.CurrencyId;
                 lockCompany.CostMethod = mstCompanyDTO.CostMethod;
                 lockCompany.IsLocked = true;
-                lockCompany.UpdatedByUserId = userId;
+                lockCompany.UpdatedByUserId = loginUserId;
                 lockCompany.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -336,17 +336,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCompanyDBSet company = await (
@@ -367,7 +367,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstCompanyDBSet unlockCompany = company;
                 unlockCompany.IsLocked = false;
-                unlockCompany.UpdatedByUserId = userId;
+                unlockCompany.UpdatedByUserId = loginUserId;
                 unlockCompany.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -385,17 +385,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
                 DBSets.MstCompanyDBSet company = await (

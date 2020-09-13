@@ -11,6 +11,7 @@ namespace liteclerk_api.DTO
         public String BranchCode { get; set; }
         public String ManualCode { get; set; }
         public Int32 CompanyId { get; set; }
+        public MstCompanyDTO Company { get; set; }
         public String Branch { get; set; }
         public String Address { get; set; }
         public String TIN { get; set; }

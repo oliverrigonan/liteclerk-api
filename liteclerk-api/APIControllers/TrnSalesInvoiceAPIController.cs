@@ -48,17 +48,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
                 IEnumerable<DTO.TrnSalesInvoiceDTO> salesInvoices = await (
                     from d in _dbContext.TrnSalesInvoices
-                    where d.BranchId == user.BranchId
+                    where d.BranchId == loginUser.BranchId
                     && d.CustomerId == customerId
                     && d.IsLocked == true
                     orderby d.Id descending
@@ -161,17 +161,17 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
                 IEnumerable<DTO.TrnSalesInvoiceDTO> salesInvoices = await (
                     from d in _dbContext.TrnSalesInvoices
-                    where d.BranchId == user.BranchId
+                    where d.BranchId == loginUser.BranchId
                     && d.SIDate >= Convert.ToDateTime(startDate)
                     && d.SIDate <= Convert.ToDateTime(endDate)
                     orderby d.Id descending
@@ -376,32 +376,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceList"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to add a sales invoice.");
                 }
 
-                if (userForm.CanAdd == false)
+                if (loginUserForm.CanAdd == false)
                 {
                     return StatusCode(400, "No rights to add a sales invoice.");
                 }
@@ -420,7 +420,7 @@ namespace liteclerk_api.APIControllers
                 String SINumber = "0000000001";
                 DBSets.TrnSalesInvoiceDBSet lastSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
-                    where d.BranchId == user.BranchId
+                    where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
                     select d
                 ).FirstOrDefaultAsync();
@@ -433,8 +433,8 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnSalesInvoiceDBSet newSalesInvoice = new DBSets.TrnSalesInvoiceDBSet()
                 {
-                    BranchId = Convert.ToInt32(user.BranchId),
-                    CurrencyId = user.MstCompany_CompanyId.CurrencyId,
+                    BranchId = Convert.ToInt32(loginUser.BranchId),
+                    CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
                     SINumber = SINumber,
                     SIDate = DateTime.Today,
                     ManualNumber = SINumber,
@@ -443,10 +443,10 @@ namespace liteclerk_api.APIControllers
                     TermId = customer.TermId,
                     DateNeeded = DateTime.Today,
                     Remarks = "",
-                    SoldByUserId = userId,
-                    PreparedByUserId = userId,
-                    CheckedByUserId = userId,
-                    ApprovedByUserId = userId,
+                    SoldByUserId = loginUserId,
+                    PreparedByUserId = loginUserId,
+                    CheckedByUserId = loginUserId,
+                    ApprovedByUserId = loginUserId,
                     Amount = 0,
                     PaidAmount = 0,
                     AdjustmentAmount = 0,
@@ -455,9 +455,9 @@ namespace liteclerk_api.APIControllers
                     IsCancelled = false,
                     IsPrinted = false,
                     IsLocked = false,
-                    CreatedByUserId = userId,
+                    CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
-                    UpdatedByUserId = userId,
+                    UpdatedByUserId = loginUserId,
                     UpdatedDateTime = DateTime.Now
                 };
 
@@ -477,32 +477,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to edit or save a sales invoice.");
                 }
 
-                if (userForm.CanEdit == false)
+                if (loginUserForm.CanEdit == false)
                 {
                     return StatusCode(400, "No rights to edit or save a sales invoice.");
                 }
@@ -565,7 +565,7 @@ namespace liteclerk_api.APIControllers
 
                 if (soldByUser == null)
                 {
-                    return StatusCode(404, "Sold by user not found.");
+                    return StatusCode(404, "Sold by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet checkedByUser = await (
@@ -576,7 +576,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by user not found.");
+                    return StatusCode(404, "Checked by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -587,7 +587,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by user not found.");
+                    return StatusCode(404, "Approved by loginUser not found.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet saveSalesInvoice = salesInvoice;
@@ -603,7 +603,7 @@ namespace liteclerk_api.APIControllers
                 saveSalesInvoice.CheckedByUserId = trnSalesInvoiceDTO.CheckedByUserId;
                 saveSalesInvoice.ApprovedByUserId = trnSalesInvoiceDTO.ApprovedByUserId;
                 saveSalesInvoice.Status = trnSalesInvoiceDTO.Status;
-                saveSalesInvoice.UpdatedByUserId = userId;
+                saveSalesInvoice.UpdatedByUserId = loginUserId;
                 saveSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -621,32 +621,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to lock a sales invoice.");
                 }
 
-                if (userForm.CanLock == false)
+                if (loginUserForm.CanLock == false)
                 {
                     return StatusCode(400, "No rights to lock a sales invoice.");
                 }
@@ -709,7 +709,7 @@ namespace liteclerk_api.APIControllers
 
                 if (soldByUser == null)
                 {
-                    return StatusCode(404, "Sold by user not found.");
+                    return StatusCode(404, "Sold by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet checkedByUser = await (
@@ -720,7 +720,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by user not found.");
+                    return StatusCode(404, "Checked by loginUser not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -731,7 +731,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by user not found.");
+                    return StatusCode(404, "Approved by loginUser not found.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet lockSalesInvoice = salesInvoice;
@@ -748,7 +748,7 @@ namespace liteclerk_api.APIControllers
                 lockSalesInvoice.ApprovedByUserId = trnSalesInvoiceDTO.ApprovedByUserId;
                 lockSalesInvoice.Status = trnSalesInvoiceDTO.Status;
                 lockSalesInvoice.IsLocked = true;
-                lockSalesInvoice.UpdatedByUserId = userId;
+                lockSalesInvoice.UpdatedByUserId = loginUserId;
                 lockSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -768,32 +768,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to unlock a sales invoice.");
                 }
 
-                if (userForm.CanUnlock == false)
+                if (loginUserForm.CanUnlock == false)
                 {
                     return StatusCode(400, "No rights to unlock a sales invoice.");
                 }
@@ -816,7 +816,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnSalesInvoiceDBSet unlockSalesInvoice = salesInvoice;
                 unlockSalesInvoice.IsLocked = false;
-                unlockSalesInvoice.UpdatedByUserId = userId;
+                unlockSalesInvoice.UpdatedByUserId = loginUserId;
                 unlockSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -836,32 +836,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to cancel a sales invoice.");
                 }
 
-                if (userForm.CanCancel == false)
+                if (loginUserForm.CanCancel == false)
                 {
                     return StatusCode(400, "No rights to cancel a sales invoice.");
                 }
@@ -884,7 +884,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnSalesInvoiceDBSet unlockSalesInvoice = salesInvoice;
                 unlockSalesInvoice.IsCancelled = true;
-                unlockSalesInvoice.UpdatedByUserId = userId;
+                unlockSalesInvoice.UpdatedByUserId = loginUserId;
                 unlockSalesInvoice.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
@@ -904,32 +904,32 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet user = await (
+                DBSets.MstUserDBSet loginUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == userId
+                    where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (user == null)
+                if (loginUser == null)
                 {
-                    return StatusCode(404, "User login not found.");
+                    return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceList"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm == null)
+                if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to delete a sales invoice.");
                 }
 
-                if (userForm.CanDelete == false)
+                if (loginUserForm.CanDelete == false)
                 {
                     return StatusCode(400, "No rights to delete a sales invoice.");
                 }
@@ -994,36 +994,36 @@ namespace liteclerk_api.APIControllers
             Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.Black, Element.ALIGN_LEFT, 1)));
             Paragraph headerLine = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(2F, 100.0F, BaseColor.Black, Element.ALIGN_MIDDLE, 5F)));
 
-            Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+            Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-            DBSets.MstUserDBSet user = await (
+            DBSets.MstUserDBSet loginUser = await (
                 from d in _dbContext.MstUsers
-                where d.Id == userId
+                where d.Id == loginUserId
                 select d
             ).FirstOrDefaultAsync();
 
-            if (user != null)
+            if (loginUser != null)
             {
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm != null)
+                if (loginUserForm != null)
                 {
-                    if (userForm.CanPrint == true)
+                    if (loginUserForm.CanPrint == true)
                     {
                         String companyName = "";
                         String companyAddress = "";
                         String companyTaxNumber = "";
 
-                        if (user.CompanyId != null)
+                        if (loginUser.CompanyId != null)
                         {
-                            companyName = user.MstCompany_CompanyId.Company;
-                            companyAddress = user.MstCompany_CompanyId.Address;
-                            companyTaxNumber = user.MstCompany_CompanyId.TIN;
+                            companyName = loginUser.MstCompany_CompanyId.Company;
+                            companyAddress = loginUser.MstCompany_CompanyId.Address;
+                            companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
                         }
 
                         DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -1239,36 +1239,36 @@ namespace liteclerk_api.APIControllers
             Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.Black, Element.ALIGN_LEFT, 1)));
             Paragraph headerLine = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(2F, 100.0F, BaseColor.Black, Element.ALIGN_MIDDLE, 5F)));
 
-            Int32 userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+            Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-            DBSets.MstUserDBSet user = await (
+            DBSets.MstUserDBSet loginUser = await (
                 from d in _dbContext.MstUsers
-                where d.Id == userId
+                where d.Id == loginUserId
                 select d
             ).FirstOrDefaultAsync();
 
-            if (user != null)
+            if (loginUser != null)
             {
-                DBSets.MstUserFormDBSet userForm = await (
+                DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
-                    where d.UserId == userId
+                    where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (userForm != null)
+                if (loginUserForm != null)
                 {
-                    if (userForm.CanPrint == true)
+                    if (loginUserForm.CanPrint == true)
                     {
                         String companyName = "";
                         String companyAddress = "";
                         String companyTaxNumber = "";
 
-                        if (user.CompanyId != null)
+                        if (loginUser.CompanyId != null)
                         {
-                            companyName = user.MstCompany_CompanyId.Company;
-                            companyAddress = user.MstCompany_CompanyId.Address;
-                            companyTaxNumber = user.MstCompany_CompanyId.TIN;
+                            companyName = loginUser.MstCompany_CompanyId.Company;
+                            companyAddress = loginUser.MstCompany_CompanyId.Address;
+                            companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
                         }
 
                         DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
