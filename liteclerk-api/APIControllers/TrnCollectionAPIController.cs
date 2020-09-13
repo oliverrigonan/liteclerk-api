@@ -239,6 +239,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to add a collection.");
+                }
+
+                if (userForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add a collection.");
+                }
+
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.MstArticle_ArticleId.IsLocked == true
@@ -315,6 +332,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to edit or save a collection.");
+                }
+
+                if (userForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to edit or save a collection.");
                 }
 
                 DBSets.TrnCollectionDBSet salesInvoice = await (
@@ -417,6 +451,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to lock a collection.");
+                }
+
+                if (userForm.CanLock == false)
+                {
+                    return StatusCode(400, "No rights to lock a collection.");
                 }
 
                 DBSets.TrnCollectionDBSet salesInvoice = await (
@@ -537,6 +588,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to unlock a collection.");
+                }
+
+                if (userForm.CanUnlock == false)
+                {
+                    return StatusCode(400, "No rights to unlock a collection.");
+                }
+
                 DBSets.TrnCollectionDBSet salesInvoice = await (
                      from d in _dbContext.TrnCollections
                      where d.Id == id
@@ -601,6 +669,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User login not found.");
                 }
 
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to cancel a collection.");
+                }
+
+                if (userForm.CanCancel == false)
+                {
+                    return StatusCode(400, "No rights to cancel a collection.");
+                }
+
                 DBSets.TrnCollectionDBSet salesInvoice = await (
                      from d in _dbContext.TrnCollections
                      where d.Id == id
@@ -663,6 +748,23 @@ namespace liteclerk_api.APIControllers
                 if (user == null)
                 {
                     return StatusCode(404, "User login not found.");
+                }
+
+                DBSets.MstUserFormDBSet userForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == userId
+                    && d.SysForm_FormId.Form == "ActivityCollectionList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (userForm == null)
+                {
+                    return StatusCode(404, "No rights to delete a collection.");
+                }
+
+                if (userForm.CanDelete == false)
+                {
+                    return StatusCode(400, "No rights to delete a collection.");
                 }
 
                 DBSets.TrnCollectionDBSet salesInvoice = await (
