@@ -124,7 +124,7 @@ namespace liteclerk_api
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Liteclerk API V.202009111013.BETA");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Liteclerk API V.202009111013");
                 c.SupportedSubmitMethods(new Swashbuckle.AspNetCore.SwaggerUI.SubmitMethod[] { });
             });
 
