@@ -105,8 +105,8 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("detail/byCurrentUser/byForm/{form}")]
-        public async Task<ActionResult> GetUserFormDetailByCurrentUserForm(String form)
+        [HttpGet("detail/byLoginUser/byForm/{form}")]
+        public async Task<ActionResult> GetUserFormDetailByLoginUserForm(String form)
         {
             try
             {

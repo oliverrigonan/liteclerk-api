@@ -40,28 +40,28 @@ namespace liteclerk_api.APIControllers
                         AssetAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_AssetAccountId.AccountCode,
-                            ManualCode = d.MstAccount_AssetAccountId.Account,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_SalesAccountId.AccountCode,
-                            ManualCode = d.MstAccount_SalesAccountId.Account,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_CostAccountId.AccountCode,
-                            ManualCode = d.MstAccount_CostAccountId.Account,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
-                            ManualCode = d.MstAccount_ExpenseAccountId.Account,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         CreatedByUser = new DTO.MstUserDTO
