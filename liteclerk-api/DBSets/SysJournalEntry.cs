@@ -8,10 +8,13 @@ namespace liteclerk_api.DBSets
     public class SysJournalEntryDBSet
     {
         public Int32 Id { get; set; }
-        public String GLNumber { get; set; }
-        public DateTime GLDate { get; set; }
         public Int32 BranchId { get; set; }
         public virtual MstCompanyBranchDBSet MstCompanyBranch_BranchId { get; set; }
+        public Int32 CurrencyId { get; set; }
+        public virtual MstCurrencyDBSet MstCurrency_CurrencyId { get; set; }
+        public String GLNumber { get; set; }
+        public DateTime GLDate { get; set; }
+
         public Int32 AccountId { get; set; }
         public virtual MstAccountDBSet MstAccount_AccountId { get; set; }
         public Int32 ArticleId { get; set; }
@@ -33,7 +36,7 @@ namespace liteclerk_api.DBSets
         public Int32? CIId { get; set; }
         public virtual TrnCollectionDBSet TrnCollection_CIId { get; set; }
         public Int32? RMId { get; set; }
-        public virtual TrnPayableMemoDBSet TrnReceivableMemo_RMId { get; set; }
+        public virtual TrnReceivableMemoDBSet TrnReceivableMemo_RMId { get; set; }
         // Financial Relationship <Do not modify>
         public Int32? JVId { get; set; }
         public virtual TrnJournalVoucherDBSet TrnJournalVoucher_JVId { get; set; }
