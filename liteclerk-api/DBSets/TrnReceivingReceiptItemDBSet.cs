@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.DBSets
 {
-    public class TrnReceivingReceiptLineDBSet
+    public class TrnReceivingReceiptItemDBSet
     {
         // Line document header relationship <Do not modify>
         public Int32 Id { get; set; }

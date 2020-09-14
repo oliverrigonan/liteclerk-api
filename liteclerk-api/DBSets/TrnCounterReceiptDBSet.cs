@@ -32,5 +32,8 @@ namespace liteclerk_api.DBSets
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
+
+        // Lines
+        public virtual ICollection<TrnCounterReceiptLineDBSet> TrnCounterReceiptLines_CRId { get; set; }
     }
 }
