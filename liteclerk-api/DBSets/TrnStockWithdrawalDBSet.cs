@@ -35,5 +35,6 @@ namespace liteclerk_api.DBSets
 
         // Lines
         public virtual ICollection<TrnStockWithdrawalItemDBSet> TrnStockWithdrawalItems_SWId { get; set; }
+        public virtual ICollection<SysInventoryDBSet> SysInventories_SWId { get; set; }
     }
 }

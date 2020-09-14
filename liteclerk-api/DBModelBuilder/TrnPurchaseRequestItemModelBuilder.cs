@@ -13,12 +13,16 @@ namespace liteclerk_api.DBModelBuilder
             modelBuilder.Entity<DBSets.TrnPurchaseRequestItemDBSet>(entity =>
             {
                 entity.ToTable("TrnPurchaseRequestItem");
-                entity.HasKey(e => e.Id);
 
+                // Header field link
+                entity.HasKey(e => e.Id);
                 entity.Property(e => e.PRId).HasColumnName("PRId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.TrnPurchaseRequest_PRId).WithMany(f => f.TrnPurchaseRequestItems_PRId).HasForeignKey(f => f.PRId).OnDelete(DeleteBehavior.Restrict);
 
+                // Particular field
                 entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
+
+                // Line fields
             });
         }
     }
