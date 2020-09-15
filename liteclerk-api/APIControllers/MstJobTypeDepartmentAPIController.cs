@@ -133,31 +133,20 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a job type department.");
                 }
 
-                DBSets.MstJobTypeDBSet article = await (
+                DBSets.MstJobTypeDBSet jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == mstJobTypeDepartmentDTO.JobTypeId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (article == null)
+                if (jobType == null)
                 {
                     return StatusCode(404, "Job type not found.");
                 }
 
-                if (article.IsLocked == true)
+                if (jobType.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot add a job type department if the current job type is locked.");
-                }
-
-                DBSets.MstJobTypeDepartmentDBSet jobTypeDepartment = await (
-                    from d in _dbContext.MstJobTypeDepartments
-                    where d.JobTypeId == mstJobTypeDepartmentDTO.JobTypeId
-                    select d
-                ).FirstOrDefaultAsync(); ;
-
-                if (jobTypeDepartment == null)
-                {
-                    return StatusCode(404, "Job type department not found.");
                 }
 
                 DBSets.MstJobDepartmentDBset jobDepartment = await (
@@ -237,7 +226,7 @@ namespace liteclerk_api.APIControllers
 
                 if (jobTypeDepartment.MstJobType_JobTypeId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot update a job type department if the current item is locked.");
+                    return StatusCode(400, "Cannot update a job type department if the current job type is locked.");
                 }
 
                 DBSets.MstJobDepartmentDBset jobDepartment = await (
@@ -313,7 +302,7 @@ namespace liteclerk_api.APIControllers
 
                 if (jobTypeDepartment.MstJobType_JobTypeId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot delete a job type department if the current item is locked.");
+                    return StatusCode(400, "Cannot delete a job type department if the current job type is locked.");
                 }
 
                 _dbContext.MstJobTypeDepartments.Remove(jobTypeDepartment);

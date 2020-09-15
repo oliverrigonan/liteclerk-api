@@ -123,31 +123,20 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a job type information.");
                 }
 
-                DBSets.MstJobTypeDBSet article = await (
+                DBSets.MstJobTypeDBSet jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == mstJobTypeInformationDTO.JobTypeId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (article == null)
+                if (jobType == null)
                 {
                     return StatusCode(404, "Job type not found.");
                 }
 
-                if (article.IsLocked == true)
+                if (jobType.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot add a job type information if the current job type is locked.");
-                }
-
-                DBSets.MstJobTypeInformationDBSet jobTypeInformation = await (
-                    from d in _dbContext.MstJobTypeInformations
-                    where d.JobTypeId == mstJobTypeInformationDTO.JobTypeId
-                    select d
-                ).FirstOrDefaultAsync(); ;
-
-                if (jobTypeInformation == null)
-                {
-                    return StatusCode(404, "Job type information not found.");
                 }
 
                 DBSets.MstJobTypeInformationDBSet newJobTypeInformation = new DBSets.MstJobTypeInformationDBSet()
@@ -217,7 +206,7 @@ namespace liteclerk_api.APIControllers
 
                 if (jobTypeInformation.MstJobType_JobTypeId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot update a job type information if the current item is locked.");
+                    return StatusCode(400, "Cannot update a job type information if the current job type is locked.");
                 }
 
                 DBSets.MstJobTypeInformationDBSet updateJobTypeInformation = jobTypeInformation;
@@ -283,7 +272,7 @@ namespace liteclerk_api.APIControllers
 
                 if (jobTypeInformation.MstJobType_JobTypeId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot delete a job type information if the current item is locked.");
+                    return StatusCode(400, "Cannot delete a job type information if the current job type is locked.");
                 }
 
                 _dbContext.MstJobTypeInformations.Remove(jobTypeInformation);

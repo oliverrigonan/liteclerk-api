@@ -123,31 +123,20 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a job type attachment.");
                 }
 
-                DBSets.MstJobTypeDBSet article = await (
+                DBSets.MstJobTypeDBSet jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == mstJobTypeAttachmentDTO.JobTypeId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (article == null)
+                if (jobType == null)
                 {
                     return StatusCode(404, "Job type not found.");
                 }
 
-                if (article.IsLocked == true)
+                if (jobType.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot add a job type attachment if the current job type is locked.");
-                }
-
-                DBSets.MstJobTypeAttachmentDBSet jobTypeAttachment = await (
-                    from d in _dbContext.MstJobTypeAttachments
-                    where d.JobTypeId == mstJobTypeAttachmentDTO.JobTypeId
-                    select d
-                ).FirstOrDefaultAsync(); ;
-
-                if (jobTypeAttachment == null)
-                {
-                    return StatusCode(404, "Job type attachment not found.");
                 }
 
                 DBSets.MstJobTypeAttachmentDBSet newJobTypeAttachment = new DBSets.MstJobTypeAttachmentDBSet()
@@ -217,7 +206,7 @@ namespace liteclerk_api.APIControllers
 
                 if (jobTypeAttachment.MstJobType_JobTypeId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot update a job type attachment if the current item is locked.");
+                    return StatusCode(400, "Cannot update a job type attachment if the current job type is locked.");
                 }
 
                 DBSets.MstJobTypeAttachmentDBSet updateJobTypeAttachment = jobTypeAttachment;
@@ -283,7 +272,7 @@ namespace liteclerk_api.APIControllers
 
                 if (jobTypeAttachment.MstJobType_JobTypeId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot delete a job type attachment if the current item is locked.");
+                    return StatusCode(400, "Cannot delete a job type attachment if the current job type is locked.");
                 }
 
                 _dbContext.MstJobTypeAttachments.Remove(jobTypeAttachment);
