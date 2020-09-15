@@ -37,6 +37,6 @@ namespace liteclerk_api.DBSets
 
         // Lines
         public virtual ICollection<TrnJournalVoucherLineDBSet> TrnJournalVoucherLines_JVId { get; set; }
-        public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_JVId { get; set; }
+        //public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_JVId { get; set; }
     }
 }

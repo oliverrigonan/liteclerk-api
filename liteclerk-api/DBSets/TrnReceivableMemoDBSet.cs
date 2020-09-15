@@ -36,6 +36,6 @@ namespace liteclerk_api.DBSets
         public DateTime UpdatedDateTime { get; set; }
 
         // Lines
-        public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_RMId { get; set; }
+        //public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_RMId { get; set; }
     }
 }

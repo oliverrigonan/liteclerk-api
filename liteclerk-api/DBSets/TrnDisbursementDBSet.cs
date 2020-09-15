@@ -38,6 +38,6 @@ namespace liteclerk_api.DBSets
         // Lines
         public virtual ICollection<TrnDisbursementLineDBSet> TrnDisbursementLines_CVId { get; set; }
 
-        public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_CVId { get; set; }
+        //public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_CVId { get; set; }
     }
 }

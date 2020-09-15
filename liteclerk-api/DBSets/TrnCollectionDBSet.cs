@@ -48,6 +48,6 @@ namespace liteclerk_api.DBSets
 
         // Lines (FK)
         public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_CIId { get; set; }
-        public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_CIId { get; set; }
+        //public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_CIId { get; set; }
     }
 }

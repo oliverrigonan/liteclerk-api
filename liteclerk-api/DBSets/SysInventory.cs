@@ -34,6 +34,6 @@ namespace liteclerk_api.DBSets
         public Int32? STId { get; set; }
         public virtual TrnStockTransferDBSet TrnStockTransfer_STId { get; set; }
         public Int32? SWId { get; set; }
-        public virtual TrnStockOutDBSet TrnStockWithdrawal_SWId { get; set; }
+        public virtual TrnStockWithdrawalDBSet TrnStockWithdrawal_SWId { get; set; }
     }
 }
