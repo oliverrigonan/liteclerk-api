@@ -185,7 +185,7 @@ namespace liteclerk_api.APIControllers
                         ReceivableAccount = new DTO.MstAccountDTO
                         {
                             AccountCode = d.MstAccount_ReceivableAccountId.AccountCode,
-                            ManualCode = d.MstAccount_ReceivableAccountId.Account,
+                            ManualCode = d.MstAccount_ReceivableAccountId.ManualCode,
                             Account = d.MstAccount_ReceivableAccountId.Account
                         },
                         TermId = d.TermId,

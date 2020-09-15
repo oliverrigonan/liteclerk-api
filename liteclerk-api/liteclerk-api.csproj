@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20200906063030_TestMigrations.Designer.cs" />
     <Compile Remove="Migrations\20200907061131_ModifedMstUserBranchTable.cs" />
     <Compile Remove="Migrations\20200907061131_ModifedMstUserBranchTable.Designer.cs" />
+    <Compile Remove="Migrations\20200915083915_AddCascadeEveryLinesOnDeleteBehavior.cs" />
+    <Compile Remove="Migrations\20200915083915_AddCascadeEveryLinesOnDeleteBehavior.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

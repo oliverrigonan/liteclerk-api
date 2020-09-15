@@ -17,7 +17,7 @@ namespace liteclerk_api.DBModelBuilder
                 // Line document relationship fields and id
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.CIId).HasColumnName("CIId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.TrnCollection_CIId).WithMany(f => f.TrnCollectionLines_CIId).HasForeignKey(f => f.CIId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.TrnCollection_CIId).WithMany(f => f.TrnCollectionLines_CIId).HasForeignKey(f => f.CIId).OnDelete(DeleteBehavior.Cascade);
 
                 // Line particulars
                 entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
