@@ -1174,6 +1174,17 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Cannot create job orders if the referenced sales invoice is unlocked.");
                 }
 
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.Category == "JOB ORDER STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
+                }
+
                 IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId
@@ -1252,7 +1263,7 @@ namespace liteclerk_api.APIControllers
                             PreparedByUserId = salesInvoice.PreparedByUserId,
                             CheckedByUserId = salesInvoice.CheckedByUserId,
                             ApprovedByUserId = salesInvoice.ApprovedByUserId,
-                            Status = "",
+                            Status = codeTableStatus.CodeValue,
                             IsCancelled = false,
                             IsPrinted = false,
                             IsLocked = true,

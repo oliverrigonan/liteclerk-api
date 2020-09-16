@@ -269,7 +269,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.Category == "COLLECTION STATUS"
+                    where d.Category == "COLLECTION INVOICE STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -426,7 +426,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnCollectionDTO.Status
-                    && d.Category == "COLLECTION STATUS"
+                    && d.Category == "COLLECTION INVOICE STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -557,7 +557,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnCollectionDTO.Status
-                    && d.Category == "COLLECTION STATUS"
+                    && d.Category == "COLLECTION INVOICE STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
