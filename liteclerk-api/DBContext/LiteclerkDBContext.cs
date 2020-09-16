@@ -56,6 +56,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnCollectionDBSet> TrnCollections { get; set; }
         public virtual DbSet<DBSets.TrnCollectionLineDBSet> TrnCollectionLines { get; set; }
         public virtual DbSet<DBSets.SysFormDBSet> SysForms { get; set; }
+        public virtual DbSet<DBSets.SysProductionDBSet> SysProductions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -104,6 +105,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnCollectionModelBuilder.CreateTrnCollectionModel(modelBuilder);
             DBModelBuilder.TrnCollectionLineModelBuilder.CreateTrnCollectionLineModel(modelBuilder);
             DBModelBuilder.SysFormModelBuilder.CreateSysFormModel(modelBuilder);
+            DBModelBuilder.SysProductionModelBuilder.CreateSysProductionModel(modelBuilder);
         }
     }
 }

@@ -55,6 +55,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         Customer = d.Customer,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
@@ -116,6 +117,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         Customer = d.Customer,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
@@ -177,6 +179,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         Customer = d.Customer,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
@@ -424,6 +427,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstArticleDBSet saveArticle = article;
+                saveArticle.ManualCode = mstArticleCustomerDTO.ArticleManualCode;
                 saveArticle.UpdatedByUserId = loginUserId;
                 saveArticle.UpdatedDateTime = DateTime.Now;
 
@@ -533,6 +537,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstArticleDBSet lockArticle = article;
+                lockArticle.ManualCode = mstArticleCustomerDTO.ArticleManualCode;
                 lockArticle.IsLocked = true;
                 lockArticle.UpdatedByUserId = loginUserId;
                 lockArticle.UpdatedDateTime = DateTime.Now;

@@ -75,5 +75,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnSalesOrderDBSet> TrnSalesOrders_ApprovedByUserId { get; set; }
         public virtual ICollection<TrnSalesOrderDBSet> TrnSalesOrders_CreatedByUserId { get; set; }
         public virtual ICollection<TrnSalesOrderDBSet> TrnSalesOrders_UpdatedByUserId { get; set; }
+        public virtual ICollection<SysProductionDBSet> SysProductions_UserId { get; set; }
     }
 }

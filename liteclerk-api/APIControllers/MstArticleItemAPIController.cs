@@ -55,6 +55,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -166,6 +167,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -279,6 +281,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -392,6 +395,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -505,6 +509,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -616,6 +621,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -774,13 +780,13 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Tax not found.");
                 }
 
-                DBSets.MstCodeTableDBSet kitting = await (
+                DBSets.MstCodeTableDBSet codeTableKitting = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "ITEM KITTING"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (kitting == null)
+                if (codeTableKitting == null)
                 {
                     return StatusCode(404, "Kitting not found.");
                 }
@@ -832,7 +838,7 @@ namespace liteclerk_api.APIControllers
                     RRVATId = tax.Id,
                     SIVATId = tax.Id,
                     WTAXId = tax.Id,
-                    Kitting = "NONE"
+                    Kitting = codeTableKitting.CodeValue
                 };
 
                 _dbContext.MstArticleItems.Add(newArticleItem);
@@ -941,14 +947,14 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "SI VAT not found.");
                 }
 
-                DBSets.MstCodeTableDBSet kitting = await (
+                DBSets.MstCodeTableDBSet codeTableKitting = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == mstArticleItemDTO.Kitting
                     && d.Category == "ITEM KITTING"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (kitting == null)
+                if (codeTableKitting == null)
                 {
                     return StatusCode(404, "Kitting not found.");
                 }
@@ -984,7 +990,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstArticleDBSet saveArticle = article;
-                saveArticle.ManualCode = mstArticleItemDTO.SKUCode;
+                saveArticle.ManualCode = mstArticleItemDTO.ArticleManualCode;
                 saveArticle.Article = mstArticleItemDTO.Description;
                 saveArticle.UpdatedByUserId = loginUserId;
                 saveArticle.UpdatedDateTime = DateTime.Now;
@@ -1094,14 +1100,14 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "SI VAT not found.");
                 }
 
-                DBSets.MstCodeTableDBSet kitting = await (
+                DBSets.MstCodeTableDBSet codeTableKitting = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == mstArticleItemDTO.Kitting
                     && d.Category == "ITEM KITTING"
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (kitting == null)
+                if (codeTableKitting == null)
                 {
                     return StatusCode(404, "Kitting not found.");
                 }
@@ -1137,7 +1143,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstArticleDBSet lockArticle = article;
-                lockArticle.ManualCode = mstArticleItemDTO.SKUCode;
+                lockArticle.ManualCode = mstArticleItemDTO.ArticleManualCode;
                 lockArticle.Article = mstArticleItemDTO.Description;
                 lockArticle.IsLocked = true;
                 lockArticle.UpdatedByUserId = loginUserId;

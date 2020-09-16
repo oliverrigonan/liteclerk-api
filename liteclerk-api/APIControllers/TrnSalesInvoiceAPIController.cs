@@ -1466,8 +1466,8 @@ namespace liteclerk_api.APIControllers
                                         select d
                                     ).ToListAsync();
 
-                                    PdfPTable tableJobOrderInformation = new PdfPTable(3);
-                                    tableJobOrderInformation.SetWidths(new float[] { 10f, 50f, 70f });
+                                    PdfPTable tableJobOrderInformation = new PdfPTable(4);
+                                    tableJobOrderInformation.SetWidths(new float[] { 10f, 50f, 50f, 70f });
                                     tableJobOrderInformation.WidthPercentage = 100;
 
                                     if (jobOrderInformations.Any())
@@ -1487,7 +1487,7 @@ namespace liteclerk_api.APIControllers
                                         {
                                             foreach (var groupedJobOrderInformationGroup in groupedJobOrderInformationGroups)
                                             {
-                                                tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationGroup.InformationGroup, fontSegoeUI09Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 3 });
+                                                tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationGroup.InformationGroup, fontSegoeUI09Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 4 });
 
                                                 var groupedJobOrderInformationValues = from d in jobOrderInformations
                                                                                        where d.InformationGroup == groupedJobOrderInformationGroup.InformationGroup
@@ -1498,6 +1498,7 @@ namespace liteclerk_api.APIControllers
                                                     foreach (var groupedJobOrderInformationValue in groupedJobOrderInformationValues)
                                                     {
                                                         tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                                        tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationValue.InformationCode + ": ", fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                                         tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationValue.Value, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                                         tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(groupedJobOrderInformationValue.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                                     }

@@ -24,6 +24,20 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
+        [NonAction]
+        public String PadZeroes(Int32 number, Int32 length)
+        {
+            var result = number.ToString();
+            var pad = length - result.Length;
+            while (pad > 0)
+            {
+                result = '0' + result;
+                pad--;
+            }
+
+            return result;
+        }
+
         [HttpGet("list/byDateRange/byJobDeparment/{startDate}/{endDate}/{jobDepartmentId}")]
         public async Task<ActionResult> GetProductionListByDateRangedAndJobDeparment(String startDate, String endDate, Int32 jobDepartmentId)
         {
@@ -115,7 +129,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("update/status/{jobOrderDepartmentId}/{status}")]
-        public async Task<ActionResult> UpdateJobOrderDepartmentStatus(Int32 jobOrderDepartmentId, String status)
+        public async Task<ActionResult> UpdateJobOrderDepartmentStatus(Int32 jobOrderDepartmentId, String status, DTO.SysProductionDTO sysProductionDTO)
         {
             try
             {
@@ -148,6 +162,35 @@ namespace liteclerk_api.APIControllers
                 updateJobOrderDepartments.StatusByUserId = loginUserId;
                 updateJobOrderDepartments.StatusUpdatedDateTime = DateTime.Now;
 
+                await _dbContext.SaveChangesAsync();
+
+                String PNNumber = "0000000001";
+                DBSets.SysProductionDBSet lastProduction = await (
+                    from d in _dbContext.SysProductions
+                    where d.BranchId == loginUser.BranchId
+                    orderby d.Id descending
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (lastProduction != null)
+                {
+                    Int32 lastPNNumber = Convert.ToInt32(lastProduction.PNNumber) + 0000000001;
+                    PNNumber = PadZeroes(lastPNNumber, 10);
+                }
+
+                DBSets.SysProductionDBSet newProduction = new DBSets.SysProductionDBSet()
+                {
+                    BranchId = Convert.ToInt32(loginUser.BranchId),
+                    PNNumber = PNNumber,
+                    PNDate = DateTime.Today,
+                    Status = status,
+                    Particulars = sysProductionDTO.Remarks,
+                    ProductionTimeStamp = DateTime.Now,
+                    UserId = loginUserId,
+                    JODepartmentId = jobOrderDepartmentId
+                };
+
+                _dbContext.SysProductions.Add(newProduction);
                 await _dbContext.SaveChangesAsync();
 
                 return StatusCode(200);

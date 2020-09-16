@@ -306,7 +306,7 @@ namespace liteclerk_api.APIControllers
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
                     Amount = 0,
-                    Status = "",
+                    Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
                     IsLocked = false,

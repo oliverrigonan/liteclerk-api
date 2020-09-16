@@ -36,7 +36,7 @@ namespace liteclerk_api.APIControllers
                         Form = d.Form,
                         Description = d.Description
                     }
-                ).ToListAsync();
+                ).OrderBy(d => d.Description).ToListAsync();
 
                 return StatusCode(200, forms);
             }
