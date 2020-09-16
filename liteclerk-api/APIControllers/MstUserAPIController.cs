@@ -34,6 +34,7 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         Username = d.Username,
+                        Password = d.Password,
                         Fullname = d.Fullname,
                         CompanyId = d.CompanyId,
                         Company = new DTO.MstCompanyDTO
@@ -49,7 +50,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
-                        IsActive = d.IsActive
+                        IsActive = d.IsActive,
+                        IsLocked = d.IsLocked
                     }
                 ).ToListAsync();
 
@@ -112,6 +114,7 @@ namespace liteclerk_api.APIControllers
                     {
                         Id = d.Id,
                         Username = d.Username,
+                        Password = d.Password,
                         Fullname = d.Fullname,
                         CompanyId = d.CompanyId,
                         Company = new DTO.MstCompanyDTO
@@ -127,7 +130,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
-                        IsActive = d.IsActive
+                        IsActive = d.IsActive,
+                        IsLocked = d.IsLocked
                     }
                 ).FirstOrDefaultAsync();
 
@@ -242,7 +246,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "User not found.");
                 }
 
-                if (user.IsActive == true)
+                if (user.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot save or make any changes to a user that is locked.");
                 }

@@ -32,5 +32,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnCollectionDBSet> TrnCollections_CustomerId { get; set; }
         public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_ArticleId { get; set; }
         public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_BankId { get; set; }
+        public virtual ICollection<TrnSalesOrderDBSet> TrnSalesOrders_CustomerId { get; set; }
+        public virtual ICollection<TrnSalesOrderItemDBSet> TrnSalesOrderItems_ItemId { get; set; }
     }
 }

@@ -84,6 +84,54 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/locked")]
+        public async Task<ActionResult> GetLockedCompanyList()
+        {
+            try
+            {
+                IEnumerable<DTO.MstCompanyDTO> companies = await (
+                    from d in _dbContext.MstCompanies
+                    where d.IsLocked == true
+                    select new DTO.MstCompanyDTO
+                    {
+                        Id = d.Id,
+                        CompanyCode = d.CompanyCode,
+                        ManualCode = d.ManualCode,
+                        Company = d.Company,
+                        Address = d.Address,
+                        TIN = d.TIN,
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
+                        },
+                        CostMethod = d.CostMethod,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, companies);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetCompanyDetail(int id)
         {

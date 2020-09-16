@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -15,12 +18,12 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class TrnCollectionAPIController : ControllerBase
+    public class TrnSalesOrderAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
         private readonly Modules.SysAccountsReceivableModule _sysAccountsReceivable;
 
-        public TrnCollectionAPIController(DBContext.LiteclerkDBContext dbContext)
+        public TrnSalesOrderAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
             _sysAccountsReceivable = new Modules.SysAccountsReceivableModule(dbContext);
@@ -41,7 +44,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list/byDateRange/{startDate}/{endDate}")]
-        public async Task<ActionResult> GetCollectionListByDateRanged(String startDate, String endDate)
+        public async Task<ActionResult> GetSalesOrderListByDateRanged(String startDate, String endDate)
         {
             try
             {
@@ -53,13 +56,13 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnCollectionDTO> collections = await (
-                    from d in _dbContext.TrnCollections
+                IEnumerable<DTO.TrnSalesOrderDTO> salesOrders = await (
+                    from d in _dbContext.TrnSalesOrders
                     where d.BranchId == loginUser.BranchId
-                    && d.CIDate >= Convert.ToDateTime(startDate)
-                    && d.CIDate <= Convert.ToDateTime(endDate)
+                    && d.SODate >= Convert.ToDateTime(startDate)
+                    && d.SODate <= Convert.ToDateTime(endDate)
                     orderby d.Id descending
-                    select new DTO.TrnCollectionDTO
+                    select new DTO.TrnSalesOrderDTO
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
@@ -76,8 +79,8 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
-                        CINumber = d.CINumber,
-                        CIDate = d.CIDate.ToShortDateString(),
+                        SONumber = d.SONumber,
+                        SODate = d.SODate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
                         CustomerId = d.CustomerId,
@@ -89,7 +92,21 @@ namespace liteclerk_api.APIControllers
                             },
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
+                        },
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        SoldByUserId = d.SoldByUserId,
+                        SoldByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SoldByUserId.Username,
+                            Fullname = d.MstUser_SoldByUserId.Fullname
+                        },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -128,7 +145,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, collections);
+                return StatusCode(200, salesOrders);
             }
             catch (Exception e)
             {
@@ -136,15 +153,26 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("detail/{id}")]
-        public async Task<ActionResult> GetCollectionDetail(Int32 id)
+        [HttpGet("list/byCustomer/{customerId}")]
+        public async Task<ActionResult> GetSalesOrderListByCustomer(Int32 customerId)
         {
             try
             {
-                DTO.TrnCollectionDTO salesInvoice = await (
-                    from d in _dbContext.TrnCollections
-                    where d.Id == id
-                    select new DTO.TrnCollectionDTO
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                IEnumerable<DTO.TrnSalesOrderDTO> salesOrders = await (
+                    from d in _dbContext.TrnSalesOrders
+                    where d.BranchId == loginUser.BranchId
+                    && d.CustomerId == customerId
+                    && d.IsLocked == true
+                    orderby d.Id descending
+                    select new DTO.TrnSalesOrderDTO
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
@@ -161,8 +189,114 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
-                        CINumber = d.CINumber,
-                        CIDate = d.CIDate.ToShortDateString(),
+                        SONumber = d.SONumber,
+                        SODate = d.SODate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        CustomerId = d.CustomerId,
+                        Customer = new DTO.MstArticleCustomerDTO
+                        {
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_CustomerId.ManualCode
+                            },
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            ReceivableAccountId = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId : 0,
+                            ReceivableAccount = new DTO.MstAccountDTO
+                            {
+                                AccountCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.AccountCode : "",
+                                ManualCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.ManualCode : "",
+                                Account = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.Account : ""
+                            }
+                        },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
+                        },
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
+                        Remarks = d.Remarks,
+                        SoldByUserId = d.SoldByUserId,
+                        SoldByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SoldByUserId.Username,
+                            Fullname = d.MstUser_SoldByUserId.Fullname
+                        },
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
+                        },
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
+                        },
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
+                        },
+                        Amount = d.Amount,
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, salesOrders);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("detail/{id}")]
+        public async Task<ActionResult> GetSalesOrderDetail(Int32 id)
+        {
+            try
+            {
+                DTO.TrnSalesOrderDTO salesOrder = await (
+                    from d in _dbContext.TrnSalesOrders
+                    where d.Id == id
+                    select new DTO.TrnSalesOrderDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
+                        },
+                        SONumber = d.SONumber,
+                        SODate = d.SODate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
                         CustomerId = d.CustomerId,
@@ -174,7 +308,21 @@ namespace liteclerk_api.APIControllers
                             },
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
+                        },
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        SoldByUserId = d.SoldByUserId,
+                        SoldByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SoldByUserId.Username,
+                            Fullname = d.MstUser_SoldByUserId.Fullname
+                        },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -213,7 +361,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).FirstOrDefaultAsync();
 
-                return StatusCode(200, salesInvoice);
+                return StatusCode(200, salesOrder);
             }
             catch (Exception e)
             {
@@ -222,7 +370,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult> AddCollection()
+        public async Task<ActionResult> AddSalesOrder()
         {
             try
             {
@@ -242,18 +390,18 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityCollectionList"
+                    && d.SysForm_FormId.Form == "ActivitySalesOrderList"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to add a collection.");
+                    return StatusCode(404, "No rights to add a sales order.");
                 }
 
                 if (loginUserForm.CanAdd == false)
                 {
-                    return StatusCode(400, "No rights to add a collection.");
+                    return StatusCode(400, "No rights to add a sales order.");
                 }
 
                 DBSets.MstArticleCustomerDBSet customer = await (
@@ -267,30 +415,33 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
-                String CINumber = "0000000001";
-                DBSets.TrnCollectionDBSet lastCollection = await (
-                    from d in _dbContext.TrnCollections
+                String SONumber = "0000000001";
+                DBSets.TrnSalesOrderDBSet lastSalesOrder = await (
+                    from d in _dbContext.TrnSalesOrders
                     where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (lastCollection != null)
+                if (lastSalesOrder != null)
                 {
-                    Int32 lastCINumber = Convert.ToInt32(lastCollection.CINumber) + 0000000001;
-                    CINumber = PadZeroes(lastCINumber, 10);
+                    Int32 lastSONumber = Convert.ToInt32(lastSalesOrder.SONumber) + 0000000001;
+                    SONumber = PadZeroes(lastSONumber, 10);
                 }
 
-                DBSets.TrnCollectionDBSet newCollection = new DBSets.TrnCollectionDBSet()
+                DBSets.TrnSalesOrderDBSet newSalesOrder = new DBSets.TrnSalesOrderDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
-                    CINumber = CINumber,
-                    CIDate = DateTime.Today,
-                    ManualNumber = CINumber,
+                    SONumber = SONumber,
+                    SODate = DateTime.Today,
+                    ManualNumber = SONumber,
                     DocumentReference = "",
                     CustomerId = customer.ArticleId,
+                    TermId = customer.TermId,
+                    DateNeeded = DateTime.Today,
                     Remarks = "",
+                    SoldByUserId = loginUserId,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
@@ -305,10 +456,10 @@ namespace liteclerk_api.APIControllers
                     UpdatedDateTime = DateTime.Now
                 };
 
-                _dbContext.TrnCollections.Add(newCollection);
+                _dbContext.TrnSalesOrders.Add(newSalesOrder);
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(200, newCollection.Id);
+                return StatusCode(200, newSalesOrder.Id);
             }
             catch (Exception e)
             {
@@ -317,7 +468,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("save/{id}")]
-        public async Task<ActionResult> SaveCollection(Int32 id, [FromBody] DTO.TrnCollectionDTO trnCollectionDTO)
+        public async Task<ActionResult> SaveSalesOrder(Int32 id, [FromBody] DTO.TrnSalesOrderDTO trnSalesOrderDTO)
         {
             try
             {
@@ -337,39 +488,39 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    && d.SysForm_FormId.Form == "ActivitySalesOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to edit or save a collection.");
+                    return StatusCode(404, "No rights to edit or save a sales order.");
                 }
 
                 if (loginUserForm.CanEdit == false)
                 {
-                    return StatusCode(400, "No rights to edit or save a collection.");
+                    return StatusCode(400, "No rights to edit or save a sales order.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
-                    from d in _dbContext.TrnCollections
+                DBSets.TrnSalesOrderDBSet salesOrder = await (
+                    from d in _dbContext.TrnSalesOrders
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (salesOrder == null)
                 {
-                    return StatusCode(404, "Collection not found.");
+                    return StatusCode(404, "Sales order not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (salesOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot save or make any changes to a collection that is locked.");
+                    return StatusCode(400, "Cannot save or make any changes to a sales order that is locked.");
                 }
 
                 DBSets.MstCurrencyDBSet currency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnCollectionDTO.CurrencyId
+                    where d.Id == trnSalesOrderDTO.CurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -380,7 +531,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
-                    where d.ArticleId == trnCollectionDTO.CustomerId
+                    where d.ArticleId == trnSalesOrderDTO.CustomerId
                     && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
@@ -390,9 +541,31 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == trnSalesOrderDTO.TermId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (term == null)
+                {
+                    return StatusCode(404, "Term not found.");
+                }
+
+                DBSets.MstUserDBSet soldByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesOrderDTO.SoldByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (soldByUser == null)
+                {
+                    return StatusCode(404, "Sold by user not found.");
+                }
+
                 DBSets.MstUserDBSet checkedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnCollectionDTO.CheckedByUserId
+                    where d.Id == trnSalesOrderDTO.CheckedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -403,7 +576,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstUserDBSet approvedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnCollectionDTO.ApprovedByUserId
+                    where d.Id == trnSalesOrderDTO.ApprovedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -412,18 +585,21 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.TrnCollectionDBSet saveCollection = salesInvoice;
-                saveCollection.CurrencyId = trnCollectionDTO.CurrencyId;
-                saveCollection.CIDate = Convert.ToDateTime(trnCollectionDTO.CIDate);
-                saveCollection.ManualNumber = trnCollectionDTO.ManualNumber;
-                saveCollection.DocumentReference = trnCollectionDTO.DocumentReference;
-                saveCollection.CustomerId = trnCollectionDTO.CustomerId;
-                saveCollection.Remarks = trnCollectionDTO.Remarks;
-                saveCollection.CheckedByUserId = trnCollectionDTO.CheckedByUserId;
-                saveCollection.ApprovedByUserId = trnCollectionDTO.ApprovedByUserId;
-                saveCollection.Status = trnCollectionDTO.Status;
-                saveCollection.UpdatedByUserId = loginUserId;
-                saveCollection.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnSalesOrderDBSet saveSalesOrder = salesOrder;
+                saveSalesOrder.CurrencyId = trnSalesOrderDTO.CurrencyId;
+                saveSalesOrder.SODate = Convert.ToDateTime(trnSalesOrderDTO.SODate);
+                saveSalesOrder.ManualNumber = trnSalesOrderDTO.ManualNumber;
+                saveSalesOrder.DocumentReference = trnSalesOrderDTO.DocumentReference;
+                saveSalesOrder.CustomerId = trnSalesOrderDTO.CustomerId;
+                saveSalesOrder.TermId = trnSalesOrderDTO.TermId;
+                saveSalesOrder.DateNeeded = Convert.ToDateTime(trnSalesOrderDTO.DateNeeded);
+                saveSalesOrder.Remarks = trnSalesOrderDTO.Remarks;
+                saveSalesOrder.SoldByUserId = trnSalesOrderDTO.SoldByUserId;
+                saveSalesOrder.CheckedByUserId = trnSalesOrderDTO.CheckedByUserId;
+                saveSalesOrder.ApprovedByUserId = trnSalesOrderDTO.ApprovedByUserId;
+                saveSalesOrder.Status = trnSalesOrderDTO.Status;
+                saveSalesOrder.UpdatedByUserId = loginUserId;
+                saveSalesOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -436,7 +612,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("lock/{id}")]
-        public async Task<ActionResult> LockCollection(Int32 id, [FromBody] DTO.TrnCollectionDTO trnCollectionDTO)
+        public async Task<ActionResult> LockSalesOrder(Int32 id, [FromBody] DTO.TrnSalesOrderDTO trnSalesOrderDTO)
         {
             try
             {
@@ -456,39 +632,39 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    && d.SysForm_FormId.Form == "ActivitySalesOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to lock a collection.");
+                    return StatusCode(404, "No rights to lock a sales order.");
                 }
 
                 if (loginUserForm.CanLock == false)
                 {
-                    return StatusCode(400, "No rights to lock a collection.");
+                    return StatusCode(400, "No rights to lock a sales order.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
-                     from d in _dbContext.TrnCollections
+                DBSets.TrnSalesOrderDBSet salesOrder = await (
+                     from d in _dbContext.TrnSalesOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (salesOrder == null)
                 {
-                    return StatusCode(404, "Collection not found.");
+                    return StatusCode(404, "Sales order not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (salesOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot lock a collection that is locked.");
+                    return StatusCode(400, "Cannot lock a sales order that is locked.");
                 }
 
                 DBSets.MstCurrencyDBSet currency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnCollectionDTO.CurrencyId
+                    where d.Id == trnSalesOrderDTO.CurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -499,7 +675,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
-                    where d.ArticleId == trnCollectionDTO.CustomerId
+                    where d.ArticleId == trnSalesOrderDTO.CustomerId
                     && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
@@ -509,9 +685,31 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == trnSalesOrderDTO.TermId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (term == null)
+                {
+                    return StatusCode(404, "Term not found.");
+                }
+
+                DBSets.MstUserDBSet soldByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnSalesOrderDTO.SoldByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (soldByUser == null)
+                {
+                    return StatusCode(404, "Sold by user not found.");
+                }
+
                 DBSets.MstUserDBSet checkedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnCollectionDTO.CheckedByUserId
+                    where d.Id == trnSalesOrderDTO.CheckedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -522,7 +720,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstUserDBSet approvedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnCollectionDTO.ApprovedByUserId
+                    where d.Id == trnSalesOrderDTO.ApprovedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -531,36 +729,26 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.TrnCollectionDBSet lockCollection = salesInvoice;
-                lockCollection.CurrencyId = trnCollectionDTO.CurrencyId;
-                lockCollection.CIDate = Convert.ToDateTime(trnCollectionDTO.CIDate);
-                lockCollection.ManualNumber = trnCollectionDTO.ManualNumber;
-                lockCollection.DocumentReference = trnCollectionDTO.DocumentReference;
-                lockCollection.CustomerId = trnCollectionDTO.CustomerId;
-                lockCollection.Remarks = trnCollectionDTO.Remarks;
-                lockCollection.CheckedByUserId = trnCollectionDTO.CheckedByUserId;
-                lockCollection.ApprovedByUserId = trnCollectionDTO.ApprovedByUserId;
-                lockCollection.Status = trnCollectionDTO.Status;
-                lockCollection.IsLocked = true;
-                lockCollection.UpdatedByUserId = loginUserId;
-                lockCollection.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnSalesOrderDBSet lockSalesOrder = salesOrder;
+                lockSalesOrder.CurrencyId = trnSalesOrderDTO.CurrencyId;
+                lockSalesOrder.SODate = Convert.ToDateTime(trnSalesOrderDTO.SODate);
+                lockSalesOrder.ManualNumber = trnSalesOrderDTO.ManualNumber;
+                lockSalesOrder.DocumentReference = trnSalesOrderDTO.DocumentReference;
+                lockSalesOrder.CustomerId = trnSalesOrderDTO.CustomerId;
+                lockSalesOrder.TermId = trnSalesOrderDTO.TermId;
+                lockSalesOrder.DateNeeded = Convert.ToDateTime(trnSalesOrderDTO.DateNeeded);
+                lockSalesOrder.Remarks = trnSalesOrderDTO.Remarks;
+                lockSalesOrder.SoldByUserId = trnSalesOrderDTO.SoldByUserId;
+                lockSalesOrder.CheckedByUserId = trnSalesOrderDTO.CheckedByUserId;
+                lockSalesOrder.ApprovedByUserId = trnSalesOrderDTO.ApprovedByUserId;
+                lockSalesOrder.Status = trnSalesOrderDTO.Status;
+                lockSalesOrder.IsLocked = true;
+                lockSalesOrder.UpdatedByUserId = loginUserId;
+                lockSalesOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
-                    from d in _dbContext.TrnCollectionLines
-                    where d.CIId == id
-                    && d.SIId != null
-                    select d
-                ).ToListAsync();
-
-                if (collectionLinesByCurrentCollection.Any())
-                {
-                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
-                    {
-                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
-                    }
-                }
+                await _sysAccountsReceivable.UpdateAccountsReceivable(id);
 
                 return StatusCode(200);
             }
@@ -571,7 +759,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("unlock/{id}")]
-        public async Task<ActionResult> UnlockCollection(Int32 id)
+        public async Task<ActionResult> UnlockSalesOrder(Int32 id)
         {
             try
             {
@@ -591,57 +779,44 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    && d.SysForm_FormId.Form == "ActivitySalesOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to unlock a collection.");
+                    return StatusCode(404, "No rights to unlock a sales order.");
                 }
 
                 if (loginUserForm.CanUnlock == false)
                 {
-                    return StatusCode(400, "No rights to unlock a collection.");
+                    return StatusCode(400, "No rights to unlock a sales order.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
-                     from d in _dbContext.TrnCollections
+                DBSets.TrnSalesOrderDBSet salesOrder = await (
+                     from d in _dbContext.TrnSalesOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (salesOrder == null)
                 {
-                    return StatusCode(404, "Collection not found.");
+                    return StatusCode(404, "Sales order not found.");
                 }
 
-                if (salesInvoice.IsLocked == false)
+                if (salesOrder.IsLocked == false)
                 {
-                    return StatusCode(400, "Cannot unlock a collection that is unlocked.");
+                    return StatusCode(400, "Cannot unlock a sales order that is unlocked.");
                 }
 
-                DBSets.TrnCollectionDBSet unlockCollection = salesInvoice;
-                unlockCollection.IsLocked = false;
-                unlockCollection.UpdatedByUserId = loginUserId;
-                unlockCollection.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnSalesOrderDBSet unlockSalesOrder = salesOrder;
+                unlockSalesOrder.IsLocked = false;
+                unlockSalesOrder.UpdatedByUserId = loginUserId;
+                unlockSalesOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
-                    from d in _dbContext.TrnCollectionLines
-                    where d.CIId == id
-                    && d.SIId != null
-                    select d
-                ).ToListAsync();
-
-                if (collectionLinesByCurrentCollection.Any())
-                {
-                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
-                    {
-                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
-                    }
-                }
+                await _sysAccountsReceivable.UpdateAccountsReceivable(id);
 
                 return StatusCode(200);
             }
@@ -652,7 +827,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("cancel/{id}")]
-        public async Task<ActionResult> CancelCollection(Int32 id)
+        public async Task<ActionResult> CancelSalesOrder(Int32 id)
         {
             try
             {
@@ -672,57 +847,44 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityCollectionDetail"
+                    && d.SysForm_FormId.Form == "ActivitySalesOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to cancel a collection.");
+                    return StatusCode(404, "No rights to cancel a sales order.");
                 }
 
                 if (loginUserForm.CanCancel == false)
                 {
-                    return StatusCode(400, "No rights to cancel a collection.");
+                    return StatusCode(400, "No rights to cancel a sales order.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
-                     from d in _dbContext.TrnCollections
+                DBSets.TrnSalesOrderDBSet salesOrder = await (
+                     from d in _dbContext.TrnSalesOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (salesOrder == null)
                 {
-                    return StatusCode(404, "Collection not found.");
+                    return StatusCode(404, "Sales order not found.");
                 }
 
-                if (salesInvoice.IsLocked == false)
+                if (salesOrder.IsLocked == false)
                 {
-                    return StatusCode(400, "Cannot cancel a collection that is unlocked.");
+                    return StatusCode(400, "Cannot cancel a sales order that is unlocked.");
                 }
 
-                DBSets.TrnCollectionDBSet unlockCollection = salesInvoice;
-                unlockCollection.IsCancelled = true;
-                unlockCollection.UpdatedByUserId = loginUserId;
-                unlockCollection.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnSalesOrderDBSet unlockSalesOrder = salesOrder;
+                unlockSalesOrder.IsCancelled = true;
+                unlockSalesOrder.UpdatedByUserId = loginUserId;
+                unlockSalesOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
-                    from d in _dbContext.TrnCollectionLines
-                    where d.CIId == id
-                    && d.SIId != null
-                    select d
-                ).ToListAsync();
-
-                if (collectionLinesByCurrentCollection.Any())
-                {
-                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
-                    {
-                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
-                    }
-                }
+                await _sysAccountsReceivable.UpdateAccountsReceivable(id);
 
                 return StatusCode(200);
             }
@@ -733,7 +895,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeleteCollection(Int32 id)
+        public async Task<ActionResult> DeleteSalesOrder(Int32 id)
         {
             try
             {
@@ -753,53 +915,38 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityCollectionList"
+                    && d.SysForm_FormId.Form == "ActivitySalesOrderList"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to delete a collection.");
+                    return StatusCode(404, "No rights to delete a sales order.");
                 }
 
                 if (loginUserForm.CanDelete == false)
                 {
-                    return StatusCode(400, "No rights to delete a collection.");
+                    return StatusCode(400, "No rights to delete a sales order.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
-                     from d in _dbContext.TrnCollections
+                DBSets.TrnSalesOrderDBSet salesOrder = await (
+                     from d in _dbContext.TrnSalesOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (salesOrder == null)
                 {
-                    return StatusCode(404, "Collection not found.");
+                    return StatusCode(404, "Sales order not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (salesOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot delete a collection that is locked.");
+                    return StatusCode(400, "Cannot delete a sales order that is locked.");
                 }
 
-                _dbContext.TrnCollections.Remove(salesInvoice);
+                _dbContext.TrnSalesOrders.Remove(salesOrder);
                 await _dbContext.SaveChangesAsync();
-
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
-                    from d in _dbContext.TrnCollectionLines
-                    where d.CIId == id
-                    && d.SIId != null
-                    select d
-                ).ToListAsync();
-
-                if (collectionLinesByCurrentCollection.Any())
-                {
-                    foreach (var collectionLineByCurrentCollection in collectionLinesByCurrentCollection)
-                    {
-                        await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
-                    }
-                }
 
                 return StatusCode(200);
             }

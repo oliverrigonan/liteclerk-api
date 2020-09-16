@@ -45,6 +45,8 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstJobTypeAttachmentDBSet> MstJobTypeAttachments { get; set; }
         public virtual DbSet<DBSets.MstJobTypeDepartmentDBSet> MstJobTypeDepartments { get; set; }
         public virtual DbSet<DBSets.MstJobTypeInformationDBSet> MstJobTypeInformations { get; set; }
+        public virtual DbSet<DBSets.TrnSalesOrderDBSet> TrnSalesOrders { get; set; }
+        public virtual DbSet<DBSets.TrnSalesOrderItemDBSet> TrnSalesOrderItems { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceDBSet> TrnSalesInvoices { get; set; }
         public virtual DbSet<DBSets.TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems { get; set; }
         public virtual DbSet<DBSets.TrnJobOrderDBSet> TrnJobOrders { get; set; }
@@ -91,6 +93,8 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstJobTypeAttachmentModelBuilder.CreateMstJobTypeAttachmentModel(modelBuilder);
             DBModelBuilder.MstJobTypeDepartmentModelBuilder.CreateMstJobTypeDepartmentModel(modelBuilder);
             DBModelBuilder.MstJobTypeInformationModelBuilder.CreateMstJobTypeInformationModel(modelBuilder);
+            DBModelBuilder.TrnSalesOrderModelBuilder.CreateTrnSalesOrderModel(modelBuilder);
+            DBModelBuilder.TrnSalesOrderItemModelBuilder.CreateTrnSalesOrderItemModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceModelBuilder.CreateTrnSalesInvoiceModel(modelBuilder);
             DBModelBuilder.TrnSalesInvoiceItemModelBuilder.CreateTrnSalesInvoiceItemModel(modelBuilder);
             DBModelBuilder.TrnJobOrderModelBuilder.CreateTrnJobOrderModel(modelBuilder);

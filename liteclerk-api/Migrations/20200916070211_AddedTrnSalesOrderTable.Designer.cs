@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200916070211_AddedTrnSalesOrderTable")]
+    partial class AddedTrnSalesOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2555,6 +2557,10 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ItemInventoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ItemJobTypeId")
+                        .HasColumnName("ItemJobTypeId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("LineTimeStamp")
                         .HasColumnName("LineTimeStamp")
                         .HasColumnType("datetime");
@@ -2617,6 +2623,8 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("ItemId");
 
                     b.HasIndex("ItemInventoryId");
+
+                    b.HasIndex("ItemJobTypeId");
 
                     b.HasIndex("SOId");
 
@@ -3602,6 +3610,11 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", "MstArticleItemInventory_ItemInventoryId")
                         .WithMany("TrnSalesOrderItems_ItemInventoryId")
                         .HasForeignKey("ItemInventoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_ItemJobTypeId")
+                        .WithMany("TrnSalesOrderItems_ItemJobTypeId")
+                        .HasForeignKey("ItemJobTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("liteclerk_api.DBSets.TrnSalesOrderDBSet", "TrnSalesOrder_SOId")

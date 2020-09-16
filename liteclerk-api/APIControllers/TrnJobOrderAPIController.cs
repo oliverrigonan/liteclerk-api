@@ -700,7 +700,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by loginUser not found.");
+                    return StatusCode(404, "Checked by user not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -711,7 +711,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by loginUser not found.");
+                    return StatusCode(404, "Approved by user not found.");
                 }
 
                 DBSets.TrnJobOrderDBSet saveJobOrder = jobOrder;
@@ -866,7 +866,7 @@ namespace liteclerk_api.APIControllers
 
                 if (checkedByUser == null)
                 {
-                    return StatusCode(404, "Checked by loginUser not found.");
+                    return StatusCode(404, "Checked by user not found.");
                 }
 
                 DBSets.MstUserDBSet approvedByUser = await (
@@ -877,7 +877,7 @@ namespace liteclerk_api.APIControllers
 
                 if (approvedByUser == null)
                 {
-                    return StatusCode(404, "Approved by loginUser not found.");
+                    return StatusCode(404, "Approved by user not found.");
                 }
 
                 DBSets.TrnJobOrderDBSet lockJobOrder = jobOrder;
