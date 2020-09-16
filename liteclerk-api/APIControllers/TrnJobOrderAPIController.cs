@@ -521,6 +521,17 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job type not found.");
                 }
 
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.Category == "JOB ORDER STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
+                }
+
                 String JONumber = "0000000001";
                 DBSets.TrnJobOrderDBSet lastJobOrder = await (
                     from d in _dbContext.TrnJobOrders
@@ -557,7 +568,7 @@ namespace liteclerk_api.APIControllers
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
-                    Status = "",
+                    Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
                     IsLocked = false,
@@ -712,6 +723,18 @@ namespace liteclerk_api.APIControllers
                 if (approvedByUser == null)
                 {
                     return StatusCode(404, "Approved by user not found.");
+                }
+
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == trnJobOrderDTO.Status
+                    && d.Category == "JOB ORDER STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
                 }
 
                 DBSets.TrnJobOrderDBSet saveJobOrder = jobOrder;
@@ -878,6 +901,18 @@ namespace liteclerk_api.APIControllers
                 if (approvedByUser == null)
                 {
                     return StatusCode(404, "Approved by user not found.");
+                }
+
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == trnJobOrderDTO.Status
+                    && d.Category == "JOB ORDER STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
                 }
 
                 DBSets.TrnJobOrderDBSet lockJobOrder = jobOrder;
@@ -1255,7 +1290,7 @@ namespace liteclerk_api.APIControllers
                                         AttachmentType = jobTypeAttachment.AttachmentType,
                                         AttachmentURL = "",
                                         Particulars = "",
-                                        IsPrinted = false
+                                        IsPrinted = jobTypeAttachment.IsPrinted
                                     };
 
                                     _dbContext.TrnJobOrderAttachments.Add(newJobOrderAttachment);
@@ -1306,7 +1341,7 @@ namespace liteclerk_api.APIControllers
                                         InformationGroup = jobTypeInformation.InformationGroup,
                                         Value = "",
                                         Particulars = "",
-                                        IsPrinted = false,
+                                        IsPrinted = jobTypeInformation.IsPrinted,
                                         InformationByUserId = loginUserId,
                                         InformationUpdatedDateTime = DateTime.Now,
                                     };

@@ -267,6 +267,17 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.Category == "COLLECTION STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
+                }
+
                 String CINumber = "0000000001";
                 DBSets.TrnCollectionDBSet lastCollection = await (
                     from d in _dbContext.TrnCollections
@@ -412,6 +423,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == trnCollectionDTO.Status
+                    && d.Category == "COLLECTION STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
+                }
+
                 DBSets.TrnCollectionDBSet saveCollection = salesInvoice;
                 saveCollection.CurrencyId = trnCollectionDTO.CurrencyId;
                 saveCollection.CIDate = Convert.ToDateTime(trnCollectionDTO.CIDate);
@@ -529,6 +552,18 @@ namespace liteclerk_api.APIControllers
                 if (approvedByUser == null)
                 {
                     return StatusCode(404, "Approved by user not found.");
+                }
+
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == trnCollectionDTO.Status
+                    && d.Category == "COLLECTION STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
                 }
 
                 DBSets.TrnCollectionDBSet lockCollection = salesInvoice;

@@ -8,6 +8,7 @@ namespace liteclerk_api.DTO
     public class SysProductionDTO
     {
         public Int32 Id { get; set; }
+        public Int32 JOId { get; set; }
         public String JONumber { get; set; }
         public String JODate { get; set; }
         public String ManualNumber { get; set; }

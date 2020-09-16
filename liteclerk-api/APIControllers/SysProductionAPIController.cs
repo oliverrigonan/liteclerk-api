@@ -48,6 +48,7 @@ namespace liteclerk_api.APIControllers
                     select new DTO.SysProductionDTO
                     {
                         Id = d.Id,
+                        JOId = d.TrnJobOrder_JOId.Id,
                         JONumber = d.TrnJobOrder_JOId.JONumber,
                         JODate = d.TrnJobOrder_JOId.JODate.ToShortDateString(),
                         ManualNumber = d.TrnJobOrder_JOId.ManualNumber,

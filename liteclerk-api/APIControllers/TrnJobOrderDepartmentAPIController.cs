@@ -204,7 +204,7 @@ namespace liteclerk_api.APIControllers
                     JobDepartmentId = trnJobOrderDepartmentDTO.JobDepartmentId,
                     Particulars = trnJobOrderDepartmentDTO.Particulars,
                     Status = trnJobOrderDepartmentDTO.Status,
-                    StatusByUserId = trnJobOrderDepartmentDTO.StatusByUserId,
+                    StatusByUserId = loginUserId,
                     StatusUpdatedDateTime = DateTime.Now,
                     AssignedToUserId = trnJobOrderDepartmentDTO.AssignedToUserId
                 };
@@ -319,10 +319,7 @@ namespace liteclerk_api.APIControllers
                 updateJobOrderDepartments.JOId = trnJobOrderDepartmentDTO.JOId;
                 updateJobOrderDepartments.JobDepartmentId = trnJobOrderDepartmentDTO.JobDepartmentId;
                 updateJobOrderDepartments.Particulars = trnJobOrderDepartmentDTO.Particulars;
-                updateJobOrderDepartments.Status = trnJobOrderDepartmentDTO.Status;
-                updateJobOrderDepartments.StatusByUserId = trnJobOrderDepartmentDTO.StatusByUserId;
                 updateJobOrderDepartments.AssignedToUserId = trnJobOrderDepartmentDTO.AssignedToUserId;
-                updateJobOrderDepartments.StatusUpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 

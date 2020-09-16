@@ -424,6 +424,17 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.Category == "SALES INVOICE STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
+                }
+
                 String SINumber = "0000000001";
                 DBSets.TrnSalesInvoiceDBSet lastSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
@@ -458,7 +469,7 @@ namespace liteclerk_api.APIControllers
                     PaidAmount = 0,
                     AdjustmentAmount = 0,
                     BalanceAmount = 0,
-                    Status = "",
+                    Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
                     IsLocked = false,
@@ -595,6 +606,18 @@ namespace liteclerk_api.APIControllers
                 if (approvedByUser == null)
                 {
                     return StatusCode(404, "Approved by user not found.");
+                }
+
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == trnSalesInvoiceDTO.Status
+                    && d.Category == "SALES INVOICE STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet saveSalesInvoice = salesInvoice;
@@ -739,6 +762,18 @@ namespace liteclerk_api.APIControllers
                 if (approvedByUser == null)
                 {
                     return StatusCode(404, "Approved by user not found.");
+                }
+
+                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.CodeValue == trnSalesInvoiceDTO.Status
+                    && d.Category == "SALES INVOICE STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
                 }
 
                 DBSets.TrnSalesInvoiceDBSet lockSalesInvoice = salesInvoice;
