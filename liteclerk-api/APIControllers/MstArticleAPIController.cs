@@ -115,20 +115,21 @@ namespace liteclerk_api.APIControllers
             {
                 List<DTO.MstArticleDTO> newArticles = new List<DTO.MstArticleDTO>();
 
-                IEnumerable<DBSets.MstAccountArticleTypeDBSet> accountArticleTypes = await (
+                IEnumerable<Int32> articleTypeIds = await (
                     from d in _dbContext.MstAccountArticleTypes
                     where d.AccountId == accountId
-                    select d
+                    group d by d.ArticleTypeId into g
+                    select g.Key
                 ).ToListAsync();
 
-                if (accountArticleTypes.Any())
+                if (articleTypeIds.Any())
                 {
-                    foreach (var accountArticleType in accountArticleTypes)
+                    foreach (var articleTypeId in articleTypeIds)
                     {
                         IEnumerable<DTO.MstArticleDTO> articles = await (
                             from d in _dbContext.MstArticles
                             where d.IsLocked == true
-                            && d.ArticleTypeId == accountArticleType.ArticleTypeId
+                            && d.ArticleTypeId == articleTypeId
                             select new DTO.MstArticleDTO
                             {
                                 Id = d.Id,
