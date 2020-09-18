@@ -15,6 +15,7 @@ namespace liteclerk_api.DBSets
         public String InventoryCode { get; set; }
         public Decimal Quantity { get; set; }
         public Decimal Cost { get; set; }
+        public Decimal Amount { get; set; }
         public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_ItemInventoryId { get; set; }
         public virtual ICollection<TrnSalesOrderItemDBSet> TrnSalesOrderItems_ItemInventoryId { get; set; }
         public virtual ICollection<SysInventoryDBSet> SysInventories_ArticleItemInventoryId { get; set; }

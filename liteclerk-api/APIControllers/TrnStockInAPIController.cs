@@ -21,10 +21,12 @@ namespace liteclerk_api.APIControllers
     public class TrnStockInAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
+        private readonly Modules.SysInventoryModule _sysInventory;
 
         public TrnStockInAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+            _sysInventory = new Modules.SysInventoryModule(dbContext);
         }
 
         [NonAction]
@@ -622,6 +624,8 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                await _sysInventory.InsertStockInInventory(id);
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -687,6 +691,8 @@ namespace liteclerk_api.APIControllers
                 unlockStockIn.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
+
+                await _sysInventory.DeleteStockInInventory(id);
 
                 return StatusCode(200);
             }
