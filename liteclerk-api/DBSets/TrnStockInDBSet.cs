@@ -45,5 +45,6 @@ namespace liteclerk_api.DBSets
         public DateTime UpdatedDateTime { get; set; }
 
         public virtual ICollection<TrnStockInItemDBSet> TrnStockInItems_INId { get; set; }
+        public virtual ICollection<SysInventoryDBSet> SysInventories_INId { get; set; }
     }
 }

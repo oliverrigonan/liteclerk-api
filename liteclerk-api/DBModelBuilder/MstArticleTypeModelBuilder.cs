@@ -13,7 +13,9 @@ namespace liteclerk_api.DBModelBuilder
             modelBuilder.Entity<DBSets.MstArticleTypeDBSet>(entity =>
             {
                 entity.ToTable("MstArticleType");
+
                 entity.HasKey(e => e.Id);
+
                 entity.Property(e => e.ArticleType).HasColumnName("ArticleType").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
             });
         }

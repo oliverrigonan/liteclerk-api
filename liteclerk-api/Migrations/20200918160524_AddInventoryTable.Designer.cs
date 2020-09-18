@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200918160524_AddInventoryTable")]
+    partial class AddInventoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1739,8 +1741,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("SIId");
 
                     b.HasIndex("STId");
-
-                    b.HasIndex("SWId");
 
                     b.ToTable("SysInventory");
                 });
@@ -4058,7 +4058,7 @@ namespace liteclerk_api.Migrations
 
                     b.HasOne("liteclerk_api.DBSets.TrnStockWithdrawalDBSet", "TrnStockWithdrawal_SWId")
                         .WithMany("SysInventories_SWId")
-                        .HasForeignKey("SWId")
+                        .HasForeignKey("STId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

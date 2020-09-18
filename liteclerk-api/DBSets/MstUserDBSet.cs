@@ -81,5 +81,26 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnStockInDBSet> TrnStockIns_ApprovedByUserId { get; set; }
         public virtual ICollection<TrnStockInDBSet> TrnStockIns_CreatedByUserId { get; set; }
         public virtual ICollection<TrnStockInDBSet> TrnStockIns_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_ReceivedByUserId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_UpdatedByUserId { get; set; }
     }
 }

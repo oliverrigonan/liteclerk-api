@@ -18,6 +18,7 @@ namespace liteclerk_api.DBModelBuilder
 
                 entity.Property(e => e.BranchId).HasColumnName("BranchId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCompanyBranch_BranchId).WithMany(f => f.SysProductions_BranchId).HasForeignKey(f => f.BranchId).OnDelete(DeleteBehavior.Restrict);
+
                 entity.Property(e => e.PNNumber).HasColumnName("PNNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.PNDate).HasColumnName("PNDate").HasColumnType("datetime").IsRequired();
 

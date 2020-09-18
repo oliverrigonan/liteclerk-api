@@ -25,8 +25,10 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
 
                 entity.Property(e => e.Quantity).HasColumnName("Quantity").HasColumnType("decimal(18,5)").IsRequired();
+
                 entity.Property(e => e.UnitId).HasColumnName("UnitId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUnit_UnitId).WithMany(f => f.TrnStockInItems_UnitId).HasForeignKey(f => f.UnitId).OnDelete(DeleteBehavior.Restrict);
+
                 entity.Property(e => e.Cost).HasColumnName("Cost").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
 

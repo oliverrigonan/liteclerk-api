@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.Modules
 {
-    public class SysJournalModule
+    public class SysJournalEntryModule
     {
     }
 }
