@@ -21,6 +21,7 @@ namespace liteclerk_api.DBSets
         public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
         public virtual ICollection<MstArticleCustomerDBSet> MstArticleCustomers_ArticleId { get; set; }
+        public virtual ICollection<MstArticleSupplierDBSet> MstArticleSuppliers_ArticleId { get; set; }
         public virtual ICollection<MstArticleItemDBSet> MstArticleItems_ArticleId { get; set; }
         public virtual ICollection<MstArticleItemUnitDBSet> MstArticleItemUnits_ArticleId { get; set; }
         public virtual ICollection<MstArticleItemPriceDBSet> MstArticleItemPrices_ArticleId { get; set; }
@@ -34,5 +35,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_BankId { get; set; }
         public virtual ICollection<TrnSalesOrderDBSet> TrnSalesOrders_CustomerId { get; set; }
         public virtual ICollection<TrnSalesOrderItemDBSet> TrnSalesOrderItems_ItemId { get; set; }
+        public virtual ICollection<TrnStockInDBSet> TrnStockIns_ArticleId { get; set; }
+        public virtual ICollection<TrnStockInItemDBSet> TrnStockInItems_ItemId { get; set; }
     }
 }

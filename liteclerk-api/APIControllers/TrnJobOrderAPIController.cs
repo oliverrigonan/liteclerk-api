@@ -1317,6 +1317,19 @@ namespace liteclerk_api.APIControllers
 
                             if (jobTypeDepartments.Any() == true)
                             {
+                                String status = "";
+
+                                DBSets.MstCodeTableDBSet codeTableJobOrderDepartmentStatus = await (
+                                    from d in _dbContext.MstCodeTables
+                                    where d.Category == "PRODUCTION DEPARTMENT STATUS"
+                                    select d
+                                ).FirstOrDefaultAsync();
+
+                                if (codeTableJobOrderDepartmentStatus != null)
+                                {
+                                    status = codeTableJobOrderDepartmentStatus.CodeValue;
+                                }
+
                                 foreach (var jobTypeDepartment in jobTypeDepartments)
                                 {
                                     DBSets.TrnJobOrderDepartmentDBSet newJobOrderDepartment = new DBSets.TrnJobOrderDepartmentDBSet()
@@ -1324,7 +1337,7 @@ namespace liteclerk_api.APIControllers
                                         JOId = newJobOrder.Id,
                                         JobDepartmentId = jobTypeDepartment.JobDepartmentId,
                                         Particulars = "",
-                                        Status = "",
+                                        Status = status,
                                         StatusByUserId = loginUserId,
                                         StatusUpdatedDateTime = DateTime.Now,
                                         AssignedToUserId = loginUserId,

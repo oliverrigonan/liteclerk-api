@@ -15,11 +15,11 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MstArticleBankAPIController : ControllerBase
+    public class MstArticleSupplierAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
 
-        public MstArticleBankAPIController(DBContext.LiteclerkDBContext dbContext)
+        public MstArticleSupplierAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -39,13 +39,13 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult> GetArticleBankList()
+        public async Task<ActionResult> GetArticleSupplierList()
         {
             try
             {
-                IEnumerable<DTO.MstArticleBankDTO> articleBanks = await (
-                    from d in _dbContext.MstArticleBanks
-                    select new DTO.MstArticleBankDTO
+                IEnumerable<DTO.MstArticleSupplierDTO> articleSuppliers = await (
+                    from d in _dbContext.MstArticleSuppliers
+                    select new DTO.MstArticleSupplierDTO
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
@@ -56,18 +56,23 @@ namespace liteclerk_api.APIControllers
                             Article = d.MstArticle_ArticleId.Article
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
-                        Bank = d.Bank,
-                        AccountNumber = d.AccountNumber,
-                        TypeOfAccount = d.TypeOfAccount,
+                        Supplier = d.Supplier,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
                         ContactNumber = d.ContactNumber,
-                        CashInBankAccountId = d.CashInBankAccountId,
-                        CashInBankAccount = new DTO.MstAccountDTO
+                        PayableAccountId = d.PayableAccountId,
+                        PayableAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CashInBankAccountId.AccountCode,
-                            ManualCode = d.MstAccount_CashInBankAccountId.Account,
-                            Account = d.MstAccount_CashInBankAccountId.Account
+                            AccountCode = d.MstAccount_PayableAccountId.AccountCode,
+                            ManualCode = d.MstAccount_PayableAccountId.Account,
+                            Account = d.MstAccount_PayableAccountId.Account
+                        },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
@@ -85,7 +90,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, articleBanks);
+                return StatusCode(200, articleSuppliers);
             }
             catch (Exception e)
             {
@@ -94,14 +99,14 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list/locked")]
-        public async Task<ActionResult> GetLockedArticleBankList()
+        public async Task<ActionResult> GetLockedArticleSupplierList()
         {
             try
             {
-                IEnumerable<DTO.MstArticleBankDTO> lockedArticleBanks = await (
-                    from d in _dbContext.MstArticleBanks
+                IEnumerable<DTO.MstArticleSupplierDTO> lockedArticleSuppliers = await (
+                    from d in _dbContext.MstArticleSuppliers
                     where d.MstArticle_ArticleId.IsLocked == true
-                    select new DTO.MstArticleBankDTO
+                    select new DTO.MstArticleSupplierDTO
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
@@ -112,18 +117,23 @@ namespace liteclerk_api.APIControllers
                             Article = d.MstArticle_ArticleId.Article
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
-                        Bank = d.Bank,
-                        AccountNumber = d.AccountNumber,
-                        TypeOfAccount = d.TypeOfAccount,
+                        Supplier = d.Supplier,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
                         ContactNumber = d.ContactNumber,
-                        CashInBankAccountId = d.CashInBankAccountId,
-                        CashInBankAccount = new DTO.MstAccountDTO
+                        PayableAccountId = d.PayableAccountId,
+                        PayableAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CashInBankAccountId.AccountCode,
-                            ManualCode = d.MstAccount_CashInBankAccountId.ManualCode,
-                            Account = d.MstAccount_CashInBankAccountId.Account
+                            AccountCode = d.MstAccount_PayableAccountId.AccountCode,
+                            ManualCode = d.MstAccount_PayableAccountId.Account,
+                            Account = d.MstAccount_PayableAccountId.Account
+                        },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
@@ -141,7 +151,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, lockedArticleBanks);
+                return StatusCode(200, lockedArticleSuppliers);
             }
             catch (Exception e)
             {
@@ -150,14 +160,14 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult> GetArticleBankDetail(Int32 id)
+        public async Task<ActionResult> GetArticleSupplierDetail(Int32 id)
         {
             try
             {
-                DTO.MstArticleBankDTO producedArticleBank = await (
-                    from d in _dbContext.MstArticleBanks
+                DTO.MstArticleSupplierDTO producedArticleSupplier = await (
+                    from d in _dbContext.MstArticleSuppliers
                     where d.Id == id
-                    select new DTO.MstArticleBankDTO
+                    select new DTO.MstArticleSupplierDTO
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
@@ -168,18 +178,23 @@ namespace liteclerk_api.APIControllers
                             Article = d.MstArticle_ArticleId.Article
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
-                        Bank = d.Bank,
-                        AccountNumber = d.AccountNumber,
-                        TypeOfAccount = d.TypeOfAccount,
+                        Supplier = d.Supplier,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
                         ContactNumber = d.ContactNumber,
-                        CashInBankAccountId = d.CashInBankAccountId,
-                        CashInBankAccount = new DTO.MstAccountDTO
+                        PayableAccountId = d.PayableAccountId,
+                        PayableAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CashInBankAccountId.AccountCode,
-                            ManualCode = d.MstAccount_CashInBankAccountId.ManualCode,
-                            Account = d.MstAccount_CashInBankAccountId.Account
+                            AccountCode = d.MstAccount_PayableAccountId.AccountCode,
+                            ManualCode = d.MstAccount_PayableAccountId.ManualCode,
+                            Account = d.MstAccount_PayableAccountId.Account
+                        },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
@@ -197,7 +212,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).FirstOrDefaultAsync();
 
-                return StatusCode(200, producedArticleBank);
+                return StatusCode(200, producedArticleSupplier);
             }
             catch (Exception e)
             {
@@ -206,7 +221,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult> AddArticleBank()
+        public async Task<ActionResult> AddArticleSupplier()
         {
             try
             {
@@ -226,28 +241,38 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "SetupBankList"
+                    && d.SysForm_FormId.Form == "SetupSupplierList"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to add a bank.");
+                    return StatusCode(404, "No rights to add a supplier.");
                 }
 
                 if (loginUserForm.CanAdd == false)
                 {
-                    return StatusCode(400, "No rights to add a bank.");
+                    return StatusCode(400, "No rights to add a supplier.");
                 }
 
-                DBSets.MstAccountDBSet cashInBankAccount = await (
+                DBSets.MstAccountDBSet receivableAccount = await (
                     from d in _dbContext.MstAccounts
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (cashInBankAccount == null)
+                if (receivableAccount == null)
                 {
-                    return StatusCode(404, "Cash in bank account not found.");
+                    return StatusCode(404, "Payable account not found.");
+                }
+
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (term == null)
+                {
+                    return StatusCode(404, "Term not found.");
                 }
 
                 String articleCode = "0000000001";
@@ -268,7 +293,7 @@ namespace liteclerk_api.APIControllers
                 {
                     ArticleCode = articleCode,
                     ManualCode = articleCode,
-                    ArticleTypeId = 1,
+                    ArticleTypeId = 2,
                     Article = "",
                     IsLocked = false,
                     CreatedByUserId = loginUserId,
@@ -280,22 +305,21 @@ namespace liteclerk_api.APIControllers
                 _dbContext.MstArticles.Add(newArticle);
                 await _dbContext.SaveChangesAsync();
 
-                DBSets.MstArticleBankDBSet newArticleBank = new DBSets.MstArticleBankDBSet()
+                DBSets.MstArticleSupplierDBSet newArticleSupplier = new DBSets.MstArticleSupplierDBSet()
                 {
                     ArticleId = newArticle.Id,
-                    Bank = "",
-                    AccountNumber = "",
-                    TypeOfAccount = "",
+                    Supplier = "",
                     Address = "",
                     ContactPerson = "",
                     ContactNumber = "",
-                    CashInBankAccountId = cashInBankAccount.Id
+                    PayableAccountId = receivableAccount.Id,
+                    TermId = term.Id
                 };
 
-                _dbContext.MstArticleBanks.Add(newArticleBank);
+                _dbContext.MstArticleSuppliers.Add(newArticleSupplier);
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(200, newArticleBank.Id);
+                return StatusCode(200, newArticleSupplier.Id);
             }
             catch (Exception e)
             {
@@ -304,7 +328,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("save/{id}")]
-        public async Task<ActionResult> SaveArticleBank(Int32 id, [FromBody] DTO.MstArticleBankDTO mstArticleBankDTO)
+        public async Task<ActionResult> SaveArticleSupplier(Int32 id, [FromBody] DTO.MstArticleSupplierDTO mstArticleSupplierDTO)
         {
             try
             {
@@ -324,61 +348,71 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "SetupBankDetail"
+                    && d.SysForm_FormId.Form == "SetupSupplierDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to edit or save a bank.");
+                    return StatusCode(404, "No rights to edit or save a supplier.");
                 }
 
                 if (loginUserForm.CanEdit == false)
                 {
-                    return StatusCode(400, "No rights to edit or save a bank.");
+                    return StatusCode(400, "No rights to edit or save a supplier.");
                 }
 
-                DBSets.MstArticleBankDBSet articleBank = await (
-                    from d in _dbContext.MstArticleBanks
+                DBSets.MstArticleSupplierDBSet articleSupplier = await (
+                    from d in _dbContext.MstArticleSuppliers
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (articleBank == null)
+                if (articleSupplier == null)
                 {
-                    return StatusCode(404, "Bank not found.");
+                    return StatusCode(404, "Supplier not found.");
                 }
 
-                if (articleBank.MstArticle_ArticleId.IsLocked == true)
+                if (articleSupplier.MstArticle_ArticleId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot save or make any changes to a bank that is locked.");
+                    return StatusCode(400, "Cannot save or make any changes to a supplier that is locked.");
                 }
 
-                DBSets.MstAccountDBSet cashInBankAccount = await (
+                DBSets.MstAccountDBSet receivableAccount = await (
                     from d in _dbContext.MstAccounts
-                    where d.Id == mstArticleBankDTO.CashInBankAccountId
+                    where d.Id == mstArticleSupplierDTO.PayableAccountId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (cashInBankAccount == null)
+                if (receivableAccount == null)
                 {
-                    return StatusCode(404, "Cash in bank account not found.");
+                    return StatusCode(404, "Payable account not found.");
                 }
 
-                DBSets.MstArticleBankDBSet saveArticleBank = articleBank;
-                saveArticleBank.Bank = mstArticleBankDTO.Bank;
-                saveArticleBank.AccountNumber = mstArticleBankDTO.AccountNumber;
-                saveArticleBank.TypeOfAccount = mstArticleBankDTO.TypeOfAccount;
-                saveArticleBank.Address = mstArticleBankDTO.Address;
-                saveArticleBank.ContactPerson = mstArticleBankDTO.ContactPerson;
-                saveArticleBank.ContactNumber = mstArticleBankDTO.ContactNumber;
-                saveArticleBank.CashInBankAccountId = mstArticleBankDTO.CashInBankAccountId;
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == mstArticleSupplierDTO.TermId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (term == null)
+                {
+                    return StatusCode(404, "Term not found.");
+                }
+
+                DBSets.MstArticleSupplierDBSet saveArticleSupplier = articleSupplier;
+                saveArticleSupplier.Supplier = mstArticleSupplierDTO.Supplier;
+                saveArticleSupplier.Address = mstArticleSupplierDTO.Address;
+                saveArticleSupplier.ContactPerson = mstArticleSupplierDTO.ContactPerson;
+                saveArticleSupplier.ContactNumber = mstArticleSupplierDTO.ContactNumber;
+                saveArticleSupplier.PayableAccountId = mstArticleSupplierDTO.PayableAccountId;
+                saveArticleSupplier.TermId = mstArticleSupplierDTO.TermId;
 
                 await _dbContext.SaveChangesAsync();
 
                 DBSets.MstArticleDBSet article = await (
                     from d in _dbContext.MstArticles
-                    where d.Id == articleBank.ArticleId
+                    where d.Id == articleSupplier.ArticleId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -388,7 +422,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstArticleDBSet saveArticle = article;
-                saveArticle.ManualCode = mstArticleBankDTO.ArticleManualCode;
+                saveArticle.ManualCode = mstArticleSupplierDTO.ArticleManualCode;
                 saveArticle.UpdatedByUserId = loginUserId;
                 saveArticle.UpdatedDateTime = DateTime.Now;
 
@@ -403,7 +437,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("lock/{id}")]
-        public async Task<ActionResult> LockArticleBank(Int32 id, [FromBody] DTO.MstArticleBankDTO mstArticleBankDTO)
+        public async Task<ActionResult> LockArticleSupplier(Int32 id, [FromBody] DTO.MstArticleSupplierDTO mstArticleSupplierDTO)
         {
             try
             {
@@ -423,61 +457,71 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "SetupBankDetail"
+                    && d.SysForm_FormId.Form == "SetupSupplierDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to lock a bank.");
+                    return StatusCode(404, "No rights to lock a supplier.");
                 }
 
                 if (loginUserForm.CanLock == false)
                 {
-                    return StatusCode(400, "No rights to lock a bank.");
+                    return StatusCode(400, "No rights to lock a supplier.");
                 }
 
-                DBSets.MstArticleBankDBSet articleBank = await (
-                    from d in _dbContext.MstArticleBanks
+                DBSets.MstArticleSupplierDBSet articleSupplier = await (
+                    from d in _dbContext.MstArticleSuppliers
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (articleBank == null)
+                if (articleSupplier == null)
                 {
-                    return StatusCode(404, "Bank not found.");
+                    return StatusCode(404, "Supplier not found.");
                 }
 
-                if (articleBank.MstArticle_ArticleId.IsLocked == true)
+                if (articleSupplier.MstArticle_ArticleId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot lock a bank that is locked.");
+                    return StatusCode(400, "Cannot lock a supplier that is locked.");
                 }
 
-                DBSets.MstAccountDBSet cashInBankAccount = await (
+                DBSets.MstAccountDBSet receivableAccount = await (
                     from d in _dbContext.MstAccounts
-                    where d.Id == mstArticleBankDTO.CashInBankAccountId
+                    where d.Id == mstArticleSupplierDTO.PayableAccountId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (cashInBankAccount == null)
+                if (receivableAccount == null)
                 {
-                    return StatusCode(404, "Cash in bank account not found.");
+                    return StatusCode(404, "Payable account not found.");
                 }
 
-                DBSets.MstArticleBankDBSet lockArticleBank = articleBank;
-                lockArticleBank.Bank = mstArticleBankDTO.Bank;
-                lockArticleBank.AccountNumber = mstArticleBankDTO.AccountNumber;
-                lockArticleBank.TypeOfAccount = mstArticleBankDTO.TypeOfAccount;
-                lockArticleBank.Address = mstArticleBankDTO.Address;
-                lockArticleBank.ContactPerson = mstArticleBankDTO.ContactPerson;
-                lockArticleBank.ContactNumber = mstArticleBankDTO.ContactNumber;
-                lockArticleBank.CashInBankAccountId = mstArticleBankDTO.CashInBankAccountId;
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == mstArticleSupplierDTO.TermId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (term == null)
+                {
+                    return StatusCode(404, "Term not found.");
+                }
+
+                DBSets.MstArticleSupplierDBSet lockArticleSupplier = articleSupplier;
+                lockArticleSupplier.Supplier = mstArticleSupplierDTO.Supplier;
+                lockArticleSupplier.Address = mstArticleSupplierDTO.Address;
+                lockArticleSupplier.ContactPerson = mstArticleSupplierDTO.ContactPerson;
+                lockArticleSupplier.ContactNumber = mstArticleSupplierDTO.ContactNumber;
+                lockArticleSupplier.PayableAccountId = mstArticleSupplierDTO.PayableAccountId;
+                lockArticleSupplier.TermId = mstArticleSupplierDTO.TermId;
 
                 await _dbContext.SaveChangesAsync();
 
                 DBSets.MstArticleDBSet article = await (
                     from d in _dbContext.MstArticles
-                    where d.Id == articleBank.ArticleId
+                    where d.Id == articleSupplier.ArticleId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -487,7 +531,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 DBSets.MstArticleDBSet lockArticle = article;
-                lockArticle.ManualCode = mstArticleBankDTO.ArticleManualCode;
+                lockArticle.ManualCode = mstArticleSupplierDTO.ArticleManualCode;
                 lockArticle.IsLocked = true;
                 lockArticle.UpdatedByUserId = loginUserId;
                 lockArticle.UpdatedDateTime = DateTime.Now;
@@ -503,7 +547,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("unlock/{id}")]
-        public async Task<ActionResult> UnlockArticleBank(Int32 id)
+        public async Task<ActionResult> UnlockArticleSupplier(Int32 id)
         {
             try
             {
@@ -523,39 +567,39 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "SetupBankDetail"
+                    && d.SysForm_FormId.Form == "SetupSupplierDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to unlock a bank.");
+                    return StatusCode(404, "No rights to unlock a supplier.");
                 }
 
                 if (loginUserForm.CanUnlock == false)
                 {
-                    return StatusCode(400, "No rights to unlock a bank.");
+                    return StatusCode(400, "No rights to unlock a supplier.");
                 }
 
-                DBSets.MstArticleBankDBSet articleBank = await (
-                    from d in _dbContext.MstArticleBanks
+                DBSets.MstArticleSupplierDBSet articleSupplier = await (
+                    from d in _dbContext.MstArticleSuppliers
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (articleBank == null)
+                if (articleSupplier == null)
                 {
-                    return StatusCode(404, "Bank not found.");
+                    return StatusCode(404, "Supplier not found.");
                 }
 
-                if (articleBank.MstArticle_ArticleId.IsLocked == false)
+                if (articleSupplier.MstArticle_ArticleId.IsLocked == false)
                 {
-                    return StatusCode(400, "Cannot unlock a bank that is unlocked.");
+                    return StatusCode(400, "Cannot unlock a supplier that is unlocked.");
                 }
 
                 DBSets.MstArticleDBSet article = await (
                     from d in _dbContext.MstArticles
-                    where d.Id == articleBank.ArticleId
+                    where d.Id == articleSupplier.ArticleId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -580,7 +624,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeleteArticleBank(Int32 id)
+        public async Task<ActionResult> DeleteArticleSupplier(Int32 id)
         {
             try
             {
@@ -600,42 +644,42 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "SetupBankList"
+                    && d.SysForm_FormId.Form == "SetupSupplierList"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to delete a bank.");
+                    return StatusCode(404, "No rights to delete a supplier.");
                 }
 
                 if (loginUserForm.CanDelete == false)
                 {
-                    return StatusCode(400, "No rights to delete a bank.");
+                    return StatusCode(400, "No rights to delete a supplier.");
                 }
 
-                DBSets.MstArticleBankDBSet articleBank = await (
-                    from d in _dbContext.MstArticleBanks
+                DBSets.MstArticleSupplierDBSet articleSupplier = await (
+                    from d in _dbContext.MstArticleSuppliers
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (articleBank == null)
+                if (articleSupplier == null)
                 {
-                    return StatusCode(404, "Bank not found.");
+                    return StatusCode(404, "Supplier not found.");
                 }
 
-                if (articleBank.MstArticle_ArticleId.IsLocked == true)
+                if (articleSupplier.MstArticle_ArticleId.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot delete a bank that is locked.");
+                    return StatusCode(400, "Cannot delete a supplier that is locked.");
                 }
 
-                _dbContext.MstArticleBanks.Remove(articleBank);
+                _dbContext.MstArticleSuppliers.Remove(articleSupplier);
                 await _dbContext.SaveChangesAsync();
 
                 DBSets.MstArticleDBSet article = await (
                     from d in _dbContext.MstArticles
-                    where d.Id == articleBank.ArticleId
+                    where d.Id == articleSupplier.ArticleId
                     select d
                 ).FirstOrDefaultAsync();
 

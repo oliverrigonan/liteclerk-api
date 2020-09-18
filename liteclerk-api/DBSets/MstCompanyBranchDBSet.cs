@@ -24,6 +24,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstUserBranchDBSet> MstUserBranches_BranchId { get; set; }
         public virtual ICollection<TrnSalesOrderDBSet> TrnSalesOrders_BranchId { get; set; }
         public virtual ICollection<SysProductionDBSet> SysProductions_BranchId { get; set; }
+        public virtual ICollection<TrnStockInDBSet> TrnStockIns_BranchId { get; set; }
 
     }
 }

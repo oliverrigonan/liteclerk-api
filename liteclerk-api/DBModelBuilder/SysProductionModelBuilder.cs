@@ -29,7 +29,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstUser_UserId).WithMany(f => f.SysProductions_UserId).HasForeignKey(f => f.UserId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.JODepartmentId).HasColumnName("JODepartmentId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.TrnJobOrderDepartment_JODepartmentId).WithMany(f => f.SysProductions_JODepartmentId).HasForeignKey(f => f.JODepartmentId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.TrnJobOrderDepartment_JODepartmentId).WithMany(f => f.SysProductions_JODepartmentId).HasForeignKey(f => f.JODepartmentId).OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

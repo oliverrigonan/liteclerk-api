@@ -21,6 +21,8 @@ namespace liteclerk_api.DBSets
         public Decimal Quantity { get; set; }
         public Decimal Cost { get; set; }
         public String Particulars { get; set; }
+        public Int32 AccountId { get; set; }
+        public MstAccountDBSet MstAccount_AccountId { get; set; }
 
         // Inventory Relationship <Do not modify>
         public Int32? RRId { get; set; }

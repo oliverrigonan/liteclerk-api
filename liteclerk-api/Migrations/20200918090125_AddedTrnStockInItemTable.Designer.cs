@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200918090125_AddedTrnStockInItemTable")]
+    partial class AddedTrnStockInItemTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2748,10 +2750,6 @@ namespace liteclerk_api.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnName("AccountId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<int>("ApprovedByUserId")
                         .HasColumnName("ApprovedByUserId")

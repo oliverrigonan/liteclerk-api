@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200918072552_ModifiedTrnStockInTable")]
+    partial class ModifiedTrnStockInTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2749,10 +2751,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("ApprovedByUserId")
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
@@ -2859,67 +2857,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("TrnStockIn");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockInItemDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseCost")
-                        .HasColumnName("BaseCost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseQuantity")
-                        .HasColumnName("BaseQuantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("BaseUnitId")
-                        .HasColumnName("BaseUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnName("Cost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("INId")
-                        .HasColumnName("INId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnName("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnName("Quantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnName("UnitId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseUnitId");
-
-                    b.HasIndex("INId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("TrnStockInItem");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstAccountArticleTypeDBSet", b =>
@@ -4017,33 +3954,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
                         .WithMany("TrnStockIns_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockInItemDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnitId")
-                        .WithMany("TrnStockInItems_BaseUnitId")
-                        .HasForeignKey("BaseUnitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnStockInDBSet", "TrnStockIn_INId")
-                        .WithMany("TrnStockInItems_INId")
-                        .HasForeignKey("INId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ItemId")
-                        .WithMany("TrnStockInItems_ItemId")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
-                        .WithMany("TrnStockInItems_UnitId")
-                        .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

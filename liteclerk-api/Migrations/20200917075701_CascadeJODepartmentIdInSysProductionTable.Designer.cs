@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200917075701_CascadeJODepartmentIdInSysProductionTable")]
+    partial class CascadeJODepartmentIdInSysProductionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -706,59 +708,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("UnitId");
 
                     b.ToTable("MstArticleItemUnit");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.MstArticleSupplierDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnName("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ArticleId")
-                        .HasColumnName("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnName("ContactNumber")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("ContactPerson")
-                        .IsRequired()
-                        .HasColumnName("ContactPerson")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<int>("PayableAccountId")
-                        .HasColumnName("PayableAccountId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Supplier")
-                        .IsRequired()
-                        .HasColumnName("Supplier")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<int>("TermId")
-                        .HasColumnName("TermId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("PayableAccountId");
-
-                    b.HasIndex("TermId");
-
-                    b.ToTable("MstArticleSupplier");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleTypeDBSet", b =>
@@ -2738,190 +2687,6 @@ namespace liteclerk_api.Migrations
                     b.ToTable("TrnSalesOrderItem");
                 });
 
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockInDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AccountId")
-                        .HasColumnName("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("ApprovedByUserId")
-                        .HasColumnName("ApprovedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArticleId")
-                        .HasColumnName("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BranchId")
-                        .HasColumnName("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CheckedByUserId")
-                        .HasColumnName("CheckedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnName("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnName("CreatedDateTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("CurrencyId")
-                        .HasColumnName("CurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DocumentReference")
-                        .IsRequired()
-                        .HasColumnName("DocumentReference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<DateTime>("INDate")
-                        .HasColumnName("INDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("INNumber")
-                        .IsRequired()
-                        .HasColumnName("INNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<bool>("IsCancelled")
-                        .HasColumnName("IsCancelled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnName("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPrinted")
-                        .HasColumnName("IsPrinted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ManualNumber")
-                        .IsRequired()
-                        .HasColumnName("ManualNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("PreparedByUserId")
-                        .HasColumnName("PreparedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remarks")
-                        .IsRequired()
-                        .HasColumnName("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnName("Status")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("UpdatedByUserId")
-                        .HasColumnName("UpdatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedDateTime")
-                        .HasColumnName("UpdatedDateTime")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("ApprovedByUserId");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("CheckedByUserId");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("CurrencyId");
-
-                    b.HasIndex("PreparedByUserId");
-
-                    b.HasIndex("UpdatedByUserId");
-
-                    b.ToTable("TrnStockIn");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockInItemDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseCost")
-                        .HasColumnName("BaseCost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseQuantity")
-                        .HasColumnName("BaseQuantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("BaseUnitId")
-                        .HasColumnName("BaseUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnName("Cost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("INId")
-                        .HasColumnName("INId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnName("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnName("Quantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnName("UnitId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseUnitId");
-
-                    b.HasIndex("INId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("TrnStockInItem");
-                });
-
             modelBuilder.Entity("liteclerk_api.DBSets.MstAccountArticleTypeDBSet", b =>
                 {
                     b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_AccountId")
@@ -3209,27 +2974,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
                         .WithMany("MstArticleItemUnits_UnitId")
                         .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.MstArticleSupplierDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
-                        .WithMany("MstArticleSuppliers_ArticleId")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_PayableAccountId")
-                        .WithMany("MstArticleSuppliers_PayableAccountId")
-                        .HasForeignKey("PayableAccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstTermDBSet", "MstTerm_TermId")
-                        .WithMany("MstArticleSuppliers_TermId")
-                        .HasForeignKey("TermId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -3960,90 +3704,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstTaxDBSet", "MstTax_WTAXId")
                         .WithMany("TrnSalesOrderItems_WTAXId")
                         .HasForeignKey("WTAXId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockInDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_AccountId")
-                        .WithMany("TrnStockIns_AccountId")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUserId")
-                        .WithMany("TrnStockIns_ApprovedByUserId")
-                        .HasForeignKey("ApprovedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
-                        .WithMany("TrnStockIns_ArticleId")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
-                        .WithMany("TrnStockIns_BranchId")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CheckedByUserId")
-                        .WithMany("TrnStockIns_CheckedByUserId")
-                        .HasForeignKey("CheckedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
-                        .WithMany("TrnStockIns_CreatedByUserId")
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
-                        .WithMany("TrnStockIns_CurrencyId")
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
-                        .WithMany("TrnStockIns_PreparedByUserId")
-                        .HasForeignKey("PreparedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
-                        .WithMany("TrnStockIns_UpdatedByUserId")
-                        .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockInItemDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnitId")
-                        .WithMany("TrnStockInItems_BaseUnitId")
-                        .HasForeignKey("BaseUnitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnStockInDBSet", "TrnStockIn_INId")
-                        .WithMany("TrnStockInItems_INId")
-                        .HasForeignKey("INId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ItemId")
-                        .WithMany("TrnStockInItems_ItemId")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
-                        .WithMany("TrnStockInItems_UnitId")
-                        .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

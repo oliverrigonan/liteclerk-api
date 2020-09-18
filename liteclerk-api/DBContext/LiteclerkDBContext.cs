@@ -38,6 +38,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstArticleItemDBSet> MstArticleItems { get; set; }
         public virtual DbSet<DBSets.MstArticleItemUnitDBSet> MstArticleItemUnits { get; set; }
         public virtual DbSet<DBSets.MstArticleItemPriceDBSet> MstArticleItemPrices { get; set; }
+        public virtual DbSet<DBSets.MstArticleSupplierDBSet> MstArticleSuppliers { get; set; }
         public virtual DbSet<DBSets.MstArticleBankDBSet> MstArticleBanks { get; set; }
         public virtual DbSet<DBSets.MstArticleItemInventoryDBSet> MstArticleItemInventories { get; set; }
         public virtual DbSet<DBSets.MstJobDepartmentDBset> MstJobDepartments { get; set; }
@@ -55,6 +56,8 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnJobOrderInformationDBSet> TrnJobOrderInformations { get; set; }
         public virtual DbSet<DBSets.TrnCollectionDBSet> TrnCollections { get; set; }
         public virtual DbSet<DBSets.TrnCollectionLineDBSet> TrnCollectionLines { get; set; }
+        public virtual DbSet<DBSets.TrnStockInDBSet> TrnStockIns { get; set; }
+        public virtual DbSet<DBSets.TrnStockInItemDBSet> TrnStockInItems { get; set; }
         public virtual DbSet<DBSets.SysFormDBSet> SysForms { get; set; }
         public virtual DbSet<DBSets.SysProductionDBSet> SysProductions { get; set; }
 
@@ -87,6 +90,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstArticleItemModelBuilder.CreateMstArticleItemModel(modelBuilder);
             DBModelBuilder.MstArticleItemUnitModelBuilder.CreateMstItemUnitModel(modelBuilder);
             DBModelBuilder.MstArticleItemPriceModelBuilder.CreateMstItemPriceModel(modelBuilder);
+            DBModelBuilder.MstArticleSupplierModelBuilder.CreateMstArticleSupplierModel(modelBuilder);
             DBModelBuilder.MstArticleBankModelBuilder.CreateMstArticleBankModel(modelBuilder);
             DBModelBuilder.MstArticleItemInventoryModelBuilder.CreateMstArticleItemInventoryModel(modelBuilder);
             DBModelBuilder.MstJobDepartmentModelBuilder.CreateMstJobDepartmentModel(modelBuilder);
@@ -104,6 +108,8 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnJobOrderInformationModelBuilder.CreateTrnJobOrderInformationModel(modelBuilder);
             DBModelBuilder.TrnCollectionModelBuilder.CreateTrnCollectionModel(modelBuilder);
             DBModelBuilder.TrnCollectionLineModelBuilder.CreateTrnCollectionLineModel(modelBuilder);
+            DBModelBuilder.TrnStockInModelBuilder.CreateTrnStockInModel(modelBuilder);
+            DBModelBuilder.TrnStockInItemModelBuilder.CreateTrnStockInItemModel(modelBuilder);
             DBModelBuilder.SysFormModelBuilder.CreateSysFormModel(modelBuilder);
             DBModelBuilder.SysProductionModelBuilder.CreateSysProductionModel(modelBuilder);
         }
