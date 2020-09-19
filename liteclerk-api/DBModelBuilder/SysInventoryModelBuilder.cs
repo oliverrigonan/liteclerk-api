@@ -19,12 +19,13 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.BranchId).HasColumnName("BranchId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCompanyBranch_BranchId).WithMany(f => f.SysInventories_BranchId).HasForeignKey(f => f.BranchId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.IVNumber).HasColumnName("IVNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
-                entity.Property(e => e.IVDate).HasColumnName("PNDate").HasColumnType("datetime").IsRequired();
+                entity.Property(e => e.IVDate).HasColumnName("IVDate").HasColumnType("datetime").IsRequired();
 
                 entity.Property(e => e.ArticleId).HasColumnName("ArticleId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.SysInventories_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.SysInventories_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Cascade);
+
                 entity.Property(e => e.ArticleItemInventoryId).HasColumnName("ArticleItemInventoryId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstArticleItemInventory_ArticleItemInventoryId).WithMany(f => f.SysInventories_ArticleItemInventoryId).HasForeignKey(f => f.ArticleItemInventoryId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstArticleItemInventory_ArticleItemInventoryId).WithMany(f => f.SysInventories_ArticleItemInventoryId).HasForeignKey(f => f.ArticleItemInventoryId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.QuantityIn).HasColumnName("QuantityIn").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.QuantityOut).HasColumnName("QuantityOut").HasColumnType("decimal(18,5)").IsRequired();
