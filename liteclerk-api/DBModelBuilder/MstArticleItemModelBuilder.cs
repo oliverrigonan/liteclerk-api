@@ -17,7 +17,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.ArticleId).HasColumnName("ArticleId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.MstArticleItems_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.MstArticleItems_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.SKUCode).HasColumnName("SKUCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.BarCode).HasColumnName("BarCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();

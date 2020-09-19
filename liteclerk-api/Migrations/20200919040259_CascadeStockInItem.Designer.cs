@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200919040259_CascadeStockInItem")]
+    partial class CascadeStockInItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3707,7 +3709,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
                         .WithMany("MstArticleItemInventories_ArticleId")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
@@ -4020,7 +4022,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
                         .WithMany("SysInventories_ArticleId")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", "MstArticleItemInventory_ArticleItemInventoryId")

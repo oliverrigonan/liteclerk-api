@@ -17,6 +17,12 @@
     <Compile Remove="Migrations\20200915083915_AddCascadeEveryLinesOnDeleteBehavior.Designer.cs" />
     <Compile Remove="Migrations\20200916065851_AddedTrnSalesOrderTable.cs" />
     <Compile Remove="Migrations\20200916065851_AddedTrnSalesOrderTable.Designer.cs" />
+    <Compile Remove="Migrations\20200919033612_CascadeAllArticleLines.cs" />
+    <Compile Remove="Migrations\20200919033612_CascadeAllArticleLines.Designer.cs" />
+    <Compile Remove="Migrations\20200919034820_CascadeAllArticleLines.cs" />
+    <Compile Remove="Migrations\20200919034820_CascadeAllArticleLines.Designer.cs" />
+    <Compile Remove="Migrations\20200919040540_CascadeAllArticleLines.cs" />
+    <Compile Remove="Migrations\20200919040540_CascadeAllArticleLines.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
