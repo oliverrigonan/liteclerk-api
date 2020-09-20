@@ -146,7 +146,8 @@ namespace liteclerk_api.APIControllers
                         },
                         InventoryCode = d.InventoryCode,
                         Quantity = d.Quantity,
-                        Cost = d.Cost
+                        Cost = d.Cost,
+                        Amount = d.Amount
                     }
                 ).ToListAsync();
 

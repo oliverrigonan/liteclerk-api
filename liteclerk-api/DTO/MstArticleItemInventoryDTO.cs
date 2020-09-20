@@ -15,5 +15,6 @@ namespace liteclerk_api.DTO
         public String InventoryCode { get; set; }
         public Decimal Quantity { get; set; }
         public Decimal Cost { get; set; }
+        public Decimal Amount { get; set; }
     }
 }

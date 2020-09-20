@@ -102,5 +102,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_ApprovedByUserId { get; set; }
         public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_CreatedByUserId { get; set; }
         public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_CashierUserId { get; set; }
     }
 }

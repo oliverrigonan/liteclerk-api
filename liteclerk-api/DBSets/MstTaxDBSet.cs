@@ -26,5 +26,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnCollectionLineDBSet> TrnCollectionLines_WTAXId { get; set; }
         public virtual ICollection<TrnSalesOrderItemDBSet> TrnSalesOrderItems_VATId { get; set; }
         public virtual ICollection<TrnSalesOrderItemDBSet> TrnSalesOrderItems_WTAXId { get; set; }
+        public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_TaxId { get; set; }
     }
 }
