@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -116,52 +117,69 @@ namespace liteclerk_api.APIControllers
 
         [AllowAnonymous]
         [HttpPost("add")]
-        public async Task<ActionResult> AddPointOfSale([FromBody] DTO.TrnPointOfSaleDTO trnPointOfSaleDTO)
+        public async Task<ActionResult> AddPointOfSale(List<DTO.TrnPointOfSaleDTO> trnPointOfSaleDTOs)
         {
             try
             {
-                DBSets.MstCompanyBranchDBSet branch = await (
-                    from d in _dbContext.MstCompanyBranches
-                    where d.ManualCode == trnPointOfSaleDTO.BranchCode
-                    && d.MstCompany_CompanyId.IsLocked == true
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (branch == null)
+                if (trnPointOfSaleDTOs.Any())
                 {
-                    return StatusCode(404, "Branch not found.");
+                    Int32 returnId = 0;
+
+                    DBSets.MstCompanyBranchDBSet branch = await (
+                        from d in _dbContext.MstCompanyBranches
+                        where d.ManualCode == trnPointOfSaleDTOs.FirstOrDefault().BranchCode
+                        && d.MstCompany_CompanyId.IsLocked == true
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (branch == null)
+                    {
+                        return StatusCode(404, "Branch not found.");
+                    }
+
+                    foreach (var trnPointOfSaleDTO in trnPointOfSaleDTOs)
+                    {
+                        DBSets.TrnPointOfSaleDBSet newPointOfSale = new DBSets.TrnPointOfSaleDBSet()
+                        {
+                            BranchId = branch.Id,
+                            TerminalCode = trnPointOfSaleDTO.TerminalCode,
+                            POSDate = Convert.ToDateTime(trnPointOfSaleDTO.POSDate),
+                            POSNumber = trnPointOfSaleDTO.POSNumber,
+                            OrderNumber = trnPointOfSaleDTO.OrderNumber,
+                            CustomerCode = trnPointOfSaleDTO.CustomerCode,
+                            CustomerId = null,
+                            ItemCode = trnPointOfSaleDTO.ItemCode,
+                            ItemId = null,
+                            Particulars = trnPointOfSaleDTO.Particulars,
+                            Quantity = trnPointOfSaleDTO.Quantity,
+                            Price = trnPointOfSaleDTO.Price,
+                            Discount = trnPointOfSaleDTO.Discount,
+                            NetPrice = trnPointOfSaleDTO.NetPrice,
+                            Amount = trnPointOfSaleDTO.Amount,
+                            TaxCode = trnPointOfSaleDTO.TaxCode,
+                            TaxId = null,
+                            TaxAmount = trnPointOfSaleDTO.TaxAmount,
+                            CashierUserCode = trnPointOfSaleDTO.CashierUserCode,
+                            CashierUserId = null,
+                            TimeStamp = Convert.ToDateTime(trnPointOfSaleDTO.TimeStamp),
+                            PostCode = null
+                        };
+
+                        _dbContext.TrnPointOfSales.Add(newPointOfSale);
+                        await _dbContext.SaveChangesAsync();
+
+                        if (returnId == 0)
+                        {
+                            returnId = newPointOfSale.Id;
+                        }
+                    }
+
+                    return StatusCode(200, returnId);
                 }
-
-                DBSets.TrnPointOfSaleDBSet newPointOfSale = new DBSets.TrnPointOfSaleDBSet()
+                else
                 {
-                    BranchId = branch.Id,
-                    TerminalCode = trnPointOfSaleDTO.TerminalCode,
-                    POSDate = Convert.ToDateTime(trnPointOfSaleDTO.POSDate),
-                    POSNumber = trnPointOfSaleDTO.POSNumber,
-                    OrderNumber = trnPointOfSaleDTO.OrderNumber,
-                    CustomerCode = trnPointOfSaleDTO.CustomerCode,
-                    CustomerId = null,
-                    ItemCode = trnPointOfSaleDTO.ItemCode,
-                    ItemId = null,
-                    Particulars = trnPointOfSaleDTO.Particulars,
-                    Quantity = trnPointOfSaleDTO.Quantity,
-                    Price = trnPointOfSaleDTO.Price,
-                    Discount = trnPointOfSaleDTO.Discount,
-                    NetPrice = trnPointOfSaleDTO.NetPrice,
-                    Amount = trnPointOfSaleDTO.Amount,
-                    TaxCode = trnPointOfSaleDTO.TaxCode,
-                    TaxId = null,
-                    TaxAmount = trnPointOfSaleDTO.TaxAmount,
-                    CashierUserCode = trnPointOfSaleDTO.CashierUserCode,
-                    CashierUserId = null,
-                    TimeStamp = Convert.ToDateTime(trnPointOfSaleDTO.TimeStamp),
-                    PostCode = null
-                };
-
-                _dbContext.TrnPointOfSales.Add(newPointOfSale);
-                await _dbContext.SaveChangesAsync();
-
-                return StatusCode(200);
+                    return StatusCode(404, "Data is empty.");
+                }
             }
             catch (Exception e)
             {

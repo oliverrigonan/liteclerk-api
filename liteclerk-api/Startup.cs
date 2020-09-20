@@ -43,7 +43,7 @@ namespace liteclerk_api
             // Enable CORS Origin
             services.AddCors(options =>
             {
-                options.AddPolicy("AppCorsPolicy", builder => builder.SetIsOriginAllowed(appCors => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+                options.AddPolicy("AppCorsPolicy", builder => builder.SetIsOriginAllowed(originAllowed => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             });
 
             // configure strongly typed settings objects
