@@ -47,14 +47,12 @@ namespace liteclerk_api.APIControllers
                         CompanyId = d.CompanyId,
                         Company = new DTO.MstCompanyDTO
                         {
-                            CompanyCode = d.MstCompany_CompanyId.CompanyCode,
                             ManualCode = d.MstCompany_CompanyId.ManualCode,
                             Company = d.MstCompany_CompanyId.Company
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },

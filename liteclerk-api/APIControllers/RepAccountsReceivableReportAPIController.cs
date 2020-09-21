@@ -28,7 +28,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [NonAction]
-        public Decimal ComputeAge(Int32 age, Int32 elapsed, Decimal amount)
+        public static Decimal ComputeAge(Int32 age, Int32 elapsed, Decimal amount)
         {
             Decimal returnValue = 0;
 
@@ -76,9 +76,9 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list/byDateAsOf/{dateAsOf}/byCompany/{companyId}/byBranch/{branchId}")]
-        public async Task<ActionResult> GetAccountsReceivableList(String dateAsOf, Int32 companyId, Int32 branchId)
+        public async Task<ActionResult> GetAccountsReceivableReportList(String dateAsOf, Int32 companyId, Int32 branchId)
         {
-            if (Convert.ToInt32(branchId) == 0)
+            if (branchId == 0)
             {
                 IEnumerable<DTO.RepAccountsReceivableReportDTO> salesInvoices = await (
                     from d in _dbContext.TrnSalesInvoices
@@ -123,8 +123,15 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstTerm_TermId.ManualCode,
                                 Term = d.MstTerm_TermId.Term
+                            },
+                            SoldByUserId = d.SoldByUserId,
+                            SoldByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.MstUser_SoldByUserId.Username,
+                                Fullname = d.MstUser_SoldByUserId.Fullname
                             }
                         },
+                        DueDate = d.SIDate.AddDays(Convert.ToInt32(d.MstTerm_TermId.NumberOfDays)).ToShortDateString(),
                         BalanceAmount = d.BalanceAmount,
                         CurrentAmount = ComputeAge(0, Convert.ToDateTime(dateAsOf).Subtract(d.SIDate.AddDays(Convert.ToInt32(d.MstTerm_TermId.NumberOfDays))).Days, d.BalanceAmount),
                         Age30Amount = ComputeAge(1, Convert.ToDateTime(dateAsOf).Subtract(d.SIDate.AddDays(Convert.ToInt32(d.MstTerm_TermId.NumberOfDays))).Days, d.BalanceAmount),
@@ -182,8 +189,15 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstTerm_TermId.ManualCode,
                                 Term = d.MstTerm_TermId.Term
+                            },
+                            SoldByUserId = d.SoldByUserId,
+                            SoldByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.MstUser_SoldByUserId.Username,
+                                Fullname = d.MstUser_SoldByUserId.Fullname
                             }
                         },
+                        DueDate = d.SIDate.AddDays(Convert.ToInt32(d.MstTerm_TermId.NumberOfDays)).ToShortDateString(),
                         BalanceAmount = d.BalanceAmount,
                         CurrentAmount = ComputeAge(0, Convert.ToDateTime(dateAsOf).Subtract(d.SIDate.AddDays(Convert.ToInt32(d.MstTerm_TermId.NumberOfDays))).Days, d.BalanceAmount),
                         Age30Amount = ComputeAge(1, Convert.ToDateTime(dateAsOf).Subtract(d.SIDate.AddDays(Convert.ToInt32(d.MstTerm_TermId.NumberOfDays))).Days, d.BalanceAmount),

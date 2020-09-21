@@ -9,6 +9,7 @@ namespace liteclerk_api.DTO
     {
         public MstCompanyBranchDTO Branch { get; set; }
         public TrnSalesInvoiceDTO SalesInvoice { get; set; }
+        public String DueDate { get; set; }
         public Decimal BalanceAmount { get; set; }
         public Decimal CurrentAmount { get; set; }
         public Decimal Age30Amount { get; set; }

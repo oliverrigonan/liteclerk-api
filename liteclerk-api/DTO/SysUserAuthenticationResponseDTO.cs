@@ -12,7 +12,9 @@ namespace liteclerk_api.DTO
         public String ExpiresIn { get; set; }
         public String UserName { get; set; }
         public String FullName { get; set; }
+        public Int32? CompanyId { get; set; }
         public String Company { get; set; }
+        public Int32? BranchId { get; set; }
         public String Branch { get; set; }
 
         public SysUserAuthenticationResponseDTO(DBSets.MstUserDBSet mstUserDBSet, String accessToken, String expiresIn)
@@ -22,7 +24,9 @@ namespace liteclerk_api.DTO
             ExpiresIn = expiresIn;
             UserName = mstUserDBSet.Username;
             FullName = mstUserDBSet.Fullname;
+            CompanyId = mstUserDBSet.CompanyId != null ? mstUserDBSet.CompanyId : 0;
             Company = mstUserDBSet.CompanyId != null ? mstUserDBSet.MstCompany_CompanyId.Company : "";
+            BranchId = mstUserDBSet.BranchId != null ? mstUserDBSet.BranchId : 0;
             Branch = mstUserDBSet.BranchId != null ? mstUserDBSet.MstCompanyBranch_BranchId.Branch : "";
         }
     }
