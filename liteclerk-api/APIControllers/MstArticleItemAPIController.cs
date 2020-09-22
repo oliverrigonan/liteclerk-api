@@ -272,7 +272,7 @@ namespace liteclerk_api.APIControllers
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == true
-                    && (d.Kitting == "NONE" || d.Kitting == "PRODUCED")
+                    && (d.Kitting == "NONE" || d.Kitting == "PRODUCED" || d.Kitting == "COMPONENT")
                     select new DTO.MstArticleItemDTO
                     {
                         Id = d.Id,
