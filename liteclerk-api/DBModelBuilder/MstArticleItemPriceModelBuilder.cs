@@ -8,7 +8,7 @@ namespace liteclerk_api.DBModelBuilder
 {
     public class MstArticleItemPriceModelBuilder
     {
-        public static void CreateMstItemPriceModel(ModelBuilder modelBuilder)
+        public static void CreateMstArticleItemPriceModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DBSets.MstArticleItemPriceDBSet>(entity =>
             {

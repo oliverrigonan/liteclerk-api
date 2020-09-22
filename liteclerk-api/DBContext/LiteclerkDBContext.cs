@@ -34,10 +34,11 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.MstArticleTypeDBSet> MstArticleTypes { get; set; }
         public virtual DbSet<DBSets.MstArticleDBSet> MstArticles { get; set; }
         public virtual DbSet<DBSets.MstArticleAccountGroupDBSet> MstArticleAccountGroups { get; set; }
-        public virtual DbSet<DBSets.MstArticleCustomerDBSet> MstArticleCustomers { get; set; }
         public virtual DbSet<DBSets.MstArticleItemDBSet> MstArticleItems { get; set; }
         public virtual DbSet<DBSets.MstArticleItemUnitDBSet> MstArticleItemUnits { get; set; }
         public virtual DbSet<DBSets.MstArticleItemPriceDBSet> MstArticleItemPrices { get; set; }
+        public virtual DbSet<DBSets.MstArticleItemComponentDBSet> MstArticleItemComponents { get; set; }
+        public virtual DbSet<DBSets.MstArticleCustomerDBSet> MstArticleCustomers { get; set; }
         public virtual DbSet<DBSets.MstArticleSupplierDBSet> MstArticleSuppliers { get; set; }
         public virtual DbSet<DBSets.MstArticleBankDBSet> MstArticleBanks { get; set; }
         public virtual DbSet<DBSets.MstArticleItemInventoryDBSet> MstArticleItemInventories { get; set; }
@@ -93,8 +94,9 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstArticleAccountGroupModelBuilder.CreateMstArticleAccountGroupModel(modelBuilder);
             DBModelBuilder.MstArticleCustomerModelBuilder.CreateMstArticleCustomerModel(modelBuilder);
             DBModelBuilder.MstArticleItemModelBuilder.CreateMstArticleItemModel(modelBuilder);
-            DBModelBuilder.MstArticleItemUnitModelBuilder.CreateMstItemUnitModel(modelBuilder);
-            DBModelBuilder.MstArticleItemPriceModelBuilder.CreateMstItemPriceModel(modelBuilder);
+            DBModelBuilder.MstArticleItemUnitModelBuilder.CreateMstArticleItemUnitModel(modelBuilder);
+            DBModelBuilder.MstArticleItemPriceModelBuilder.CreateMstArticleItemPriceModel(modelBuilder);
+            DBModelBuilder.MstArticleItemComponentModelBuilder.CreateMstArticleItemComponentModel(modelBuilder);
             DBModelBuilder.MstArticleSupplierModelBuilder.CreateMstArticleSupplierModel(modelBuilder);
             DBModelBuilder.MstArticleBankModelBuilder.CreateMstArticleBankModel(modelBuilder);
             DBModelBuilder.MstArticleItemInventoryModelBuilder.CreateMstArticleItemInventoryModel(modelBuilder);

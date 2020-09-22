@@ -66,6 +66,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
+                        Category = d.Category,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -178,6 +179,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
+                        Category = d.Category,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -292,6 +294,123 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
+                        Category = d.Category,
+                        IsInventory = d.IsInventory,
+                        ArticleAccountGroupId = d.ArticleAccountGroupId,
+                        ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
+                        {
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
+                        },
+                        AssetAccountId = d.AssetAccountId,
+                        AssetAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
+                        },
+                        SalesAccountId = d.SalesAccountId,
+                        SalesAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
+                        },
+                        CostAccountId = d.CostAccountId,
+                        CostAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
+                        },
+                        ExpenseAccountId = d.ExpenseAccountId,
+                        ExpenseAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
+                        },
+                        Price = d.Price,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
+                        },
+                        Kitting = d.Kitting,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, inventoryArticleItems);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("list/inventory/exceptByArticle/{articleId}")]
+        public async Task<ActionResult> GetInventoryArticleItemListExceptByArticle(Int32 articleId)
+        {
+            try
+            {
+                IEnumerable<DTO.MstArticleItemDTO> inventoryArticleItems = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.MstArticle_ArticleId.IsLocked == true
+                    && d.ArticleId != articleId
+                    && d.IsInventory == true
+                    && (d.Kitting == "NONE" || d.Kitting == "PRODUCED")
+                    select new DTO.MstArticleItemDTO
+                    {
+                        Id = d.Id,
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
+                        },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        SKUCode = d.SKUCode,
+                        BarCode = d.BarCode,
+                        Description = d.Description,
+                        UnitId = d.UnitId,
+                        Unit = new DTO.MstUnitDTO
+                        {
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
+                        },
+                        Category = d.Category,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -520,6 +639,122 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
+                        Category = d.Category,
+                        IsInventory = d.IsInventory,
+                        ArticleAccountGroupId = d.ArticleAccountGroupId,
+                        ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
+                        {
+                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
+                        },
+                        AssetAccountId = d.AssetAccountId,
+                        AssetAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
+                        },
+                        SalesAccountId = d.SalesAccountId,
+                        SalesAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
+                        },
+                        CostAccountId = d.CostAccountId,
+                        CostAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
+                        },
+                        ExpenseAccountId = d.ExpenseAccountId,
+                        ExpenseAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
+                        },
+                        Price = d.Price,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_RRVATId.TaxCode,
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_SIVATId.TaxCode,
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
+                        },
+                        Kitting = d.Kitting,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, producedArticleItems);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("list/component")]
+        public async Task<ActionResult> GetComponentArticleItemList()
+        {
+            try
+            {
+                IEnumerable<DTO.MstArticleItemDTO> producedArticleItems = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.MstArticle_ArticleId.IsLocked == true
+                    && d.IsInventory == true
+                    && d.Kitting == "COMPONENT"
+                    select new DTO.MstArticleItemDTO
+                    {
+                        Id = d.Id,
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
+                        },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        SKUCode = d.SKUCode,
+                        BarCode = d.BarCode,
+                        Description = d.Description,
+                        UnitId = d.UnitId,
+                        Unit = new DTO.MstUnitDTO
+                        {
+                            UnitCode = d.MstUnit_UnitId.UnitCode,
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
+                        },
+                        Category = d.Category,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -632,6 +867,7 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
+                        Category = d.Category,
                         IsInventory = d.IsInventory,
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
@@ -828,6 +1064,7 @@ namespace liteclerk_api.APIControllers
                     BarCode = articleCode,
                     Description = "",
                     UnitId = unit.Id,
+                    Category = "",
                     IsInventory = true,
                     ArticleAccountGroupId = articleAccountGroup.Id,
                     AssetAccountId = articleAccountGroup.AssetAccountId,
@@ -964,6 +1201,7 @@ namespace liteclerk_api.APIControllers
                 saveArticleItem.BarCode = mstArticleItemDTO.BarCode;
                 saveArticleItem.Description = mstArticleItemDTO.Description;
                 saveArticleItem.UnitId = mstArticleItemDTO.UnitId;
+                saveArticleItem.Category = mstArticleItemDTO.Category;
                 saveArticleItem.IsInventory = mstArticleItemDTO.IsInventory;
                 saveArticleItem.ArticleAccountGroupId = mstArticleItemDTO.ArticleAccountGroupId;
                 saveArticleItem.AssetAccountId = mstArticleItemDTO.AssetAccountId;
@@ -1117,6 +1355,7 @@ namespace liteclerk_api.APIControllers
                 lockArticleItem.BarCode = mstArticleItemDTO.BarCode;
                 lockArticleItem.Description = mstArticleItemDTO.Description;
                 lockArticleItem.UnitId = mstArticleItemDTO.UnitId;
+                lockArticleItem.Category = mstArticleItemDTO.Category;
                 lockArticleItem.IsInventory = mstArticleItemDTO.IsInventory;
                 lockArticleItem.ArticleAccountGroupId = mstArticleItemDTO.ArticleAccountGroupId;
                 lockArticleItem.AssetAccountId = mstArticleItemDTO.AssetAccountId;

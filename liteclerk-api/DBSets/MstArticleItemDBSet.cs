@@ -15,6 +15,7 @@ namespace liteclerk_api.DBSets
         public String Description { get; set; }
         public Int32 UnitId { get; set; }
         public virtual MstUnitDBSet MstUnit_UnitId { get; set; }
+        public String Category { get; set; }
         public Boolean IsInventory { get; set; }
         public Int32 ArticleAccountGroupId { get; set; }
         public virtual MstArticleAccountGroupDBSet MstArticleAccountGroup_ArticleAccountGroupId { get; set; }

@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnSalesOrderItemDTO> salesOrderItems = await (
+                List<DTO.TrnSalesOrderItemDTO> salesOrderItems = await (
                     from d in _dbContext.TrnSalesOrderItems
                     where d.SOId == SOId
                     orderby d.Id descending

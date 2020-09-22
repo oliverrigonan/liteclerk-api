@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200922064350_AddedMstArticleItemComponentTable")]
+    partial class AddedMstArticleItemComponentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -526,6 +528,9 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ComponentArticleId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("MstArticle_ArticleIdId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Quantity")
                         .HasColumnName("Quantity")
                         .HasColumnType("decimal(18,5)");
@@ -534,7 +539,7 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.HasIndex("ComponentArticleId");
+                    b.HasIndex("MstArticle_ArticleIdId");
 
                     b.ToTable("MstArticleItemComponent");
                 });
@@ -3801,17 +3806,15 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemComponentDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
-                        .WithMany("MstArticleItemComponents_ArticleId")
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ComponentArticleId")
+                        .WithMany("MstArticleItemComponents_ComponentArticleId")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ComponentArticleId")
-                        .WithMany("MstArticleItemComponents_ComponentArticleId")
-                        .HasForeignKey("ComponentArticleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ArticleId")
+                        .WithMany("MstArticleItemComponents_ArticleId")
+                        .HasForeignKey("MstArticle_ArticleIdId");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstArticleItemDBSet", b =>

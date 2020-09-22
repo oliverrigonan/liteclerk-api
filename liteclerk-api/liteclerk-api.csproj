@@ -23,6 +23,10 @@
     <Compile Remove="Migrations\20200919034820_CascadeAllArticleLines.Designer.cs" />
     <Compile Remove="Migrations\20200919040540_CascadeAllArticleLines.cs" />
     <Compile Remove="Migrations\20200919040540_CascadeAllArticleLines.Designer.cs" />
+    <Compile Remove="Migrations\20200922091045_ModifiedMstArticleItemComponentTable.cs" />
+    <Compile Remove="Migrations\20200922091045_ModifiedMstArticleItemComponentTable.Designer.cs" />
+    <Compile Remove="Migrations\20200922091134_RestrictMstArticleItemComponentTable.cs" />
+    <Compile Remove="Migrations\20200922091134_RestrictMstArticleItemComponentTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,13 +49,6 @@
     <None Update="Resources\Images\colorideas_logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Integrations\EasyPos\APIControllers\" />
-    <Folder Include="Integrations\EasyPos\DTO\" />
-    <Folder Include="Integrations\EasyShop\APIControllers\" />
-    <Folder Include="Integrations\EasyShop\DTO\" />
   </ItemGroup>
 
 

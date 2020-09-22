@@ -16,6 +16,7 @@ namespace liteclerk_api.DTO
         public String Description { get; set; }
         public Int32 UnitId { get; set; }
         public MstUnitDTO Unit { get; set; }
+        public String Category { get; set; }
         public Boolean IsInventory { get; set; }
         public Int32 ArticleAccountGroupId { get; set; }
         public MstArticleAccountGroupDTO ArticleAccountGroup { get; set; }
@@ -28,11 +29,6 @@ namespace liteclerk_api.DTO
         public Int32 ExpenseAccountId { get; set; }
         public MstAccountDTO ExpenseAccount { get; set; }
         public Decimal Price { get; set; }
-        public Boolean IsLocked { get; set; }
-        public MstUserDTO CreatedByUser { get; set; }
-        public String CreatedDateTime { get; set; }
-        public MstUserDTO UpdatedByUser { get; set; }
-        public String UpdatedDateTime { get; set; }
         public Int32 RRVATId { get; set; }
         public MstTaxDTO RRVAT { get; set; }
         public Int32 SIVATId { get; set; }
@@ -40,5 +36,10 @@ namespace liteclerk_api.DTO
         public Int32 WTAXId { get; set; }
         public MstTaxDTO WTAX { get; set; }
         public String Kitting { get; set; }
+        public Boolean IsLocked { get; set; }
+        public MstUserDTO CreatedByUser { get; set; }
+        public String CreatedDateTime { get; set; }
+        public MstUserDTO UpdatedByUser { get; set; }
+        public String UpdatedDateTime { get; set; }
     }
 }
