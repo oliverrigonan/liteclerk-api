@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 
 namespace liteclerk_api.Integrations.EasySHOP.DTO
 {
-    public class EasySHOPMstArticleItemCategoryDTO
+    public class EasySHOPMstUnitDTO
     {
         public Int32 Id { get; set; }
-        public String Category { get; set; }
-        public String CategoryImageURL { get; set; }
+        public String UnitCode { get; set; }
+        public String ManualCode { get; set; }
+        public String Unit { get; set; }
     }
 }

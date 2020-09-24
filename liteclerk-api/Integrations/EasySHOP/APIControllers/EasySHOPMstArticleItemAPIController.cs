@@ -37,13 +37,25 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                     select new DTO.EasySHOPMstArticleItemDTO
                     {
                         Id = d.Id,
-                        ManualItemCode = d.BarCode,
-                        ItemDescription = d.Description,
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.EasySHOPMstArticleDTO
+                        {
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = ""
+                        },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        SKUCode = d.SKUCode,
+                        BarCode = d.BarCode,
+                        Description = d.Description,
                         Category = d.Category,
-                        Particulars = "",
                         Price = d.Price,
-                        Unit = d.MstUnit_UnitId.Unit,
-                        ArticleImageUrl = ""
+                        UnitId = d.UnitId,
+                        Unit = new DTO.EasySHOPMstUnitDTO
+                        {
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
+                        }
                     }
                 ).ToListAsync();
 

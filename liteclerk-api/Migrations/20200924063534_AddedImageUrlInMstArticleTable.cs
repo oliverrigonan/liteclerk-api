@@ -2,23 +2,23 @@
 
 namespace liteclerk_api.Migrations
 {
-    public partial class AddedFieldIsLockedInMstUser : Migration
+    public partial class AddedImageUrlInMstArticleTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsLocked",
-                table: "MstUser",
-                type: "bit",
+            migrationBuilder.AddColumn<string>(
+                name: "ImageURL",
+                table: "MstArticle",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsLocked",
-                table: "MstUser");
+                name: "ImageURL",
+                table: "MstArticle");
         }
     }
 }

@@ -482,6 +482,11 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("CreatedDateTime")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnName("ImageURL")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsLocked")
                         .HasColumnName("IsLocked")
                         .HasColumnType("bit");

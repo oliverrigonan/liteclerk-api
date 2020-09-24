@@ -37,15 +37,36 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                     select new DTO.EasySHOPMstArticleItemInventoryDTO
                     {
                         Id = d.Id,
-                        BranchCode = d.MstCompanyBranch_BranchId.ManualCode,
-                        Branch = d.MstCompanyBranch_BranchId.Branch,
-                        ManualItemCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
-                        ItemDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
-                        Category = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Category : "",
-                        Particulars = "",
-                        Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit : "",
-                        Price = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Price : 0,
-                        Quantity = d.Quantity
+                        ArticleId = d.ArticleId,
+                        ArticleItem = new DTO.EasySHOPMstArticleItemDTO
+                        {
+                            Article = new DTO.EasySHOPMstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_ArticleId.ManualCode,
+                                Article = d.MstArticle_ArticleId.Article
+                            },
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                            Category = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Category : "",
+                            Price = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Price : 0,
+                            UnitId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().UnitId : 0,
+                            Unit = new DTO.EasySHOPMstUnitDTO
+                            {
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode : "",
+                                Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit : ""
+                            }
+                        },
+                        BranchId = d.BranchId,
+                        Branch = new DTO.EasySHOPMstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        InventoryCode = d.InventoryCode,
+                        Quantity = d.Quantity,
+                        Cost = d.Cost,
+                        Amount = d.Amount
                     }
                 ).ToListAsync();
 

@@ -7,29 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200823142104_OrderColumns.cs" />
-    <Compile Remove="Migrations\20200823142104_OrderColumns.Designer.cs" />
-    <Compile Remove="Migrations\20200906063030_TestMigrations.cs" />
-    <Compile Remove="Migrations\20200906063030_TestMigrations.Designer.cs" />
-    <Compile Remove="Migrations\20200907061131_ModifedMstUserBranchTable.cs" />
-    <Compile Remove="Migrations\20200907061131_ModifedMstUserBranchTable.Designer.cs" />
-    <Compile Remove="Migrations\20200915083915_AddCascadeEveryLinesOnDeleteBehavior.cs" />
-    <Compile Remove="Migrations\20200915083915_AddCascadeEveryLinesOnDeleteBehavior.Designer.cs" />
-    <Compile Remove="Migrations\20200916065851_AddedTrnSalesOrderTable.cs" />
-    <Compile Remove="Migrations\20200916065851_AddedTrnSalesOrderTable.Designer.cs" />
-    <Compile Remove="Migrations\20200919033612_CascadeAllArticleLines.cs" />
-    <Compile Remove="Migrations\20200919033612_CascadeAllArticleLines.Designer.cs" />
-    <Compile Remove="Migrations\20200919034820_CascadeAllArticleLines.cs" />
-    <Compile Remove="Migrations\20200919034820_CascadeAllArticleLines.Designer.cs" />
-    <Compile Remove="Migrations\20200919040540_CascadeAllArticleLines.cs" />
-    <Compile Remove="Migrations\20200919040540_CascadeAllArticleLines.Designer.cs" />
-    <Compile Remove="Migrations\20200922091045_ModifiedMstArticleItemComponentTable.cs" />
-    <Compile Remove="Migrations\20200922091045_ModifiedMstArticleItemComponentTable.Designer.cs" />
-    <Compile Remove="Migrations\20200922091134_RestrictMstArticleItemComponentTable.cs" />
-    <Compile Remove="Migrations\20200922091134_RestrictMstArticleItemComponentTable.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.6.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />

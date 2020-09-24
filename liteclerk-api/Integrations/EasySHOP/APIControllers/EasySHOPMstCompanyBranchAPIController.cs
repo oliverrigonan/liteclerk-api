@@ -38,12 +38,17 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                     select new DTO.EasySHOPMstCompanyBranchDTO
                     {
                         Id = d.Id,
-                        Company = d.MstCompany_CompanyId.Company,
                         BranchCode = d.BranchCode,
+                        ManualCode = d.ManualCode,
+                        CompanyId = d.CompanyId,
+                        Company = new DTO.EasySHOPMstCompanyDTO
+                        {
+                            ManualCode = d.MstCompany_CompanyId.ManualCode,
+                            Company = d.MstCompany_CompanyId.Company
+                        },
                         Branch = d.Branch,
                         Address = d.Address,
-                        ContactNumber = "",
-                        TaxNumber = d.TIN
+                        TIN = d.TIN
                     }
                 ).ToListAsync();
 

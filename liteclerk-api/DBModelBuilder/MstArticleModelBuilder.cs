@@ -23,6 +23,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ArticleTypeId).HasColumnName("ArticleTypeId").HasColumnType("int");
                 entity.HasOne(f => f.MstArticleType_ArticleTypeId).WithMany(f => f.MstArticles_ArticleTypeId).HasForeignKey(f => f.ArticleTypeId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.ImageURL).HasColumnName("ImageURL").HasColumnType("nvarchar(max)").IsRequired();
+
                 entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();
 
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();

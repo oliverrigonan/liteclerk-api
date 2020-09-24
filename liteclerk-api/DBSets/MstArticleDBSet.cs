@@ -13,6 +13,7 @@ namespace liteclerk_api.DBSets
         public String Article { get; set; }
         public Int32 ArticleTypeId { get; set; }
         public virtual MstArticleTypeDBSet MstArticleType_ArticleTypeId { get; set; }
+        public String ImageURL { get; set; }
         public Boolean IsLocked { get; set; }
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUserId { get; set; }
