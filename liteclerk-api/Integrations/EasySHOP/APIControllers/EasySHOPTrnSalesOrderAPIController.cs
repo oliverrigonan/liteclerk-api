@@ -40,8 +40,166 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
             return result;
         }
 
+        [HttpGet("list/byDateRange/{startDate}/{endDate}/byBranch/{branchManualCode}")]
+        public async Task<ActionResult> GetSalesOrderListByDateRanged(String startDate, String endDate, String branchManualCode)
+        {
+            try
+            {
+                IEnumerable<EasySHOPTrnSalesOrderDTO> salesOrders = await (
+                    from d in _dbContext.TrnSalesOrders
+                    where d.MstCompanyBranch_BranchId.ManualCode == branchManualCode
+                    && d.SODate >= Convert.ToDateTime(startDate)
+                    && d.SODate <= Convert.ToDateTime(endDate)
+                    orderby d.Id descending
+                    select new EasySHOPTrnSalesOrderDTO
+                    {
+                        Id = d.Id,
+                        BranchManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                        SONumber = d.SONumber,
+                        SODate = d.SODate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        CustomerId = d.CustomerId,
+                        Customer = new EasySHOPMstArticleCustomerDTO
+                        {
+                            Article = new EasySHOPMstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_CustomerId.ManualCode
+                            },
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                        },
+                        CustomerManualCode = d.MstArticle_CustomerId.ManualCode,
+                        CustomerName = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                        Remarks = d.Remarks,
+                        SalesOrderItems = d.TrnSalesOrderItems_SOId.Any() ? d.TrnSalesOrderItems_SOId.Where(i => i.SOId == d.Id).Select(i => new EasySHOPTrnSalesOrderItemDTO
+                        {
+                            Id = i.Id,
+                            SOId = i.SOId,
+                            ItemId = i.ItemId,
+                            Item = new EasySHOPMstArticleItemDTO
+                            {
+                                Article = new EasySHOPMstArticleDTO
+                                {
+                                    ManualCode = i.MstArticle_ItemId.ManualCode
+                                },
+                                SKUCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            },
+                            ItemInventoryId = i.ItemInventoryId,
+                            ItemInventory = new EasySHOPMstArticleItemInventoryDTO
+                            {
+                                InventoryCode = i.MstArticleItemInventory_ItemInventoryId.InventoryCode
+                            },
+                            Particulars = i.Particulars,
+                            Quantity = i.Quantity,
+                            UnitId = i.UnitId,
+                            Unit = new EasySHOPMstUnitDTO
+                            {
+                                ManualCode = i.MstUnit_UnitId.ManualCode,
+                                Unit = i.MstUnit_UnitId.Unit
+                            },
+                            Price = i.Price,
+                            DiscountId = i.DiscountId,
+                            Discount = new EasySHOPMstDiscountDTO
+                            {
+                                ManualCode = i.MstDiscount_DiscountId.ManualCode,
+                                Discount = i.MstDiscount_DiscountId.Discount
+                            },
+                            DiscountRate = i.DiscountRate,
+                            DiscountAmount = i.DiscountAmount,
+                            NetPrice = i.NetPrice,
+                            Amount = i.Amount
+                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>().ToList()
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, salesOrders);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("detail/bySONumber/{SONumber}")]
+        public async Task<ActionResult> GetSalesOrderDetailBySONumber(String SONumber)
+        {
+            try
+            {
+                EasySHOPTrnSalesOrderDTO salesOrders = await (
+                    from d in _dbContext.TrnSalesOrders
+                    where d.SONumber == SONumber
+                    select new EasySHOPTrnSalesOrderDTO
+                    {
+                        Id = d.Id,
+                        SONumber = d.SONumber,
+                        SODate = d.SODate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        CustomerId = d.CustomerId,
+                        Customer = new EasySHOPMstArticleCustomerDTO
+                        {
+                            Article = new EasySHOPMstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_CustomerId.ManualCode
+                            },
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                        },
+                        Remarks = d.Remarks,
+                        SalesOrderItems = d.TrnSalesOrderItems_SOId.Any() ? d.TrnSalesOrderItems_SOId.Where(i => i.SOId == d.Id).Select(i => new DTO.EasySHOPTrnSalesOrderItemDTO
+                        {
+                            Id = i.Id,
+                            SOId = i.SOId,
+                            ItemId = i.ItemId,
+                            Item = new EasySHOPMstArticleItemDTO
+                            {
+                                Article = new EasySHOPMstArticleDTO
+                                {
+                                    ManualCode = i.MstArticle_ItemId.ManualCode
+                                },
+                                SKUCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            },
+                            ItemInventoryId = i.ItemInventoryId,
+                            ItemInventory = new EasySHOPMstArticleItemInventoryDTO
+                            {
+                                InventoryCode = i.MstArticleItemInventory_ItemInventoryId.InventoryCode
+                            },
+                            Particulars = i.Particulars,
+                            Quantity = i.Quantity,
+                            UnitId = i.UnitId,
+                            Unit = new EasySHOPMstUnitDTO
+                            {
+                                ManualCode = i.MstUnit_UnitId.ManualCode,
+                                Unit = i.MstUnit_UnitId.Unit
+                            },
+                            Price = i.Price,
+                            DiscountId = i.DiscountId,
+                            Discount = new EasySHOPMstDiscountDTO
+                            {
+                                ManualCode = i.MstDiscount_DiscountId.ManualCode,
+                                Discount = i.MstDiscount_DiscountId.Discount
+                            },
+                            DiscountRate = i.DiscountRate,
+                            DiscountAmount = i.DiscountAmount,
+                            NetPrice = i.NetPrice,
+                            Amount = i.Amount
+                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>().ToList()
+                    }
+                ).FirstOrDefaultAsync();
+
+                return StatusCode(200, salesOrders);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpPost("add")]
-        public async Task<ActionResult> AddSalesOrder(DTO.EasySHOPTrnSalesOrderDTO objSalesOrder)
+        public async Task<ActionResult> AddSalesOrder(EasySHOPTrnSalesOrderDTO objSalesOrder)
         {
             try
             {
@@ -320,177 +478,6 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                 }
 
                 return StatusCode(200, newSalesOrder.Id);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.InnerException.Message);
-            }
-        }
-
-        [HttpGet("list/byDateRange/{startDate}/{endDate}/byBranchManualCode/{branchManualCode}")]
-        public async Task<ActionResult> GetSalesOrderListByDateRanged(String startDate, String endDate, String branchManualCode)
-        {
-            try
-            {
-                IEnumerable<EasySHOPTrnSalesOrderDTO> salesOrders = await (
-                    from d in _dbContext.TrnSalesOrders
-                    where d.MstCompanyBranch_BranchId.ManualCode == branchManualCode
-                    && d.SODate >= Convert.ToDateTime(startDate)
-                    && d.SODate <= Convert.ToDateTime(endDate)
-                    orderby d.Id descending
-                    select new EasySHOPTrnSalesOrderDTO
-                    {
-                        Id = d.Id,
-                        BranchId = d.BranchId,
-                        Branch = new EasySHOPMstCompanyBranchDTO
-                        {
-                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
-                            Branch = d.MstCompanyBranch_BranchId.Branch
-                        },
-                        SONumber = d.SONumber,
-                        SODate = d.SODate.ToShortDateString(),
-                        ManualNumber = d.ManualNumber,
-                        DocumentReference = d.DocumentReference,
-                        CustomerId = d.CustomerId,
-                        Customer = new EasySHOPMstArticleCustomerDTO
-                        {
-                            Article = new EasySHOPMstArticleDTO
-                            {
-                                ManualCode = d.MstArticle_CustomerId.ManualCode
-                            },
-                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
-                        },
-                        Remarks = d.Remarks,
-                        SalesOrderItems = d.TrnSalesOrderItems_SOId.Any() ? d.TrnSalesOrderItems_SOId.Where(i => i.SOId == d.Id).Select(i => new DTO.EasySHOPTrnSalesOrderItemDTO
-                        {
-                            Id = i.Id,
-                            SOId = i.SOId,
-                            ItemId = i.ItemId,
-                            Item = new EasySHOPMstArticleItemDTO
-                            {
-                                Article = new EasySHOPMstArticleDTO
-                                {
-                                    ManualCode = i.MstArticle_ItemId.ManualCode
-                                },
-                                SKUCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
-                            },
-                            ItemInventoryId = i.ItemInventoryId,
-                            ItemInventory = new EasySHOPMstArticleItemInventoryDTO
-                            {
-                                InventoryCode = i.MstArticleItemInventory_ItemInventoryId.InventoryCode
-                            },
-                            Particulars = i.Particulars,
-                            Quantity = i.Quantity,
-                            UnitId = i.UnitId,
-                            Unit = new EasySHOPMstUnitDTO
-                            {
-                                UnitCode = i.MstUnit_UnitId.UnitCode,
-                                ManualCode = i.MstUnit_UnitId.ManualCode,
-                                Unit = i.MstUnit_UnitId.Unit
-                            },
-                            Price = i.Price,
-                            DiscountId = i.DiscountId,
-                            Discount = new EasySHOPMstDiscountDTO
-                            {
-                                DiscountCode = i.MstDiscount_DiscountId.DiscountCode,
-                                ManualCode = i.MstDiscount_DiscountId.ManualCode,
-                                Discount = i.MstDiscount_DiscountId.Discount
-                            },
-                            DiscountRate = i.DiscountRate,
-                            DiscountAmount = i.DiscountAmount,
-                            NetPrice = i.NetPrice,
-                            Amount = i.Amount
-                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>().ToList()
-                    }
-                ).ToListAsync();
-
-                return StatusCode(200, salesOrders);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.InnerException.Message);
-            }
-        }
-
-        [HttpGet("detail/bySONumber/{SONumber}")]
-        public async Task<ActionResult> GetSalesOrderDetailBySONumber(String SONumber)
-        {
-            try
-            {
-                EasySHOPTrnSalesOrderDTO salesOrders = await (
-                    from d in _dbContext.TrnSalesOrders
-                    where d.SONumber == SONumber
-                    select new EasySHOPTrnSalesOrderDTO
-                    {
-                        Id = d.Id,
-                        BranchId = d.BranchId,
-                        Branch = new EasySHOPMstCompanyBranchDTO
-                        {
-                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
-                            Branch = d.MstCompanyBranch_BranchId.Branch
-                        },
-                        SONumber = d.SONumber,
-                        SODate = d.SODate.ToShortDateString(),
-                        ManualNumber = d.ManualNumber,
-                        DocumentReference = d.DocumentReference,
-                        CustomerId = d.CustomerId,
-                        Customer = new EasySHOPMstArticleCustomerDTO
-                        {
-                            Article = new EasySHOPMstArticleDTO
-                            {
-                                ManualCode = d.MstArticle_CustomerId.ManualCode
-                            },
-                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
-                        },
-                        Remarks = d.Remarks,
-                        SalesOrderItems = d.TrnSalesOrderItems_SOId.Any() ? d.TrnSalesOrderItems_SOId.Where(i => i.SOId == d.Id).Select(i => new DTO.EasySHOPTrnSalesOrderItemDTO
-                        {
-                            Id = i.Id,
-                            SOId = i.SOId,
-                            ItemId = i.ItemId,
-                            Item = new EasySHOPMstArticleItemDTO
-                            {
-                                Article = new EasySHOPMstArticleDTO
-                                {
-                                    ManualCode = i.MstArticle_ItemId.ManualCode
-                                },
-                                SKUCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
-                            },
-                            ItemInventoryId = i.ItemInventoryId,
-                            ItemInventory = new EasySHOPMstArticleItemInventoryDTO
-                            {
-                                InventoryCode = i.MstArticleItemInventory_ItemInventoryId.InventoryCode
-                            },
-                            Particulars = i.Particulars,
-                            Quantity = i.Quantity,
-                            UnitId = i.UnitId,
-                            Unit = new EasySHOPMstUnitDTO
-                            {
-                                UnitCode = i.MstUnit_UnitId.UnitCode,
-                                ManualCode = i.MstUnit_UnitId.ManualCode,
-                                Unit = i.MstUnit_UnitId.Unit
-                            },
-                            Price = i.Price,
-                            DiscountId = i.DiscountId,
-                            Discount = new EasySHOPMstDiscountDTO
-                            {
-                                DiscountCode = i.MstDiscount_DiscountId.DiscountCode,
-                                ManualCode = i.MstDiscount_DiscountId.ManualCode,
-                                Discount = i.MstDiscount_DiscountId.Discount
-                            },
-                            DiscountRate = i.DiscountRate,
-                            DiscountAmount = i.DiscountAmount,
-                            NetPrice = i.NetPrice,
-                            Amount = i.Amount
-                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>().ToList()
-                    }
-                ).FirstOrDefaultAsync();
-
-                return StatusCode(200, salesOrders);
             }
             catch (Exception e)
             {

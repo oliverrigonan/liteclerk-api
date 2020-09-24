@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using liteclerk_api.Integrations.EasySHOP.DTO;
 
 namespace liteclerk_api.Integrations.EasySHOP.APIControllers
 {
@@ -26,24 +27,25 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
         }
 
         [AllowAnonymous]
-        [HttpGet("list/byArticleItem/{articleId}")]
+        [HttpGet("list/byArticle/{articleId}")]
         public async Task<ActionResult> GetArticleItemInventoryListByArticleItem(Int32 articleId)
         {
             try
             {
-                List<DTO.EasySHOPMstArticleItemInventoryDTO> articleItemInventories = await (
+                List<EasySHOPMstArticleItemInventoryDTO> articleItemInventories = await (
                     from d in _dbContext.MstArticleItemInventories
                     where d.ArticleId == articleId
-                    select new DTO.EasySHOPMstArticleItemInventoryDTO
+                    select new EasySHOPMstArticleItemInventoryDTO
                     {
                         Id = d.Id,
                         ArticleId = d.ArticleId,
-                        ArticleItem = new DTO.EasySHOPMstArticleItemDTO
+                        ArticleItem = new EasySHOPMstArticleItemDTO
                         {
-                            Article = new DTO.EasySHOPMstArticleDTO
+                            Article = new EasySHOPMstArticleDTO
                             {
                                 ManualCode = d.MstArticle_ArticleId.ManualCode,
-                                Article = d.MstArticle_ArticleId.Article
+                                Article = d.MstArticle_ArticleId.Article,
+                                ImageURL = d.MstArticle_ArticleId.ImageURL
                             },
                             SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
@@ -51,14 +53,14 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                             Category = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Category : "",
                             Price = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Price : 0,
                             UnitId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().UnitId : 0,
-                            Unit = new DTO.EasySHOPMstUnitDTO
+                            Unit = new EasySHOPMstUnitDTO
                             {
                                 ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode : "",
                                 Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit : ""
                             }
                         },
                         BranchId = d.BranchId,
-                        Branch = new DTO.EasySHOPMstCompanyBranchDTO
+                        Branch = new EasySHOPMstCompanyBranchDTO
                         {
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch

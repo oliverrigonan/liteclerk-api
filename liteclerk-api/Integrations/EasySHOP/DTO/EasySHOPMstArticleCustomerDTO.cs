@@ -12,8 +12,5 @@ namespace liteclerk_api.Integrations.EasySHOP.DTO
         public EasySHOPMstArticleDTO Article { get; set; }
         public String ArticleManualCode { get; set; }
         public String Customer { get; set; }
-        public String Address { get; set; }
-        public String ContactPerson { get; set; }
-        public String ContactNumber { get; set; }
     }
 }

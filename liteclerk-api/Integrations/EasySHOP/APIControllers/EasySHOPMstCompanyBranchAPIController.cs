@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using liteclerk_api.Integrations.EasySHOP.DTO;
 
 namespace liteclerk_api.Integrations.EasySHOP.APIControllers
 {
@@ -31,24 +32,21 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
         {
             try
             {
-                List<DTO.EasySHOPMstCompanyBranchDTO> companyBranches = await (
+                List<EasySHOPMstCompanyBranchDTO> companyBranches = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.CompanyId == companyId
                     && d.MstCompany_CompanyId.IsLocked == true
-                    select new DTO.EasySHOPMstCompanyBranchDTO
+                    select new EasySHOPMstCompanyBranchDTO
                     {
                         Id = d.Id,
-                        BranchCode = d.BranchCode,
                         ManualCode = d.ManualCode,
                         CompanyId = d.CompanyId,
-                        Company = new DTO.EasySHOPMstCompanyDTO
+                        Company = new EasySHOPMstCompanyDTO
                         {
                             ManualCode = d.MstCompany_CompanyId.ManualCode,
                             Company = d.MstCompany_CompanyId.Company
                         },
-                        Branch = d.Branch,
-                        Address = d.Address,
-                        TIN = d.TIN
+                        Branch = d.Branch
                     }
                 ).ToListAsync();
 

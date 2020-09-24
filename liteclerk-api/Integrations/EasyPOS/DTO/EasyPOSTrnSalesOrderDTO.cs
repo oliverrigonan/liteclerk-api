@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace liteclerk_api.Integrations.EasySHOP.DTO
+namespace liteclerk_api.Integrations.EasyPOS.DTO
 {
-    public class EasySHOPTrnSalesOrderDTO
+    public class EasyPOSTrnSalesOrderDTO
     {
         public Int32 Id { get; set; }
-        public String BranchManualCode { get; set; }
         public String SONumber { get; set; }
         public String SODate { get; set; }
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
         public Int32 CustomerId { get; set; }
-        public EasySHOPMstArticleCustomerDTO Customer { get; set; }
+        public EasyPOSMstArticleCustomerDTO Customer { get; set; }
         public String CustomerManualCode { get; set; }
         public String CustomerName { get; set; }
         public String Remarks { get; set; }
-        public List<EasySHOPTrnSalesOrderItemDTO> SalesOrderItems { get; set; }
+        public List<EasyPOSTrnSalesOrderItemDTO> SalesOrderItems { get; set; }
     }
 }

@@ -20,7 +20,6 @@ namespace liteclerk_api.DTO
         public MstAccountDTO Account { get; set; }
         public Int32 ArticleId { get; set; }
         public MstArticleDTO Article { get; set; }
-        public String DateNeeded { get; set; }
         public String Remarks { get; set; }
         public Int32 PreparedByUserId { get; set; }
         public MstUserDTO PreparedByUser { get; set; }
