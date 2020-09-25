@@ -27,14 +27,16 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
         }
 
         [AllowAnonymous]
-        [HttpGet("list/byArticle/{articleId}")]
-        public async Task<ActionResult> GetArticleItemInventoryListByArticleItem(Int32 articleId)
+        [HttpGet("detail/byBarCode/{barCode}/byBranchManualCode/{branchManualCode}")]
+        public async Task<ActionResult> GetArticleItemInventoryListByArticleItem(String barCode, String branchManualCode)
         {
             try
             {
-                List<EasySHOPMstArticleItemInventoryDTO> articleItemInventories = await (
+                EasySHOPMstArticleItemInventoryDTO articleItemInventories = await (
                     from d in _dbContext.MstArticleItemInventories
-                    where d.ArticleId == articleId
+                    where d.MstCompanyBranch_BranchId.ManualCode == branchManualCode
+                    && (d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ?
+                    d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : d.MstArticle_ArticleId.ManualCode) == barCode
                     select new EasySHOPMstArticleItemInventoryDTO
                     {
                         Id = d.Id,
@@ -70,7 +72,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                         Cost = d.Cost,
                         Amount = d.Amount
                     }
-                ).ToListAsync();
+                ).FirstOrDefaultAsync();
 
                 return StatusCode(200, articleItemInventories);
             }

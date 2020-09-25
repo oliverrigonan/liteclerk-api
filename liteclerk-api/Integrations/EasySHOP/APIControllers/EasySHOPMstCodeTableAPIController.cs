@@ -25,12 +25,13 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
             _dbContext = dbContext;
         }
 
+        [AllowAnonymous]
         [HttpGet("list/{category}")]
         public async Task<ActionResult> GetCodeTableListByCategory(String category)
         {
             try
             {
-                IEnumerable<EasySHOPMstCodeTableDTO> units = await (
+                IEnumerable<EasySHOPMstCodeTableDTO> codeTables = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == category
                     select new EasySHOPMstCodeTableDTO
@@ -42,7 +43,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, units);
+                return StatusCode(200, codeTables);
             }
             catch (Exception e)
             {

@@ -40,14 +40,16 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
             return result;
         }
 
-        [HttpGet("list/byDateRange/{startDate}/{endDate}/byBranch/{branchManualCode}")]
+        [AllowAnonymous]
+        [HttpGet("list/byDateRange/{startDate}/{endDate}/byBranchManualCode/{branchManualCode}")]
         public async Task<ActionResult> GetSalesOrderListByDateRanged(String startDate, String endDate, String branchManualCode)
         {
             try
             {
                 IEnumerable<EasySHOPTrnSalesOrderDTO> salesOrders = await (
                     from d in _dbContext.TrnSalesOrders
-                    where d.MstCompanyBranch_BranchId.ManualCode == branchManualCode
+                    where d.IsLocked == true
+                    && d.MstCompanyBranch_BranchId.ManualCode == branchManualCode
                     && d.SODate >= Convert.ToDateTime(startDate)
                     && d.SODate <= Convert.ToDateTime(endDate)
                     orderby d.Id descending
@@ -83,9 +85,10 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                                     ManualCode = i.MstArticle_ItemId.ManualCode
                                 },
                                 SKUCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
                                 Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                             },
+                            ItemBarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
                             ItemInventoryId = i.ItemInventoryId,
                             ItemInventory = new EasySHOPMstArticleItemInventoryDTO
                             {
@@ -110,7 +113,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                             DiscountAmount = i.DiscountAmount,
                             NetPrice = i.NetPrice,
                             Amount = i.Amount
-                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>().ToList()
+                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>()
                     }
                 ).ToListAsync();
 
@@ -122,6 +125,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("detail/bySONumber/{SONumber}")]
         public async Task<ActionResult> GetSalesOrderDetailBySONumber(String SONumber)
         {
@@ -129,10 +133,12 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
             {
                 EasySHOPTrnSalesOrderDTO salesOrders = await (
                     from d in _dbContext.TrnSalesOrders
-                    where d.SONumber == SONumber
+                    where d.IsLocked == true
+                    && d.SONumber == SONumber
                     select new EasySHOPTrnSalesOrderDTO
                     {
                         Id = d.Id,
+                        BranchManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                         SONumber = d.SONumber,
                         SODate = d.SODate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -146,8 +152,10 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                             },
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         },
+                        CustomerManualCode = d.MstArticle_CustomerId.ManualCode,
+                        CustomerName = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         Remarks = d.Remarks,
-                        SalesOrderItems = d.TrnSalesOrderItems_SOId.Any() ? d.TrnSalesOrderItems_SOId.Where(i => i.SOId == d.Id).Select(i => new DTO.EasySHOPTrnSalesOrderItemDTO
+                        SalesOrderItems = d.TrnSalesOrderItems_SOId.Any() ? d.TrnSalesOrderItems_SOId.Where(i => i.SOId == d.Id).Select(i => new EasySHOPTrnSalesOrderItemDTO
                         {
                             Id = i.Id,
                             SOId = i.SOId,
@@ -159,9 +167,10 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                                     ManualCode = i.MstArticle_ItemId.ManualCode
                                 },
                                 SKUCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
                                 Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
                             },
+                            ItemBarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
                             ItemInventoryId = i.ItemInventoryId,
                             ItemInventory = new EasySHOPMstArticleItemInventoryDTO
                             {
@@ -186,7 +195,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                             DiscountAmount = i.DiscountAmount,
                             NetPrice = i.NetPrice,
                             Amount = i.Amount
-                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>().ToList()
+                        }).ToList() : new List<EasySHOPTrnSalesOrderItemDTO>()
                     }
                 ).FirstOrDefaultAsync();
 
@@ -198,6 +207,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("add")]
         public async Task<ActionResult> AddSalesOrder(EasySHOPTrnSalesOrderDTO objSalesOrder)
         {
@@ -392,7 +402,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                             {
                                 DBSets.MstArticleItemUnitDBSet itemUnit = await (
                                     from d in _dbContext.MstArticleItemUnits
-                                    where d.ArticleId == item.Id
+                                    where d.ArticleId == item.ArticleId
                                     && d.UnitId == item.UnitId
                                     select d
                                 ).FirstOrDefaultAsync();
@@ -417,7 +427,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                                     newSalesOrderItems.Add(new DBSets.TrnSalesOrderItemDBSet
                                     {
                                         SOId = SOId,
-                                        ItemId = item.Id,
+                                        ItemId = item.ArticleId,
                                         ItemInventoryId = null,
                                         Particulars = salesOrderItem.Particulars,
                                         Quantity = salesOrderItem.Quantity,
@@ -468,10 +478,11 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                             totalAmount = salesOrderItemsByCurrentSalesOrder.Sum(d => d.Amount);
                         }
 
-                        DBSets.TrnSalesOrderDBSet updateSalesOrder = salesOrder;
-                        updateSalesOrder.Amount = totalAmount;
-                        updateSalesOrder.UpdatedByUserId = user.Id;
-                        updateSalesOrder.UpdatedDateTime = DateTime.Now;
+                        DBSets.TrnSalesOrderDBSet lockSalesOrder = salesOrder;
+                        lockSalesOrder.Amount = totalAmount;
+                        lockSalesOrder.IsLocked = true;
+                        lockSalesOrder.UpdatedByUserId = user.Id;
+                        lockSalesOrder.UpdatedDateTime = DateTime.Now;
 
                         await _dbContext.SaveChangesAsync();
                     }
