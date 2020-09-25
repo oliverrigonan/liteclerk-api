@@ -41,6 +41,7 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleType = d.MstArticleType_ArticleTypeId.ArticleType
                         },
+                        ImageURL = d.ImageURL,
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -84,6 +85,7 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleType = d.MstArticleType_ArticleTypeId.ArticleType
                         },
+                        ImageURL = d.ImageURL,
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -141,6 +143,7 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ArticleType = d.MstArticleType_ArticleTypeId.ArticleType
                                 },
+                                ImageURL = d.ImageURL,
                                 IsLocked = d.IsLocked,
                                 CreatedByUser = new DTO.MstUserDTO
                                 {

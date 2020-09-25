@@ -26,6 +26,7 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
             _dbContext = dbContext;
         }
 
+        [AllowAnonymous]
         [HttpGet("list/byINDate/{INDate}/byBranch/{branchManualCode}")]
         public async Task<ActionResult> GetStockInListByINDateByBranch(String INDate, String branchManualCode)
         {
@@ -35,10 +36,16 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
                     from d in _dbContext.TrnStockIns
                     where d.INDate == Convert.ToDateTime(INDate)
                     && d.MstCompanyBranch_BranchId.ManualCode == branchManualCode
-                    orderby d.Id descending
+                    && d.IsLocked == true
                     select new EasyPOSTrnStockInDTO
                     {
                         Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new EasyPOSMstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
                         INNumber = d.INNumber,
                         INDate = d.INDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,

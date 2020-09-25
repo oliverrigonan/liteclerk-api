@@ -26,6 +26,7 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
             _dbContext = dbContext;
         }
 
+        [AllowAnonymous]
         [HttpGet("list/bySODate/{SODate}/byBranch/{branchManualCode}")]
         public async Task<ActionResult> GetSalesOrderListByINDateByBranch(String SODate, String branchManualCode)
         {
@@ -35,10 +36,16 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
                     from d in _dbContext.TrnSalesOrders
                     where d.SODate == Convert.ToDateTime(SODate)
                     && d.MstCompanyBranch_BranchId.ManualCode == branchManualCode
-                    orderby d.Id descending
+                    && d.IsLocked == true
                     select new EasyPOSTrnSalesOrderDTO
                     {
                         Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new EasyPOSMstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
                         SONumber = d.SONumber,
                         SODate = d.SODate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -68,7 +75,19 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
                                 },
                                 SKUCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
                                 BarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
-                                Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                                Description = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                                RRVATId = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().RRVATId : 0,
+                                RRVAT = new EasyPOSMstTaxDTO
+                                {
+                                    ManualCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.ManualCode : "",
+                                    TaxDescription = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxDescription : ""
+                                },
+                                SIVATId = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
+                                SIVAT = new EasyPOSMstTaxDTO
+                                {
+                                    ManualCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
+                                    TaxDescription = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : ""
+                                }
                             },
                             ItemBarCode = i.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
                             Particulars = i.Particulars,

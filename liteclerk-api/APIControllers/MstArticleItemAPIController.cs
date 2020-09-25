@@ -53,7 +53,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -166,7 +167,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -281,7 +283,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -397,7 +400,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -512,7 +516,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -626,7 +631,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -741,7 +747,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -854,7 +861,8 @@ namespace liteclerk_api.APIControllers
                         {
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
                         SKUCode = d.SKUCode,
@@ -1047,6 +1055,7 @@ namespace liteclerk_api.APIControllers
                     ManualCode = articleCode,
                     ArticleTypeId = 1,
                     Article = "",
+                    ImageURL = "",
                     IsLocked = false,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,

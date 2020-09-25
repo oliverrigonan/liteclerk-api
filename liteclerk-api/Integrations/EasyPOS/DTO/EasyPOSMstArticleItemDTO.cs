@@ -17,7 +17,12 @@ namespace liteclerk_api.Integrations.EasyPOS.DTO
         public Int32 UnitId { get; set; }
         public EasyPOSMstUnitDTO Unit { get; set; }
         public String Category { get; set; }
+        public Boolean IsInventory { get; set; }
         public Decimal Price { get; set; }
+        public Int32 RRVATId { get; set; }
+        public EasyPOSMstTaxDTO RRVAT { get; set; }
+        public Int32 SIVATId { get; set; }
+        public EasyPOSMstTaxDTO SIVAT { get; set; }
         public List<EasyPOSMstArticleItemPriceDTO> ArticleItemPrices { get; set; }
     }
 }

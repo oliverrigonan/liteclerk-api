@@ -35,7 +35,7 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
                 List<EasyPOSMstArticleItemDTO> lockedArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
-                    && d.MstArticle_ArticleId.UpdatedDateTime == Convert.ToDateTime(updatedDateTime)
+                    && d.MstArticle_ArticleId.UpdatedDateTime.Date == Convert.ToDateTime(updatedDateTime)
                     select new EasyPOSMstArticleItemDTO
                     {
                         Id = d.Id,
@@ -51,6 +51,7 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
                         BarCode = d.BarCode,
                         Description = d.Description,
                         Category = d.Category,
+                        IsInventory = d.IsInventory,
                         Price = d.Price,
                         UnitId = d.UnitId,
                         Unit = new EasyPOSMstUnitDTO
@@ -58,23 +59,25 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
+                        RRVATId = d.RRVATId,
+                        RRVAT = new EasyPOSMstTaxDTO
+                        {
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new EasyPOSMstTaxDTO
+                        {
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
+                        },
                         ArticleItemPrices = d.MstArticle_ArticleId.MstArticleItemPrices_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItemPrices_ArticleId.Where(i => i.ArticleId == d.ArticleId).Select(i => new EasyPOSMstArticleItemPriceDTO
                         {
                             Id = i.Id,
                             ArticleId = i.ArticleId,
-                            ArticleItem = new EasyPOSMstArticleItemDTO
-                            {
-                                Article = new EasyPOSMstArticleDTO
-                                {
-                                    ManualCode = i.MstArticle_ArticleId.ManualCode
-                                },
-                                SKUCode = i.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = i.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
-                                Description = i.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? i.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
-                            },
                             PriceDescription = i.PriceDescription,
                             Price = i.Price
-                        }).ToList() : new List<EasyPOSMstArticleItemPriceDTO>().ToList()
+                        }).ToList() : new List<EasyPOSMstArticleItemPriceDTO>()
                     }
                 ).ToListAsync();
 

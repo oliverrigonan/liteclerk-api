@@ -35,7 +35,7 @@ namespace liteclerk_api.Integrations.EasyPOS.APIControllers
                 IEnumerable<EasyPOSMstArticleSupplierDTO> lockedArticleSuppliers = await (
                     from d in _dbContext.MstArticleSuppliers
                     where d.MstArticle_ArticleId.IsLocked == true
-                    && d.MstArticle_ArticleId.UpdatedDateTime == Convert.ToDateTime(updatedDateTime)
+                    && d.MstArticle_ArticleId.UpdatedDateTime.Date == Convert.ToDateTime(updatedDateTime)
                     select new EasyPOSMstArticleSupplierDTO
                     {
                         Id = d.Id,

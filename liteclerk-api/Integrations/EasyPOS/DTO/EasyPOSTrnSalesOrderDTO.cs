@@ -8,6 +8,8 @@ namespace liteclerk_api.Integrations.EasyPOS.DTO
     public class EasyPOSTrnSalesOrderDTO
     {
         public Int32 Id { get; set; }
+        public Int32 BranchId { get; set; }
+        public EasyPOSMstCompanyBranchDTO Branch { get; set; }
         public String SONumber { get; set; }
         public String SODate { get; set; }
         public String ManualNumber { get; set; }
