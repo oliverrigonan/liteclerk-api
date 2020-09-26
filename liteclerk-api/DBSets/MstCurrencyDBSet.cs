@@ -27,5 +27,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_CurrencyId { get; set; }
         public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_CurrencyId { get; set; }
         public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_CurrencyId { get; set; }
+        public virtual ICollection<TrnInventoryDBSet> TrnInventories_CurrencyId { get; set; }
     }
 }

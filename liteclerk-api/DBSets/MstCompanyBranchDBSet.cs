@@ -31,5 +31,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnStockWithdrawalDBSet> TrnStockWithdrawals_BranchId { get; set; }
         public virtual ICollection<SysInventoryDBSet> SysInventories_BranchId { get; set; }
         public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_BranchId { get; set; }
+        public virtual ICollection<TrnInventoryDBSet> TrnInventories_BranchId { get; set; }
     }
 }

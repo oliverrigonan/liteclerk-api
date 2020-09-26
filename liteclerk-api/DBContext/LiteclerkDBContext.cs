@@ -66,6 +66,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnStockTransferDBSet> TrnStockTransfers { get; set; }
         public virtual DbSet<DBSets.SysInventoryDBSet> SysInventories { get; set; }
         public virtual DbSet<DBSets.TrnPointOfSaleDBSet> TrnPointOfSales { get; set; }
+        public virtual DbSet<DBSets.TrnInventoryDBSet> TrnInventories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -125,6 +126,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnStockWithdrawalModelBuilder.CreateTrnStockWithdrawalModel(modelBuilder);
             DBModelBuilder.SysInventoryModelBuilder.CreateSysInventoryModel(modelBuilder);
             DBModelBuilder.TrnPointOfSaleModelBuilder.CreateTrnPointOfSaleModel(modelBuilder);
+            DBModelBuilder.TrnInventoryModelBuilder.CreateTrnInventoryModel(modelBuilder);
         }
     }
 }
