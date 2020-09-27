@@ -114,5 +114,126 @@ namespace liteclerk_api.APIControllers
                 return StatusCode(500, e.InnerException.Message);
             }
         }
+
+        [HttpPut("validate/byTerminal/{terminalCode}/byDate/{date}")]
+        public async Task<ActionResult> ValidatePointOfSaleByTerminalByDate(String terminalCode, String date)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUser == null)
+                {
+                    return StatusCode(404, "Login user not found.");
+                }
+
+                DBSets.MstUserFormDBSet loginUserForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == loginUserId
+                    && d.SysForm_FormId.Form == "ActivityPOSSales"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUserForm == null)
+                {
+                    return StatusCode(404, "No rights to validate a POS Sales.");
+                }
+
+                //if (loginUserForm.CanEdit == false)
+                //{
+                //    return StatusCode(400, "No rights to validate a POS Sales.");
+                //}
+
+                IEnumerable<DBSets.TrnPointOfSaleDBSet> pointOfSales = await (
+                    from d in _dbContext.TrnPointOfSales
+                    where d.BranchId == loginUser.BranchId
+                    && d.TerminalCode == terminalCode
+                    && d.POSDate == Convert.ToDateTime(date)
+                    && (d.CustomerId == null || d.ItemId == null || d.TaxId == null || d.CashierUserId == null)
+                    select d
+                ).ToListAsync();
+
+                if (pointOfSales.Any())
+                {
+                    foreach (var pointOfSale in pointOfSales)
+                    {
+                        Int32? customerId = null;
+                        Int32? itemId = null;
+                        Int32? taxId = null;
+                        Int32? cashierUserId = null;
+
+                        DBSets.MstArticleCustomerDBSet customer = await (
+                            from d in _dbContext.MstArticleCustomers
+                            where d.MstArticle_ArticleId.IsLocked == true
+                            && d.MstArticle_ArticleId.ManualCode == pointOfSale.CustomerCode
+                            select d
+                        ).FirstOrDefaultAsync();
+
+                        if (customer != null)
+                        {
+                            customerId = customer.ArticleId;
+                        }
+
+                        DBSets.MstArticleItemDBSet item = await (
+                            from d in _dbContext.MstArticleItems
+                            where d.MstArticle_ArticleId.IsLocked == true
+                            && d.BarCode == pointOfSale.ItemCode
+                            select d
+                        ).FirstOrDefaultAsync();
+
+                        if (item != null)
+                        {
+                            itemId = item.ArticleId;
+                        }
+
+                        DBSets.MstTaxDBSet tax = await (
+                            from d in _dbContext.MstTaxes
+                            where d.ManualCode == pointOfSale.TaxCode
+                            select d
+                        ).FirstOrDefaultAsync();
+
+                        if (tax != null)
+                        {
+                            taxId = tax.Id;
+                        }
+
+                        DBSets.MstUserDBSet cashierUser = await (
+                            from d in _dbContext.MstUsers
+                            where d.Username == pointOfSale.CashierUserCode
+                            select d
+                        ).FirstOrDefaultAsync();
+
+                        if (cashierUser != null)
+                        {
+                            cashierUserId = cashierUser.Id;
+                        }
+
+                        if (customerId != null && itemId != null && taxId != null && cashierUserId != null)
+                        {
+                            DBSets.TrnPointOfSaleDBSet updatePointOfSale = pointOfSale;
+                            updatePointOfSale.CustomerId = customerId;
+                            updatePointOfSale.ItemId = itemId;
+                            updatePointOfSale.TaxId = taxId;
+                            updatePointOfSale.CashierUserId = cashierUserId;
+
+                            await _dbContext.SaveChangesAsync();
+                        }
+                    }
+                }
+
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
     }
 }

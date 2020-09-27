@@ -18,8 +18,10 @@ namespace liteclerk_api.DBSets
         public String Particulars { get; set; }
 
         public Decimal Quantity { get; set; }
+
         public Int32 UnitId { get; set; }
         public virtual MstUnitDBSet MstUnit_UnitId { get; set; }
+
         public Decimal Cost { get; set; }
         public Decimal Amount { get; set; }
 

@@ -318,8 +318,8 @@ namespace liteclerk_api.Modules
                     List<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
                         from d in _dbContext.TrnSalesInvoiceItems
                         where d.SIId == SIId
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
                         && d.ItemInventoryId != null
                         && d.BaseQuantity > 0
                         select d
@@ -329,7 +329,14 @@ namespace liteclerk_api.Modules
                     {
                         foreach (var salesInvoiceItem in salesInvoiceItems)
                         {
-                            if (salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any())
+                            DBSets.MstArticleItemDBSet item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == salesInvoiceItem.ItemId
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (item != null)
                             {
                                 Int32 articleInventoryId = Convert.ToInt32(salesInvoiceItem.ItemInventoryId);
 
@@ -351,8 +358,7 @@ namespace liteclerk_api.Modules
                                         InventoryDate = DateTime.Today,
                                         ArticleId = salesInvoiceItem.ItemId,
                                         ArticleItemInventoryId = articleInventoryId,
-                                        AccountId = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                                    salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
+                                        AccountId = item.AssetAccountId,
                                         QuantityIn = 0,
                                         QuantityOut = quantity,
                                         Quantity = quantity * -1,
@@ -372,11 +378,11 @@ namespace liteclerk_api.Modules
 
                                     await UpdateArticleInventory(articleInventoryId);
 
-                                    if (salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Kitting == "COMPONENT")
+                                    if (item.Kitting == "COMPONENT")
                                     {
                                         List<DBSets.MstArticleItemComponentDBSet> articleItemComponents = await (
                                             from d in _dbContext.MstArticleItemComponents
-                                            where d.ArticleId == salesInvoiceItem.MstArticle_ItemId.Id
+                                            where d.ArticleId == item.ArticleId
                                             select d
                                         ).ToListAsync();
 

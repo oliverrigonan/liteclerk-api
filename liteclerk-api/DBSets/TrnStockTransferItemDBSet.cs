@@ -7,15 +7,11 @@ namespace liteclerk_api.DBSets
 {
     public class TrnStockTransferItemDBSet
     {
-        // Line document header relationship <Do not modify>
         public Int32 Id { get; set; }
+
         public Int32 STId { get; set; }
         public virtual TrnStockTransferDBSet TrnStockTransfer_STId { get; set; }
 
-        // Line fields
-
-
-        // Line particular <Do not modify>
         public String Particulars { get; set; }
     }
 }

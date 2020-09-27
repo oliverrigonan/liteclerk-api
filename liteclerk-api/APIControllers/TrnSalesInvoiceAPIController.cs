@@ -1007,6 +1007,299 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpPost("post/fromPointOfSales/byTerminal/{terminalCode}/byDate/{date}")]
+        public async Task<ActionResult> PostSalesInvoiceFromPointOfSaleByTerminalByDate(String terminalCode, String date)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUser == null)
+                {
+                    return StatusCode(404, "Login user not found.");
+                }
+
+                DBSets.MstUserFormDBSet loginUserForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == loginUserId
+                    && d.SysForm_FormId.Form == "ActivityPOSSales"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUserForm == null)
+                {
+                    return StatusCode(404, "No rights to validate a POS Sales.");
+                }
+
+                //if (loginUserForm.CanEdit == false)
+                //{
+                //    return StatusCode(400, "No rights to validate a POS Sales.");
+                //}
+
+                IEnumerable<DBSets.TrnPointOfSaleDBSet> pointOfSales = await (
+                    from d in _dbContext.TrnPointOfSales
+                    where d.BranchId == loginUser.BranchId
+                    && d.TerminalCode == terminalCode
+                    && d.POSDate == Convert.ToDateTime(date)
+                    && d.CustomerId != null
+                    && d.ItemId != null
+                    && d.TaxId != null
+                    && d.CashierUserId != null
+                    select d
+                ).ToListAsync();
+
+                if (pointOfSales.Any())
+                {
+                    IEnumerable<DTO.TrnPointOfSaleDTO> pointOfSalesCustomers = from d in pointOfSales
+                                                                               where d.BranchId == loginUser.BranchId
+                                                                               && d.TerminalCode == terminalCode
+                                                                               && d.POSDate == Convert.ToDateTime(date)
+                                                                               group d by new
+                                                                               {
+                                                                                   d.CustomerId
+                                                                               } into g
+                                                                               select new DTO.TrnPointOfSaleDTO
+                                                                               {
+                                                                                   CustomerId = g.Key.CustomerId
+                                                                               };
+
+                    foreach (var pointOfSalesCustomer in pointOfSalesCustomers.ToList())
+                    {
+                        DBSets.MstArticleCustomerDBSet customer = await (
+                            from d in _dbContext.MstArticleCustomers
+                            where d.ArticleId == pointOfSalesCustomer.CustomerId
+                            && d.MstArticle_ArticleId.IsLocked == true
+                            select d
+                        ).FirstOrDefaultAsync();
+
+                        if (customer != null)
+                        {
+                            String status = "";
+
+                            DBSets.MstCodeTableDBSet codeTableStatus = await (
+                                from d in _dbContext.MstCodeTables
+                                where d.Category == "SALES INVOICE STATUS"
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (codeTableStatus != null)
+                            {
+                                status = codeTableStatus.CodeValue;
+                            }
+
+                            String SINumber = "0000000001";
+                            DBSets.TrnSalesInvoiceDBSet lastSalesInvoice = await (
+                                from d in _dbContext.TrnSalesInvoices
+                                where d.BranchId == loginUser.BranchId
+                                orderby d.Id descending
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (lastSalesInvoice != null)
+                            {
+                                Int32 lastSINumber = Convert.ToInt32(lastSalesInvoice.SINumber) + 0000000001;
+                                SINumber = PadZeroes(lastSINumber, 10);
+                            }
+
+                            DBSets.TrnSalesInvoiceDBSet newSalesInvoice = new DBSets.TrnSalesInvoiceDBSet()
+                            {
+                                BranchId = Convert.ToInt32(loginUser.BranchId),
+                                CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                                SINumber = SINumber,
+                                SIDate = DateTime.Today,
+                                ManualNumber = SINumber,
+                                DocumentReference = "",
+                                CustomerId = customer.ArticleId,
+                                TermId = customer.TermId,
+                                DateNeeded = DateTime.Today,
+                                Remarks = "",
+                                SoldByUserId = loginUserId,
+                                PreparedByUserId = loginUserId,
+                                CheckedByUserId = loginUserId,
+                                ApprovedByUserId = loginUserId,
+                                Amount = 0,
+                                PaidAmount = 0,
+                                AdjustmentAmount = 0,
+                                BalanceAmount = 0,
+                                Status = status,
+                                IsCancelled = false,
+                                IsPrinted = false,
+                                IsLocked = false,
+                                CreatedByUserId = loginUserId,
+                                CreatedDateTime = DateTime.Now,
+                                UpdatedByUserId = loginUserId,
+                                UpdatedDateTime = DateTime.Now
+                            };
+
+                            _dbContext.TrnSalesInvoices.Add(newSalesInvoice);
+                            await _dbContext.SaveChangesAsync();
+
+                            Int32 SIId = newSalesInvoice.Id;
+
+                            IEnumerable<DTO.TrnPointOfSaleDTO> pointOfSalesItems = from d in pointOfSales
+                                                                                   where d.BranchId == loginUser.BranchId
+                                                                                   && d.TerminalCode == terminalCode
+                                                                                   && d.POSDate == Convert.ToDateTime(date)
+                                                                                   && d.CustomerId == pointOfSalesCustomer.CustomerId
+                                                                                   select new DTO.TrnPointOfSaleDTO
+                                                                                   {
+                                                                                       ItemId = Convert.ToInt32(d.ItemId),
+                                                                                       Quantity = d.Quantity,
+                                                                                       Price = d.Price,
+                                                                                       Discount = d.Discount,
+                                                                                       NetPrice = d.NetPrice,
+                                                                                       Amount = d.Amount,
+                                                                                       Particulars = d.Particulars,
+                                                                                       TaxId = Convert.ToInt32(d.TaxId),
+                                                                                   };
+
+                            if (pointOfSalesItems.Any())
+                            {
+                                List<DBSets.TrnSalesInvoiceItemDBSet> newSalesInvoiceItems = new List<DBSets.TrnSalesInvoiceItemDBSet>();
+
+                                foreach (var pointOfSalesItem in pointOfSalesItems)
+                                {
+                                    DBSets.MstArticleItemDBSet item = await (
+                                        from d in _dbContext.MstArticleItems
+                                        where d.ArticleId == pointOfSalesItem.ItemId
+                                        && d.MstArticle_ArticleId.IsLocked == true
+                                        select d
+                                    ).FirstOrDefaultAsync();
+
+                                    if (item != null)
+                                    {
+                                        Int32? articleInventoryId = null;
+
+                                        if (item.IsInventory == true)
+                                        {
+                                            DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                                                 from d in _dbContext.MstArticleItemInventories
+                                                 where d.ArticleId == pointOfSalesItem.ItemId
+                                                 && d.BranchId == loginUser.BranchId
+                                                 select d
+                                            ).FirstOrDefaultAsync();
+
+                                            if (itemInventory != null)
+                                            {
+                                                articleInventoryId = itemInventory.Id;
+                                            }
+                                        }
+
+                                        DBSets.MstDiscountDBSet discount = await (
+                                            from d in _dbContext.MstDiscounts
+                                            select d
+                                        ).FirstOrDefaultAsync();
+
+                                        if (discount != null)
+                                        {
+                                            DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                                                from d in _dbContext.MstArticleItemUnits
+                                                where d.ArticleId == item.ArticleId
+                                                && d.UnitId == item.UnitId
+                                                select d
+                                            ).FirstOrDefaultAsync();
+
+                                            if (itemUnit != null)
+                                            {
+                                                Decimal VATAmount = (pointOfSalesItem.Amount / (item.MstTax_SIVATId.TaxRate + 1)) * item.MstTax_SIVATId.TaxRate;
+                                                Decimal WTAXAmount = (pointOfSalesItem.Amount / (item.MstTax_WTAXId.TaxRate + 1)) * item.MstTax_WTAXId.TaxRate;
+
+                                                Decimal baseQuantity = pointOfSalesItem.Quantity;
+                                                if (itemUnit.Multiplier > 0)
+                                                {
+                                                    baseQuantity = pointOfSalesItem.Quantity * (1 / itemUnit.Multiplier);
+                                                }
+
+                                                Decimal baseNetPrice = pointOfSalesItem.Amount;
+                                                if (baseQuantity > 0)
+                                                {
+                                                    baseNetPrice = pointOfSalesItem.Amount / baseQuantity;
+                                                }
+
+                                                newSalesInvoiceItems.Add(new DBSets.TrnSalesInvoiceItemDBSet
+                                                {
+                                                    SIId = SIId,
+                                                    ItemId = item.ArticleId,
+                                                    ItemInventoryId = articleInventoryId,
+                                                    Particulars = pointOfSalesItem.Particulars,
+                                                    Quantity = pointOfSalesItem.Quantity,
+                                                    UnitId = item.UnitId,
+                                                    Price = pointOfSalesItem.Price,
+                                                    DiscountId = discount.Id,
+                                                    DiscountRate = discount.DiscountRate,
+                                                    DiscountAmount = pointOfSalesItem.Discount,
+                                                    NetPrice = pointOfSalesItem.NetPrice,
+                                                    Amount = pointOfSalesItem.Amount,
+                                                    VATId = item.SIVATId,
+                                                    VATRate = item.MstTax_SIVATId.TaxRate,
+                                                    VATAmount = VATAmount,
+                                                    WTAXId = item.WTAXId,
+                                                    WTAXRate = item.MstTax_WTAXId.TaxRate,
+                                                    WTAXAmount = WTAXAmount,
+                                                    BaseQuantity = baseQuantity,
+                                                    BaseUnitId = item.UnitId,
+                                                    BaseNetPrice = baseNetPrice,
+                                                    LineTimeStamp = DateTime.Now
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+
+                                _dbContext.TrnSalesInvoiceItems.AddRange(newSalesInvoiceItems);
+                                await _dbContext.SaveChangesAsync();
+                            }
+
+                            DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                                from d in _dbContext.TrnSalesInvoices
+                                where d.Id == SIId
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (salesInvoice != null)
+                            {
+                                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItemsByCurrentSalesInvoice = await (
+                                    from d in _dbContext.TrnSalesInvoiceItems
+                                    where d.SIId == SIId
+                                    select d
+                                ).ToListAsync();
+
+                                Decimal totalAmount = 0;
+
+                                if (salesInvoiceItemsByCurrentSalesInvoice.Any())
+                                {
+                                    totalAmount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                                }
+
+                                DBSets.TrnSalesInvoiceDBSet lockSalesInvoice = salesInvoice;
+                                lockSalesInvoice.Amount = totalAmount;
+                                lockSalesInvoice.IsLocked = true;
+                                lockSalesInvoice.UpdatedByUserId = loginUserId;
+                                lockSalesInvoice.UpdatedDateTime = DateTime.Now;
+
+                                await _dbContext.SaveChangesAsync();
+
+                                await _sysAccountsReceivable.UpdateAccountsReceivable(SIId);
+                                await _sysInventory.InsertSalesInvoiceInventory(SIId);
+                            }
+                        }
+                    }
+                }
+
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("print/{id}")]
         public async Task<ActionResult> PrintSalesInvoice(Int32 id)
         {
