@@ -18,6 +18,8 @@ namespace liteclerk_api.DBSets
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
 
+        public Int32 Month { get; set; }
+        public Int32 Year { get; set; }
         public String Remarks { get; set; }
 
         public Int32 PreparedByUserId { get; set; }
@@ -38,5 +40,7 @@ namespace liteclerk_api.DBSets
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
+
+        public virtual ICollection<SysInventoryDBSet> SysInventories_ILId { get; set; }
     }
 }

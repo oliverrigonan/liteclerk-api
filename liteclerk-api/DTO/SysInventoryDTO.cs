@@ -10,8 +10,7 @@ namespace liteclerk_api.DTO
         public Int32 Id { get; set; }
         public Int32 BranchId { get; set; }
         public MstCompanyBranchDTO Branch { get; set; }
-        public String IVNumber { get; set; }
-        public String IVDate { get; set; }
+        public String InventoryDate { get; set; }
         public Int32 ArticleId { get; set; }
         public MstArticleDTO Article { get; set; }
         public MstArticleItemDTO ArticleItem { get; set; }
@@ -37,5 +36,7 @@ namespace liteclerk_api.DTO
         public TrnStockTransferDTO StockTransfer { get; set; }
         public Int32? SWId { get; set; }
         public TrnStockWithdrawalDTO StockWithdrawal { get; set; }
+        public Int32? ILId { get; set; }
+        public TrnInventoryDTO Inventory { get; set; }
     }
 }

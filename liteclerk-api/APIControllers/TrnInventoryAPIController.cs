@@ -81,6 +81,8 @@ namespace liteclerk_api.APIControllers
                         ILDate = d.ILDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
+                        Month = d.Month,
+                        Year = d.Year,
                         Remarks = d.Remarks,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
@@ -156,6 +158,8 @@ namespace liteclerk_api.APIControllers
                         ILDate = d.ILDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
+                        Month = d.Month,
+                        Year = d.Year,
                         Remarks = d.Remarks,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
@@ -259,7 +263,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.Category == "STOCK IL STATUS"
+                    where d.Category == "INVENTORY STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -290,6 +294,8 @@ namespace liteclerk_api.APIControllers
                     ILDate = DateTime.Today,
                     ManualNumber = ILNumber,
                     DocumentReference = "",
+                    Month = DateTime.Today.Month,
+                    Year = DateTime.Today.Year,
                     Remarks = "",
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
@@ -402,7 +408,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnInventoryDTO.Status
-                    && d.Category == "SALES ILVOICE STATUS"
+                    && d.Category == "INVENTORY STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -416,6 +422,8 @@ namespace liteclerk_api.APIControllers
                 saveInventory.ILDate = Convert.ToDateTime(trnInventoryDTO.ILDate);
                 saveInventory.ManualNumber = trnInventoryDTO.ManualNumber;
                 saveInventory.DocumentReference = trnInventoryDTO.DocumentReference;
+                saveInventory.Month = trnInventoryDTO.Month;
+                saveInventory.Year = trnInventoryDTO.Year;
                 saveInventory.Remarks = trnInventoryDTO.Remarks;
                 saveInventory.CheckedByUserId = trnInventoryDTO.CheckedByUserId;
                 saveInventory.ApprovedByUserId = trnInventoryDTO.ApprovedByUserId;
@@ -520,7 +528,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnInventoryDTO.Status
-                    && d.Category == "SALES ILVOICE STATUS"
+                    && d.Category == "INVENTORY STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -534,6 +542,8 @@ namespace liteclerk_api.APIControllers
                 lockInventory.ILDate = Convert.ToDateTime(trnInventoryDTO.ILDate);
                 lockInventory.ManualNumber = trnInventoryDTO.ManualNumber;
                 lockInventory.DocumentReference = trnInventoryDTO.DocumentReference;
+                lockInventory.Month = trnInventoryDTO.Month;
+                lockInventory.Year = trnInventoryDTO.Year;
                 lockInventory.Remarks = trnInventoryDTO.Remarks;
                 lockInventory.CheckedByUserId = trnInventoryDTO.CheckedByUserId;
                 lockInventory.ApprovedByUserId = trnInventoryDTO.ApprovedByUserId;

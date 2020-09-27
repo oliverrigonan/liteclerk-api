@@ -32,7 +32,7 @@ namespace liteclerk_api.APIControllers
         {
             IQueryable<DTO.RepInventoryReportDTO> beginningInventories;
             beginningInventories = from d in _dbContext.SysInventories
-                                   where d.IVDate < Convert.ToDateTime(startDate)
+                                   where d.InventoryDate < Convert.ToDateTime(startDate)
                                    && d.MstCompanyBranch_BranchId.CompanyId == companyId
                                    && d.MstArticleItemInventory_ArticleItemInventoryId.BranchId == branchId
                                    && d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ?
@@ -79,8 +79,8 @@ namespace liteclerk_api.APIControllers
 
             IQueryable<DTO.RepInventoryReportDTO> currentInventories;
             currentInventories = from d in _dbContext.SysInventories
-                                 where d.IVDate >= Convert.ToDateTime(startDate)
-                                 && d.IVDate <= Convert.ToDateTime(endDate)
+                                 where d.InventoryDate >= Convert.ToDateTime(startDate)
+                                 && d.InventoryDate <= Convert.ToDateTime(endDate)
                                  && d.MstCompanyBranch_BranchId.CompanyId == companyId
                                  && d.MstArticleItemInventory_ArticleItemInventoryId.BranchId == branchId
                                  && d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ?

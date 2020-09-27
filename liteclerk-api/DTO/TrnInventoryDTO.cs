@@ -18,6 +18,8 @@ namespace liteclerk_api.DTO
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
 
+        public Int32 Month { get; set; }
+        public Int32 Year { get; set; }
         public String Remarks { get; set; }
 
         public Int32 PreparedByUserId { get; set; }

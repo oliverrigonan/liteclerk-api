@@ -153,35 +153,20 @@ namespace liteclerk_api.Modules
 
                             if (articleInventoryId != 0)
                             {
-                                String IVNumber = "0000000001";
-                                DBSets.SysInventoryDBSet lastInventory = await (
-                                    from d in _dbContext.SysInventories
-                                    where d.BranchId == stockIn.BranchId
-                                    orderby d.Id descending
-                                    select d
-                                ).FirstOrDefaultAsync();
-
-                                if (lastInventory != null)
-                                {
-                                    Int32 lastIVNumber = Convert.ToInt32(lastInventory.IVNumber) + 0000000001;
-                                    IVNumber = PadZeroes(lastIVNumber, 10);
-                                }
-
                                 DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
                                 {
                                     BranchId = stockIn.BranchId,
-                                    IVNumber = IVNumber,
-                                    IVDate = DateTime.Today,
+                                    InventoryDate = DateTime.Today,
                                     ArticleId = stockInItem.ItemId,
                                     ArticleItemInventoryId = articleInventoryId,
+                                    AccountId = stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
                                     QuantityIn = quantity,
                                     QuantityOut = 0,
                                     Quantity = quantity,
                                     Cost = cost,
                                     Amount = amount,
                                     Particulars = stockInItem.Particulars,
-                                    AccountId = stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                                stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
                                     RRId = null,
                                     SIId = null,
                                     INId = INId,
@@ -224,35 +209,20 @@ namespace liteclerk_api.Modules
                                                     Decimal componentCost = componentItemInventory.Cost;
                                                     Decimal componentAmount = (articleItemComponent.Quantity * stockInItem.BaseQuantity) * componentItemInventory.Cost;
 
-                                                    String componentIVNumber = "0000000001";
-                                                    DBSets.SysInventoryDBSet lastComponentInventory = await (
-                                                        from d in _dbContext.SysInventories
-                                                        where d.BranchId == stockIn.BranchId
-                                                        orderby d.Id descending
-                                                        select d
-                                                    ).FirstOrDefaultAsync();
-
-                                                    if (lastComponentInventory != null)
-                                                    {
-                                                        Int32 lastComponentIVNumber = Convert.ToInt32(lastComponentInventory.IVNumber) + 0000000001;
-                                                        componentIVNumber = PadZeroes(lastComponentIVNumber, 10);
-                                                    }
-
                                                     DBSets.SysInventoryDBSet newComponentInventory = new DBSets.SysInventoryDBSet()
                                                     {
                                                         BranchId = stockIn.BranchId,
-                                                        IVNumber = componentIVNumber,
-                                                        IVDate = DateTime.Today,
+                                                        InventoryDate = DateTime.Today,
                                                         ArticleId = articleItemComponent.ComponentArticleId,
                                                         ArticleItemInventoryId = componentItemInventoryId,
+                                                        AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
+                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
                                                         QuantityIn = componentQuantity,
                                                         QuantityOut = 0,
                                                         Quantity = componentQuantity,
                                                         Cost = componentCost,
                                                         Amount = componentAmount,
                                                         Particulars = stockInItem.Particulars,
-                                                        AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
-                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
                                                         RRId = null,
                                                         SIId = null,
                                                         INId = INId,
@@ -300,8 +270,8 @@ namespace liteclerk_api.Modules
                 List<DBSets.TrnStockInItemDBSet> stockInItems = await (
                     from d in _dbContext.TrnStockInItems
                     where d.INId == INId
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                       d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
                     select d
                 ).ToListAsync();
 
@@ -375,35 +345,20 @@ namespace liteclerk_api.Modules
                                     Decimal cost = itemInventory.Cost;
                                     Decimal amount = salesInvoiceItem.BaseQuantity * itemInventory.Cost;
 
-                                    String IVNumber = "0000000001";
-                                    DBSets.SysInventoryDBSet lastInventory = await (
-                                        from d in _dbContext.SysInventories
-                                        where d.BranchId == salesInvoice.BranchId
-                                        orderby d.Id descending
-                                        select d
-                                    ).FirstOrDefaultAsync();
-
-                                    if (lastInventory != null)
-                                    {
-                                        Int32 lastIVNumber = Convert.ToInt32(lastInventory.IVNumber) + 0000000001;
-                                        IVNumber = PadZeroes(lastIVNumber, 10);
-                                    }
-
                                     DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
                                     {
                                         BranchId = salesInvoice.BranchId,
-                                        IVNumber = IVNumber,
-                                        IVDate = DateTime.Today,
+                                        InventoryDate = DateTime.Today,
                                         ArticleId = salesInvoiceItem.ItemId,
                                         ArticleItemInventoryId = articleInventoryId,
+                                        AccountId = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                    salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
                                         QuantityIn = 0,
                                         QuantityOut = quantity,
                                         Quantity = quantity * -1,
                                         Cost = cost,
                                         Amount = amount * -1,
                                         Particulars = salesInvoiceItem.Particulars,
-                                        AccountId = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                                    salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
                                         RRId = null,
                                         SIId = SIId,
                                         INId = null,
@@ -444,35 +399,20 @@ namespace liteclerk_api.Modules
                                                     Decimal componentCost = componentItemInventory.Cost;
                                                     Decimal componentAmount = (articleItemComponent.Quantity * salesInvoiceItem.BaseQuantity) * componentItemInventory.Cost;
 
-                                                    String componentIVNumber = "0000000001";
-                                                    DBSets.SysInventoryDBSet lastComponentInventory = await (
-                                                        from d in _dbContext.SysInventories
-                                                        where d.BranchId == salesInvoice.BranchId
-                                                        orderby d.Id descending
-                                                        select d
-                                                    ).FirstOrDefaultAsync();
-
-                                                    if (lastComponentInventory != null)
-                                                    {
-                                                        Int32 lastComponentIVNumber = Convert.ToInt32(lastComponentInventory.IVNumber) + 0000000001;
-                                                        componentIVNumber = PadZeroes(lastComponentIVNumber, 10);
-                                                    }
-
                                                     DBSets.SysInventoryDBSet newComponentInventory = new DBSets.SysInventoryDBSet()
                                                     {
                                                         BranchId = salesInvoice.BranchId,
-                                                        IVNumber = componentIVNumber,
-                                                        IVDate = DateTime.Today,
+                                                        InventoryDate = DateTime.Today,
                                                         ArticleId = articleItemComponent.ComponentArticleId,
                                                         ArticleItemInventoryId = componentItemInventoryId,
+                                                        AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
+                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().SalesAccountId : 0,
                                                         QuantityIn = 0,
                                                         QuantityOut = componentQuantity,
                                                         Quantity = componentQuantity * -1,
                                                         Cost = componentCost,
                                                         Amount = componentAmount * -1,
                                                         Particulars = salesInvoiceItem.Particulars,
-                                                        AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
-                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().SalesAccountId : 0,
                                                         RRId = null,
                                                         SIId = SIId,
                                                         INId = null,

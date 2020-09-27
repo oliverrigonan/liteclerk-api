@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200927075251_ModifiedSysInventoryTable")]
+    partial class ModifiedSysInventoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

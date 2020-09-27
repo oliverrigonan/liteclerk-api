@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200927052246_ModifiedTrnInventoryTable")]
+    partial class ModifiedTrnInventoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1712,17 +1714,19 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("Cost")
                         .HasColumnType("decimal(18,5)");
 
-                    b.Property<int?>("ILId")
-                        .HasColumnName("ILId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("INId")
                         .HasColumnName("INId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("InventoryDate")
-                        .HasColumnName("InventoryDate")
+                    b.Property<DateTime>("IVDate")
+                        .HasColumnName("IVDate")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("IVNumber")
+                        .IsRequired()
+                        .HasColumnName("IVNumber")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<int?>("OTId")
                         .HasColumnName("OTId")
@@ -1770,8 +1774,6 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("ArticleItemInventoryId");
 
                     b.HasIndex("BranchId");
-
-                    b.HasIndex("ILId");
 
                     b.HasIndex("INId");
 
@@ -4329,11 +4331,6 @@ namespace liteclerk_api.Migrations
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnInventoryDBSet", "TrnInventory_ILId")
-                        .WithMany("SysInventories_ILId")
-                        .HasForeignKey("ILId")
-                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("liteclerk_api.DBSets.TrnStockInDBSet", "TrnStockIn_INId")
                         .WithMany("SysInventories_INId")

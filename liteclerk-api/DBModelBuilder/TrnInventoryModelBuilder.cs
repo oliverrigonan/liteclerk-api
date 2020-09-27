@@ -27,6 +27,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ManualNumber).HasColumnName("ManualNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.DocumentReference).HasColumnName("DocumentReference").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
 
+                entity.Property(e => e.Month).HasColumnName("Month").HasColumnType("int").IsRequired();
+                entity.Property(e => e.Year).HasColumnName("Year").HasColumnType("int").IsRequired();
                 entity.Property(e => e.Remarks).HasColumnName("Remarks").HasColumnType("nvarchar(max)").IsRequired();
 
                 entity.Property(e => e.PreparedByUserId).HasColumnName("PreparedByUserId").HasColumnType("int").IsRequired();
