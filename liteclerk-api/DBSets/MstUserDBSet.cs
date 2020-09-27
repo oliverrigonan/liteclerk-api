@@ -108,5 +108,25 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnInventoryDBSet> TrnInventories_ApprovedByUserId { get; set; }
         public virtual ICollection<TrnInventoryDBSet> TrnInventories_CreatedByUserId { get; set; }
         public virtual ICollection<TrnInventoryDBSet> TrnInventories_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnPayableMemoDBSet> TrnPayableMemos_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnPayableMemoDBSet> TrnPayableMemos_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnPayableMemoDBSet> TrnPayableMemos_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnPayableMemoDBSet> TrnPayableMemos_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnPayableMemoDBSet> TrnPayableMemos_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnReceivableMemoDBSet> TrnReceivableMemos_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnReceivableMemoDBSet> TrnReceivableMemos_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnReceivableMemoDBSet> TrnReceivableMemos_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnReceivableMemoDBSet> TrnReceivableMemos_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnReceivableMemoDBSet> TrnReceivableMemos_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_UpdatedByUserId { get; set; }
     }
 }

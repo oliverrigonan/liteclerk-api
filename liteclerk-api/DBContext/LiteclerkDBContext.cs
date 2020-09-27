@@ -67,6 +67,11 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.SysInventoryDBSet> SysInventories { get; set; }
         public virtual DbSet<DBSets.TrnPointOfSaleDBSet> TrnPointOfSales { get; set; }
         public virtual DbSet<DBSets.TrnInventoryDBSet> TrnInventories { get; set; }
+        public virtual DbSet<DBSets.TrnDisbursementDBSet> TrnDisbursements { get; set; }
+        public virtual DbSet<DBSets.TrnPayableMemoDBSet> TrnPayableMemos { get; set; }
+        public virtual DbSet<DBSets.TrnReceivableMemoDBSet> TrnReceivableMemos { get; set; }
+        public virtual DbSet<DBSets.TrnJournalVoucherDBSet> TrnJournalVouchers { get; set; }
+        public virtual DbSet<DBSets.SysJournalEntryDBSet> SysJournalEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -127,6 +132,11 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.SysInventoryModelBuilder.CreateSysInventoryModel(modelBuilder);
             DBModelBuilder.TrnPointOfSaleModelBuilder.CreateTrnPointOfSaleModel(modelBuilder);
             DBModelBuilder.TrnInventoryModelBuilder.CreateTrnInventoryModel(modelBuilder);
+            DBModelBuilder.TrnDisbursementModelBuilder.CreateTrnDisbursementModel(modelBuilder);
+            DBModelBuilder.TrnPayableMemoModelBuilder.CreateTrnPayableMemoModel(modelBuilder);
+            DBModelBuilder.TrnReceivableMemoModelBuilder.CreateTrnReceivableMemoModel(modelBuilder);
+            DBModelBuilder.TrnJournalVoucherModelBuilder.CreateTrnJournalVoucherModel(modelBuilder);
+            DBModelBuilder.SysJournalEntryModelBuilder.CreateSysJournalEntryModel(modelBuilder);
         }
     }
 }

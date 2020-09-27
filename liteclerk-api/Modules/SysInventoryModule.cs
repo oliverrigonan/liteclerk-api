@@ -15,19 +15,6 @@ namespace liteclerk_api.Modules
             _dbContext = dbContext;
         }
 
-        public String PadZeroes(Int32 number, Int32 length)
-        {
-            var result = number.ToString();
-            var pad = length - result.Length;
-            while (pad > 0)
-            {
-                result = '0' + result;
-                pad--;
-            }
-
-            return result;
-        }
-
         public async Task UpdateArticleInventory(Int32 articleInventoryId)
         {
             try

@@ -24,20 +24,6 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
-        [NonAction]
-        public String PadZeroes(Int32 number, Int32 length)
-        {
-            var result = number.ToString();
-            var pad = length - result.Length;
-            while (pad > 0)
-            {
-                result = '0' + result;
-                pad--;
-            }
-
-            return result;
-        }
-
         [HttpGet("list/stockIn/{INId}")]
         public async Task<ActionResult> GetStockInInventoryList(Int32 INId)
         {

@@ -27,8 +27,6 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ManualNumber).HasColumnName("ManualNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.DocumentReference).HasColumnName("DocumentReference").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
 
-
-
                 entity.Property(e => e.ReceivedByUserId).HasColumnName("ReceivedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_ReceivedByUserId).WithMany(f => f.TrnReceivingReceipts_ReceivedByUserId).HasForeignKey(f => f.PreparedByUserId).OnDelete(DeleteBehavior.Restrict);
 

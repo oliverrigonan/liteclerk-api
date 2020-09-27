@@ -12,7 +12,7 @@ namespace liteclerk_api.DBSets
         public Int32 BranchId { get; set; }
         public virtual MstCompanyBranchDBSet MstCompanyBranch_BranchId { get; set; }
 
-        public DateTime JournalDate { get; set; }
+        public DateTime JournalEntryDate { get; set; }
 
         public Int32 ArticleId { get; set; }
         public virtual MstArticleDBSet MstArticle_ArticleId { get; set; }

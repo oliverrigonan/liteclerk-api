@@ -19,7 +19,16 @@ namespace liteclerk_api.DBSets
         public DateTime RMDate { get; set; }
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
-        
+
+        public Int32 PreparedByUserId { get; set; }
+        public virtual MstUserDBSet MstUser_PreparedByUserId { get; set; }
+
+        public Int32 CheckedByUserId { get; set; }
+        public virtual MstUserDBSet MstUser_CheckedByUserId { get; set; }
+
+        public Int32 ApprovedByUserId { get; set; }
+        public virtual MstUserDBSet MstUser_ApprovedByUserId { get; set; }
+
         public String Status { get; set; }
         public Boolean IsCancelled { get; set; }
         public Boolean IsPrinted { get; set; }

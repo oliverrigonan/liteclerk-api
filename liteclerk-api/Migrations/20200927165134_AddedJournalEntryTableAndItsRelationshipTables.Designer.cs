@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200927165134_AddedJournalEntryTableAndItsRelationshipTables")]
+    partial class AddedJournalEntryTableAndItsRelationshipTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2255,6 +2257,29 @@ namespace liteclerk_api.Migrations
                     b.ToTable("TrnDisbursement");
                 });
 
+            modelBuilder.Entity("liteclerk_api.DBSets.TrnDisbursementLineDBSet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CVId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Particulars")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrnDisbursement_CVIdId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrnDisbursement_CVIdId");
+
+                    b.ToTable("TrnDisbursementLineDBSet");
+                });
+
             modelBuilder.Entity("liteclerk_api.DBSets.TrnInventoryDBSet", b =>
                 {
                     b.Property<int>("Id")
@@ -2782,6 +2807,29 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("TrnJournalVoucher");
+                });
+
+            modelBuilder.Entity("liteclerk_api.DBSets.TrnJournalVoucherLineDBSet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("JVId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Particulars")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrnJournalVoucher_JVIdId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrnJournalVoucher_JVIdId");
+
+                    b.ToTable("TrnJournalVoucherLineDBSet");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnPayableMemoDBSet", b =>
@@ -5097,6 +5145,13 @@ namespace liteclerk_api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("liteclerk_api.DBSets.TrnDisbursementLineDBSet", b =>
+                {
+                    b.HasOne("liteclerk_api.DBSets.TrnDisbursementDBSet", "TrnDisbursement_CVId")
+                        .WithMany("TrnDisbursementLines_CVId")
+                        .HasForeignKey("TrnDisbursement_CVIdId");
+                });
+
             modelBuilder.Entity("liteclerk_api.DBSets.TrnInventoryDBSet", b =>
                 {
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ApprovedByUserId")
@@ -5315,6 +5370,13 @@ namespace liteclerk_api.Migrations
                         .HasForeignKey("UpdatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("liteclerk_api.DBSets.TrnJournalVoucherLineDBSet", b =>
+                {
+                    b.HasOne("liteclerk_api.DBSets.TrnJournalVoucherDBSet", "TrnJournalVoucher_JVId")
+                        .WithMany("TrnJournalVoucherLines_JVId")
+                        .HasForeignKey("TrnJournalVoucher_JVIdId");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnPayableMemoDBSet", b =>
