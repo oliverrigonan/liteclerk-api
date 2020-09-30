@@ -56,36 +56,39 @@ namespace liteclerk_api.Modules
 
                             if (inventoryAccounts.ToList().Any())
                             {
-                                Decimal debitAmount = inventoryAccounts.FirstOrDefault().Amount;
-                                Decimal creditAmount = 0;
-
-                                if (inventoryAccounts.FirstOrDefault().Amount < 0)
+                                foreach (var inventoryAccount in inventoryAccounts)
                                 {
-                                    debitAmount = 0;
-                                    creditAmount = inventoryAccounts.FirstOrDefault().Amount;
+                                    Decimal debitAmount = inventoryAccount.Amount;
+                                    Decimal creditAmount = 0;
+
+                                    if (inventoryAccount.Amount < 0)
+                                    {
+                                        debitAmount = 0;
+                                        creditAmount = inventoryAccount.Amount;
+                                    }
+
+                                    DBSets.SysJournalEntryDBSet inventoryAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    {
+                                        BranchId = inventoryLedger.BranchId,
+                                        JournalEntryDate = DateTime.Today,
+                                        ArticleId = articleOther.ArticleId,
+                                        AccountId = inventoryAccount.AssetAccountId,
+                                        DebitAmount = debitAmount,
+                                        CreditAmount = creditAmount,
+                                        Particulars = inventoryLedger.Remarks,
+                                        RRId = null,
+                                        SIId = null,
+                                        CIId = null,
+                                        CVId = null,
+                                        PMId = null,
+                                        RMId = null,
+                                        JVId = null,
+                                        ILId = inventoryLedger.Id
+                                    };
+
+                                    _dbContext.SysJournalEntries.Add(inventoryAccountJournal);
+                                    await _dbContext.SaveChangesAsync();
                                 }
-
-                                DBSets.SysJournalEntryDBSet inventoryAccountJournal = new DBSets.SysJournalEntryDBSet
-                                {
-                                    BranchId = inventoryLedger.BranchId,
-                                    JournalEntryDate = DateTime.Today,
-                                    ArticleId = articleOther.ArticleId,
-                                    AccountId = inventoryAccounts.FirstOrDefault().AssetAccountId,
-                                    DebitAmount = debitAmount,
-                                    CreditAmount = creditAmount,
-                                    Particulars = inventoryLedger.Remarks,
-                                    RRId = null,
-                                    SIId = null,
-                                    CIId = null,
-                                    CVId = null,
-                                    PMId = null,
-                                    RMId = null,
-                                    JVId = null,
-                                    ILId = inventoryLedger.Id
-                                };
-
-                                _dbContext.SysJournalEntries.Add(inventoryAccountJournal);
-                                await _dbContext.SaveChangesAsync();
                             }
 
                             var expenseAccounts = from d in inventories
@@ -101,36 +104,39 @@ namespace liteclerk_api.Modules
 
                             if (expenseAccounts.ToList().Any())
                             {
-                                Decimal debitAmount = 0;
-                                Decimal creditAmount = expenseAccounts.FirstOrDefault().Amount;
-
-                                if (inventoryAccounts.FirstOrDefault().Amount < 0)
+                                foreach (var expenseAccount in expenseAccounts)
                                 {
-                                    debitAmount = expenseAccounts.FirstOrDefault().Amount;
-                                    creditAmount = 0;
+                                    Decimal debitAmount = 0;
+                                    Decimal creditAmount = expenseAccount.Amount;
+
+                                    if (expenseAccount.Amount < 0)
+                                    {
+                                        debitAmount = expenseAccount.Amount * -1;
+                                        creditAmount = 0;
+                                    }
+
+                                    DBSets.SysJournalEntryDBSet expenseAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    {
+                                        BranchId = inventoryLedger.BranchId,
+                                        JournalEntryDate = DateTime.Today,
+                                        ArticleId = articleOther.ArticleId,
+                                        AccountId = expenseAccount.AccountId,
+                                        DebitAmount = debitAmount,
+                                        CreditAmount = creditAmount,
+                                        Particulars = inventoryLedger.Remarks,
+                                        RRId = null,
+                                        SIId = null,
+                                        CIId = null,
+                                        CVId = null,
+                                        PMId = null,
+                                        RMId = null,
+                                        JVId = null,
+                                        ILId = inventoryLedger.Id
+                                    };
+
+                                    _dbContext.SysJournalEntries.Add(expenseAccountJournal);
+                                    await _dbContext.SaveChangesAsync();
                                 }
-
-                                DBSets.SysJournalEntryDBSet expenseAccountJournal = new DBSets.SysJournalEntryDBSet
-                                {
-                                    BranchId = inventoryLedger.BranchId,
-                                    JournalEntryDate = DateTime.Today,
-                                    ArticleId = articleOther.ArticleId,
-                                    AccountId = expenseAccounts.FirstOrDefault().AccountId,
-                                    DebitAmount = debitAmount,
-                                    CreditAmount = creditAmount,
-                                    Particulars = inventoryLedger.Remarks,
-                                    RRId = null,
-                                    SIId = null,
-                                    CIId = null,
-                                    CVId = null,
-                                    PMId = null,
-                                    RMId = null,
-                                    JVId = null,
-                                    ILId = inventoryLedger.Id
-                                };
-
-                                _dbContext.SysJournalEntries.Add(expenseAccountJournal);
-                                await _dbContext.SaveChangesAsync();
                             }
                         }
                     }
@@ -222,27 +228,30 @@ namespace liteclerk_api.Modules
 
                             if (salesInvoiceItemSalesAccounts.ToList().Any())
                             {
-                                DBSets.SysJournalEntryDBSet salesAccountJournal = new DBSets.SysJournalEntryDBSet
+                                foreach (var salesInvoiceItemSalesAccount in salesInvoiceItemSalesAccounts)
                                 {
-                                    BranchId = salesInvoice.BranchId,
-                                    JournalEntryDate = DateTime.Today,
-                                    ArticleId = salesInvoice.CustomerId,
-                                    AccountId = salesInvoiceItemSalesAccounts.FirstOrDefault().SalesAccountId,
-                                    DebitAmount = 0,
-                                    CreditAmount = salesInvoiceItemSalesAccounts.FirstOrDefault().Amount,
-                                    Particulars = salesInvoice.Remarks,
-                                    RRId = null,
-                                    SIId = salesInvoice.Id,
-                                    CIId = null,
-                                    CVId = null,
-                                    PMId = null,
-                                    RMId = null,
-                                    JVId = null,
-                                    ILId = null
-                                };
+                                    DBSets.SysJournalEntryDBSet salesAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    {
+                                        BranchId = salesInvoice.BranchId,
+                                        JournalEntryDate = DateTime.Today,
+                                        ArticleId = salesInvoice.CustomerId,
+                                        AccountId = salesInvoiceItemSalesAccount.SalesAccountId,
+                                        DebitAmount = 0,
+                                        CreditAmount = salesInvoiceItemSalesAccount.Amount,
+                                        Particulars = salesInvoice.Remarks,
+                                        RRId = null,
+                                        SIId = salesInvoice.Id,
+                                        CIId = null,
+                                        CVId = null,
+                                        PMId = null,
+                                        RMId = null,
+                                        JVId = null,
+                                        ILId = null
+                                    };
 
-                                _dbContext.SysJournalEntries.Add(salesAccountJournal);
-                                await _dbContext.SaveChangesAsync();
+                                    _dbContext.SysJournalEntries.Add(salesAccountJournal);
+                                    await _dbContext.SaveChangesAsync();
+                                }
                             }
 
                             var salesInvoiceItemVATAccounts = from d in salesInvoiceItems
@@ -259,27 +268,30 @@ namespace liteclerk_api.Modules
 
                             if (salesInvoiceItemVATAccounts.ToList().Any())
                             {
-                                DBSets.SysJournalEntryDBSet VATAccountJournal = new DBSets.SysJournalEntryDBSet
+                                foreach (var salesInvoiceItemVATAccount in salesInvoiceItemVATAccounts)
                                 {
-                                    BranchId = salesInvoice.BranchId,
-                                    JournalEntryDate = DateTime.Today,
-                                    ArticleId = salesInvoice.CustomerId,
-                                    AccountId = salesInvoiceItemVATAccounts.FirstOrDefault().AccountId,
-                                    DebitAmount = 0,
-                                    CreditAmount = salesInvoiceItemVATAccounts.FirstOrDefault().VATAmount,
-                                    Particulars = salesInvoice.Remarks,
-                                    RRId = null,
-                                    SIId = salesInvoice.Id,
-                                    CIId = null,
-                                    CVId = null,
-                                    PMId = null,
-                                    RMId = null,
-                                    JVId = null,
-                                    ILId = null
-                                };
+                                    DBSets.SysJournalEntryDBSet VATAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    {
+                                        BranchId = salesInvoice.BranchId,
+                                        JournalEntryDate = DateTime.Today,
+                                        ArticleId = salesInvoice.CustomerId,
+                                        AccountId = salesInvoiceItemVATAccount.AccountId,
+                                        DebitAmount = 0,
+                                        CreditAmount = salesInvoiceItemVATAccount.VATAmount,
+                                        Particulars = salesInvoice.Remarks,
+                                        RRId = null,
+                                        SIId = salesInvoice.Id,
+                                        CIId = null,
+                                        CVId = null,
+                                        PMId = null,
+                                        RMId = null,
+                                        JVId = null,
+                                        ILId = null
+                                    };
 
-                                _dbContext.SysJournalEntries.Add(VATAccountJournal);
-                                await _dbContext.SaveChangesAsync();
+                                    _dbContext.SysJournalEntries.Add(VATAccountJournal);
+                                    await _dbContext.SaveChangesAsync();
+                                }
                             }
                         }
                     }
@@ -349,27 +361,30 @@ namespace liteclerk_api.Modules
 
                         if (collectionLinesPayTypeAccounts.Any())
                         {
-                            DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                            foreach (var collectionLinesPayTypeAccount in collectionLinesPayTypeAccounts)
                             {
-                                BranchId = collection.BranchId,
-                                JournalEntryDate = DateTime.Today,
-                                ArticleId = collection.CustomerId,
-                                AccountId = collectionLinesPayTypeAccounts.FirstOrDefault().AccountId,
-                                DebitAmount = collectionLinesPayTypeAccounts.FirstOrDefault().Amount,
-                                CreditAmount = 0,
-                                Particulars = collection.Remarks,
-                                RRId = null,
-                                SIId = null,
-                                CIId = collection.Id,
-                                CVId = null,
-                                PMId = null,
-                                RMId = null,
-                                JVId = null,
-                                ILId = null
-                            };
+                                DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = collection.BranchId,
+                                    JournalEntryDate = DateTime.Today,
+                                    ArticleId = collection.CustomerId,
+                                    AccountId = collectionLinesPayTypeAccount.AccountId,
+                                    DebitAmount = collectionLinesPayTypeAccount.Amount,
+                                    CreditAmount = 0,
+                                    Particulars = collection.Remarks,
+                                    RRId = null,
+                                    SIId = null,
+                                    CIId = collection.Id,
+                                    CVId = null,
+                                    PMId = null,
+                                    RMId = null,
+                                    JVId = null,
+                                    ILId = null
+                                };
 
-                            _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
-                            await _dbContext.SaveChangesAsync();
+                                _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
+                                await _dbContext.SaveChangesAsync();
+                            }
                         }
 
                         if (collection.Amount > 0)
@@ -426,6 +441,5 @@ namespace liteclerk_api.Modules
                 throw e;
             }
         }
-
     }
 }
