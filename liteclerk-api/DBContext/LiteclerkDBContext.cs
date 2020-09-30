@@ -72,6 +72,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnReceivableMemoDBSet> TrnReceivableMemos { get; set; }
         public virtual DbSet<DBSets.TrnJournalVoucherDBSet> TrnJournalVouchers { get; set; }
         public virtual DbSet<DBSets.SysJournalEntryDBSet> SysJournalEntries { get; set; }
+        public virtual DbSet<DBSets.MstArticleOtherDBSet> MstArticleOthers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -137,6 +138,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnReceivableMemoModelBuilder.CreateTrnReceivableMemoModel(modelBuilder);
             DBModelBuilder.TrnJournalVoucherModelBuilder.CreateTrnJournalVoucherModel(modelBuilder);
             DBModelBuilder.SysJournalEntryModelBuilder.CreateSysJournalEntryModel(modelBuilder);
+            DBModelBuilder.MstArticleOtherModelBuilder.CreateMstArticleOtherModel(modelBuilder);
         }
     }
 }

@@ -21,14 +21,18 @@ namespace liteclerk_api.APIControllers
     public class TrnSalesInvoiceAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
+
         private readonly Modules.SysAccountsReceivableModule _sysAccountsReceivable;
         private readonly Modules.SysInventoryModule _sysInventory;
+        private readonly Modules.SysJournalEntryModule _sysJournalEntry;
 
         public TrnSalesInvoiceAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+
             _sysAccountsReceivable = new Modules.SysAccountsReceivableModule(dbContext);
             _sysInventory = new Modules.SysInventoryModule(dbContext);
+            _sysJournalEntry = new Modules.SysJournalEntryModule(dbContext);
         }
 
         [NonAction]
@@ -799,6 +803,7 @@ namespace liteclerk_api.APIControllers
 
                 await _sysAccountsReceivable.UpdateAccountsReceivable(id);
                 await _sysInventory.InsertSalesInvoiceInventory(id);
+                await _sysJournalEntry.InsertSalesInvoiceJournalEntry(id);
 
                 return StatusCode(200);
             }
@@ -868,6 +873,7 @@ namespace liteclerk_api.APIControllers
 
                 await _sysAccountsReceivable.UpdateAccountsReceivable(id);
                 await _sysInventory.DeleteSalesInvoiceInventory(id);
+                await _sysJournalEntry.DeleteSalesInvoiceJournalEntry(id);
 
                 return StatusCode(200);
             }

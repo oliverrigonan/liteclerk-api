@@ -146,8 +146,7 @@ namespace liteclerk_api.Modules
                                     InventoryDate = DateTime.Today,
                                     ArticleId = stockInItem.ItemId,
                                     ArticleItemInventoryId = articleInventoryId,
-                                    AccountId = stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                                                stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
+                                    AccountId = stockIn.AccountId,
                                     QuantityIn = quantity,
                                     QuantityOut = 0,
                                     Quantity = quantity,
@@ -202,8 +201,7 @@ namespace liteclerk_api.Modules
                                                         InventoryDate = DateTime.Today,
                                                         ArticleId = articleItemComponent.ComponentArticleId,
                                                         ArticleItemInventoryId = componentItemInventoryId,
-                                                        AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
-                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().AssetAccountId : 0,
+                                                        AccountId = stockIn.AccountId,
                                                         QuantityIn = componentQuantity,
                                                         QuantityOut = 0,
                                                         Quantity = componentQuantity,
@@ -345,7 +343,7 @@ namespace liteclerk_api.Modules
                                         InventoryDate = DateTime.Today,
                                         ArticleId = salesInvoiceItem.ItemId,
                                         ArticleItemInventoryId = articleInventoryId,
-                                        AccountId = item.AssetAccountId,
+                                        AccountId = item.CostAccountId,
                                         QuantityIn = 0,
                                         QuantityOut = quantity,
                                         Quantity = quantity * -1,
@@ -399,7 +397,7 @@ namespace liteclerk_api.Modules
                                                         ArticleId = articleItemComponent.ComponentArticleId,
                                                         ArticleItemInventoryId = componentItemInventoryId,
                                                         AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
-                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().SalesAccountId : 0,
+                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().CostAccountId : 0,
                                                         QuantityIn = 0,
                                                         QuantityOut = componentQuantity,
                                                         Quantity = componentQuantity * -1,

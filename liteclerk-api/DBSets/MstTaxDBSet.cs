@@ -12,6 +12,8 @@ namespace liteclerk_api.DBSets
         public String ManualCode { get; set; }
         public String TaxDescription { get; set; }
         public Decimal TaxRate { get; set; }
+        public Int32 AccountId { get; set; }
+        public virtual MstAccountDBSet MstAccount_AccountId { get; set; }
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }

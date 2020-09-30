@@ -24,5 +24,6 @@ namespace liteclerk_api.Integrations.EasyPOS.DTO
         public Int32 SIVATId { get; set; }
         public EasyPOSMstTaxDTO SIVAT { get; set; }
         public List<EasyPOSMstArticleItemPriceDTO> ArticleItemPrices { get; set; }
+        public List<EasyPOSMstArticleItemComponentDTO> ArticleItemItemComponents { get; set; }
     }
 }

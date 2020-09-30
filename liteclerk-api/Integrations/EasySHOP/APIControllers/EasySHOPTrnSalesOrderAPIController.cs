@@ -292,6 +292,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                         ManualCode = objSalesOrder.CustomerManualCode,
                         ArticleTypeId = 2,
                         Article = objSalesOrder.CustomerName,
+                        ImageURL = "",
                         IsLocked = false,
                         CreatedByUserId = user.Id,
                         CreatedDateTime = DateTime.Now,
@@ -409,8 +410,8 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
 
                                 if (itemUnit != null)
                                 {
-                                    Decimal VATAmount = (salesOrderItem.Amount / (item.MstTax_SIVATId.TaxRate + 1)) * item.MstTax_SIVATId.TaxRate;
-                                    Decimal WTAXAmount = (salesOrderItem.Amount / (item.MstTax_WTAXId.TaxRate + 1)) * item.MstTax_WTAXId.TaxRate;
+                                    Decimal VATAmount = (salesOrderItem.Amount / ((item.MstTax_SIVATId.TaxRate / 100) + 1)) * (item.MstTax_SIVATId.TaxRate / 100);
+                                    Decimal WTAXAmount = (salesOrderItem.Amount / ((item.MstTax_SIVATId.TaxRate / 100) + 1)) * (item.MstTax_SIVATId.TaxRate / 100);
 
                                     Decimal baseQuantity = salesOrderItem.Quantity;
                                     if (itemUnit.Multiplier > 0)
@@ -456,36 +457,36 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
 
                     _dbContext.TrnSalesOrderItems.AddRange(newSalesOrderItems);
                     await _dbContext.SaveChangesAsync();
+                }
 
-                    DBSets.TrnSalesOrderDBSet salesOrder = await (
-                        from d in _dbContext.TrnSalesOrders
-                        where d.Id == SOId
+                DBSets.TrnSalesOrderDBSet salesOrder = await (
+                    from d in _dbContext.TrnSalesOrders
+                    where d.Id == SOId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (salesOrder != null)
+                {
+                    IEnumerable<DBSets.TrnSalesOrderItemDBSet> salesOrderItemsByCurrentSalesOrder = await (
+                        from d in _dbContext.TrnSalesOrderItems
+                        where d.SOId == SOId
                         select d
-                    ).FirstOrDefaultAsync();
+                    ).ToListAsync();
 
-                    if (salesOrder != null)
+                    Decimal totalAmount = 0;
+
+                    if (salesOrderItemsByCurrentSalesOrder.Any())
                     {
-                        IEnumerable<DBSets.TrnSalesOrderItemDBSet> salesOrderItemsByCurrentSalesOrder = await (
-                            from d in _dbContext.TrnSalesOrderItems
-                            where d.SOId == SOId
-                            select d
-                        ).ToListAsync();
-
-                        Decimal totalAmount = 0;
-
-                        if (salesOrderItemsByCurrentSalesOrder.Any())
-                        {
-                            totalAmount = salesOrderItemsByCurrentSalesOrder.Sum(d => d.Amount);
-                        }
-
-                        DBSets.TrnSalesOrderDBSet lockSalesOrder = salesOrder;
-                        lockSalesOrder.Amount = totalAmount;
-                        lockSalesOrder.IsLocked = true;
-                        lockSalesOrder.UpdatedByUserId = user.Id;
-                        lockSalesOrder.UpdatedDateTime = DateTime.Now;
-
-                        await _dbContext.SaveChangesAsync();
+                        totalAmount = salesOrderItemsByCurrentSalesOrder.Sum(d => d.Amount);
                     }
+
+                    DBSets.TrnSalesOrderDBSet lockSalesOrder = salesOrder;
+                    lockSalesOrder.Amount = totalAmount;
+                    lockSalesOrder.IsLocked = true;
+                    lockSalesOrder.UpdatedByUserId = user.Id;
+                    lockSalesOrder.UpdatedDateTime = DateTime.Now;
+
+                    await _dbContext.SaveChangesAsync();
                 }
 
                 return StatusCode(200, newSalesOrder.Id);

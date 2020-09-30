@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200930060102_AddedMstArticleOtherTable")]
+    partial class AddedMstArticleOtherTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1385,10 +1387,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccountId")
-                        .HasColumnName("AccountId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CreatedByUserId")
                         .HasColumnName("CreatedByUserId")
                         .HasColumnType("int");
@@ -1428,8 +1426,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
 
                     b.HasIndex("CreatedByUserId");
 
@@ -4750,12 +4746,6 @@ namespace liteclerk_api.Migrations
 
             modelBuilder.Entity("liteclerk_api.DBSets.MstTaxDBSet", b =>
                 {
-                    b.HasOne("liteclerk_api.DBSets.MstAccountDBSet", "MstAccount_AccountId")
-                        .WithMany("MstTaxes_AccountId")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_CreatedByUserId")
                         .WithMany("MstTaxes_CreatedByUserId")
                         .HasForeignKey("CreatedByUserId")

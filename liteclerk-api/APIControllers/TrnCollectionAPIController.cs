@@ -21,12 +21,16 @@ namespace liteclerk_api.APIControllers
     public class TrnCollectionAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
+
         private readonly Modules.SysAccountsReceivableModule _sysAccountsReceivable;
+        private readonly Modules.SysJournalEntryModule _sysJournalEntry;
 
         public TrnCollectionAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+
             _sysAccountsReceivable = new Modules.SysAccountsReceivableModule(dbContext);
+            _sysJournalEntry = new Modules.SysJournalEntryModule(dbContext);
         }
 
         [NonAction]
@@ -600,6 +604,8 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
+                await _sysJournalEntry.InsertCollectionJournalEntry(id);
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -680,6 +686,8 @@ namespace liteclerk_api.APIControllers
                         await _sysAccountsReceivable.UpdateAccountsReceivable(Convert.ToInt32(collectionLineByCurrentCollection.SIId));
                     }
                 }
+
+                await _sysJournalEntry.DeleteCollectionJournalEntry(id);
 
                 return StatusCode(200);
             }

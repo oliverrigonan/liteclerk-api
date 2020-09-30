@@ -18,13 +18,16 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class TrnInventoryAPIController : ControllerBase
+    public class TrnInventoryLedgerAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
 
-        public TrnInventoryAPIController(DBContext.LiteclerkDBContext dbContext)
+        private readonly Modules.SysJournalEntryModule _sysJournalEntry;
+
+        public TrnInventoryLedgerAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+            _sysJournalEntry = new Modules.SysJournalEntryModule(dbContext);
         }
 
         [NonAction]
@@ -554,6 +557,8 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
+                await _sysJournalEntry.InsertInventoryLedgerJournalEntry(id);
+
                 return StatusCode(200);
             }
             catch (Exception e)
@@ -619,6 +624,8 @@ namespace liteclerk_api.APIControllers
                 unlockInventory.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
+
+                await _sysJournalEntry.DeleteInventoryLedgerJournalEntry(id);
 
                 return StatusCode(200);
             }
