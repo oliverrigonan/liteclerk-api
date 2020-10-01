@@ -1293,6 +1293,7 @@ namespace liteclerk_api.APIControllers
 
                                 await _sysAccountsReceivable.UpdateAccountsReceivable(SIId);
                                 await _sysInventory.InsertSalesInvoiceInventory(SIId);
+                                await _sysJournalEntry.InsertSalesInvoiceJournalEntry(SIId);
                             }
                         }
                     }

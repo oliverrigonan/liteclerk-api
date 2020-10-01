@@ -293,7 +293,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                         ArticleTypeId = 2,
                         Article = objSalesOrder.CustomerName,
                         ImageURL = "",
-                        IsLocked = false,
+                        IsLocked = true,
                         CreatedByUserId = user.Id,
                         CreatedDateTime = DateTime.Now,
                         UpdatedByUserId = user.Id,
