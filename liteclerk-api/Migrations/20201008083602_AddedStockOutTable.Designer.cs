@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201008083602_AddedStockOutTable")]
+    partial class AddedStockOutTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4116,7 +4118,7 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ItemInventoryId")
+                    b.Property<int?>("ItemInventoryId")
                         .HasColumnName("ItemInventoryId")
                         .HasColumnType("int");
 
@@ -6012,8 +6014,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", "MstArticleItemInventory_ItemInventoryId")
                         .WithMany("TrnStockOutItem_ItemInventoryId")
                         .HasForeignKey("ItemInventoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("liteclerk_api.DBSets.TrnStockOutDBSet", "TrnStockOut_OTId")
                         .WithMany("TrnStockOutItems_OTId")

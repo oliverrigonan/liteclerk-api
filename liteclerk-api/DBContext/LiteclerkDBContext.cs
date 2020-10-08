@@ -63,6 +63,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.SysProductionDBSet> SysProductions { get; set; }
         public virtual DbSet<DBSets.TrnReceivingReceiptDBSet> TrnReceivingReceipts { get; set; }
         public virtual DbSet<DBSets.TrnStockOutDBSet> TrnStockOuts { get; set; }
+        public virtual DbSet<DBSets.TrnStockOutItemDBSet> TrnStockOutItems { get; set; }
         public virtual DbSet<DBSets.TrnStockTransferDBSet> TrnStockTransfers { get; set; }
         public virtual DbSet<DBSets.SysInventoryDBSet> SysInventories { get; set; }
         public virtual DbSet<DBSets.TrnPointOfSaleDBSet> TrnPointOfSales { get; set; }
@@ -128,6 +129,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.SysProductionModelBuilder.CreateSysProductionModel(modelBuilder);
             DBModelBuilder.TrnReceivingReceiptModelBuilder.CreateTrnReceivingReceiptModel(modelBuilder);
             DBModelBuilder.TrnStockOutModelBuilder.CreateTrnStockOutModel(modelBuilder);
+            DBModelBuilder.TrnStockOutItemModelBuilder.CreateTrnStockOutItemModel(modelBuilder);
             DBModelBuilder.TrnStockTransferModelBuilder.CreateTrnStockTransferModel(modelBuilder);
             DBModelBuilder.TrnStockWithdrawalModelBuilder.CreateTrnStockWithdrawalModel(modelBuilder);
             DBModelBuilder.SysInventoryModelBuilder.CreateSysInventoryModel(modelBuilder);
