@@ -288,6 +288,131 @@ namespace liteclerk_api.Modules
             }
         }
 
+        public async Task InsertStockOutInventory(Int32 OTId)
+        {
+            try
+            {
+                DBSets.TrnStockOutDBSet stockOut = await (
+                     from d in _dbContext.TrnStockOuts
+                     where d.Id == OTId
+                     select d
+                ).FirstOrDefaultAsync();
+
+                if (stockOut != null)
+                {
+                    List<DBSets.TrnStockOutItemDBSet> stockOutItems = await (
+                        from d in _dbContext.TrnStockOutItems
+                        where d.OTId == OTId
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
+                        && d.BaseQuantity > 0
+                        select d
+                    ).ToListAsync();
+
+                    if (stockOutItems.Any())
+                    {
+                        foreach (var stockOutItem in stockOutItems)
+                        {
+                            Int32 articleInventoryId = Convert.ToInt32(stockOutItem.ItemInventoryId);
+
+                            DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                                 from d in _dbContext.MstArticleItemInventories
+                                 where d.Id == articleInventoryId
+                                 select d
+                            ).FirstOrDefaultAsync();
+
+                            if (itemInventory != null)
+                            {
+                                Decimal quantity = stockOutItem.BaseQuantity;
+                                Decimal cost = stockOutItem.BaseCost;
+                                Decimal amount = stockOutItem.BaseQuantity * stockOutItem.BaseCost;
+
+                                DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
+                                {
+                                    BranchId = stockOut.BranchId,
+                                    InventoryDate = DateTime.Today,
+                                    ArticleId = stockOutItem.ItemId,
+                                    ArticleItemInventoryId = articleInventoryId,
+                                    AccountId = stockOut.AccountId,
+                                    QuantityIn = 0,
+                                    QuantityOut = quantity,
+                                    Quantity = quantity * -1,
+                                    Cost = cost,
+                                    Amount = amount * -1,
+                                    Particulars = stockOutItem.Particulars,
+                                    RRId = null,
+                                    SIId = null,
+                                    INId = null,
+                                    OTId = OTId,
+                                    STId = null,
+                                    SWId = null
+                                };
+
+                                _dbContext.SysInventories.Add(newInventory);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteStockOutInventory(Int32 OTId)
+        {
+            try
+            {
+                List<DBSets.SysInventoryDBSet> inventories = await (
+                    from d in _dbContext.SysInventories
+                    where d.OTId == OTId
+                    select d
+                ).ToListAsync();
+
+                if (inventories.Any())
+                {
+                    _dbContext.SysInventories.RemoveRange(inventories);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                List<DBSets.TrnStockOutItemDBSet> stockOutItems = await (
+                    from d in _dbContext.TrnStockOutItems
+                    where d.OTId == OTId
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
+                    select d
+                ).ToListAsync();
+
+                if (stockOutItems.Any() == true)
+                {
+                    foreach (var stockOutItem in stockOutItems)
+                    {
+                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                            from d in _dbContext.MstArticleItemInventories
+                            where d.ArticleId == stockOutItem.ItemId
+                            && d.BranchId == stockOutItem.TrnStockOut_OTId.BranchId
+                            select d
+                        ).ToListAsync();
+
+                        if (itemInventories.Any())
+                        {
+                            foreach (var itemInventory in itemInventories)
+                            {
+                                Int32 articleInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleInventoryId);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public async Task InsertSalesInvoiceInventory(Int32 SIId)
         {
             try

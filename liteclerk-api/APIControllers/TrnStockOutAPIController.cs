@@ -624,7 +624,7 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                //await _sysInventory.InsertStockOutInventory(id);
+                await _sysInventory.InsertStockOutInventory(id);
 
                 return StatusCode(200);
             }
@@ -692,7 +692,7 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                //await _sysInventory.DeleteStockOutInventory(id);
+                await _sysInventory.DeleteStockOutInventory(id);
 
                 return StatusCode(200);
             }
