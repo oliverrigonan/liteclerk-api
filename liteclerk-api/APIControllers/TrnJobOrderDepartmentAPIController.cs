@@ -58,6 +58,8 @@ namespace liteclerk_api.APIControllers
                             Fullname = d.MstUser_AssignedToUserId.Fullname
                         },
                         StatusUpdatedDateTime = d.StatusUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        SequenceNumber = d.SequenceNumber,
+                        IsRequired = d.IsRequired
                     }
                 ).ToListAsync();
 
@@ -103,6 +105,8 @@ namespace liteclerk_api.APIControllers
                             Fullname = d.MstUser_AssignedToUserId.Fullname
                         },
                         StatusUpdatedDateTime = d.StatusUpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        SequenceNumber = d.SequenceNumber,
+                        IsRequired = d.IsRequired
                     }
                 ).FirstOrDefaultAsync();
 
@@ -206,7 +210,9 @@ namespace liteclerk_api.APIControllers
                     Status = trnJobOrderDepartmentDTO.Status,
                     StatusByUserId = loginUserId,
                     StatusUpdatedDateTime = DateTime.Now,
-                    AssignedToUserId = trnJobOrderDepartmentDTO.AssignedToUserId
+                    AssignedToUserId = trnJobOrderDepartmentDTO.AssignedToUserId,
+                    SequenceNumber = trnJobOrderDepartmentDTO.SequenceNumber,
+                    IsRequired = trnJobOrderDepartmentDTO.IsRequired
                 };
 
                 _dbContext.TrnJobOrderDepartments.Add(newJobOrderDepartment);
@@ -320,6 +326,8 @@ namespace liteclerk_api.APIControllers
                 updateJobOrderDepartments.JobDepartmentId = trnJobOrderDepartmentDTO.JobDepartmentId;
                 updateJobOrderDepartments.Particulars = trnJobOrderDepartmentDTO.Particulars;
                 updateJobOrderDepartments.AssignedToUserId = trnJobOrderDepartmentDTO.AssignedToUserId;
+                updateJobOrderDepartments.SequenceNumber = trnJobOrderDepartmentDTO.SequenceNumber;
+                updateJobOrderDepartments.IsRequired = trnJobOrderDepartmentDTO.IsRequired;
 
                 await _dbContext.SaveChangesAsync();
 

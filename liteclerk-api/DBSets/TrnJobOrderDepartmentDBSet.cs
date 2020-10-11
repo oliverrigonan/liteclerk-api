@@ -25,6 +25,9 @@ namespace liteclerk_api.DBSets
         public Int32 AssignedToUserId { get; set; }
         public virtual MstUserDBSet MstUser_AssignedToUserId { get; set; }
 
+        public Int32 SequenceNumber { get; set; }
+        public Boolean IsRequired { get; set; }
+
         public virtual ICollection<SysProductionDBSet> SysProductions_JODepartmentId { get; set; }
     }
 }

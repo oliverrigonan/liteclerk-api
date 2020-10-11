@@ -13,5 +13,7 @@ namespace liteclerk_api.DTO
         public Int32 JobDepartmentId { get; set; }
         public MstJobDepartmentDTO JobDepartment { get; set; }
         public Decimal NumberOfDays { get; set; }
+        public Int32 SequenceNumber { get; set; }
+        public Boolean IsRequired { get; set; }
     }
 }

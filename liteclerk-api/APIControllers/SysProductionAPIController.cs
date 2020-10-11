@@ -131,8 +131,8 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpPut("update/status/{jobOrderDepartmentId}")]
-        public async Task<ActionResult> UpdateJobOrderDepartmentStatus(Int32 jobOrderDepartmentId, DTO.TrnJobOrderDepartmentDTO trnJobOrderDepartmentDTO)
+        [HttpPut("update/status/{id}")]
+        public async Task<ActionResult> UpdateJobOrderDepartmentStatus(Int32 id, DTO.TrnJobOrderDepartmentDTO trnJobOrderDepartmentDTO)
         {
             try
             {
@@ -151,13 +151,33 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.TrnJobOrderDepartmentDBSet jobOrderDepartment = await (
                     from d in _dbContext.TrnJobOrderDepartments
-                    where d.Id == jobOrderDepartmentId
+                    where d.Id == id
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (jobOrderDepartment == null)
                 {
                     return StatusCode(404, "Job order department not found.");
+                }
+
+                List<DBSets.TrnJobOrderDepartmentDBSet> previousJobOrderDepartments = await (
+                    from d in _dbContext.TrnJobOrderDepartments
+                    where d.Id != id
+                    && d.JOId == jobOrderDepartment.JOId
+                    && d.SequenceNumber < jobOrderDepartment.SequenceNumber
+                    && d.IsRequired == true
+                    select d
+                ).OrderByDescending(d => d.SequenceNumber).ToListAsync();
+
+                if (previousJobOrderDepartments.Any())
+                {
+                    foreach (var previousJobOrderDepartment in previousJobOrderDepartments)
+                    {
+                        if (previousJobOrderDepartment.Status != "DONE")
+                        {
+                            return StatusCode(404, "The previous department must be done first.");
+                        }
+                    }
                 }
 
                 DBSets.TrnJobOrderDepartmentDBSet updateJobOrderDepartments = jobOrderDepartment;

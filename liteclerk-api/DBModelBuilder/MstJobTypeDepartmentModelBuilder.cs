@@ -23,6 +23,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstJobDepartment_JobDepartmentId).WithMany(f => f.MstJobTypeDepartments_JobDepartmentId).HasForeignKey(f => f.JobDepartmentId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.NumberOfDays).HasColumnName("NumberOfDays").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.SequenceNumber).HasColumnName("SequenceNumber").HasColumnType("int").IsRequired();
+                entity.Property(e => e.IsRequired).HasColumnName("IsRequired").HasColumnType("bit").IsRequired();
             });
         }
     }

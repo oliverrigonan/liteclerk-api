@@ -1341,6 +1341,8 @@ namespace liteclerk_api.APIControllers
                                         StatusByUserId = loginUserId,
                                         StatusUpdatedDateTime = DateTime.Now,
                                         AssignedToUserId = loginUserId,
+                                        SequenceNumber = jobTypeDepartment.SequenceNumber,
+                                        IsRequired = jobTypeDepartment.IsRequired
                                     };
 
                                     _dbContext.TrnJobOrderDepartments.Add(newJobOrderDepartment);

@@ -13,5 +13,7 @@ namespace liteclerk_api.DBSets
         public Int32 JobDepartmentId { get; set; }
         public virtual MstJobDepartmentDBset MstJobDepartment_JobDepartmentId { get; set; }
         public Decimal NumberOfDays { get; set; }
+        public Int32 SequenceNumber { get; set; }
+        public Boolean IsRequired { get; set; }
     }
 }

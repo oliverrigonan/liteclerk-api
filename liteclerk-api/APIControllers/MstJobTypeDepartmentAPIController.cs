@@ -49,7 +49,9 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstJobDepartment_JobDepartmentId.ManualCode,
                             JobDepartment = d.MstJobDepartment_JobDepartmentId.JobDepartment
                         },
-                        NumberOfDays = d.NumberOfDays
+                        NumberOfDays = d.NumberOfDays,
+                        SequenceNumber = d.SequenceNumber,
+                        IsRequired = d.IsRequired
                     }
                 ).ToListAsync();
 
@@ -86,7 +88,9 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstJobDepartment_JobDepartmentId.ManualCode,
                             JobDepartment = d.MstJobDepartment_JobDepartmentId.JobDepartment
                         },
-                        NumberOfDays = d.NumberOfDays
+                        NumberOfDays = d.NumberOfDays,
+                        SequenceNumber = d.SequenceNumber,
+                        IsRequired = d.IsRequired
                     }
                 ).FirstOrDefaultAsync();
 
@@ -164,7 +168,9 @@ namespace liteclerk_api.APIControllers
                 {
                     JobTypeId = mstJobTypeDepartmentDTO.JobTypeId,
                     JobDepartmentId = mstJobTypeDepartmentDTO.JobDepartmentId,
-                    NumberOfDays = mstJobTypeDepartmentDTO.NumberOfDays
+                    NumberOfDays = mstJobTypeDepartmentDTO.NumberOfDays,
+                    SequenceNumber = mstJobTypeDepartmentDTO.SequenceNumber,
+                    IsRequired = mstJobTypeDepartmentDTO.IsRequired
                 };
 
                 _dbContext.MstJobTypeDepartments.Add(newJobTypeDepartment);
@@ -243,6 +249,8 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstJobTypeDepartmentDBSet updateJobTypeDepartment = jobTypeDepartment;
                 updateJobTypeDepartment.JobDepartmentId = mstJobTypeDepartmentDTO.JobDepartmentId;
                 updateJobTypeDepartment.NumberOfDays = mstJobTypeDepartmentDTO.NumberOfDays;
+                updateJobTypeDepartment.SequenceNumber = mstJobTypeDepartmentDTO.SequenceNumber;
+                updateJobTypeDepartment.IsRequired = mstJobTypeDepartmentDTO.IsRequired;
 
                 await _dbContext.SaveChangesAsync();
 

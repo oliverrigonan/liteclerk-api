@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201011053808_AddedIsRequiredFieldInTrnJobOrderDepartment")]
+    partial class AddedIsRequiredFieldInTrnJobOrderDepartment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1267,10 +1269,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("IsRequired")
-                        .HasColumnName("IsRequired")
-                        .HasColumnType("bit");
-
                     b.Property<int>("JobDepartmentId")
                         .HasColumnName("JobDepartmentId")
                         .HasColumnType("int");
@@ -1282,10 +1280,6 @@ namespace liteclerk_api.Migrations
                     b.Property<decimal>("NumberOfDays")
                         .HasColumnName("NumberOfDays")
                         .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("SequenceNumber")
-                        .HasColumnName("SequenceNumber")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2645,10 +2639,6 @@ namespace liteclerk_api.Migrations
                         .IsRequired()
                         .HasColumnName("Particulars")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SequenceNumber")
-                        .HasColumnName("SequenceNumber")
-                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()

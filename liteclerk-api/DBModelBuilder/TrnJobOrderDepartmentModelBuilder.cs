@@ -31,6 +31,9 @@ namespace liteclerk_api.DBModelBuilder
 
                 entity.Property(e => e.AssignedToUserId).HasColumnName("AssignedToUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_AssignedToUserId).WithMany(f => f.TrnJobOrderDepartments_AssignedToUserId).HasForeignKey(f => f.AssignedToUserId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.SequenceNumber).HasColumnName("SequenceNumber").HasColumnType("int").IsRequired();
+                entity.Property(e => e.IsRequired).HasColumnName("IsRequired").HasColumnType("bit").IsRequired();
             });
         }
     }

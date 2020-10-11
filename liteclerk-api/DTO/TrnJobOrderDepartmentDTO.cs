@@ -19,5 +19,7 @@ namespace liteclerk_api.DTO
         public String StatusUpdatedDateTime { get; set; }
         public Int32 AssignedToUserId { get; set; }
         public MstUserDTO AssignedToUser { get; set; }
+        public Int32 SequenceNumber { get; set; }
+        public Boolean IsRequired { get; set; }
     }
 }
