@@ -333,5 +333,96 @@ namespace liteclerk_api.APIControllers
                 return StatusCode(500, e.InnerException.Message);
             }
         }
+
+        [HttpPost("import")]
+        public async Task<ActionResult> ImportJobOrderInformation([FromBody] List<DTO.TrnJobOrderInformationDTO> trnJobOrderInformationDTOs)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUser == null)
+                {
+                    return StatusCode(404, "Login user not found.");
+                }
+
+                DBSets.MstUserFormDBSet loginUserForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == loginUserId
+                    && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUserForm == null)
+                {
+                    return StatusCode(404, "No rights to import job order informations.");
+                }
+
+                if (loginUserForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to import job order informations.");
+                }
+
+                if (trnJobOrderInformationDTOs.Any())
+                {
+                    DBSets.TrnJobOrderDBSet jobOrder = await (
+                        from d in _dbContext.TrnJobOrders
+                        where d.Id == trnJobOrderInformationDTOs.FirstOrDefault().JOId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (jobOrder == null)
+                    {
+                        return StatusCode(404, "Job order not found.");
+                    }
+
+                    if (jobOrder.IsLocked == true)
+                    {
+                        return StatusCode(400, "Cannot update job order information(s) if the current job order is locked.");
+                    }
+
+                    foreach (var trnJobOrderInformationDTO in trnJobOrderInformationDTOs)
+                    {
+                        DBSets.MstUserDBSet informationByUser = await (
+                            from d in _dbContext.MstUsers
+                            where d.Username == trnJobOrderInformationDTO.InformationByUser.Username
+                            select d
+                        ).FirstOrDefaultAsync();
+
+                        if (informationByUser == null)
+                        {
+                            return StatusCode(404, "Information by loginUser not found.");
+                        }
+
+                        DBSets.TrnJobOrderInformationDBSet newJobOrderInformation = new DBSets.TrnJobOrderInformationDBSet()
+                        {
+                            JOId = trnJobOrderInformationDTOs.FirstOrDefault().JOId,
+                            InformationCode = trnJobOrderInformationDTO.InformationCode,
+                            InformationGroup = trnJobOrderInformationDTO.InformationGroup,
+                            Value = trnJobOrderInformationDTO.Value,
+                            Particulars = trnJobOrderInformationDTO.Particulars,
+                            IsPrinted = trnJobOrderInformationDTO.IsPrinted,
+                            InformationByUserId = informationByUser.Id,
+                            InformationUpdatedDateTime = DateTime.Now
+                        };
+
+                        _dbContext.TrnJobOrderInformations.Add(newJobOrderInformation);
+                        await _dbContext.SaveChangesAsync();
+                    }
+                }
+
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
     }
 }
