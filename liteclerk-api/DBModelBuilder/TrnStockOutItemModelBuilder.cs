@@ -23,7 +23,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstArticle_ItemId).WithMany(f => f.TrnStockOutItems_ItemId).HasForeignKey(f => f.ItemId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.ItemInventoryId).HasColumnName("ItemInventoryId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstArticleItemInventory_ItemInventoryId).WithMany(f => f.TrnStockOutItem_ItemInventoryId).HasForeignKey(f => f.ItemInventoryId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstArticleItemInventory_ItemInventoryId).WithMany(f => f.TrnStockOutItems_ItemInventoryId).HasForeignKey(f => f.ItemInventoryId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
 

@@ -20,6 +20,18 @@ namespace liteclerk_api.DBSets
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
 
+        public Int32 ToBranchId { get; set; }
+        public virtual MstCompanyBranchDBSet MstCompanyBranch_ToBranchId { get; set; }
+
+        public Int32 AccountId { get; set; }
+        public virtual MstAccountDBSet MstAccount_AccountId { get; set; }
+
+        public Int32 ArticleId { get; set; }
+        public virtual MstArticleDBSet MstArticle_ArticleId { get; set; }
+
+        public String Remarks { get; set; }
+        public Decimal Amount { get; set; }
+
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUserId { get; set; }
 
@@ -42,6 +54,7 @@ namespace liteclerk_api.DBSets
         public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
 
+        public virtual ICollection<TrnStockTransferItemDBSet> TrnStockTransferItems_STId { get; set; }
         public virtual ICollection<SysInventoryDBSet> SysInventories_STId { get; set; }
     }
 }

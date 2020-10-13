@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201013093444_AddedFieldsInTrnStockTransferTable")]
+    partial class AddedFieldsInTrnStockTransferTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4303,73 +4305,6 @@ namespace liteclerk_api.Migrations
                     b.ToTable("TrnStockTransfer");
                 });
 
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockTransferItemDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseCost")
-                        .HasColumnName("BaseCost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseQuantity")
-                        .HasColumnName("BaseQuantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("BaseUnitId")
-                        .HasColumnName("BaseUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnName("Cost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnName("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemInventoryId")
-                        .HasColumnName("ItemInventoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnName("Quantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("STId")
-                        .HasColumnName("STId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnName("UnitId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseUnitId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("ItemInventoryId");
-
-                    b.HasIndex("STId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("TrnStockTransferItem");
-                });
-
             modelBuilder.Entity("liteclerk_api.DBSets.TrnStockWithdrawalDBSet", b =>
                 {
                     b.Property<int>("Id")
@@ -6126,7 +6061,7 @@ namespace liteclerk_api.Migrations
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", "MstArticleItemInventory_ItemInventoryId")
-                        .WithMany("TrnStockOutItems_ItemInventoryId")
+                        .WithMany("TrnStockOutItem_ItemInventoryId")
                         .HasForeignKey("ItemInventoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -6203,39 +6138,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
                         .WithMany("TrnStockTransfers_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnStockTransferItemDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnitId")
-                        .WithMany("TrnStockTransferItems_BaseUnitId")
-                        .HasForeignKey("BaseUnitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ItemId")
-                        .WithMany("TrnStockTransferItems_ItemId")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleItemInventoryDBSet", "MstArticleItemInventory_ItemInventoryId")
-                        .WithMany("TrnStockTransferItems_ItemInventoryId")
-                        .HasForeignKey("ItemInventoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnStockTransferDBSet", "TrnStockTransfer_STId")
-                        .WithMany("TrnStockTransferItems_STId")
-                        .HasForeignKey("STId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
-                        .WithMany("TrnStockTransferItems_UnitId")
-                        .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

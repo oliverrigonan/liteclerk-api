@@ -27,7 +27,17 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ManualNumber).HasColumnName("ManualNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.DocumentReference).HasColumnName("DocumentReference").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
 
+                entity.Property(e => e.ToBranchId).HasColumnName("ToBranchId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstCompanyBranch_ToBranchId).WithMany(f => f.TrnStockTransfers_ToBranchId).HasForeignKey(f => f.ToBranchId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.AccountId).HasColumnName("AccountId").HasColumnType("int");
+                entity.HasOne(f => f.MstAccount_AccountId).WithMany(f => f.TrnStockTransfers_AccountId).HasForeignKey(f => f.AccountId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.ArticleId).HasColumnName("ArticleId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.TrnStockTransfers_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.Remarks).HasColumnName("Remarks").HasColumnType("nvarchar(max)").IsRequired();
+                entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
 
                 entity.Property(e => e.PreparedByUserId).HasColumnName("PreparedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_PreparedByUserId).WithMany(f => f.TrnStockTransfers_PreparedByUserId).HasForeignKey(f => f.PreparedByUserId).OnDelete(DeleteBehavior.Restrict);

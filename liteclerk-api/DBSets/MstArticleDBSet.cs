@@ -47,5 +47,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<MstArticleOtherDBSet> MstArticleOthers_ArticleId { get; set; }
         public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_ArticleId { get; set; }
         public virtual ICollection<TrnStockOutItemDBSet> TrnStockOutItems_ItemId { get; set; }
+        public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_ArticleId { get; set; }
+        public virtual ICollection<TrnStockTransferItemDBSet> TrnStockTransferItems_ItemId { get; set; }
     }
 }
