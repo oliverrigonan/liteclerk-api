@@ -61,6 +61,7 @@ namespace liteclerk_api.APIControllers
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
                         ContactNumber = d.ContactNumber,
+                        Category = d.Category,
                         ReceivableAccountId = d.ReceivableAccountId,
                         ReceivableAccount = new DTO.MstAccountDTO
                         {
@@ -124,6 +125,7 @@ namespace liteclerk_api.APIControllers
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
                         ContactNumber = d.ContactNumber,
+                        Category = d.Category,
                         ReceivableAccountId = d.ReceivableAccountId,
                         ReceivableAccount = new DTO.MstAccountDTO
                         {
@@ -187,6 +189,7 @@ namespace liteclerk_api.APIControllers
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
                         ContactNumber = d.ContactNumber,
+                        Category = d.Category,
                         ReceivableAccountId = d.ReceivableAccountId,
                         ReceivableAccount = new DTO.MstAccountDTO
                         {
@@ -319,6 +322,7 @@ namespace liteclerk_api.APIControllers
                     Address = "",
                     ContactPerson = "",
                     ContactNumber = "",
+                    Category = "",
                     ReceivableAccountId = receivableAccount.Id,
                     TermId = term.Id,
                     CreditLimit = 0
@@ -413,6 +417,7 @@ namespace liteclerk_api.APIControllers
                 saveArticleCustomer.Address = mstArticleCustomerDTO.Address;
                 saveArticleCustomer.ContactPerson = mstArticleCustomerDTO.ContactPerson;
                 saveArticleCustomer.ContactNumber = mstArticleCustomerDTO.ContactNumber;
+                saveArticleCustomer.Category = mstArticleCustomerDTO.Category;
                 saveArticleCustomer.ReceivableAccountId = mstArticleCustomerDTO.ReceivableAccountId;
                 saveArticleCustomer.TermId = mstArticleCustomerDTO.TermId;
                 saveArticleCustomer.CreditLimit = mstArticleCustomerDTO.CreditLimit;
@@ -524,6 +529,7 @@ namespace liteclerk_api.APIControllers
                 lockArticleCustomer.Address = mstArticleCustomerDTO.Address;
                 lockArticleCustomer.ContactPerson = mstArticleCustomerDTO.ContactPerson;
                 lockArticleCustomer.ContactNumber = mstArticleCustomerDTO.ContactNumber;
+                lockArticleCustomer.Category = mstArticleCustomerDTO.Category;
                 lockArticleCustomer.ReceivableAccountId = mstArticleCustomerDTO.ReceivableAccountId;
                 lockArticleCustomer.TermId = mstArticleCustomerDTO.TermId;
                 lockArticleCustomer.CreditLimit = mstArticleCustomerDTO.CreditLimit;

@@ -23,6 +23,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.Address).HasColumnName("Address").HasColumnType("nvarchar(max)").IsRequired();
                 entity.Property(e => e.ContactPerson).HasColumnName("ContactPerson").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.ContactNumber).HasColumnName("ContactNumber").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
+                entity.Property(e => e.Category).HasColumnName("Category").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
 
                 entity.Property(e => e.ReceivableAccountId).HasColumnName("ReceivableAccountId").HasColumnType("int");
                 entity.HasOne(f => f.MstAccount_ReceivableAccountId).WithMany(f => f.MstArticleCustomers_ReceivableAccountId).HasForeignKey(f => f.ReceivableAccountId).OnDelete(DeleteBehavior.Restrict);

@@ -387,6 +387,18 @@ namespace liteclerk_api.APIControllers
                         return StatusCode(400, "Cannot update job order information(s) if the current job order is locked.");
                     }
 
+                    List<DBSets.TrnJobOrderInformationDBSet> jobOrderInformations = await (
+                        from d in _dbContext.TrnJobOrderInformations
+                        where d.JOId == trnJobOrderInformationDTOs.FirstOrDefault().JOId
+                        select d
+                    ).ToListAsync();
+
+                    if (jobOrderInformations.Any())
+                    {
+                        _dbContext.TrnJobOrderInformations.RemoveRange(jobOrderInformations);
+                        await _dbContext.SaveChangesAsync();
+                    }
+
                     foreach (var trnJobOrderInformationDTO in trnJobOrderInformationDTOs)
                     {
                         DBSets.MstUserDBSet informationByUser = await (

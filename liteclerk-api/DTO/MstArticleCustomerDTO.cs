@@ -16,6 +16,7 @@ namespace liteclerk_api.DTO
         public String Address { get; set; }
         public String ContactPerson { get; set; }
         public String ContactNumber { get; set; }
+        public String Category { get; set; }
         public Int32 ReceivableAccountId { get; set; }
         public MstAccountDTO ReceivableAccount { get; set; }
         public Int32 TermId { get; set; }

@@ -14,6 +14,7 @@ namespace liteclerk_api.DBSets
         public String Address { get; set; }
         public String ContactPerson { get; set; }
         public String ContactNumber { get; set; }
+        public String Category { get; set; }
         public Int32 ReceivableAccountId { get; set; }
         public virtual MstAccountDBSet MstAccount_ReceivableAccountId { get; set; }
         public Int32 TermId { get; set; }
