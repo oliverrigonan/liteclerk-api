@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201015134500_AddedPurchaseOrderAndPurchaseRequestTable")]
+    partial class AddedPurchaseOrderAndPurchaseRequestTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3572,21 +3574,9 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AdjustmentAmount")
-                        .HasColumnName("AdjustmentAmount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("ApprovedByUserId")
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("BalanceAmount")
-                        .HasColumnName("BalanceAmount")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
@@ -3632,9 +3622,8 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<decimal>("PaidAmount")
-                        .HasColumnName("PaidAmount")
-                        .HasColumnType("decimal(18,5)");
+                    b.Property<int?>("MstUser_ReceivedByUserIdId")
+                        .HasColumnType("int");
 
                     b.Property<int>("PreparedByUserId")
                         .HasColumnName("PreparedByUserId")
@@ -3654,24 +3643,11 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ReceivedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Remarks")
-                        .IsRequired()
-                        .HasColumnName("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnName("Status")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("SupplierId")
-                        .HasColumnName("SupplierId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TermId")
-                        .HasColumnName("TermId")
-                        .HasColumnType("int");
 
                     b.Property<int>("UpdatedByUserId")
                         .HasColumnName("UpdatedByUserId")
@@ -3693,90 +3669,13 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CurrencyId");
 
+                    b.HasIndex("MstUser_ReceivedByUserIdId");
+
                     b.HasIndex("PreparedByUserId");
-
-                    b.HasIndex("ReceivedByUserId");
-
-                    b.HasIndex("SupplierId");
-
-                    b.HasIndex("TermId");
 
                     b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("TrnReceivingReceipt");
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnReceivingReceiptItemDBSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseCost")
-                        .HasColumnName("BaseCost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseQuantity")
-                        .HasColumnName("BaseQuantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("BaseUnitId")
-                        .HasColumnName("BaseUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BranchId")
-                        .HasColumnName("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnName("Cost")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnName("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("POId")
-                        .HasColumnName("POId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnName("Quantity")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<int>("RRId")
-                        .HasColumnName("RRId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnName("UnitId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseUnitId");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("POId");
-
-                    b.HasIndex("RRId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("TrnReceivingReceiptItem");
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", b =>
@@ -6404,72 +6303,19 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ReceivedByUserId")
+                        .WithMany("TrnReceivingReceipts_ReceivedByUserId")
+                        .HasForeignKey("MstUser_ReceivedByUserIdId");
+
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
                         .WithMany("TrnReceivingReceipts_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ReceivedByUserId")
-                        .WithMany("TrnReceivingReceipts_ReceivedByUserId")
-                        .HasForeignKey("ReceivedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_SupplierId")
-                        .WithMany("TrnReceivingReceipts_SupplierId")
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstTermDBSet", "MstTerm_TermId")
-                        .WithMany("TrnReceivingReceipts_TermId")
-                        .HasForeignKey("TermId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UpdatedByUserId")
                         .WithMany("TrnReceivingReceipts_UpdatedByUserId")
                         .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("liteclerk_api.DBSets.TrnReceivingReceiptItemDBSet", b =>
-                {
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_BaseUnitId")
-                        .WithMany("TrnReceivingReceiptItems_BaseUnitId")
-                        .HasForeignKey("BaseUnitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCompanyBranchDBSet", "MstCompanyBranch_BranchId")
-                        .WithMany("TrnReceivingReceiptItems_BranchId")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_ItemId")
-                        .WithMany("TrnReceivingReceiptItems_ItemId")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnPurchaseOrderDBSet", "TrnPurchaseOrder_POId")
-                        .WithMany("TrnReceivingReceiptItems_POId")
-                        .HasForeignKey("POId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.TrnReceivingReceiptDBSet", "TrnReceivingReceipt_RRId")
-                        .WithMany("TrnReceivingReceiptItems_RRId")
-                        .HasForeignKey("RRId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
-                        .WithMany("TrnReceivingReceiptItems_UnitId")
-                        .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

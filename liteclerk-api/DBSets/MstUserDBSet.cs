@@ -128,5 +128,17 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_ApprovedByUserId { get; set; }
         public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_CreatedByUserId { get; set; }
         public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_RequestedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_UpdatedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_RequestedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_UpdatedByUserId { get; set; }
     }
 }

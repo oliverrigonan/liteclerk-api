@@ -26,6 +26,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<SysProductionDBSet> SysProductions_BranchId { get; set; }
         public virtual ICollection<TrnStockInDBSet> TrnStockIns_BranchId { get; set; }
         public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_BranchId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems_BranchId { get; set; }
         public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_BranchId { get; set; }
         public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_BranchId { get; set; }
         public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_ToBranchId { get; set; }
@@ -35,8 +36,11 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnInventoryDBSet> TrnInventories_BranchId { get; set; }
         public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_BranchId { get; set; }
         public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_BranchId { get; set; }
+        public virtual ICollection<TrnDisbursementLineDBSet> TrnDisbursementLines_BranchId { get; set; }
         public virtual ICollection<TrnPayableMemoDBSet> TrnPayableMemos_BranchId { get; set; }
         public virtual ICollection<TrnReceivableMemoDBSet> TrnReceivableMemos_BranchId { get; set; }
         public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_BranchId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_BranchId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_BranchId { get; set; }
     }
 }

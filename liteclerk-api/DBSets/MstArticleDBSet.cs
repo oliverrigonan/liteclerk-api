@@ -49,5 +49,14 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnStockOutItemDBSet> TrnStockOutItems_ItemId { get; set; }
         public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_ArticleId { get; set; }
         public virtual ICollection<TrnStockTransferItemDBSet> TrnStockTransferItems_ItemId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_SupplierId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_SupplierId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestItemDBSet> TrnPurchaseRequestItems_ItemId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderItemDBSet> TrnPurchaseOrderItems_ItemId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptDBSet> TrnReceivingReceipts_SupplierId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems_ItemId { get; set; }
+        public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_SupplierId { get; set; }
+        public virtual ICollection<TrnDisbursementDBSet> TrnDisbursements_BankId { get; set; }
+        public virtual ICollection<TrnDisbursementLineDBSet> TrnDisbursementLines_ArticleId { get; set; }
     }
 }

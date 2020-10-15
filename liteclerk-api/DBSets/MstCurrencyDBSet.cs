@@ -32,5 +32,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnPayableMemoDBSet> TrnPayableMemos_CurrencyId { get; set; }
         public virtual ICollection<TrnReceivableMemoDBSet> TrnReceivableMemos_CurrencyId { get; set; }
         public virtual ICollection<TrnJournalVoucherDBSet> TrnJournalVouchers_CurrencyId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestDBSet> TrnPurchaseRequests_CurrencyId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderDBSet> TrnPurchaseOrders_CurrencyId { get; set; }
     }
 }

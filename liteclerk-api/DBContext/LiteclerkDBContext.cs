@@ -61,7 +61,12 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnStockInItemDBSet> TrnStockInItems { get; set; }
         public virtual DbSet<DBSets.SysFormDBSet> SysForms { get; set; }
         public virtual DbSet<DBSets.SysProductionDBSet> SysProductions { get; set; }
+        public virtual DbSet<DBSets.TrnPurchaseRequestDBSet> TrnPurchaseRequests { get; set; }
+        public virtual DbSet<DBSets.TrnPurchaseRequestItemDBSet> TrnPurchaseRequestItems { get; set; }
+        public virtual DbSet<DBSets.TrnPurchaseOrderDBSet> TrnPurchaseOrders { get; set; }
+        public virtual DbSet<DBSets.TrnPurchaseOrderItemDBSet> TrnPurchaseOrderItems { get; set; }
         public virtual DbSet<DBSets.TrnReceivingReceiptDBSet> TrnReceivingReceipts { get; set; }
+        public virtual DbSet<DBSets.TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems { get; set; }
         public virtual DbSet<DBSets.TrnStockOutDBSet> TrnStockOuts { get; set; }
         public virtual DbSet<DBSets.TrnStockOutItemDBSet> TrnStockOutItems { get; set; }
         public virtual DbSet<DBSets.TrnStockTransferDBSet> TrnStockTransfers { get; set; }
@@ -128,7 +133,12 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnStockInItemModelBuilder.CreateTrnStockInItemModel(modelBuilder);
             DBModelBuilder.SysFormModelBuilder.CreateSysFormModel(modelBuilder);
             DBModelBuilder.SysProductionModelBuilder.CreateSysProductionModel(modelBuilder);
+            DBModelBuilder.TrnPurchaseRequestModelBuilder.CreateTrnPurchaseRequestModel(modelBuilder);
+            DBModelBuilder.TrnPurchaseRequestItemModelBuilder.CreateTrnPurchaseRequestItemModel(modelBuilder);
+            DBModelBuilder.TrnPurchaseOrderModelBuilder.CreateTrnPurchaseOrderModel(modelBuilder);
+            DBModelBuilder.TrnPurchaseOrderItemModelBuilder.CreateTrnPurchaseOrderItemModel(modelBuilder);
             DBModelBuilder.TrnReceivingReceiptModelBuilder.CreateTrnReceivingReceiptModel(modelBuilder);
+            DBModelBuilder.TrnReceivingReceiptItemModelBuilder.CreateTrnReceivingReceiptItemModel(modelBuilder);
             DBModelBuilder.TrnStockOutModelBuilder.CreateTrnStockOutModel(modelBuilder);
             DBModelBuilder.TrnStockOutItemModelBuilder.CreateTrnStockOutItemModel(modelBuilder);
             DBModelBuilder.TrnStockTransferModelBuilder.CreateTrnStockTransferModel(modelBuilder);

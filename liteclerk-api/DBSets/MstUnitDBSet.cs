@@ -31,5 +31,11 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnStockOutItemDBSet> TrnStockOutItems_BaseUnitId { get; set; }
         public virtual ICollection<TrnStockTransferItemDBSet> TrnStockTransferItems_UnitId { get; set; }
         public virtual ICollection<TrnStockTransferItemDBSet> TrnStockTransferItems_BaseUnitId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestItemDBSet> TrnPurchaseRequestItems_UnitId { get; set; }
+        public virtual ICollection<TrnPurchaseRequestItemDBSet> TrnPurchaseRequestItems_BaseUnitId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderItemDBSet> TrnPurchaseOrderItems_UnitId { get; set; }
+        public virtual ICollection<TrnPurchaseOrderItemDBSet> TrnPurchaseOrderItems_BaseUnitId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems_UnitId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems_BaseUnitId { get; set; }
     }
 }

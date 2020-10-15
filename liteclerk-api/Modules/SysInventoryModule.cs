@@ -413,6 +413,155 @@ namespace liteclerk_api.Modules
             }
         }
 
+        public async Task InsertStockTransferInventory(Int32 STId)
+        {
+            try
+            {
+                DBSets.TrnStockTransferDBSet stockTransfer = await (
+                     from d in _dbContext.TrnStockTransfers
+                     where d.Id == STId
+                     select d
+                ).FirstOrDefaultAsync();
+
+                if (stockTransfer != null)
+                {
+                    List<DBSets.TrnStockTransferItemDBSet> stockTransferItems = await (
+                        from d in _dbContext.TrnStockTransferItems
+                        where d.STId == STId
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
+                        && d.BaseQuantity > 0
+                        select d
+                    ).ToListAsync();
+
+                    if (stockTransferItems.Any())
+                    {
+                        foreach (var stockTransferItem in stockTransferItems)
+                        {
+                            Int32 articleInventoryId = Convert.ToInt32(stockTransferItem.ItemInventoryId);
+
+                            DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                                 from d in _dbContext.MstArticleItemInventories
+                                 where d.Id == articleInventoryId
+                                 select d
+                            ).FirstOrDefaultAsync();
+
+                            if (itemInventory != null)
+                            {
+                                Decimal quantity = stockTransferItem.BaseQuantity;
+                                Decimal cost = stockTransferItem.BaseCost;
+                                Decimal amount = stockTransferItem.BaseQuantity * stockTransferItem.BaseCost;
+
+                                DBSets.SysInventoryDBSet newOutInventory = new DBSets.SysInventoryDBSet()
+                                {
+                                    BranchId = stockTransfer.BranchId,
+                                    InventoryDate = DateTime.Today,
+                                    ArticleId = stockTransferItem.ItemId,
+                                    ArticleItemInventoryId = articleInventoryId,
+                                    AccountId = stockTransfer.AccountId,
+                                    QuantityIn = 0,
+                                    QuantityOut = quantity,
+                                    Quantity = quantity * -1,
+                                    Cost = cost,
+                                    Amount = amount * -1,
+                                    Particulars = stockTransferItem.Particulars,
+                                    RRId = null,
+                                    SIId = null,
+                                    INId = null,
+                                    OTId = null,
+                                    STId = STId,
+                                    SWId = null
+                                };
+
+                                _dbContext.SysInventories.Add(newOutInventory);
+                                await _dbContext.SaveChangesAsync();
+
+                                DBSets.SysInventoryDBSet newInInventory = new DBSets.SysInventoryDBSet()
+                                {
+                                    BranchId = stockTransfer.ToBranchId,
+                                    InventoryDate = DateTime.Today,
+                                    ArticleId = stockTransferItem.ItemId,
+                                    ArticleItemInventoryId = articleInventoryId,
+                                    AccountId = stockTransfer.AccountId,
+                                    QuantityIn = quantity,
+                                    QuantityOut = 0,
+                                    Quantity = quantity,
+                                    Cost = cost,
+                                    Amount = amount,
+                                    Particulars = stockTransferItem.Particulars,
+                                    RRId = null,
+                                    SIId = null,
+                                    INId = null,
+                                    OTId = null,
+                                    STId = STId,
+                                    SWId = null
+                                };
+
+                                _dbContext.SysInventories.Add(newInInventory);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteStockTransferInventory(Int32 STId)
+        {
+            try
+            {
+                List<DBSets.SysInventoryDBSet> inventories = await (
+                    from d in _dbContext.SysInventories
+                    where d.STId == STId
+                    select d
+                ).ToListAsync();
+
+                if (inventories.Any())
+                {
+                    _dbContext.SysInventories.RemoveRange(inventories);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                List<DBSets.TrnStockTransferItemDBSet> stockTransferItems = await (
+                    from d in _dbContext.TrnStockTransferItems
+                    where d.STId == STId
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
+                    select d
+                ).ToListAsync();
+
+                if (stockTransferItems.Any() == true)
+                {
+                    foreach (var stockTransferItem in stockTransferItems)
+                    {
+                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                            from d in _dbContext.MstArticleItemInventories
+                            where d.ArticleId == stockTransferItem.ItemId
+                            && d.BranchId == stockTransferItem.TrnStockTransfer_STId.BranchId
+                            select d
+                        ).ToListAsync();
+
+                        if (itemInventories.Any())
+                        {
+                            foreach (var itemInventory in itemInventories)
+                            {
+                                Int32 articleInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleInventoryId);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public async Task InsertSalesInvoiceInventory(Int32 SIId)
         {
             try

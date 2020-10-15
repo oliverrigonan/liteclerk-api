@@ -26,10 +26,10 @@ namespace liteclerk_api.DBSets
 
         public Decimal Amount { get; set; }
 
+        public String Particulars { get; set; }
+
         public Int32 PayTypeId { get; set; }
         public virtual MstPayTypeDBSet MstPayType_PayTypeId { get; set; }
-
-        public String Particulars { get; set; }
 
         public String CheckNumber { get; set; }
         public DateTime? CheckDate { get; set; }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201015144022_AddedReceivingReceiptTable")]
+    partial class AddedReceivingReceiptTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3632,6 +3634,9 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int?>("MstUser_ReceivedByUserIdId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("PaidAmount")
                         .HasColumnName("PaidAmount")
                         .HasColumnType("decimal(18,5)");
@@ -3693,9 +3698,9 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.HasIndex("PreparedByUserId");
+                    b.HasIndex("MstUser_ReceivedByUserIdId");
 
-                    b.HasIndex("ReceivedByUserId");
+                    b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("SupplierId");
 
@@ -6404,15 +6409,13 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ReceivedByUserId")
+                        .WithMany("TrnReceivingReceipts_ReceivedByUserId")
+                        .HasForeignKey("MstUser_ReceivedByUserIdId");
+
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
                         .WithMany("TrnReceivingReceipts_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_ReceivedByUserId")
-                        .WithMany("TrnReceivingReceipts_ReceivedByUserId")
-                        .HasForeignKey("ReceivedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

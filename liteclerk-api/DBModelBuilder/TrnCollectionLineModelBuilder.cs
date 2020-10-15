@@ -22,18 +22,18 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.BranchId).HasColumnName("BranchId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCompanyBranch_BranchId).WithMany(f => f.TrnCollectionLines_BranchId).HasForeignKey(f => f.BranchId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.Property(e => e.SIId).HasColumnName("SIId").HasColumnType("int");
-                entity.HasOne(f => f.TrnSalesInvoice_SIId).WithMany(f => f.TrnCollectionLines_SIId).HasForeignKey(f => f.SIId).OnDelete(DeleteBehavior.Restrict);
-
-                entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
-
                 entity.Property(e => e.AccountId).HasColumnName("AccountId").HasColumnType("int");
                 entity.HasOne(f => f.MstAccount_AccountId).WithMany(f => f.TrnCollectionLines_AccountId).HasForeignKey(f => f.AccountId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.ArticleId).HasColumnName("ArticleId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.TrnCollectionLines_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.SIId).HasColumnName("SIId").HasColumnType("int");
+                entity.HasOne(f => f.TrnSalesInvoice_SIId).WithMany(f => f.TrnCollectionLines_SIId).HasForeignKey(f => f.SIId).OnDelete(DeleteBehavior.Restrict);
+
                 entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
+
+                entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
 
                 entity.Property(e => e.PayTypeId).HasColumnName("PayTypeId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstPayType_PayTypeId).WithMany(f => f.TrnCollectionLines_PayTypeId).HasForeignKey(f => f.PayTypeId).OnDelete(DeleteBehavior.Restrict);
