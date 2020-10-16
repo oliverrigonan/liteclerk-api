@@ -67,6 +67,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
                         },
                         Amount = d.Amount,
+                        Particulars = d.Particulars,
                         PayTypeId = d.PayTypeId,
                         PayType = new DTO.MstPayTypeDTO
                         {
@@ -74,7 +75,6 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstPayType_PayTypeId.ManualCode,
                             PayType = d.MstPayType_PayTypeId.PayType
                         },
-                        Particulars = d.Particulars,
                         CheckNumber = d.CheckNumber,
                         CheckDate = d.CheckDate != null ? Convert.ToDateTime(d.CheckDate).ToShortDateString() : "",
                         CheckBank = d.CheckBank,
@@ -150,6 +150,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
                         },
                         Amount = d.Amount,
+                        Particulars = d.Particulars,
                         PayTypeId = d.PayTypeId,
                         PayType = new DTO.MstPayTypeDTO
                         {
@@ -157,7 +158,6 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstPayType_PayTypeId.ManualCode,
                             PayType = d.MstPayType_PayTypeId.PayType
                         },
-                        Particulars = d.Particulars,
                         CheckNumber = d.CheckNumber,
                         CheckDate = d.CheckDate != null ? Convert.ToDateTime(d.CheckDate).ToShortDateString() : "",
                         CheckBank = d.CheckBank,
@@ -340,8 +340,8 @@ namespace liteclerk_api.APIControllers
                     ArticleId = trnCollectionLineDTO.ArticleId,
                     SIId = trnCollectionLineDTO.SIId,
                     Amount = trnCollectionLineDTO.Amount,
-                    PayTypeId = trnCollectionLineDTO.PayTypeId,
                     Particulars = trnCollectionLineDTO.Particulars,
+                    PayTypeId = trnCollectionLineDTO.PayTypeId,
                     CheckNumber = trnCollectionLineDTO.CheckNumber,
                     CheckDate = checkDate,
                     CheckBank = trnCollectionLineDTO.CheckBank,
@@ -542,8 +542,8 @@ namespace liteclerk_api.APIControllers
                 updateCollectionLines.ArticleId = trnCollectionLineDTO.ArticleId;
                 updateCollectionLines.SIId = trnCollectionLineDTO.SIId;
                 updateCollectionLines.Amount = trnCollectionLineDTO.Amount;
-                updateCollectionLines.PayTypeId = trnCollectionLineDTO.PayTypeId;
                 updateCollectionLines.Particulars = trnCollectionLineDTO.Particulars;
+                updateCollectionLines.PayTypeId = trnCollectionLineDTO.PayTypeId;
                 updateCollectionLines.CheckNumber = trnCollectionLineDTO.CheckNumber;
                 updateCollectionLines.CheckDate = checkDate;
                 updateCollectionLines.CheckBank = trnCollectionLineDTO.CheckBank;

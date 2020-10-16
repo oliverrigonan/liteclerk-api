@@ -75,6 +75,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnPointOfSaleDBSet> TrnPointOfSales { get; set; }
         public virtual DbSet<DBSets.TrnInventoryDBSet> TrnInventories { get; set; }
         public virtual DbSet<DBSets.TrnDisbursementDBSet> TrnDisbursements { get; set; }
+        public virtual DbSet<DBSets.TrnDisbursementLineDBSet> TrnDisbursementLines { get; set; }
         public virtual DbSet<DBSets.TrnPayableMemoDBSet> TrnPayableMemos { get; set; }
         public virtual DbSet<DBSets.TrnReceivableMemoDBSet> TrnReceivableMemos { get; set; }
         public virtual DbSet<DBSets.TrnJournalVoucherDBSet> TrnJournalVouchers { get; set; }
@@ -148,6 +149,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnPointOfSaleModelBuilder.CreateTrnPointOfSaleModel(modelBuilder);
             DBModelBuilder.TrnInventoryModelBuilder.CreateTrnInventoryModel(modelBuilder);
             DBModelBuilder.TrnDisbursementModelBuilder.CreateTrnDisbursementModel(modelBuilder);
+            DBModelBuilder.TrnDisbursementLineModelBuilder.CreateTrnDisbursementLineModel(modelBuilder);
             DBModelBuilder.TrnPayableMemoModelBuilder.CreateTrnPayableMemoModel(modelBuilder);
             DBModelBuilder.TrnReceivableMemoModelBuilder.CreateTrnReceivableMemoModel(modelBuilder);
             DBModelBuilder.TrnJournalVoucherModelBuilder.CreateTrnJournalVoucherModel(modelBuilder);

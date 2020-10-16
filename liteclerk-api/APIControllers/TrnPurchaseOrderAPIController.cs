@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -18,15 +15,13 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class TrnStockInAPIController : ControllerBase
+    public class TrnPurchaseOrderAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
-        private readonly Modules.SysInventoryModule _sysInventory;
 
-        public TrnStockInAPIController(DBContext.LiteclerkDBContext dbContext)
+        public TrnPurchaseOrderAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
-            _sysInventory = new Modules.SysInventoryModule(dbContext);
         }
 
         [NonAction]
@@ -44,7 +39,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list/byDateRange/{startDate}/{endDate}")]
-        public async Task<ActionResult> GetStockInListByDateRanged(String startDate, String endDate)
+        public async Task<ActionResult> GetPurchaseOrderListByDateRanged(String startDate, String endDate)
         {
             try
             {
@@ -56,48 +51,60 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnStockInDTO> stockIns = await (
-                    from d in _dbContext.TrnStockIns
+                IEnumerable<DTO.TrnPurchaseOrderDTO> purchaseOrders = await (
+                    from d in _dbContext.TrnPurchaseOrders
                     where d.BranchId == loginUser.BranchId
-                    && d.INDate >= Convert.ToDateTime(startDate)
-                    && d.INDate <= Convert.ToDateTime(endDate)
+                    && d.PODate >= Convert.ToDateTime(startDate)
+                    && d.PODate <= Convert.ToDateTime(endDate)
                     orderby d.Id descending
-                    select new DTO.TrnStockInDTO
+                    select new DTO.TrnPurchaseOrderDTO
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
-                        INNumber = d.INNumber,
-                        INDate = d.INDate.ToShortDateString(),
+                        PONumber = d.PONumber,
+                        PODate = d.PODate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
-                        AccountId = d.AccountId,
-                        Account = new DTO.MstAccountDTO
+                        SupplierId = d.SupplierId,
+                        Supplier = new DTO.MstArticleSupplierDTO
                         {
-                            AccountCode = d.MstAccount_AccountId.AccountCode,
-                            ManualCode = d.MstAccount_AccountId.ManualCode,
-                            Account = d.MstAccount_AccountId.Account
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_SupplierId.ManualCode
+                            },
+                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
                         },
-                        ArticleId = d.ArticleId,
-                        Article = new DTO.MstArticleDTO
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
                         {
-                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
-                            ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        PRId = d.PRId,
+                        PurchaseRequest = new DTO.TrnPurchaseRequestDTO
+                        {
+                            PRNumber = d.PRId != null ? d.TrnPurchaseRequest_PRId.PRNumber : "",
+                            ManualNumber = d.PRId != null ? d.TrnPurchaseRequest_PRId.ManualNumber : "",
+                        },
+                        RequestedByUserId = d.RequestedByUserId,
+                        RequestedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_RequestedByUserId.Username,
+                            Fullname = d.MstUser_RequestedByUserId.Fullname
+                        },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -136,7 +143,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, stockIns);
+                return StatusCode(200, purchaseOrders);
             }
             catch (Exception e)
             {
@@ -145,49 +152,62 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult> GetStockInDetail(Int32 id)
+        public async Task<ActionResult> GetPurchaseOrderDetail(Int32 id)
         {
             try
             {
-                DTO.TrnStockInDTO stockIn = await (
-                    from d in _dbContext.TrnStockIns
+                DTO.TrnPurchaseOrderDTO purchaseOrder = await (
+                    from d in _dbContext.TrnPurchaseOrders
                     where d.Id == id
-                    select new DTO.TrnStockInDTO
+                    select new DTO.TrnPurchaseOrderDTO
                     {
+
                         Id = d.Id,
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
-                        INNumber = d.INNumber,
-                        INDate = d.INDate.ToShortDateString(),
+                        PONumber = d.PONumber,
+                        PODate = d.PODate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
                         DocumentReference = d.DocumentReference,
-                        AccountId = d.AccountId,
-                        Account = new DTO.MstAccountDTO
+                        SupplierId = d.SupplierId,
+                        Supplier = new DTO.MstArticleSupplierDTO
                         {
-                            AccountCode = d.MstAccount_AccountId.AccountCode,
-                            ManualCode = d.MstAccount_AccountId.ManualCode,
-                            Account = d.MstAccount_AccountId.Account
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_SupplierId.ManualCode
+                            },
+                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
                         },
-                        ArticleId = d.ArticleId,
-                        Article = new DTO.MstArticleDTO
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
                         {
-                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
-                            ManualCode = d.MstArticle_ArticleId.ManualCode,
-                            Article = d.MstArticle_ArticleId.Article
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
                         },
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        PRId = d.PRId,
+                        PurchaseRequest = new DTO.TrnPurchaseRequestDTO
+                        {
+                            PRNumber = d.PRId != null ? d.TrnPurchaseRequest_PRId.PRNumber : "",
+                            ManualNumber = d.PRId != null ? d.TrnPurchaseRequest_PRId.ManualNumber : "",
+                        },
+                        RequestedByUserId = d.RequestedByUserId,
+                        RequestedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_RequestedByUserId.Username,
+                            Fullname = d.MstUser_RequestedByUserId.Fullname
+                        },
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -206,6 +226,7 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
+                        Amount = d.Amount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -225,7 +246,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).FirstOrDefaultAsync();
 
-                return StatusCode(200, stockIn);
+                return StatusCode(200, purchaseOrder);
             }
             catch (Exception e)
             {
@@ -234,7 +255,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult> AddStockIn()
+        public async Task<ActionResult> AddPurchaseOrder()
         {
             try
             {
@@ -254,43 +275,34 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityStockInList"
+                    && d.SysForm_FormId.Form == "ActivityPurchaseOrderList"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to add a stock in.");
+                    return StatusCode(404, "No rights to add a purchase order.");
                 }
 
                 if (loginUserForm.CanAdd == false)
                 {
-                    return StatusCode(400, "No rights to add a stock in.");
+                    return StatusCode(400, "No rights to add a purchase order.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
-                    from d in _dbContext.MstAccounts
+                DBSets.MstArticleSupplierDBSet supplier = await (
+                    from d in _dbContext.MstArticleSuppliers
+                    where d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (account == null)
+                if (supplier == null)
                 {
-                    return StatusCode(404, "Account not found.");
-                }
-
-                DBSets.MstArticleDBSet article = await (
-                    from d in _dbContext.MstArticles
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (article == null)
-                {
-                    return StatusCode(404, "Article not found.");
+                    return StatusCode(404, "Supplier not found.");
                 }
 
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.Category == "STOCK IN STATUS"
+                    where d.Category == "PURCHASE REQUEST STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -299,34 +311,37 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                String INNumber = "0000000001";
-                DBSets.TrnStockInDBSet lastStockIn = await (
-                    from d in _dbContext.TrnStockIns
+                String PONumber = "0000000001";
+                DBSets.TrnPurchaseOrderDBSet lastPurchaseOrder = await (
+                    from d in _dbContext.TrnPurchaseOrders
                     where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (lastStockIn != null)
+                if (lastPurchaseOrder != null)
                 {
-                    Int32 lastINNumber = Convert.ToInt32(lastStockIn.INNumber) + 0000000001;
-                    INNumber = PadZeroes(lastINNumber, 10);
+                    Int32 lastPONumber = Convert.ToInt32(lastPurchaseOrder.PONumber) + 0000000001;
+                    PONumber = PadZeroes(lastPONumber, 10);
                 }
 
-                DBSets.TrnStockInDBSet newStockIn = new DBSets.TrnStockInDBSet()
+                DBSets.TrnPurchaseOrderDBSet newPurchaseOrder = new DBSets.TrnPurchaseOrderDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
-                    INNumber = INNumber,
-                    INDate = DateTime.Today,
-                    ManualNumber = INNumber,
+                    PONumber = PONumber,
+                    PODate = DateTime.Today,
+                    ManualNumber = PONumber,
                     DocumentReference = "",
-                    AccountId = account.Id,
-                    ArticleId = article.Id,
+                    SupplierId = supplier.Id,
+                    TermId = supplier.TermId,
+                    DateNeeded = DateTime.Today.AddDays(Convert.ToDouble(supplier.MstTerm_TermId.NumberOfDays)),
                     Remarks = "",
+                    RequestedByUserId = loginUserId,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
+                    Amount = 0,
                     Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
@@ -337,10 +352,10 @@ namespace liteclerk_api.APIControllers
                     UpdatedDateTime = DateTime.Now
                 };
 
-                _dbContext.TrnStockIns.Add(newStockIn);
+                _dbContext.TrnPurchaseOrders.Add(newPurchaseOrder);
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(200, newStockIn.Id);
+                return StatusCode(200, newPurchaseOrder.Id);
             }
             catch (Exception e)
             {
@@ -349,7 +364,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("save/{id}")]
-        public async Task<ActionResult> SaveStockIn(Int32 id, [FromBody] DTO.TrnStockInDTO trnStockInDTO)
+        public async Task<ActionResult> SavePurchaseOrder(Int32 id, [FromBody] DTO.TrnPurchaseOrderDTO trnPurchaseOrderDTO)
         {
             try
             {
@@ -369,39 +384,39 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityStockInDetail"
+                    && d.SysForm_FormId.Form == "ActivityPurchaseOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to edit or save a stock in.");
+                    return StatusCode(404, "No rights to edit or save a purchase order.");
                 }
 
                 if (loginUserForm.CanEdit == false)
                 {
-                    return StatusCode(400, "No rights to edit or save a stock in.");
+                    return StatusCode(400, "No rights to edit or save a purchase order.");
                 }
 
-                DBSets.TrnStockInDBSet stockIn = await (
-                    from d in _dbContext.TrnStockIns
+                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                    from d in _dbContext.TrnPurchaseOrders
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (stockIn == null)
+                if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Stock in not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
-                if (stockIn.IsLocked == true)
+                if (purchaseOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot save or make any changes to a stock in that is locked.");
+                    return StatusCode(400, "Cannot save or make any changes to a purchase order that is locked.");
                 }
 
                 DBSets.MstCurrencyDBSet currency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnStockInDTO.CurrencyId
+                    where d.Id == trnPurchaseOrderDTO.CurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -410,31 +425,43 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
-                    from d in _dbContext.MstAccounts
-                    where d.Id == trnStockInDTO.AccountId
+                DBSets.MstArticleSupplierDBSet supplier = await (
+                    from d in _dbContext.MstArticleSuppliers
+                    where d.ArticleId == trnPurchaseOrderDTO.SupplierId
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (account == null)
+                if (supplier == null)
                 {
-                    return StatusCode(404, "Account not found.");
+                    return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
-                    from d in _dbContext.MstArticles
-                    where d.Id == trnStockInDTO.ArticleId
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == trnPurchaseOrderDTO.TermId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (article == null)
+                if (term == null)
                 {
-                    return StatusCode(404, "Article not found.");
+                    return StatusCode(404, "Term not found.");
+                }
+
+                DBSets.MstUserDBSet requestedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnPurchaseOrderDTO.RequestedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (requestedByUser == null)
+                {
+                    return StatusCode(404, "Ordered by user not found.");
                 }
 
                 DBSets.MstUserDBSet checkedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnStockInDTO.CheckedByUserId
+                    where d.Id == trnPurchaseOrderDTO.CheckedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -445,7 +472,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstUserDBSet approvedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnStockInDTO.ApprovedByUserId
+                    where d.Id == trnPurchaseOrderDTO.ApprovedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -456,8 +483,8 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.CodeValue == trnStockInDTO.Status
-                    && d.Category == "SALES INVOICE STATUS"
+                    where d.CodeValue == trnPurchaseOrderDTO.Status
+                    && d.Category == "PURCHASE REQUEST STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -466,19 +493,21 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnStockInDBSet saveStockIn = stockIn;
-                saveStockIn.CurrencyId = trnStockInDTO.CurrencyId;
-                saveStockIn.INDate = Convert.ToDateTime(trnStockInDTO.INDate);
-                saveStockIn.ManualNumber = trnStockInDTO.ManualNumber;
-                saveStockIn.DocumentReference = trnStockInDTO.DocumentReference;
-                saveStockIn.AccountId = trnStockInDTO.AccountId;
-                saveStockIn.ArticleId = trnStockInDTO.ArticleId;
-                saveStockIn.Remarks = trnStockInDTO.Remarks;
-                saveStockIn.CheckedByUserId = trnStockInDTO.CheckedByUserId;
-                saveStockIn.ApprovedByUserId = trnStockInDTO.ApprovedByUserId;
-                saveStockIn.Status = trnStockInDTO.Status;
-                saveStockIn.UpdatedByUserId = loginUserId;
-                saveStockIn.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnPurchaseOrderDBSet savePurchaseOrder = purchaseOrder;
+                savePurchaseOrder.CurrencyId = trnPurchaseOrderDTO.CurrencyId;
+                savePurchaseOrder.PODate = Convert.ToDateTime(trnPurchaseOrderDTO.PODate);
+                savePurchaseOrder.ManualNumber = trnPurchaseOrderDTO.ManualNumber;
+                savePurchaseOrder.DocumentReference = trnPurchaseOrderDTO.DocumentReference;
+                savePurchaseOrder.SupplierId = trnPurchaseOrderDTO.SupplierId;
+                savePurchaseOrder.TermId = trnPurchaseOrderDTO.TermId;
+                savePurchaseOrder.DateNeeded = Convert.ToDateTime(trnPurchaseOrderDTO.DateNeeded);
+                savePurchaseOrder.Remarks = trnPurchaseOrderDTO.Remarks;
+                savePurchaseOrder.RequestedByUserId = trnPurchaseOrderDTO.RequestedByUserId;
+                savePurchaseOrder.CheckedByUserId = trnPurchaseOrderDTO.CheckedByUserId;
+                savePurchaseOrder.ApprovedByUserId = trnPurchaseOrderDTO.ApprovedByUserId;
+                savePurchaseOrder.Status = trnPurchaseOrderDTO.Status;
+                savePurchaseOrder.UpdatedByUserId = loginUserId;
+                savePurchaseOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -491,7 +520,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("lock/{id}")]
-        public async Task<ActionResult> LockStockIn(Int32 id, [FromBody] DTO.TrnStockInDTO trnStockInDTO)
+        public async Task<ActionResult> LockPurchaseOrder(Int32 id, [FromBody] DTO.TrnPurchaseOrderDTO trnPurchaseOrderDTO)
         {
             try
             {
@@ -511,39 +540,39 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityStockInDetail"
+                    && d.SysForm_FormId.Form == "ActivityPurchaseOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to lock a stock in.");
+                    return StatusCode(404, "No rights to lock a purchase order.");
                 }
 
                 if (loginUserForm.CanLock == false)
                 {
-                    return StatusCode(400, "No rights to lock a stock in.");
+                    return StatusCode(400, "No rights to lock a purchase order.");
                 }
 
-                DBSets.TrnStockInDBSet stockIn = await (
-                     from d in _dbContext.TrnStockIns
+                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                     from d in _dbContext.TrnPurchaseOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (stockIn == null)
+                if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Stock in not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
-                if (stockIn.IsLocked == true)
+                if (purchaseOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot lock a stock in that is locked.");
+                    return StatusCode(400, "Cannot lock a purchase order that is locked.");
                 }
 
                 DBSets.MstCurrencyDBSet currency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnStockInDTO.CurrencyId
+                    where d.Id == trnPurchaseOrderDTO.CurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -552,31 +581,43 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
-                    from d in _dbContext.MstAccounts
-                    where d.Id == trnStockInDTO.AccountId
+                DBSets.MstArticleSupplierDBSet supplier = await (
+                    from d in _dbContext.MstArticleSuppliers
+                    where d.ArticleId == trnPurchaseOrderDTO.SupplierId
+                    && d.MstArticle_ArticleId.IsLocked == true
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (account == null)
+                if (supplier == null)
                 {
-                    return StatusCode(404, "Account not found.");
+                    return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
-                    from d in _dbContext.MstArticles
-                    where d.Id == trnStockInDTO.ArticleId
+                DBSets.MstTermDBSet term = await (
+                    from d in _dbContext.MstTerms
+                    where d.Id == trnPurchaseOrderDTO.TermId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (article == null)
+                if (term == null)
                 {
-                    return StatusCode(404, "Article not found.");
+                    return StatusCode(404, "Term not found.");
+                }
+
+                DBSets.MstUserDBSet requestedByUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == trnPurchaseOrderDTO.RequestedByUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (requestedByUser == null)
+                {
+                    return StatusCode(404, "Ordered by user not found.");
                 }
 
                 DBSets.MstUserDBSet checkedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnStockInDTO.CheckedByUserId
+                    where d.Id == trnPurchaseOrderDTO.CheckedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -587,7 +628,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstUserDBSet approvedByUser = await (
                     from d in _dbContext.MstUsers
-                    where d.Id == trnStockInDTO.ApprovedByUserId
+                    where d.Id == trnPurchaseOrderDTO.ApprovedByUserId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -598,8 +639,8 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.CodeValue == trnStockInDTO.Status
-                    && d.Category == "SALES INVOICE STATUS"
+                    where d.CodeValue == trnPurchaseOrderDTO.Status
+                    && d.Category == "PURCHASE REQUEST STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -608,24 +649,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnStockInDBSet lockStockIn = stockIn;
-                lockStockIn.CurrencyId = trnStockInDTO.CurrencyId;
-                lockStockIn.INDate = Convert.ToDateTime(trnStockInDTO.INDate);
-                lockStockIn.ManualNumber = trnStockInDTO.ManualNumber;
-                lockStockIn.DocumentReference = trnStockInDTO.DocumentReference;
-                lockStockIn.AccountId = trnStockInDTO.AccountId;
-                lockStockIn.ArticleId = trnStockInDTO.ArticleId;
-                lockStockIn.Remarks = trnStockInDTO.Remarks;
-                lockStockIn.CheckedByUserId = trnStockInDTO.CheckedByUserId;
-                lockStockIn.ApprovedByUserId = trnStockInDTO.ApprovedByUserId;
-                lockStockIn.Status = trnStockInDTO.Status;
-                lockStockIn.IsLocked = true;
-                lockStockIn.UpdatedByUserId = loginUserId;
-                lockStockIn.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnPurchaseOrderDBSet lockPurchaseOrder = purchaseOrder;
+                lockPurchaseOrder.CurrencyId = trnPurchaseOrderDTO.CurrencyId;
+                lockPurchaseOrder.PODate = Convert.ToDateTime(trnPurchaseOrderDTO.PODate);
+                lockPurchaseOrder.ManualNumber = trnPurchaseOrderDTO.ManualNumber;
+                lockPurchaseOrder.DocumentReference = trnPurchaseOrderDTO.DocumentReference;
+                lockPurchaseOrder.SupplierId = trnPurchaseOrderDTO.SupplierId;
+                lockPurchaseOrder.TermId = trnPurchaseOrderDTO.TermId;
+                lockPurchaseOrder.DateNeeded = Convert.ToDateTime(trnPurchaseOrderDTO.DateNeeded);
+                lockPurchaseOrder.Remarks = trnPurchaseOrderDTO.Remarks;
+                lockPurchaseOrder.RequestedByUserId = trnPurchaseOrderDTO.RequestedByUserId;
+                lockPurchaseOrder.CheckedByUserId = trnPurchaseOrderDTO.CheckedByUserId;
+                lockPurchaseOrder.ApprovedByUserId = trnPurchaseOrderDTO.ApprovedByUserId;
+                lockPurchaseOrder.Status = trnPurchaseOrderDTO.Status;
+                lockPurchaseOrder.UpdatedByUserId = loginUserId;
+                lockPurchaseOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
-
-                await _sysInventory.InsertStockInInventory(id);
 
                 return StatusCode(200);
             }
@@ -636,7 +676,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("unlock/{id}")]
-        public async Task<ActionResult> UnlockStockIn(Int32 id)
+        public async Task<ActionResult> UnlockPurchaseOrder(Int32 id)
         {
             try
             {
@@ -656,44 +696,42 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityStockInDetail"
+                    && d.SysForm_FormId.Form == "ActivityPurchaseOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to unlock a stock in.");
+                    return StatusCode(404, "No rights to unlock a purchase order.");
                 }
 
                 if (loginUserForm.CanUnlock == false)
                 {
-                    return StatusCode(400, "No rights to unlock a stock in.");
+                    return StatusCode(400, "No rights to unlock a purchase order.");
                 }
 
-                DBSets.TrnStockInDBSet stockIn = await (
-                     from d in _dbContext.TrnStockIns
+                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                     from d in _dbContext.TrnPurchaseOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (stockIn == null)
+                if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Stock in not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
-                if (stockIn.IsLocked == false)
+                if (purchaseOrder.IsLocked == false)
                 {
-                    return StatusCode(400, "Cannot unlock a stock in that is unlocked.");
+                    return StatusCode(400, "Cannot unlock a purchase order that is unlocked.");
                 }
 
-                DBSets.TrnStockInDBSet unlockStockIn = stockIn;
-                unlockStockIn.IsLocked = false;
-                unlockStockIn.UpdatedByUserId = loginUserId;
-                unlockStockIn.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnPurchaseOrderDBSet unlockPurchaseOrder = purchaseOrder;
+                unlockPurchaseOrder.IsLocked = false;
+                unlockPurchaseOrder.UpdatedByUserId = loginUserId;
+                unlockPurchaseOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
-
-                await _sysInventory.DeleteStockInInventory(id);
 
                 return StatusCode(200);
             }
@@ -704,7 +742,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("cancel/{id}")]
-        public async Task<ActionResult> CancelStockIn(Int32 id)
+        public async Task<ActionResult> CancelPurchaseOrder(Int32 id)
         {
             try
             {
@@ -724,40 +762,40 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityStockInDetail"
+                    && d.SysForm_FormId.Form == "ActivityPurchaseOrderDetail"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to cancel a stock in.");
+                    return StatusCode(404, "No rights to cancel a purchase order.");
                 }
 
                 if (loginUserForm.CanCancel == false)
                 {
-                    return StatusCode(400, "No rights to cancel a stock in.");
+                    return StatusCode(400, "No rights to cancel a purchase order.");
                 }
 
-                DBSets.TrnStockInDBSet stockIn = await (
-                     from d in _dbContext.TrnStockIns
+                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                     from d in _dbContext.TrnPurchaseOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (stockIn == null)
+                if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Stock in not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
-                if (stockIn.IsLocked == false)
+                if (purchaseOrder.IsLocked == false)
                 {
-                    return StatusCode(400, "Cannot cancel a stock in that is unlocked.");
+                    return StatusCode(400, "Cannot cancel a purchase order that is unlocked.");
                 }
 
-                DBSets.TrnStockInDBSet cancelStockIn = stockIn;
-                cancelStockIn.IsCancelled = true;
-                cancelStockIn.UpdatedByUserId = loginUserId;
-                cancelStockIn.UpdatedDateTime = DateTime.Now;
+                DBSets.TrnPurchaseOrderDBSet cancelPurchaseOrder = purchaseOrder;
+                cancelPurchaseOrder.IsCancelled = true;
+                cancelPurchaseOrder.UpdatedByUserId = loginUserId;
+                cancelPurchaseOrder.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -770,7 +808,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeleteStockIn(Int32 id)
+        public async Task<ActionResult> DeletePurchaseOrder(Int32 id)
         {
             try
             {
@@ -790,37 +828,37 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstUserFormDBSet loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityStockInList"
+                    && d.SysForm_FormId.Form == "ActivityPurchaseOrderList"
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to delete a stock in.");
+                    return StatusCode(404, "No rights to delete a purchase order.");
                 }
 
                 if (loginUserForm.CanDelete == false)
                 {
-                    return StatusCode(400, "No rights to delete a stock in.");
+                    return StatusCode(400, "No rights to delete a purchase order.");
                 }
 
-                DBSets.TrnStockInDBSet stockIn = await (
-                     from d in _dbContext.TrnStockIns
+                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                     from d in _dbContext.TrnPurchaseOrders
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (stockIn == null)
+                if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Stock in not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
-                if (stockIn.IsLocked == true)
+                if (purchaseOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot delete a stock in that is locked.");
+                    return StatusCode(400, "Cannot delete a purchase order that is locked.");
                 }
 
-                _dbContext.TrnStockIns.Remove(stockIn);
+                _dbContext.TrnPurchaseOrders.Remove(purchaseOrder);
                 await _dbContext.SaveChangesAsync();
 
                 return StatusCode(200);
