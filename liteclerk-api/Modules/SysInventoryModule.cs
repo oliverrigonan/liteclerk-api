@@ -78,6 +78,227 @@ namespace liteclerk_api.Modules
             }
         }
 
+        public async Task InsertReceivingReceiptInventory(Int32 RRId)
+        {
+            try
+            {
+                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                     from d in _dbContext.TrnReceivingReceipts
+                     where d.Id == RRId
+                     select d
+                ).FirstOrDefaultAsync();
+
+                if (receivingReceipt != null)
+                {
+                    List<DBSets.TrnReceivingReceiptItemDBSet> receivingReceiptItems = await (
+                        from d in _dbContext.TrnReceivingReceiptItems
+                        where d.RRId == RRId
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
+                        && d.BaseQuantity > 0
+                        select d
+                    ).ToListAsync();
+
+                    if (receivingReceiptItems.Any())
+                    {
+                        foreach (var receivingReceiptItem in receivingReceiptItems)
+                        {
+                            DBSets.MstArticleItemDBSet item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == receivingReceiptItem.ItemId
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (item != null)
+                            {
+                                Int32 articleInventoryId = 0;
+
+                                Decimal quantity = receivingReceiptItem.BaseQuantity;
+                                Decimal cost = receivingReceiptItem.BaseCost;
+                                Decimal amount = receivingReceiptItem.BaseQuantity * receivingReceiptItem.BaseCost;
+
+                                DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                                     from d in _dbContext.MstArticleItemInventories
+                                     where d.ArticleId == receivingReceiptItem.ItemId
+                                     && d.BranchId == receivingReceipt.BranchId
+                                     select d
+                                ).FirstOrDefaultAsync();
+
+                                if (itemInventory != null)
+                                {
+                                    articleInventoryId = itemInventory.Id;
+                                }
+                                else
+                                {
+                                    DBSets.MstArticleItemInventoryDBSet newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
+                                    {
+                                        ArticleId = receivingReceiptItem.ItemId,
+                                        BranchId = receivingReceipt.BranchId,
+                                        InventoryCode = "RR-" + receivingReceipt.RRNumber,
+                                        Quantity = quantity,
+                                        Cost = cost,
+                                        Amount = amount
+                                    };
+
+                                    _dbContext.MstArticleItemInventories.Add(newItemInventory);
+                                    await _dbContext.SaveChangesAsync();
+
+                                    articleInventoryId = newItemInventory.Id;
+                                }
+
+                                if (articleInventoryId != 0)
+                                {
+                                    DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
+                                    {
+                                        BranchId = receivingReceipt.BranchId,
+                                        InventoryDate = DateTime.Today,
+                                        ArticleId = receivingReceiptItem.ItemId,
+                                        ArticleItemInventoryId = articleInventoryId,
+                                        AccountId = item.ExpenseAccountId,
+                                        QuantityIn = quantity,
+                                        QuantityOut = 0,
+                                        Quantity = quantity,
+                                        Cost = cost,
+                                        Amount = amount,
+                                        Particulars = receivingReceiptItem.Particulars,
+                                        RRId = RRId,
+                                        SIId = null,
+                                        INId = null,
+                                        OTId = null,
+                                        STId = null,
+                                        SWId = null
+                                    };
+
+                                    _dbContext.SysInventories.Add(newInventory);
+                                    await _dbContext.SaveChangesAsync();
+
+                                    await UpdateArticleInventory(articleInventoryId);
+
+                                    if (receivingReceiptItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any())
+                                    {
+                                        if (receivingReceiptItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Kitting == "COMPONENT")
+                                        {
+                                            List<DBSets.MstArticleItemComponentDBSet> articleItemComponents = await (
+                                                from d in _dbContext.MstArticleItemComponents
+                                                where d.ArticleId == receivingReceiptItem.ItemId
+                                                select d
+                                            ).ToListAsync();
+
+                                            if (articleItemComponents.Any())
+                                            {
+                                                foreach (var articleItemComponent in articleItemComponents)
+                                                {
+                                                    DBSets.MstArticleItemInventoryDBSet componentItemInventory = await (
+                                                         from d in _dbContext.MstArticleItemInventories
+                                                         where d.ArticleId == articleItemComponent.ComponentArticleId
+                                                         && d.BranchId == receivingReceipt.BranchId
+                                                         select d
+                                                    ).FirstOrDefaultAsync();
+
+                                                    if (componentItemInventory != null)
+                                                    {
+                                                        Int32 componentItemInventoryId = componentItemInventory.Id;
+
+                                                        Decimal componentQuantity = articleItemComponent.Quantity * receivingReceiptItem.BaseQuantity;
+                                                        Decimal componentCost = componentItemInventory.Cost;
+                                                        Decimal componentAmount = (articleItemComponent.Quantity * receivingReceiptItem.BaseQuantity) * componentItemInventory.Cost;
+
+                                                        DBSets.SysInventoryDBSet newComponentInventory = new DBSets.SysInventoryDBSet()
+                                                        {
+                                                            BranchId = receivingReceipt.BranchId,
+                                                            InventoryDate = DateTime.Today,
+                                                            ArticleId = articleItemComponent.ComponentArticleId,
+                                                            ArticleItemInventoryId = componentItemInventoryId,
+                                                            AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
+                                                                        articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().ExpenseAccountId : 0,
+                                                            QuantityIn = componentQuantity,
+                                                            QuantityOut = 0,
+                                                            Quantity = componentQuantity,
+                                                            Cost = componentCost,
+                                                            Amount = componentAmount,
+                                                            Particulars = receivingReceiptItem.Particulars,
+                                                            RRId = RRId,
+                                                            SIId = null,
+                                                            INId = null,
+                                                            OTId = null,
+                                                            STId = null,
+                                                            SWId = null
+                                                        };
+
+                                                        _dbContext.SysInventories.Add(newComponentInventory);
+                                                        await _dbContext.SaveChangesAsync();
+
+                                                        await UpdateArticleInventory(componentItemInventoryId);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteReceivingReceiptInventory(Int32 RRId)
+        {
+            try
+            {
+                List<DBSets.SysInventoryDBSet> inventories = await (
+                    from d in _dbContext.SysInventories
+                    where d.RRId == RRId
+                    select d
+                ).ToListAsync();
+
+                if (inventories.Any())
+                {
+                    _dbContext.SysInventories.RemoveRange(inventories);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                List<DBSets.TrnReceivingReceiptItemDBSet> receivingReceiptItems = await (
+                    from d in _dbContext.TrnReceivingReceiptItems
+                    where d.RRId == RRId
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
+                    select d
+                ).ToListAsync();
+
+                if (receivingReceiptItems.Any() == true)
+                {
+                    foreach (var receivingReceiptItem in receivingReceiptItems)
+                    {
+                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                            from d in _dbContext.MstArticleItemInventories
+                            where d.ArticleId == receivingReceiptItem.ItemId
+                            && d.BranchId == receivingReceiptItem.TrnReceivingReceipt_RRId.BranchId
+                            select d
+                        ).ToListAsync();
+
+                        if (itemInventories.Any())
+                        {
+                            foreach (var itemInventory in itemInventories)
+                            {
+                                Int32 articleInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleInventoryId);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public async Task InsertStockInInventory(Int32 INId)
         {
             try

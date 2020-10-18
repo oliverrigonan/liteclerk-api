@@ -427,6 +427,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstArticleDBSet saveArticle = article;
                 saveArticle.ManualCode = mstArticleSupplierDTO.ArticleManualCode;
+                saveArticle.Article = mstArticleSupplierDTO.Supplier;
                 saveArticle.UpdatedByUserId = loginUserId;
                 saveArticle.UpdatedDateTime = DateTime.Now;
 
@@ -536,6 +537,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstArticleDBSet lockArticle = article;
                 lockArticle.ManualCode = mstArticleSupplierDTO.ArticleManualCode;
+                lockArticle.Article = mstArticleSupplierDTO.Supplier;
                 lockArticle.IsLocked = true;
                 lockArticle.UpdatedByUserId = loginUserId;
                 lockArticle.UpdatedDateTime = DateTime.Now;

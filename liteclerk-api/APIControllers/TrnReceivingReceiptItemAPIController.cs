@@ -70,6 +70,24 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        VATId = d.VATId,
+                        VAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_VATId.TaxCode,
+                            ManualCode = d.MstTax_VATId.ManualCode,
+                            TaxDescription = d.MstTax_VATId.TaxDescription
+                        },
+                        VATRate = d.VATRate,
+                        VATAmount = d.VATAmount,
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
+                        },
+                        WTAXRate = d.WTAXRate,
+                        WTAXAmount = d.WTAXAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -134,6 +152,24 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        VATId = d.VATId,
+                        VAT = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_VATId.TaxCode,
+                            ManualCode = d.MstTax_VATId.ManualCode,
+                            TaxDescription = d.MstTax_VATId.TaxDescription
+                        },
+                        VATRate = d.VATRate,
+                        VATAmount = d.VATAmount,
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            TaxCode = d.MstTax_WTAXId.TaxCode,
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
+                        },
+                        WTAXRate = d.WTAXRate,
+                        WTAXAmount = d.WTAXAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -240,6 +276,28 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
+                DBSets.MstTaxDBSet VAT = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == trnReceivingReceiptItemDTO.VATId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (VAT == null)
+                {
+                    return StatusCode(404, "VAT not found.");
+                }
+
+                DBSets.MstTaxDBSet WTAX = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == trnReceivingReceiptItemDTO.WTAXId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (WTAX == null)
+                {
+                    return StatusCode(404, "Withholding tax not found.");
+                }
+
                 DBSets.MstArticleItemUnitDBSet itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnReceivingReceiptItemDTO.ItemId
@@ -275,6 +333,12 @@ namespace liteclerk_api.APIControllers
                     UnitId = trnReceivingReceiptItemDTO.UnitId,
                     Cost = trnReceivingReceiptItemDTO.Cost,
                     Amount = trnReceivingReceiptItemDTO.Amount,
+                    VATId = trnReceivingReceiptItemDTO.VATId,
+                    VATRate = trnReceivingReceiptItemDTO.VATRate,
+                    VATAmount = trnReceivingReceiptItemDTO.VATAmount,
+                    WTAXId = trnReceivingReceiptItemDTO.WTAXId,
+                    WTAXRate = trnReceivingReceiptItemDTO.WTAXRate,
+                    WTAXAmount = trnReceivingReceiptItemDTO.WTAXAmount,
                     BaseQuantity = baseQuantity,
                     BaseUnitId = item.UnitId,
                     BaseCost = baseCost,
@@ -409,6 +473,28 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
+                DBSets.MstTaxDBSet VAT = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == trnReceivingReceiptItemDTO.VATId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (VAT == null)
+                {
+                    return StatusCode(404, "VAT not found.");
+                }
+
+                DBSets.MstTaxDBSet WTAX = await (
+                    from d in _dbContext.MstTaxes
+                    where d.Id == trnReceivingReceiptItemDTO.WTAXId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (WTAX == null)
+                {
+                    return StatusCode(404, "Withholding tax not found.");
+                }
+
                 DBSets.MstArticleItemUnitDBSet itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnReceivingReceiptItemDTO.ItemId
@@ -442,6 +528,12 @@ namespace liteclerk_api.APIControllers
                 updateReceivingReceiptItems.UnitId = trnReceivingReceiptItemDTO.UnitId;
                 updateReceivingReceiptItems.Cost = trnReceivingReceiptItemDTO.Cost;
                 updateReceivingReceiptItems.Amount = trnReceivingReceiptItemDTO.Amount;
+                updateReceivingReceiptItems.VATId = trnReceivingReceiptItemDTO.VATId;
+                updateReceivingReceiptItems.VATRate = trnReceivingReceiptItemDTO.VATRate;
+                updateReceivingReceiptItems.VATAmount = trnReceivingReceiptItemDTO.VATAmount;
+                updateReceivingReceiptItems.WTAXId = trnReceivingReceiptItemDTO.WTAXId;
+                updateReceivingReceiptItems.WTAXRate = trnReceivingReceiptItemDTO.WTAXRate;
+                updateReceivingReceiptItems.WTAXAmount = trnReceivingReceiptItemDTO.WTAXAmount;
                 updateReceivingReceiptItems.BaseQuantity = baseQuantity;
                 updateReceivingReceiptItems.BaseUnitId = item.UnitId;
                 updateReceivingReceiptItems.BaseCost = baseCost;

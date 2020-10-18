@@ -151,6 +151,119 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/bySupplier/{supplierId}")]
+        public async Task<ActionResult> GetPurchaseOrderListBySupplier(Int32 supplierId)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                DBSets.MstUserDBSet loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                IEnumerable<DTO.TrnPurchaseOrderDTO> purchaseOrders = await (
+                    from d in _dbContext.TrnPurchaseOrders
+                    where d.BranchId == loginUser.BranchId
+                    && d.SupplierId == supplierId
+                    && d.IsLocked == true
+                    orderby d.Id descending
+                    select new DTO.TrnPurchaseOrderDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
+                        },
+                        PONumber = d.PONumber,
+                        PODate = d.PODate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        SupplierId = d.SupplierId,
+                        Supplier = new DTO.MstArticleSupplierDTO
+                        {
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_SupplierId.ManualCode
+                            },
+                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
+                        },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
+                        },
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
+                        Remarks = d.Remarks,
+                        PRId = d.PRId,
+                        PurchaseRequest = new DTO.TrnPurchaseRequestDTO
+                        {
+                            PRNumber = d.PRId != null ? d.TrnPurchaseRequest_PRId.PRNumber : "",
+                            ManualNumber = d.PRId != null ? d.TrnPurchaseRequest_PRId.ManualNumber : "",
+                        },
+                        RequestedByUserId = d.RequestedByUserId,
+                        RequestedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_RequestedByUserId.Username,
+                            Fullname = d.MstUser_RequestedByUserId.Fullname
+                        },
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
+                        },
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
+                        },
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
+                        },
+                        Amount = d.Amount,
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, purchaseOrders);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetPurchaseOrderDetail(Int32 id)
         {
@@ -302,7 +415,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.Category == "PURCHASE REQUEST STATUS"
+                    where d.Category == "PURCHASE ORDER STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -333,7 +446,7 @@ namespace liteclerk_api.APIControllers
                     PODate = DateTime.Today,
                     ManualNumber = PONumber,
                     DocumentReference = "",
-                    SupplierId = supplier.Id,
+                    SupplierId = supplier.ArticleId,
                     TermId = supplier.TermId,
                     DateNeeded = DateTime.Today.AddDays(Convert.ToDouble(supplier.MstTerm_TermId.NumberOfDays)),
                     Remarks = "",
@@ -484,7 +597,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnPurchaseOrderDTO.Status
-                    && d.Category == "PURCHASE REQUEST STATUS"
+                    && d.Category == "PURCHASE ORDER STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -640,7 +753,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnPurchaseOrderDTO.Status
-                    && d.Category == "PURCHASE REQUEST STATUS"
+                    && d.Category == "PURCHASE ORDER STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -662,6 +775,7 @@ namespace liteclerk_api.APIControllers
                 lockPurchaseOrder.CheckedByUserId = trnPurchaseOrderDTO.CheckedByUserId;
                 lockPurchaseOrder.ApprovedByUserId = trnPurchaseOrderDTO.ApprovedByUserId;
                 lockPurchaseOrder.Status = trnPurchaseOrderDTO.Status;
+                lockPurchaseOrder.IsLocked = true;
                 lockPurchaseOrder.UpdatedByUserId = loginUserId;
                 lockPurchaseOrder.UpdatedDateTime = DateTime.Now;
 

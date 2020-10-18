@@ -30,5 +30,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnSalesOrderItemDBSet> TrnSalesOrderItems_WTAXId { get; set; }
         public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_TaxId { get; set; }
         public virtual ICollection<TrnDisbursementLineDBSet> TrnDisbursementLines_WTAXId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems_VATId { get; set; }
+        public virtual ICollection<TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems_WTAXId { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace liteclerk_api.APIControllers
         {
             _dbContext = dbContext;
 
-            //_sysAccountsPayable = new Modules.SysAccountsPayableModule(dbContext);
+            _sysAccountsPayable = new Modules.SysAccountsPayableModule(dbContext);
             _sysJournalEntry = new Modules.SysJournalEntryModule(dbContext);
         }
 
@@ -164,7 +164,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnDisbursementDTO salesInvoice = await (
+                DTO.TrnDisbursementDTO disbursement = await (
                     from d in _dbContext.TrnDisbursements
                     where d.Id == id
                     select new DTO.TrnDisbursementDTO
@@ -255,7 +255,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).FirstOrDefaultAsync();
 
-                return StatusCode(200, salesInvoice);
+                return StatusCode(200, disbursement);
             }
             catch (Exception e)
             {
@@ -433,18 +433,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet salesInvoice = await (
+                DBSets.TrnDisbursementDBSet disbursement = await (
                     from d in _dbContext.TrnDisbursements
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (disbursement == null)
                 {
                     return StatusCode(404, "Disbursement not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (disbursement.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot save or make any changes to a disbursement that is locked.");
                 }
@@ -535,7 +535,7 @@ namespace liteclerk_api.APIControllers
                     checkDate = Convert.ToDateTime(trnDisbursementDTO.CheckDate);
                 }
 
-                DBSets.TrnDisbursementDBSet saveDisbursement = salesInvoice;
+                DBSets.TrnDisbursementDBSet saveDisbursement = disbursement;
                 saveDisbursement.CurrencyId = trnDisbursementDTO.CurrencyId;
                 saveDisbursement.CVDate = Convert.ToDateTime(trnDisbursementDTO.CVDate);
                 saveDisbursement.ManualNumber = trnDisbursementDTO.ManualNumber;
@@ -601,18 +601,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet salesInvoice = await (
+                DBSets.TrnDisbursementDBSet disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (disbursement == null)
                 {
                     return StatusCode(404, "Disbursement not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (disbursement.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot lock a disbursement that is locked.");
                 }
@@ -703,7 +703,7 @@ namespace liteclerk_api.APIControllers
                     checkDate = Convert.ToDateTime(trnDisbursementDTO.CheckDate);
                 }
 
-                DBSets.TrnDisbursementDBSet lockDisbursement = salesInvoice;
+                DBSets.TrnDisbursementDBSet lockDisbursement = disbursement;
                 lockDisbursement.CurrencyId = trnDisbursementDTO.CurrencyId;
                 lockDisbursement.CVDate = Convert.ToDateTime(trnDisbursementDTO.CVDate);
                 lockDisbursement.ManualNumber = trnDisbursementDTO.ManualNumber;
@@ -726,22 +726,22 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                //IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
-                //    from d in _dbContext.TrnDisbursementLines
-                //    where d.CVId == id
-                //    && d.RRId != null
-                //    select d
-                //).ToListAsync();
+                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                    from d in _dbContext.TrnDisbursementLines
+                    where d.CVId == id
+                    && d.RRId != null
+                    select d
+                ).ToListAsync();
 
-                //if (disbursementLinesByCurrentDisbursement.Any())
-                //{
-                //    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
-                //    {
-                //        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
-                //    }
-                //}
+                if (disbursementLinesByCurrentDisbursement.Any())
+                {
+                    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
+                    {
+                        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
+                    }
+                }
 
-                //await _sysJournalEntry.InsertDisbursementJournalEntry(id);
+                await _sysJournalEntry.InsertDisbursementJournalEntry(id);
 
                 return StatusCode(200);
             }
@@ -786,45 +786,45 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet salesInvoice = await (
+                DBSets.TrnDisbursementDBSet disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (disbursement == null)
                 {
                     return StatusCode(404, "Disbursement not found.");
                 }
 
-                if (salesInvoice.IsLocked == false)
+                if (disbursement.IsLocked == false)
                 {
                     return StatusCode(400, "Cannot unlock a disbursement that is unlocked.");
                 }
 
-                DBSets.TrnDisbursementDBSet unlockDisbursement = salesInvoice;
+                DBSets.TrnDisbursementDBSet unlockDisbursement = disbursement;
                 unlockDisbursement.IsLocked = false;
                 unlockDisbursement.UpdatedByUserId = loginUserId;
                 unlockDisbursement.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                //IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
-                //    from d in _dbContext.TrnDisbursementLines
-                //    where d.CVId == id
-                //    && d.RRId != null
-                //    select d
-                //).ToListAsync();
+                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                    from d in _dbContext.TrnDisbursementLines
+                    where d.CVId == id
+                    && d.RRId != null
+                    select d
+                ).ToListAsync();
 
-                //if (disbursementLinesByCurrentDisbursement.Any())
-                //{
-                //    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
-                //    {
-                //        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
-                //    }
-                //}
+                if (disbursementLinesByCurrentDisbursement.Any())
+                {
+                    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
+                    {
+                        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
+                    }
+                }
 
-                //await _sysJournalEntry.DeleteDisbursementJournalEntry(id);
+                await _sysJournalEntry.DeleteDisbursementJournalEntry(id);
 
                 return StatusCode(200);
             }
@@ -869,43 +869,43 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to cancel a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet salesInvoice = await (
+                DBSets.TrnDisbursementDBSet disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (disbursement == null)
                 {
                     return StatusCode(404, "Disbursement not found.");
                 }
 
-                if (salesInvoice.IsLocked == false)
+                if (disbursement.IsLocked == false)
                 {
                     return StatusCode(400, "Cannot cancel a disbursement that is unlocked.");
                 }
 
-                DBSets.TrnDisbursementDBSet unlockDisbursement = salesInvoice;
+                DBSets.TrnDisbursementDBSet unlockDisbursement = disbursement;
                 unlockDisbursement.IsCancelled = true;
                 unlockDisbursement.UpdatedByUserId = loginUserId;
                 unlockDisbursement.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                //IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
-                //    from d in _dbContext.TrnDisbursementLines
-                //    where d.CVId == id
-                //    && d.RRId != null
-                //    select d
-                //).ToListAsync();
+                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                    from d in _dbContext.TrnDisbursementLines
+                    where d.CVId == id
+                    && d.RRId != null
+                    select d
+                ).ToListAsync();
 
-                //if (disbursementLinesByCurrentDisbursement.Any())
-                //{
-                //    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
-                //    {
-                //        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
-                //    }
-                //}
+                if (disbursementLinesByCurrentDisbursement.Any())
+                {
+                    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
+                    {
+                        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
+                    }
+                }
 
                 return StatusCode(200);
             }
@@ -950,39 +950,39 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet salesInvoice = await (
+                DBSets.TrnDisbursementDBSet disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (disbursement == null)
                 {
                     return StatusCode(404, "Disbursement not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (disbursement.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete a disbursement that is locked.");
                 }
 
-                _dbContext.TrnDisbursements.Remove(salesInvoice);
+                _dbContext.TrnDisbursements.Remove(disbursement);
                 await _dbContext.SaveChangesAsync();
 
-                //IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
-                //    from d in _dbContext.TrnDisbursementLines
-                //    where d.CVId == id
-                //    && d.RRId != null
-                //    select d
-                //).ToListAsync();
+                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                    from d in _dbContext.TrnDisbursementLines
+                    where d.CVId == id
+                    && d.RRId != null
+                    select d
+                ).ToListAsync();
 
-                //if (disbursementLinesByCurrentDisbursement.Any())
-                //{
-                //    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
-                //    {
-                //        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
-                //    }
-                //}
+                if (disbursementLinesByCurrentDisbursement.Any())
+                {
+                    foreach (var disbursementLineByCurrentDisbursement in disbursementLinesByCurrentDisbursement)
+                    {
+                        await _sysAccountsPayable.UpdateAccountsPayable(Convert.ToInt32(disbursementLineByCurrentDisbursement.RRId));
+                    }
+                }
 
                 return StatusCode(200);
             }

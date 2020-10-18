@@ -19,9 +19,17 @@ namespace liteclerk_api.APIControllers
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
 
+        private readonly Modules.SysAccountsPayableModule _sysAccountsPayableModule;
+        private readonly Modules.SysInventoryModule _sysInventory;
+        private readonly Modules.SysJournalEntryModule _sysJournalEntry;
+
         public TrnReceivingReceiptAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
+
+            _sysAccountsPayableModule = new Modules.SysAccountsPayableModule(dbContext);
+            _sysInventory = new Modules.SysInventoryModule(dbContext);
+            _sysJournalEntry = new Modules.SysJournalEntryModule(dbContext);
         }
 
         [NonAction]
@@ -294,7 +302,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.Category == "PURCHASE REQUEST STATUS"
+                    where d.Category == "RECEIVING RECEIPT STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -325,7 +333,7 @@ namespace liteclerk_api.APIControllers
                     RRDate = DateTime.Today,
                     ManualNumber = RRNumber,
                     DocumentReference = "",
-                    SupplierId = supplier.Id,
+                    SupplierId = supplier.ArticleId,
                     TermId = supplier.TermId,
                     Remarks = "",
                     ReceivedByUserId = loginUserId,
@@ -478,7 +486,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnReceivingReceiptDTO.Status
-                    && d.Category == "PURCHASE REQUEST STATUS"
+                    && d.Category == "RECEIVING RECEIPT STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -633,7 +641,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstCodeTableDBSet codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnReceivingReceiptDTO.Status
-                    && d.Category == "PURCHASE REQUEST STATUS"
+                    && d.Category == "RECEIVING RECEIPT STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -654,10 +662,15 @@ namespace liteclerk_api.APIControllers
                 lockReceivingReceipt.CheckedByUserId = trnReceivingReceiptDTO.CheckedByUserId;
                 lockReceivingReceipt.ApprovedByUserId = trnReceivingReceiptDTO.ApprovedByUserId;
                 lockReceivingReceipt.Status = trnReceivingReceiptDTO.Status;
+                lockReceivingReceipt.IsLocked = true;
                 lockReceivingReceipt.UpdatedByUserId = loginUserId;
                 lockReceivingReceipt.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
+
+                await _sysAccountsPayableModule.UpdateAccountsPayable(id);
+                await _sysInventory.InsertReceivingReceiptInventory(id);
+                await _sysJournalEntry.InsertReceivingReceiptJournalEntry(id);
 
                 return StatusCode(200);
             }
@@ -724,6 +737,10 @@ namespace liteclerk_api.APIControllers
                 unlockReceivingReceipt.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
+
+                await _sysAccountsPayableModule.UpdateAccountsPayable(id);
+                await _sysInventory.DeleteReceivingReceiptInventory(id);
+                await _sysJournalEntry.DeleteReceivingReceiptJournalEntry(id);
 
                 return StatusCode(200);
             }

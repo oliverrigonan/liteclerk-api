@@ -24,6 +24,108 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
+        [HttpGet("list/receivingReceipt/{RRId}")]
+        public async Task<ActionResult> GetReceivingReceiptInventoryList(Int32 RRId)
+        {
+            try
+            {
+                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                    from d in _dbContext.SysInventories
+                    where d.RRId == RRId
+                    select new DTO.SysInventoryDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        InventoryDate = d.InventoryDate.ToShortDateString(),
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
+                        },
+                        ArticleItem = new DTO.MstArticleItemDTO
+                        {
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                            Unit = new DTO.MstUnitDTO
+                            {
+                                UnitCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.UnitCode : "",
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode : "",
+                                Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit : "",
+                            }
+                        },
+                        ArticleItemInventoryId = d.ArticleItemInventoryId,
+                        ArticleItemInventory = new DTO.MstArticleItemInventoryDTO
+                        {
+                            InventoryCode = d.MstArticleItemInventory_ArticleItemInventoryId.InventoryCode
+                        },
+                        QuantityIn = d.QuantityIn,
+                        QuantityOut = d.QuantityOut,
+                        Quantity = d.Quantity,
+                        Cost = d.Cost,
+                        Amount = d.Amount,
+                        Particulars = d.Particulars,
+                        AccountId = d.AccountId,
+                        Account = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_AccountId.AccountCode,
+                            ManualCode = d.MstAccount_AccountId.ManualCode,
+                            Account = d.MstAccount_AccountId.Account
+                        },
+                        RRId = d.RRId,
+                        ReceivingReceipt = new DTO.TrnReceivingReceiptDTO
+                        {
+
+                        },
+                        SIId = d.SIId,
+                        SalesInvoice = new DTO.TrnSalesInvoiceDTO
+                        {
+
+                        },
+                        INId = d.INId,
+                        StockIn = new DTO.TrnStockInDTO
+                        {
+
+                        },
+                        OTId = d.OTId,
+                        StockOut = new DTO.TrnStockOutDTO
+                        {
+
+                        },
+                        STId = d.STId,
+                        StockTransfer = new DTO.TrnStockTransferDTO
+                        {
+
+                        },
+                        SWId = d.SWId,
+                        StockWithdrawal = new DTO.TrnStockWithdrawalDTO
+                        {
+
+                        },
+                        ILId = d.ILId,
+                        Inventory = new DTO.TrnInventoryDTO
+                        {
+
+                        }
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, inventories);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("list/stockIn/{INId}")]
         public async Task<ActionResult> GetStockInInventoryList(Int32 INId)
         {

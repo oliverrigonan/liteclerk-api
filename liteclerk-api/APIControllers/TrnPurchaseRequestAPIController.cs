@@ -321,7 +321,7 @@ namespace liteclerk_api.APIControllers
                     PRDate = DateTime.Today,
                     ManualNumber = PRNumber,
                     DocumentReference = "",
-                    SupplierId = supplier.Id,
+                    SupplierId = supplier.ArticleId,
                     TermId = supplier.TermId,
                     DateNeeded = DateTime.Today.AddDays(Convert.ToDouble(supplier.MstTerm_TermId.NumberOfDays)),
                     Remarks = "",
@@ -650,6 +650,7 @@ namespace liteclerk_api.APIControllers
                 lockPurchaseRequest.CheckedByUserId = trnPurchaseRequestDTO.CheckedByUserId;
                 lockPurchaseRequest.ApprovedByUserId = trnPurchaseRequestDTO.ApprovedByUserId;
                 lockPurchaseRequest.Status = trnPurchaseRequestDTO.Status;
+                lockPurchaseRequest.IsLocked = true;
                 lockPurchaseRequest.UpdatedByUserId = loginUserId;
                 lockPurchaseRequest.UpdatedDateTime = DateTime.Now;
 

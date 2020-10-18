@@ -96,7 +96,7 @@ namespace liteclerk_api.APIControllers
                         Decimal totalOverallIncomes = 0;
                         Decimal totalOverallExpenses = 0;
 
-                        String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\colorideas_logo.png";
+                        String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\prime_global_logo.png";
 
                         Image logoPhoto = Image.GetInstance(logoPath);
                         logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;

@@ -46,7 +46,31 @@ namespace liteclerk_api.APIControllers
                             },
                             SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                            RRVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().RRVATId : 0,
+                            RRVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxRate : 0
+                            },
+                            SIVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
+                            SIVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate : 0
+                            },
+                            WTAXId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId : 0,
+                            WTAX = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate : 0
+                            }
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
@@ -98,7 +122,31 @@ namespace liteclerk_api.APIControllers
                             },
                             SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                            RRVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().RRVATId : 0,
+                            RRVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxRate : 0
+                            },
+                            SIVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
+                            SIVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate : 0
+                            },
+                            WTAXId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId : 0,
+                            WTAX = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate : 0
+                            }
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
@@ -156,12 +204,12 @@ namespace liteclerk_api.APIControllers
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to add a purchase request item.");
+                    return StatusCode(404, "No rights to add a purchase order item.");
                 }
 
                 if (loginUserForm.CanAdd == false)
                 {
-                    return StatusCode(400, "No rights to add a purchase request item.");
+                    return StatusCode(400, "No rights to add a purchase order item.");
                 }
 
                 DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
@@ -172,12 +220,12 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Purchase request not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
                 if (purchaseOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot add purchase request items if the current purchase request is locked.");
+                    return StatusCode(400, "Cannot add purchase order items if the current purchase order is locked.");
                 }
 
                 DBSets.MstArticleItemDBSet item = await (
@@ -288,12 +336,12 @@ namespace liteclerk_api.APIControllers
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to edit or update a purchase request item.");
+                    return StatusCode(404, "No rights to edit or update a purchase order item.");
                 }
 
                 if (loginUserForm.CanEdit == false)
                 {
-                    return StatusCode(400, "No rights to edit or update a purchase request item.");
+                    return StatusCode(400, "No rights to edit or update a purchase order item.");
                 }
 
                 DBSets.TrnPurchaseOrderItemDBSet purchaseOrderItem = await (
@@ -304,7 +352,7 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrderItem == null)
                 {
-                    return StatusCode(404, "Purchase request item not found.");
+                    return StatusCode(404, "Purchase order item not found.");
                 }
 
                 DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
@@ -315,12 +363,12 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Purchase request not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
                 if (purchaseOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot update purchase request items if the current purchase request is locked.");
+                    return StatusCode(400, "Cannot update purchase order items if the current purchase order is locked.");
                 }
 
                 DBSets.MstArticleItemDBSet item = await (
@@ -427,12 +475,12 @@ namespace liteclerk_api.APIControllers
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to delete a purchase request item.");
+                    return StatusCode(404, "No rights to delete a purchase order item.");
                 }
 
                 if (loginUserForm.CanDelete == false)
                 {
-                    return StatusCode(400, "No rights to delete a purchase request item.");
+                    return StatusCode(400, "No rights to delete a purchase order item.");
                 }
 
                 Int32 POId = 0;
@@ -445,7 +493,7 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrderItem == null)
                 {
-                    return StatusCode(404, "Purchase request item not found.");
+                    return StatusCode(404, "Purchase order item not found.");
                 }
 
                 POId = purchaseOrderItem.POId;
@@ -458,12 +506,12 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrder == null)
                 {
-                    return StatusCode(404, "Purchase request not found.");
+                    return StatusCode(404, "Purchase order not found.");
                 }
 
                 if (purchaseOrder.IsLocked == true)
                 {
-                    return StatusCode(400, "Cannot delete purchase request items if the current purchase request is locked.");
+                    return StatusCode(400, "Cannot delete purchase order items if the current purchase order is locked.");
                 }
 
                 _dbContext.TrnPurchaseOrderItems.Remove(purchaseOrderItem);
