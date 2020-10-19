@@ -235,6 +235,18 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
+                DBSets.TrnSalesOrderDBSet existingSalesOrder = await (
+                     from d in _dbContext.TrnSalesOrders
+                     where d.BranchId == branch.Id
+                     && d.DocumentReference == objSalesOrder.DocumentReference
+                     select d
+                 ).FirstOrDefaultAsync();
+
+                if (existingSalesOrder != null)
+                {
+                    return StatusCode(404, "Sales order " + objSalesOrder.DocumentReference + " already exist.");
+                }
+
                 Int32 customerId = 0;
                 Int32 termId = 0;
 
@@ -312,7 +324,8 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
                         ContactNumber = "",
                         ReceivableAccountId = receivableAccount.Id,
                         TermId = term.Id,
-                        CreditLimit = 0
+                        CreditLimit = 0,
+                        Category = ""
                     };
 
                     _dbContext.MstArticleCustomers.Add(newArticleCustomer);
@@ -493,7 +506,7 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.InnerException.Message);
+                return StatusCode(500, e);
             }
         }
     }

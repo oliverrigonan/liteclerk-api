@@ -371,7 +371,7 @@ namespace liteclerk_api.APIControllers
                     CheckDate = null,
                     CheckBank = "",
                     IsCrossCheck = false,
-                    BankId = bank.Id,
+                    BankId = bank.ArticleId,
                     IsClear = false,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
@@ -721,6 +721,7 @@ namespace liteclerk_api.APIControllers
                 lockDisbursement.CheckedByUserId = trnDisbursementDTO.CheckedByUserId;
                 lockDisbursement.ApprovedByUserId = trnDisbursementDTO.ApprovedByUserId;
                 lockDisbursement.Status = trnDisbursementDTO.Status;
+                lockDisbursement.IsLocked = true;
                 lockDisbursement.UpdatedByUserId = loginUserId;
                 lockDisbursement.UpdatedDateTime = DateTime.Now;
 
