@@ -352,17 +352,17 @@ namespace liteclerk_api.Modules
                     if (disbursementLines.Any())
                     {
                         var disbursementLineAccounts = from d in disbursementLines
-                                                        group d by new
-                                                        {
-                                                            d.BranchId,
-                                                            d.AccountId
-                                                        } into g
-                                                        select new
-                                                        {
-                                                            g.Key.BranchId,
-                                                            g.Key.AccountId,
-                                                            Amount = g.Sum(s => s.Amount)
-                                                        };
+                                                       group d by new
+                                                       {
+                                                           d.BranchId,
+                                                           d.AccountId
+                                                       } into g
+                                                       select new
+                                                       {
+                                                           g.Key.BranchId,
+                                                           g.Key.AccountId,
+                                                           Amount = g.Sum(s => s.Amount)
+                                                       };
 
                         if (disbursementLineAccounts.Any())
                         {
@@ -407,6 +407,121 @@ namespace liteclerk_api.Modules
                 var journalEntries = await (from d in _dbContext.SysJournalEntries
                                             where d.CVId == CVId
                                             select d).ToListAsync();
+
+                if (journalEntries.Any())
+                {
+                    _dbContext.SysJournalEntries.RemoveRange(journalEntries);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task InsertPayableMemoJournalEntry(Int32 PMId)
+        {
+            try
+            {
+                var payableMemo = await (
+                    from d in _dbContext.TrnPayableMemos
+                    where d.Id == PMId
+                    && d.Amount != 0
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (payableMemo != null)
+                {
+                    var payableMemoLines = await (
+                        from d in _dbContext.TrnPayableMemoLines
+                        where d.PMId == PMId
+                        && d.Amount != 0
+                        select d
+                    ).ToListAsync();
+
+                    if (payableMemoLines.Any())
+                    {
+                        var payableMemoLineAccounts = from d in payableMemoLines
+                                                      group d by new
+                                                      {
+                                                          d.BranchId,
+                                                          d.AccountId
+                                                      } into g
+                                                      select new
+                                                      {
+                                                          g.Key.BranchId,
+                                                          g.Key.AccountId,
+                                                          Amount = g.Sum(s => s.Amount)
+                                                      };
+
+                        if (payableMemoLineAccounts.Any())
+                        {
+                            foreach (var payableMemoLineAccount in payableMemoLineAccounts)
+                            {
+                                DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = payableMemo.BranchId,
+                                    JournalEntryDate = DateTime.Today,
+                                    ArticleId = payableMemo.SupplierId,
+                                    AccountId = payableMemoLineAccount.AccountId,
+                                    DebitAmount = payableMemoLineAccount.Amount,
+                                    CreditAmount = 0,
+                                    Particulars = payableMemo.Remarks,
+                                    RRId = null,
+                                    SIId = null,
+                                    CIId = null,
+                                    CVId = null,
+                                    PMId = payableMemo.Id,
+                                    RMId = null,
+                                    JVId = null,
+                                    ILId = null
+                                };
+
+                                _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+                    }
+
+                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    {
+                        BranchId = payableMemo.BranchId,
+                        JournalEntryDate = DateTime.Today,
+                        ArticleId = payableMemo.SupplierId,
+                        AccountId = payableMemo.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId,
+                        DebitAmount = 0,
+                        CreditAmount = payableMemo.Amount,
+                        Particulars = payableMemo.Remarks,
+                        RRId = null,
+                        SIId = null,
+                        CIId = null,
+                        CVId = null,
+                        PMId = payableMemo.Id,
+                        RMId = null,
+                        JVId = null,
+                        ILId = null
+                    };
+
+                    _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeletePayableMemoJournalEntry(Int32 PMId)
+        {
+            try
+            {
+                var journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.PMId == PMId
+                    select d
+                ).ToListAsync();
 
                 if (journalEntries.Any())
                 {
@@ -665,6 +780,121 @@ namespace liteclerk_api.Modules
                 var journalEntries = await (from d in _dbContext.SysJournalEntries
                                             where d.CIId == CIId
                                             select d).ToListAsync();
+
+                if (journalEntries.Any())
+                {
+                    _dbContext.SysJournalEntries.RemoveRange(journalEntries);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task InsertReceivableMemoJournalEntry(Int32 RMId)
+        {
+            try
+            {
+                var receivableMemo = await (
+                    from d in _dbContext.TrnReceivableMemos
+                    where d.Id == RMId
+                    && d.Amount != 0
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (receivableMemo != null)
+                {
+                    var receivableMemoLines = await (
+                        from d in _dbContext.TrnReceivableMemoLines
+                        where d.RMId == RMId
+                        && d.Amount != 0
+                        select d
+                    ).ToListAsync();
+
+                    if (receivableMemoLines.Any())
+                    {
+                        var receivableMemoLineAccounts = from d in receivableMemoLines
+                                                         group d by new
+                                                         {
+                                                             d.BranchId,
+                                                             d.AccountId
+                                                         } into g
+                                                         select new
+                                                         {
+                                                             g.Key.BranchId,
+                                                             g.Key.AccountId,
+                                                             Amount = g.Sum(s => s.Amount)
+                                                         };
+
+                        if (receivableMemoLineAccounts.Any())
+                        {
+                            foreach (var receivableMemoLineAccount in receivableMemoLineAccounts)
+                            {
+                                DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = receivableMemo.BranchId,
+                                    JournalEntryDate = DateTime.Today,
+                                    ArticleId = receivableMemo.CustomerId,
+                                    AccountId = receivableMemoLineAccount.AccountId,
+                                    DebitAmount = receivableMemoLineAccount.Amount,
+                                    CreditAmount = 0,
+                                    Particulars = receivableMemo.Remarks,
+                                    RRId = null,
+                                    SIId = null,
+                                    CIId = null,
+                                    CVId = null,
+                                    PMId = null,
+                                    RMId = receivableMemo.Id,
+                                    JVId = null,
+                                    ILId = null
+                                };
+
+                                _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+                    }
+
+                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    {
+                        BranchId = receivableMemo.BranchId,
+                        JournalEntryDate = DateTime.Today,
+                        ArticleId = receivableMemo.CustomerId,
+                        AccountId = receivableMemo.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
+                        DebitAmount = 0,
+                        CreditAmount = receivableMemo.Amount,
+                        Particulars = receivableMemo.Remarks,
+                        RRId = null,
+                        SIId = null,
+                        CIId = null,
+                        CVId = null,
+                        PMId = null,
+                        RMId = receivableMemo.Id,
+                        JVId = null,
+                        ILId = null
+                    };
+
+                    _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteReceivableMemoJournalEntry(Int32 RMId)
+        {
+            try
+            {
+                var journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.RMId == RMId
+                    select d
+                ).ToListAsync();
 
                 if (journalEntries.Any())
                 {

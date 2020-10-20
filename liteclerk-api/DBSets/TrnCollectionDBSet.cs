@@ -24,7 +24,6 @@ namespace liteclerk_api.DBSets
         public virtual MstArticleDBSet MstArticle_CustomerId { get; set; }
 
         public String Remarks { get; set; }
-        public Decimal Amount { get; set; }
 
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUserId { get; set; }
@@ -34,6 +33,8 @@ namespace liteclerk_api.DBSets
 
         public Int32 ApprovedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_ApprovedByUserId { get; set; }
+
+        public Decimal Amount { get; set; }
 
         public String Status { get; set; }
         public Boolean IsCancelled { get; set; }

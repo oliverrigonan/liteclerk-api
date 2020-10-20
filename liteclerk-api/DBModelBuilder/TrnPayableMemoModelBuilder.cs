@@ -27,6 +27,10 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ManualNumber).HasColumnName("ManualNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.DocumentReference).HasColumnName("DocumentReference").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
 
+                entity.Property(e => e.SupplierId).HasColumnName("SupplierId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstArticle_SupplierId).WithMany(f => f.TrnPayableMemos_SupplierId).HasForeignKey(f => f.SupplierId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.Remarks).HasColumnName("Remarks").HasColumnType("nvarchar(max)").IsRequired();
+
                 entity.Property(e => e.PreparedByUserId).HasColumnName("PreparedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_PreparedByUserId).WithMany(f => f.TrnPayableMemos_PreparedByUserId).HasForeignKey(f => f.PreparedByUserId).OnDelete(DeleteBehavior.Restrict);
 
@@ -35,6 +39,8 @@ namespace liteclerk_api.DBModelBuilder
 
                 entity.Property(e => e.ApprovedByUserId).HasColumnName("ApprovedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_ApprovedByUserId).WithMany(f => f.TrnPayableMemos_ApprovedByUserId).HasForeignKey(f => f.ApprovedByUserId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
 
                 entity.Property(e => e.Status).HasColumnName("Status").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.IsCancelled).HasColumnName("IsCancelled").HasColumnType("bit").IsRequired();

@@ -77,7 +77,9 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnDisbursementDBSet> TrnDisbursements { get; set; }
         public virtual DbSet<DBSets.TrnDisbursementLineDBSet> TrnDisbursementLines { get; set; }
         public virtual DbSet<DBSets.TrnPayableMemoDBSet> TrnPayableMemos { get; set; }
+        public virtual DbSet<DBSets.TrnPayableMemoLineDBSet> TrnPayableMemoLines { get; set; }
         public virtual DbSet<DBSets.TrnReceivableMemoDBSet> TrnReceivableMemos { get; set; }
+        public virtual DbSet<DBSets.TrnReceivableMemoLineDBSet> TrnReceivableMemoLines { get; set; }
         public virtual DbSet<DBSets.TrnJournalVoucherDBSet> TrnJournalVouchers { get; set; }
         public virtual DbSet<DBSets.SysJournalEntryDBSet> SysJournalEntries { get; set; }
         public virtual DbSet<DBSets.MstArticleOtherDBSet> MstArticleOthers { get; set; }
@@ -151,7 +153,9 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnDisbursementModelBuilder.CreateTrnDisbursementModel(modelBuilder);
             DBModelBuilder.TrnDisbursementLineModelBuilder.CreateTrnDisbursementLineModel(modelBuilder);
             DBModelBuilder.TrnPayableMemoModelBuilder.CreateTrnPayableMemoModel(modelBuilder);
+            DBModelBuilder.TrnPayableMemoLineModelBuilder.CreateTrnPayableMemoLineModel(modelBuilder);
             DBModelBuilder.TrnReceivableMemoModelBuilder.CreateTrnReceivableMemoModel(modelBuilder);
+            DBModelBuilder.TrnReceivableMemoLineModelBuilder.CreateTrnReceivableMemoLineModel(modelBuilder);
             DBModelBuilder.TrnJournalVoucherModelBuilder.CreateTrnJournalVoucherModel(modelBuilder);
             DBModelBuilder.SysJournalEntryModelBuilder.CreateSysJournalEntryModel(modelBuilder);
             DBModelBuilder.MstArticleOtherModelBuilder.CreateMstArticleOtherModel(modelBuilder);

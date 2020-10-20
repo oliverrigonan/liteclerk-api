@@ -18,9 +18,9 @@ namespace liteclerk_api.DTO
         public Int32? SIId { get; set; }
         public TrnSalesInvoiceDTO SalesInvoice { get; set; }
         public Decimal Amount { get; set; }
+        public String Particulars { get; set; }
         public Int32 PayTypeId { get; set; }
         public MstPayTypeDTO PayType { get; set; }
-        public String Particulars { get; set; }
         public String CheckNumber { get; set; }
         public String CheckDate { get; set; }
         public String CheckBank { get; set; }

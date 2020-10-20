@@ -60,6 +60,8 @@ namespace liteclerk_api.DBSets
 
         public virtual ICollection<TrnReceivingReceiptItemDBSet> TrnReceivingReceiptItems_RRId { get; set; }
         public virtual ICollection<TrnDisbursementLineDBSet> TrnDisbursementLines_RRId { get; set; }
+        public virtual ICollection<TrnPayableMemoLineDBSet> TrnPayableMemoLines_RRId { get; set; }
+
         public virtual ICollection<SysInventoryDBSet> SysInventories_RRId { get; set; }
         public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_RRId { get; set; }
 

@@ -20,6 +20,11 @@ namespace liteclerk_api.DBSets
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
 
+        public Int32 CustomerId { get; set; }
+        public virtual MstArticleDBSet MstArticle_CustomerId { get; set; }
+
+        public String Remarks { get; set; }
+
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUserId { get; set; }
 
@@ -28,6 +33,8 @@ namespace liteclerk_api.DBSets
 
         public Int32 ApprovedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_ApprovedByUserId { get; set; }
+
+        public Decimal Amount { get; set; }
 
         public String Status { get; set; }
         public Boolean IsCancelled { get; set; }
@@ -41,7 +48,8 @@ namespace liteclerk_api.DBSets
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
-        
+
+        public virtual ICollection<TrnReceivableMemoLineDBSet> TrnReceivableMemoLines_RMId { get; set; }
         public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_RMId { get; set; }
     }
 }

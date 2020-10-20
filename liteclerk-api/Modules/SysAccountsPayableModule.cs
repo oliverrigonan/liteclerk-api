@@ -19,7 +19,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.Id == RRId
                     select d
@@ -31,22 +31,35 @@ namespace liteclerk_api.Modules
                     Decimal paidAmount = 0;
                     Decimal adjustmentAmount = 0;
 
-                    IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLine = await (
-                        from d in _dbContext.TrnDisbursementLines
-                        where d.RRId == RRId
-                        && d.TrnDisbursement_CVId.IsLocked == true
-                        && d.TrnDisbursement_CVId.IsCancelled == false
-                        select d
-                    ).ToListAsync();
+                    var disbursementLine = await (
+                         from d in _dbContext.TrnDisbursementLines
+                         where d.RRId == RRId
+                         && d.TrnDisbursement_CVId.IsLocked == true
+                         && d.TrnDisbursement_CVId.IsCancelled == false
+                         select d
+                     ).ToListAsync();
 
                     if (disbursementLine.Any())
                     {
                         paidAmount = disbursementLine.Sum(d => d.Amount);
                     }
 
+                    var payableMemoLines = await (
+                        from d in _dbContext.TrnPayableMemoLines
+                        where d.RRId == RRId
+                        && d.TrnPayableMemo_PMId.IsLocked == true
+                        && d.TrnPayableMemo_PMId.IsCancelled == false
+                        select d
+                    ).ToListAsync();
+
+                    if (payableMemoLines.Any())
+                    {
+                        adjustmentAmount = payableMemoLines.Sum(d => d.Amount);
+                    }
+
                     Decimal balanceAmount = (amount - paidAmount) + adjustmentAmount;
 
-                    DBSets.TrnReceivingReceiptDBSet updateReceivingReceipt = receivingReceipt;
+                    var updateReceivingReceipt = receivingReceipt;
                     updateReceivingReceipt.PaidAmount = paidAmount;
                     updateReceivingReceipt.AdjustmentAmount = adjustmentAmount;
                     updateReceivingReceipt.BalanceAmount = balanceAmount;

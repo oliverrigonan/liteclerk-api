@@ -160,22 +160,24 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job order department not found.");
                 }
 
-                List<DBSets.TrnJobOrderDepartmentDBSet> previousJobOrderDepartments = await (
-                    from d in _dbContext.TrnJobOrderDepartments
-                    where d.Id != id
-                    && d.JOId == jobOrderDepartment.JOId
-                    && d.SequenceNumber < jobOrderDepartment.SequenceNumber
-                    && d.IsRequired == true
-                    select d
-                ).OrderByDescending(d => d.SequenceNumber).ToListAsync();
-
-                if (previousJobOrderDepartments.Any())
+                if (jobOrderDepartment.IsRequired == true)
                 {
-                    foreach (var previousJobOrderDepartment in previousJobOrderDepartments)
+                    List<DBSets.TrnJobOrderDepartmentDBSet> previousJobOrderDepartments = await (
+                        from d in _dbContext.TrnJobOrderDepartments
+                        where d.Id != id
+                        && d.JOId == jobOrderDepartment.JOId
+                        && d.SequenceNumber < jobOrderDepartment.SequenceNumber
+                        select d
+                    ).OrderByDescending(d => d.SequenceNumber).ToListAsync();
+
+                    if (previousJobOrderDepartments.Any())
                     {
-                        if (previousJobOrderDepartment.Status != "DONE")
+                        foreach (var previousJobOrderDepartment in previousJobOrderDepartments)
                         {
-                            return StatusCode(404, "The previous department must be done first.");
+                            if (previousJobOrderDepartment.Status != "DONE")
+                            {
+                                return StatusCode(404, "The previous department must be done first.");
+                            }
                         }
                     }
                 }

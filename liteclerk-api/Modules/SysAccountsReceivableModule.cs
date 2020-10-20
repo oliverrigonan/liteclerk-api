@@ -19,7 +19,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                var salesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
                     where d.Id == SIId
                     select d
@@ -31,7 +31,7 @@ namespace liteclerk_api.Modules
                     Decimal paidAmount = 0;
                     Decimal adjustmentAmount = 0;
 
-                    IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLine = await (
+                    var collectionLines = await (
                         from d in _dbContext.TrnCollectionLines
                         where d.SIId == SIId
                         && d.TrnCollection_CIId.IsLocked == true
@@ -39,14 +39,27 @@ namespace liteclerk_api.Modules
                         select d
                     ).ToListAsync();
 
-                    if (collectionLine.Any())
+                    if (collectionLines.Any())
                     {
-                        paidAmount = collectionLine.Sum(d => d.Amount);
+                        paidAmount = collectionLines.Sum(d => d.Amount);
+                    }
+
+                    var receivableMemoLines = await (
+                        from d in _dbContext.TrnReceivableMemoLines
+                        where d.SIId == SIId
+                        && d.TrnReceivableMemo_RMId.IsLocked == true
+                        && d.TrnReceivableMemo_RMId.IsCancelled == false
+                        select d
+                    ).ToListAsync();
+
+                    if (receivableMemoLines.Any())
+                    {
+                        adjustmentAmount = receivableMemoLines.Sum(d => d.Amount);
                     }
 
                     Decimal balanceAmount = (amount - paidAmount) + adjustmentAmount;
 
-                    DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
+                    var updateSalesInvoice = salesInvoice;
                     updateSalesInvoice.PaidAmount = paidAmount;
                     updateSalesInvoice.AdjustmentAmount = adjustmentAmount;
                     updateSalesInvoice.BalanceAmount = balanceAmount;

@@ -42,5 +42,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnStockOutDBSet> TrnStockOuts_AccountId { get; set; }
         public virtual ICollection<TrnStockTransferDBSet> TrnStockTransfers_AccountId { get; set; }
         public virtual ICollection<TrnDisbursementLineDBSet> TrnDisbursementLines_AccountId { get; set; }
+        public virtual ICollection<TrnReceivableMemoLineDBSet> TrnReceivableMemoLines_AccountId { get; set; }
+        public virtual ICollection<TrnPayableMemoLineDBSet> TrnPayableMemoLines_AccountId { get; set; }
     }
 }

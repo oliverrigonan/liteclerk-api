@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201020195117_AddedReceivableMemoAndPayableMemoTables")]
+    partial class AddedReceivableMemoAndPayableMemoTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3112,7 +3114,7 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("Particulars")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RRId")
+                    b.Property<int?>("RRId")
                         .HasColumnName("RRId")
                         .HasColumnType("int");
 
@@ -3800,7 +3802,7 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("RMId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SIId")
+                    b.Property<int?>("SIId")
                         .HasColumnName("SIId")
                         .HasColumnType("int");
 
@@ -6486,8 +6488,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnReceivingReceiptDBSet", "TrnReceivingReceipt_RRId")
                         .WithMany("TrnPayableMemoLines_RRId")
                         .HasForeignKey("RRId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnPointOfSaleDBSet", b =>
@@ -6784,8 +6785,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnSalesInvoiceDBSet", "TrnSalesInvoice_SIId")
                         .WithMany("TrnReceivableMemoLines_SIId")
                         .HasForeignKey("SIId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("liteclerk_api.DBSets.TrnReceivingReceiptDBSet", b =>
