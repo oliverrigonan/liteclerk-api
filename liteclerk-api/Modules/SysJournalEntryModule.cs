@@ -806,6 +806,28 @@ namespace liteclerk_api.Modules
 
                 if (receivableMemo != null)
                 {
+                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    {
+                        BranchId = receivableMemo.BranchId,
+                        JournalEntryDate = DateTime.Today,
+                        ArticleId = receivableMemo.CustomerId,
+                        AccountId = receivableMemo.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
+                        DebitAmount = receivableMemo.Amount,
+                        CreditAmount = 0,
+                        Particulars = receivableMemo.Remarks,
+                        RRId = null,
+                        SIId = null,
+                        CIId = null,
+                        CVId = null,
+                        PMId = null,
+                        RMId = receivableMemo.Id,
+                        JVId = null,
+                        ILId = null
+                    };
+
+                    _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
+                    await _dbContext.SaveChangesAsync();
+
                     var receivableMemoLines = await (
                         from d in _dbContext.TrnReceivableMemoLines
                         where d.RMId == RMId
@@ -838,8 +860,8 @@ namespace liteclerk_api.Modules
                                     JournalEntryDate = DateTime.Today,
                                     ArticleId = receivableMemo.CustomerId,
                                     AccountId = receivableMemoLineAccount.AccountId,
-                                    DebitAmount = receivableMemoLineAccount.Amount,
-                                    CreditAmount = 0,
+                                    DebitAmount = 0,
+                                    CreditAmount = receivableMemoLineAccount.Amount,
                                     Particulars = receivableMemo.Remarks,
                                     RRId = null,
                                     SIId = null,
@@ -856,28 +878,6 @@ namespace liteclerk_api.Modules
                             }
                         }
                     }
-
-                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
-                    {
-                        BranchId = receivableMemo.BranchId,
-                        JournalEntryDate = DateTime.Today,
-                        ArticleId = receivableMemo.CustomerId,
-                        AccountId = receivableMemo.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
-                        DebitAmount = 0,
-                        CreditAmount = receivableMemo.Amount,
-                        Particulars = receivableMemo.Remarks,
-                        RRId = null,
-                        SIId = null,
-                        CIId = null,
-                        CVId = null,
-                        PMId = null,
-                        RMId = receivableMemo.Id,
-                        JVId = null,
-                        ILId = null
-                    };
-
-                    _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
-                    await _dbContext.SaveChangesAsync();
                 }
             }
             catch (Exception e)

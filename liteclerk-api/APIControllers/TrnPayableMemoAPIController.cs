@@ -272,7 +272,7 @@ namespace liteclerk_api.APIControllers
 
                 var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
-                    where d.Category == "RECEIVABLE MEMO STATUS"
+                    where d.Category == "PAYABLE MEMO STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -429,7 +429,7 @@ namespace liteclerk_api.APIControllers
                 var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnPayableMemoDTO.Status
-                    && d.Category == "RECEIVABLE MEMO STATUS"
+                    && d.Category == "PAYABLE MEMO STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -560,7 +560,7 @@ namespace liteclerk_api.APIControllers
                 var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnPayableMemoDTO.Status
-                    && d.Category == "RECEIVABLE MEMO STATUS"
+                    && d.Category == "PAYABLE MEMO STATUS"
                     select d
                 ).FirstOrDefaultAsync();
 

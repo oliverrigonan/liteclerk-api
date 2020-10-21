@@ -444,7 +444,7 @@ namespace liteclerk_api.APIControllers
             }
         }
 
-        [HttpGet("list/receivableMemo/{PMId}")]
+        [HttpGet("list/receivableMemo/{RMId}")]
         public async Task<ActionResult> GetReceivableMemoJournalEntryList(Int32 RMId)
         {
             try
