@@ -55,7 +55,6 @@ namespace liteclerk_api.APIControllers
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -103,7 +102,6 @@ namespace liteclerk_api.APIControllers
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -151,7 +149,6 @@ namespace liteclerk_api.APIControllers
                          CurrencyId = d.CurrencyId,
                          Currency = new DTO.MstCurrencyDTO
                          {
-                             CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                              ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                              Currency = d.MstCurrency_CurrencyId.Currency
                          },
@@ -240,7 +237,7 @@ namespace liteclerk_api.APIControllers
                 _dbContext.MstCompanies.Add(newCompany);
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(200, GetCompanyDetail(newCompany.Id));
+                return StatusCode(200, newCompany.Id);
             }
             catch (Exception e)
             {

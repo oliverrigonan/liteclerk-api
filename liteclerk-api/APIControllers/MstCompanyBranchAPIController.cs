@@ -53,7 +53,6 @@ namespace liteclerk_api.APIControllers
                         CompanyId = d.CompanyId,
                         Company = new DTO.MstCompanyDTO
                         {
-                            CompanyCode = d.MstCompany_CompanyId.CompanyCode,
                             ManualCode = d.MstCompany_CompanyId.ManualCode,
                             Company = d.MstCompany_CompanyId.Company
                         },
@@ -64,6 +63,39 @@ namespace liteclerk_api.APIControllers
                 ).ToListAsync();
 
                 return StatusCode(200, companyBranches);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("detail/{id}")]
+        public async Task<ActionResult> GetCompanyBranchDetail(Int32 id)
+        {
+            try
+            {
+                DTO.MstCompanyBranchDTO companyBranch = await (
+                    from d in _dbContext.MstCompanyBranches
+                    where d.Id == id
+                    select new DTO.MstCompanyBranchDTO
+                    {
+                        Id = d.Id,
+                        BranchCode = d.BranchCode,
+                        ManualCode = d.ManualCode,
+                        CompanyId = d.CompanyId,
+                        Company = new DTO.MstCompanyDTO
+                        {
+                            ManualCode = d.MstCompany_CompanyId.ManualCode,
+                            Company = d.MstCompany_CompanyId.Company
+                        },
+                        Branch = d.Branch,
+                        Address = d.Address,
+                        TIN = d.TIN
+                    }
+                ).FirstOrDefaultAsync();
+
+                return StatusCode(200, companyBranch);
             }
             catch (Exception e)
             {
