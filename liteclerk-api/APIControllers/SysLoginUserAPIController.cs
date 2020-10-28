@@ -48,7 +48,8 @@ namespace liteclerk_api.APIControllers
                         Company = new DTO.MstCompanyDTO
                         {
                             ManualCode = d.MstCompany_CompanyId.ManualCode,
-                            Company = d.MstCompany_CompanyId.Company
+                            Company = d.MstCompany_CompanyId.Company,
+                            ImageURL = d.MstCompany_CompanyId.ImageURL
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO

@@ -81,7 +81,8 @@ namespace liteclerk_api.APIControllers
                         {
                             CompanyCode = d.MstCompany_CompanyId.CompanyCode,
                             ManualCode = d.MstCompany_CompanyId.ManualCode,
-                            Company = d.MstCompany_CompanyId.Company
+                            Company = d.MstCompany_CompanyId.Company,
+                            ImageURL = d.MstCompany_CompanyId.ImageURL
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
@@ -121,7 +122,8 @@ namespace liteclerk_api.APIControllers
                         {
                             CompanyCode = d.MstCompany_CompanyId.CompanyCode,
                             ManualCode = d.MstCompany_CompanyId.ManualCode,
-                            Company = d.MstCompany_CompanyId.Company
+                            Company = d.MstCompany_CompanyId.Company,
+                            ImageURL = d.MstCompany_CompanyId.ImageURL
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
