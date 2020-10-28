@@ -54,9 +54,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -168,9 +170,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -284,9 +288,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -401,9 +407,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -517,9 +525,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -632,9 +642,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -748,9 +760,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -862,9 +876,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         SKUCode = d.SKUCode,
                         BarCode = d.BarCode,
                         Description = d.Description,
@@ -1240,6 +1256,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleDBSet saveArticle = article;
                 saveArticle.ManualCode = mstArticleItemDTO.ArticleManualCode;
                 saveArticle.Article = mstArticleItemDTO.Description;
+                saveArticle.Particulars = mstArticleItemDTO.ArticleParticulars;
                 saveArticle.UpdatedByUserId = loginUserId;
                 saveArticle.UpdatedDateTime = DateTime.Now;
 
@@ -1394,6 +1411,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleDBSet lockArticle = article;
                 lockArticle.ManualCode = mstArticleItemDTO.ArticleManualCode;
                 lockArticle.Article = mstArticleItemDTO.Description;
+                lockArticle.Particulars = mstArticleItemDTO.ArticleParticulars;
                 lockArticle.IsLocked = true;
                 lockArticle.UpdatedByUserId = loginUserId;
                 lockArticle.UpdatedDateTime = DateTime.Now;

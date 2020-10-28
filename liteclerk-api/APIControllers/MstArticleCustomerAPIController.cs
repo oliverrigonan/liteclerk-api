@@ -54,9 +54,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         Customer = d.Customer,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
@@ -118,9 +120,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         Customer = d.Customer,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
@@ -182,9 +186,11 @@ namespace liteclerk_api.APIControllers
                             ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article,
-                            ImageURL = d.MstArticle_ArticleId.ImageURL
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
                         ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
                         Customer = d.Customer,
                         Address = d.Address,
                         ContactPerson = d.ContactPerson,
@@ -439,6 +445,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleDBSet saveArticle = article;
                 saveArticle.ManualCode = mstArticleCustomerDTO.ArticleManualCode;
                 saveArticle.Article = mstArticleCustomerDTO.Customer;
+                saveArticle.Particulars = mstArticleCustomerDTO.ArticleParticulars;
                 saveArticle.UpdatedByUserId = loginUserId;
                 saveArticle.UpdatedDateTime = DateTime.Now;
 
@@ -551,6 +558,7 @@ namespace liteclerk_api.APIControllers
                 DBSets.MstArticleDBSet lockArticle = article;
                 lockArticle.ManualCode = mstArticleCustomerDTO.ArticleManualCode;
                 lockArticle.Article = mstArticleCustomerDTO.Customer;
+                lockArticle.Particulars = mstArticleCustomerDTO.ArticleParticulars;
                 lockArticle.IsLocked = true;
                 lockArticle.UpdatedByUserId = loginUserId;
                 lockArticle.UpdatedDateTime = DateTime.Now;

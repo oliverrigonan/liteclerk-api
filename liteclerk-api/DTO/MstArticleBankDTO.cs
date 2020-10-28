@@ -11,6 +11,7 @@ namespace liteclerk_api.DTO
         public Int32 ArticleId { get; set; }
         public MstArticleDTO Article { get; set; }
         public String ArticleManualCode { get; set; }
+        public String ArticleParticulars { get; set; }
         public String Bank { get; set; }
         public String AccountNumber { get; set; }
         public String TypeOfAccount { get; set; }
