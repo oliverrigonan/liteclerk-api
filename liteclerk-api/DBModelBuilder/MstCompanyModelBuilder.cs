@@ -21,6 +21,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.Company).HasColumnName("Company").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.Address).HasColumnName("Address").HasColumnType("nvarchar(max)").IsRequired();
                 entity.Property(e => e.TIN).HasColumnName("TIN").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
+                entity.Property(e => e.ImageURL).HasColumnName("ImageURL").HasColumnType("nvarchar(max)").IsRequired();
 
                 entity.Property(e => e.CurrencyId).HasColumnName("CurrencyId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCurrency_CurrencyId).WithMany(f => f.MstCompanies_CurrencyId).HasForeignKey(f => f.CurrencyId).OnDelete(DeleteBehavior.Restrict);

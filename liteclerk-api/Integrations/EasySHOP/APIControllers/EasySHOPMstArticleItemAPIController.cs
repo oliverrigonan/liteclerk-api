@@ -27,15 +27,15 @@ namespace liteclerk_api.Integrations.EasySHOP.APIControllers
         }
 
         [AllowAnonymous]
-        [HttpGet("list/byCategory/{category}")]
-        public async Task<ActionResult> GetArticleItemListByCategory(String category)
+        [HttpGet("list/byCategory/{particulars}")]
+        public async Task<ActionResult> GetArticleItemListByCategory(String particulars)
         {
             try
             {
                 List<EasySHOPMstArticleItemDTO> lockedArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
-                    && d.Category == category
+                    && d.MstArticle_ArticleId.Particulars == particulars
                     select new EasySHOPMstArticleItemDTO
                     {
                         Id = d.Id,

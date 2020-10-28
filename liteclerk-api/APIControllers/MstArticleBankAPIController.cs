@@ -274,6 +274,7 @@ namespace liteclerk_api.APIControllers
                     ArticleTypeId = 1,
                     Article = "",
                     ImageURL = "",
+                    Particulars = "",
                     IsLocked = false,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,

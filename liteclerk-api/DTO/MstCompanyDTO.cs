@@ -13,6 +13,7 @@ namespace liteclerk_api.DTO
         public String Company { get; set; }
         public String Address { get; set; }
         public String TIN { get; set; }
+        public String ImageURL { get; set; }
         public Int32 CurrencyId { get; set; }
         public MstCurrencyDTO Currency { get; set; }
         public String CostMethod { get; set; }

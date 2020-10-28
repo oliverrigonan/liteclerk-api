@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201028144852_AddedImageURLInMstCompanyTable")]
+    partial class AddedImageURLInMstCompanyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -502,11 +504,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ManualCode")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<string>("Particulars")
-                        .IsRequired()
-                        .HasColumnName("Particulars")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UpdatedByUserId")
                         .HasColumnName("UpdatedByUserId")

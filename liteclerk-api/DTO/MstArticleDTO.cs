@@ -14,6 +14,7 @@ namespace liteclerk_api.DTO
         public Int32 ArticleTypeId { get; set; }
         public MstArticleTypeDTO ArticleType { get; set; }
         public String ImageURL { get; set; }
+        public String Particulars { get; set; }
         public Boolean IsLocked { get; set; }
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }

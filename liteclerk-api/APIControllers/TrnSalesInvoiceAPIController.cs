@@ -1364,12 +1364,14 @@ namespace liteclerk_api.APIControllers
                         String companyName = "";
                         String companyAddress = "";
                         String companyTaxNumber = "";
+                        String companyImageURL = "";
 
                         if (loginUser.CompanyId != null)
                         {
                             companyName = loginUser.MstCompany_CompanyId.Company;
                             companyAddress = loginUser.MstCompany_CompanyId.Address;
                             companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
+                            companyImageURL = loginUser.MstCompany_CompanyId.ImageURL;
                         }
 
                         DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -1387,7 +1389,8 @@ namespace liteclerk_api.APIControllers
                                 reprinted = "(REPRINTED)";
                             }
 
-                            String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\colorideas_logo.png";
+                            //String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\colorideas_logo.png";
+                            String logoPath = companyImageURL;
 
                             Image logoPhoto = Image.GetInstance(logoPath);
                             logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;
@@ -1617,12 +1620,14 @@ namespace liteclerk_api.APIControllers
                         String companyName = "";
                         String companyAddress = "";
                         String companyTaxNumber = "";
+                        String companyImageURL = "";
 
                         if (loginUser.CompanyId != null)
                         {
                             companyName = loginUser.MstCompany_CompanyId.Company;
                             companyAddress = loginUser.MstCompany_CompanyId.Address;
                             companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
+                            companyImageURL = loginUser.MstCompany_CompanyId.ImageURL;
                         }
 
                         DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
@@ -1640,7 +1645,8 @@ namespace liteclerk_api.APIControllers
                                 reprinted = "(REPRINTED)";
                             }
 
-                            String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\colorideas_logo.png";
+                            //String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\colorideas_logo.png";
+                            String logoPath = companyImageURL;
 
                             Image logoPhoto = Image.GetInstance(logoPath);
                             logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;
