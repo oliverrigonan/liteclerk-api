@@ -83,6 +83,8 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnJournalVoucherDBSet> TrnJournalVouchers { get; set; }
         public virtual DbSet<DBSets.SysJournalEntryDBSet> SysJournalEntries { get; set; }
         public virtual DbSet<DBSets.MstArticleOtherDBSet> MstArticleOthers { get; set; }
+        public virtual DbSet<DBSets.TrnStockCountDBSet> TrnStockCounts { get; set; }
+        public virtual DbSet<DBSets.TrnStockCountItemDBSet> TrnStockCountItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -159,6 +161,8 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnJournalVoucherModelBuilder.CreateTrnJournalVoucherModel(modelBuilder);
             DBModelBuilder.SysJournalEntryModelBuilder.CreateSysJournalEntryModel(modelBuilder);
             DBModelBuilder.MstArticleOtherModelBuilder.CreateMstArticleOtherModel(modelBuilder);
+            DBModelBuilder.TrnStockCountModelBuilder.CreateTrnStockCountModel(modelBuilder);
+            DBModelBuilder.TrnStockCountItemModelBuilder.CreateTrnStockCountItemModel(modelBuilder);
         }
     }
 }
