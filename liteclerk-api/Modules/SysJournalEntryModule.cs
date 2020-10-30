@@ -907,5 +907,85 @@ namespace liteclerk_api.Modules
                 throw e;
             }
         }
+
+        public async Task InsertJournalVoucherJournalEntry(Int32 JVId)
+        {
+            var journalVoucher = await (
+                from d in _dbContext.TrnJournalVouchers
+                where d.Id == JVId
+                select d
+            ).FirstOrDefaultAsync();
+
+            if (journalVoucher != null)
+            {
+                var journalVoucherLines = await (
+                    from d in _dbContext.TrnJournalVoucherLines
+                    where d.JVId == JVId
+                    select d
+                ).ToListAsync();
+
+                if (journalVoucherLines.Any())
+                {
+                    var journalVoucherLinesAccounts = from d in journalVoucherLines
+                                                      group d by new
+                                                      {
+                                                          d.BranchId,
+                                                          d.ArticleId,
+                                                          d.AccountId
+                                                      } into g
+                                                      select new
+                                                      {
+                                                          g.Key.BranchId,
+                                                          g.Key.ArticleId,
+                                                          g.Key.AccountId,
+                                                          DebitAmount = g.Sum(s => s.DebitAmount),
+                                                          CreditAmount = g.Sum(s => s.CreditAmount),
+                                                      };
+
+                    if (journalVoucherLinesAccounts.Any())
+                    {
+                        foreach (var journalVoucherLinesAccount in journalVoucherLinesAccounts)
+                        {
+                            DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                            {
+                                BranchId = journalVoucher.BranchId,
+                                JournalEntryDate = DateTime.Today,
+                                ArticleId = journalVoucherLinesAccount.ArticleId,
+                                AccountId = journalVoucherLinesAccount.AccountId,
+                                DebitAmount = journalVoucherLinesAccount.DebitAmount,
+                                CreditAmount = journalVoucherLinesAccount.CreditAmount,
+                                Particulars = journalVoucher.Remarks,
+                                RRId = null,
+                                SIId = null,
+                                CIId = null,
+                                CVId = null,
+                                PMId = null,
+                                RMId = null,
+                                JVId = journalVoucher.Id,
+                                ILId = null
+                            };
+
+                            _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
+                            await _dbContext.SaveChangesAsync();
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task DeleteJournalVoucherJournalEntry(Int32 JVId)
+        {
+            var journalEntries = await (
+                from d in _dbContext.SysJournalEntries
+                where d.JVId == JVId
+                select d
+            ).ToListAsync();
+
+            if (journalEntries.Any())
+            {
+                _dbContext.SysJournalEntries.RemoveRange(journalEntries);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

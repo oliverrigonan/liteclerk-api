@@ -45,5 +45,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnReceivableMemoLineDBSet> TrnReceivableMemoLines_BranchId { get; set; }
         public virtual ICollection<TrnPayableMemoLineDBSet> TrnPayableMemoLines_BranchId { get; set; }
         public virtual ICollection<TrnStockCountDBSet> TrnStockCounts_BranchId { get; set; }
+        public virtual ICollection<TrnJournalVoucherLineDBSet> TrnJournalVoucherLines_BranchId { get; set; }
     }
 }

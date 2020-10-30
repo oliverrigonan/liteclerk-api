@@ -81,6 +81,7 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnReceivableMemoDBSet> TrnReceivableMemos { get; set; }
         public virtual DbSet<DBSets.TrnReceivableMemoLineDBSet> TrnReceivableMemoLines { get; set; }
         public virtual DbSet<DBSets.TrnJournalVoucherDBSet> TrnJournalVouchers { get; set; }
+        public virtual DbSet<DBSets.TrnJournalVoucherLineDBSet> TrnJournalVoucherLines { get; set; }
         public virtual DbSet<DBSets.SysJournalEntryDBSet> SysJournalEntries { get; set; }
         public virtual DbSet<DBSets.MstArticleOtherDBSet> MstArticleOthers { get; set; }
         public virtual DbSet<DBSets.TrnStockCountDBSet> TrnStockCounts { get; set; }
@@ -159,6 +160,7 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnReceivableMemoModelBuilder.CreateTrnReceivableMemoModel(modelBuilder);
             DBModelBuilder.TrnReceivableMemoLineModelBuilder.CreateTrnReceivableMemoLineModel(modelBuilder);
             DBModelBuilder.TrnJournalVoucherModelBuilder.CreateTrnJournalVoucherModel(modelBuilder);
+            DBModelBuilder.TrnJournalVoucherLineModelBuilder.CreateTrnJournalVoucherLineModel(modelBuilder);
             DBModelBuilder.SysJournalEntryModelBuilder.CreateSysJournalEntryModel(modelBuilder);
             DBModelBuilder.MstArticleOtherModelBuilder.CreateMstArticleOtherModel(modelBuilder);
             DBModelBuilder.TrnStockCountModelBuilder.CreateTrnStockCountModel(modelBuilder);

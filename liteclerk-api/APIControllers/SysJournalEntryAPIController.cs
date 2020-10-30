@@ -528,6 +528,90 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/journalVoucher/{JVId}")]
+        public async Task<ActionResult> GetJournalVoucherJournalEntryList(Int32 JVId)
+        {
+            try
+            {
+                IEnumerable<DTO.SysJournalEntryDTO> journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.JVId == JVId
+                    select new DTO.SysJournalEntryDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        JournalEntryDate = d.JournalEntryDate.ToShortDateString(),
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
+                        },
+                        AccountId = d.AccountId,
+                        Account = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_AccountId.ManualCode,
+                            Account = d.MstAccount_AccountId.Account
+                        },
+                        DebitAmount = d.DebitAmount,
+                        CreditAmount = d.CreditAmount,
+                        Particulars = d.Particulars,
+                        RRId = d.RRId,
+                        ReceivingReceipt = new DTO.TrnReceivingReceiptDTO
+                        {
+
+                        },
+                        SIId = d.SIId,
+                        SalesInvoice = new DTO.TrnSalesInvoiceDTO
+                        {
+
+                        },
+                        CIId = d.CIId,
+                        Collection = new DTO.TrnCollectionDTO
+                        {
+
+                        },
+                        CVId = d.CVId,
+                        Disbursement = new DTO.TrnDisbursementDTO
+                        {
+
+                        },
+                        PMId = d.PMId,
+                        PayableMemo = new DTO.TrnPayableMemoDTO
+                        {
+
+                        },
+                        RMId = d.RMId,
+                        ReceivableMemo = new DTO.TrnReceivableMemoDTO
+                        {
+
+                        },
+                        JVId = d.JVId,
+                        JournalVoucher = new DTO.TrnJournalVoucherDTO
+                        {
+
+                        },
+                        ILId = d.ILId,
+                        InventoryLedger = new DTO.TrnInventoryDTO
+                        {
+
+                        }
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, journalEntries);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("list/inventoryLedger/{ILId}")]
         public async Task<ActionResult> GetInventoryLedgerJournalEntryList(Int32 ILId)
         {

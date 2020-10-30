@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace liteclerk_api.DBSets
+namespace liteclerk_api.DTO
 {
-    public class TrnJournalVoucherLineDBSet
+    public class TrnJournalVoucherLineDTO
     {
         public Int32 Id { get; set; }
 
         public Int32 JVId { get; set; }
-        public virtual TrnJournalVoucherDBSet TrnJournalVoucher_JVId { get; set; }
 
         public Int32 BranchId { get; set; }
-        public virtual MstCompanyBranchDBSet MstCompanyBranch_BranchId { get; set; }
+        public MstCompanyBranchDTO Branch { get; set; }
 
         public Int32 AccountId { get; set; }
-        public virtual MstAccountDBSet MstAccount_AccountId { get; set; }
+        public MstAccountDTO Account { get; set; }
 
         public Int32 ArticleId { get; set; }
-        public virtual MstArticleDBSet MstArticle_ArticleId { get; set; }
+        public MstArticleDTO Article { get; set; }
 
         public Decimal DebitAmount { get; set; }
         public Decimal CreditAmount { get; set; }
