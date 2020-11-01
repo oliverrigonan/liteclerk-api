@@ -314,7 +314,7 @@ namespace liteclerk_api.APIControllers
 
                 DBSets.MstArticleCustomerDBSet customer = await (
                     from d in _dbContext.MstArticleCustomers
-                    where d.Id == salesInvoice.CustomerId
+                    where d.ArticleId == salesInvoice.CustomerId
                     select d
                 ).FirstOrDefaultAsync();
 
