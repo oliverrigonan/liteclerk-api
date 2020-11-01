@@ -13,6 +13,7 @@ namespace liteclerk_api.DBModelBuilder
             modelBuilder.Entity<DBSets.TrnStockTransferItemDBSet>(entity =>
             {
                 entity.ToTable("TrnStockTransferItem");
+
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.STId).HasColumnName("STId").HasColumnType("int").IsRequired();

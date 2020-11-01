@@ -3,34 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace liteclerk_api.DBSets
+namespace liteclerk_api.DTO
 {
-    public class TrnStockWithdrawalItemDBSet
+    public class TrnStockWithdrawalItemDTO
     {
         public Int32 Id { get; set; }
-
         public Int32 SWId { get; set; }
-        public virtual TrnStockWithdrawalDBSet TrnStockWithdrawal_SWId { get; set; }
-
         public Int32 ItemId { get; set; }
-        public virtual MstArticleDBSet MstArticle_ItemId { get; set; }
-
+        public MstArticleItemDTO Item { get; set; }
         public Int32 ItemInventoryId { get; set; }
-        public virtual MstArticleItemInventoryDBSet MstArticleItemInventory_ItemInventoryId { get; set; }
-
+        public MstArticleItemInventoryDTO ItemInventory { get; set; }
         public String Particulars { get; set; }
-
         public Decimal Quantity { get; set; }
-
         public Int32 UnitId { get; set; }
-        public virtual MstUnitDBSet MstUnit_UnitId { get; set; }
-
+        public MstUnitDTO Unit { get; set; }
         public Decimal Cost { get; set; }
         public Decimal Amount { get; set; }
-
         public Decimal BaseQuantity { get; set; }
         public Int32 BaseUnitId { get; set; }
-        public virtual MstUnitDBSet MstUnit_BaseUnitId { get; set; }
+        public MstUnitDTO BaseUnit { get; set; }
         public Decimal BaseCost { get; set; }
     }
 }

@@ -20,6 +20,23 @@ namespace liteclerk_api.DBSets
         public String ManualNumber { get; set; }
         public String DocumentReference { get; set; }
 
+        public Int32 CustomerId { get; set; }
+        public virtual MstArticleDBSet MstArticle_CustomerId { get; set; }
+
+        public Int32 FromBranchId { get; set; }
+        public virtual MstCompanyBranchDBSet MstCompanyBranch_FromBranchId { get; set; }
+
+        public Int32 SIId { get; set; }
+        public virtual TrnSalesInvoiceDBSet TrnSalesInvoice_SIId { get; set; }
+
+        public String Address { get; set; }
+        public String ContactPerson { get; set; }
+        public String ContactNumber { get; set; }
+        public String Remarks { get; set; }
+
+        public Int32 ReceivedByUserId { get; set; }
+        public virtual MstUserDBSet MstUser_ReceivedByUserId { get; set; }
+
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUserId { get; set; }
 
@@ -28,6 +45,8 @@ namespace liteclerk_api.DBSets
 
         public Int32 ApprovedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_ApprovedByUserId { get; set; }
+
+        public Decimal Amount { get; set; }
 
         public String Status { get; set; }
         public Boolean IsCancelled { get; set; }
@@ -42,6 +61,7 @@ namespace liteclerk_api.DBSets
         public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
 
+        public virtual ICollection<TrnStockWithdrawalItemDBSet> TrnStockWithdrawalItems_SWId { get; set; }
         public virtual ICollection<SysInventoryDBSet> SysInventories_SWId { get; set; }
     }
 }

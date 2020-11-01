@@ -979,5 +979,164 @@ namespace liteclerk_api.Modules
                 throw e;
             }
         }
+
+        public async Task InsertStockWithdrawalInventory(Int32 SWId)
+        {
+            try
+            {
+                DBSets.TrnStockWithdrawalDBSet stockWithdrawal = await (
+                     from d in _dbContext.TrnStockWithdrawals
+                     where d.Id == SWId
+                     select d
+                ).FirstOrDefaultAsync();
+
+                if (stockWithdrawal != null)
+                {
+                    List<DBSets.TrnStockWithdrawalItemDBSet> stockWithdrawalItems = await (
+                        from d in _dbContext.TrnStockWithdrawalItems
+                        where d.SWId == SWId
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
+                        && d.BaseQuantity > 0
+                        select d
+                    ).ToListAsync();
+
+                    if (stockWithdrawalItems.Any())
+                    {
+                        foreach (var stockWithdrawalItem in stockWithdrawalItems)
+                        {
+                            DBSets.MstArticleItemDBSet item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == stockWithdrawalItem.ItemId
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (item != null)
+                            {
+                                Int32 articleInventoryId = Convert.ToInt32(stockWithdrawalItem.ItemInventoryId);
+
+                                DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                                     from d in _dbContext.MstArticleItemInventories
+                                     where d.Id == articleInventoryId
+                                     select d
+                                ).FirstOrDefaultAsync();
+
+                                if (itemInventory != null)
+                                {
+                                    Decimal quantity = stockWithdrawalItem.BaseQuantity;
+                                    Decimal cost = stockWithdrawalItem.BaseCost;
+                                    Decimal amount = stockWithdrawalItem.BaseQuantity * stockWithdrawalItem.BaseCost;
+
+                                    DBSets.SysInventoryDBSet newOutInventory = new DBSets.SysInventoryDBSet()
+                                    {
+                                        BranchId = stockWithdrawal.BranchId,
+                                        InventoryDate = DateTime.Today,
+                                        ArticleId = stockWithdrawalItem.ItemId,
+                                        ArticleItemInventoryId = articleInventoryId,
+                                        AccountId = item.ExpenseAccountId,
+                                        QuantityIn = 0,
+                                        QuantityOut = quantity,
+                                        Quantity = quantity * -1,
+                                        Cost = cost,
+                                        Amount = amount * -1,
+                                        Particulars = stockWithdrawalItem.Particulars,
+                                        RRId = null,
+                                        SIId = null,
+                                        INId = null,
+                                        OTId = null,
+                                        STId = null,
+                                        SWId = SWId
+                                    };
+
+                                    _dbContext.SysInventories.Add(newOutInventory);
+                                    await _dbContext.SaveChangesAsync();
+
+                                    DBSets.SysInventoryDBSet newInInventory = new DBSets.SysInventoryDBSet()
+                                    {
+                                        BranchId = stockWithdrawal.FromBranchId,
+                                        InventoryDate = DateTime.Today,
+                                        ArticleId = stockWithdrawalItem.ItemId,
+                                        ArticleItemInventoryId = articleInventoryId,
+                                        AccountId = item.ExpenseAccountId,
+                                        QuantityIn = quantity,
+                                        QuantityOut = 0,
+                                        Quantity = quantity,
+                                        Cost = cost,
+                                        Amount = amount,
+                                        Particulars = stockWithdrawalItem.Particulars,
+                                        RRId = null,
+                                        SIId = null,
+                                        INId = null,
+                                        OTId = null,
+                                        STId = null,
+                                        SWId = SWId
+                                    };
+
+                                    _dbContext.SysInventories.Add(newInInventory);
+                                    await _dbContext.SaveChangesAsync();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteStockWithdrawalInventory(Int32 SWId)
+        {
+            try
+            {
+                List<DBSets.SysInventoryDBSet> inventories = await (
+                    from d in _dbContext.SysInventories
+                    where d.SWId == SWId
+                    select d
+                ).ToListAsync();
+
+                if (inventories.Any())
+                {
+                    _dbContext.SysInventories.RemoveRange(inventories);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                List<DBSets.TrnStockWithdrawalItemDBSet> stockWithdrawalItems = await (
+                    from d in _dbContext.TrnStockWithdrawalItems
+                    where d.SWId == SWId
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
+                    select d
+                ).ToListAsync();
+
+                if (stockWithdrawalItems.Any() == true)
+                {
+                    foreach (var stockWithdrawalItem in stockWithdrawalItems)
+                    {
+                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                            from d in _dbContext.MstArticleItemInventories
+                            where d.ArticleId == stockWithdrawalItem.ItemId
+                            && d.BranchId == stockWithdrawalItem.TrnStockWithdrawal_SWId.BranchId
+                            select d
+                        ).ToListAsync();
+
+                        if (itemInventories.Any())
+                        {
+                            foreach (var itemInventory in itemInventories)
+                            {
+                                Int32 articleInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleInventoryId);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
