@@ -558,7 +558,7 @@ namespace liteclerk_api.APIControllers
                     DateNeeded = DateTime.Today,
                     SIId = null,
                     SIItemId = null,
-                    ItemId = item.Id,
+                    ItemId = item.ArticleId,
                     ItemJobTypeId = jobType.Id,
                     Quantity = 0,
                     UnitId = item.UnitId,

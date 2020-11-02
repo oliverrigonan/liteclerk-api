@@ -24,6 +24,47 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
+        [HttpGet("list/category")]
+        public async Task<ActionResult> GetCodeTableListCategory()
+        {
+            try
+            {
+                List<String> categories = new List<String>()
+                {
+                    "ITEM KITTING",
+                    "PRODUCTION ITEM INFORMATION",
+                    "PRODUCTION ITEM ATTACHMENT",
+                    "PRODUCTION DEPARTMENT STATUS",
+                    "JOB ORDER STATUS",
+                    "PURCHASE REQUEST STATUS",
+                    "PURCHASE ORDER STATUS",
+                    "RECEIVING RECEIPT STATUS",
+                    "DISBURSEMENT STATUS",
+                    "PAYABLE MEMO STATUS",
+                    "SALES ORDER STATUS",
+                    "SALES INVOICE STATUS",
+                    "COLLECTION INVOICE STATUS",
+                    "RECEIVABLE MEMO STATUS",
+                    "STOCK IN STATUS",
+                    "STOCK OUT STATUS",
+                    "STOCK TRANSFER STATUS",
+                    "STOCK WITHDRAWAL STATUS",
+                    "STOCK COUNT STATUS",
+                    "INVENTORY STATUS",
+                    "JOURNAL VOUCHER STATUS",
+                    "POS TERMINAL"
+                };
+
+                var listCategories = await Task.FromResult(categories);
+
+                return StatusCode(200, categories);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("list/{category}")]
         public async Task<ActionResult> GetCodeTableListByCategory(String category)
         {

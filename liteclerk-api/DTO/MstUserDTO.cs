@@ -17,5 +17,6 @@ namespace liteclerk_api.DTO
         public MstCompanyBranchDTO Branch { get; set; }
         public Boolean IsActive { get; set; }
         public Boolean IsLocked { get; set; }
+        public Int32 NumberOfJobDepartment { get; set; }
     }
 }

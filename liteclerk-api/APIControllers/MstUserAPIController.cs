@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -96,6 +97,73 @@ namespace liteclerk_api.APIControllers
                 ).ToListAsync();
 
                 return StatusCode(200, activeUsers);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("list/active/byJobDepartment/{jobDepartmentId}/")]
+        public async Task<ActionResult> GetActiveUserListByJobOrderDepartment(Int32 jobDepartmentId)
+        {
+            try
+            {
+                List<DTO.MstUserDTO> listUsers = new List<DTO.MstUserDTO>();
+
+                var activeUsers = await (
+                    from d in _dbContext.MstUsers
+                    where d.IsActive == true
+                    select d
+                ).ToListAsync();
+
+                if (activeUsers.Any())
+                {
+                    foreach (var activeUser in activeUsers)
+                    {
+                        Int32 numberOfJobDepartmentCount = 0;
+
+                        var jobOrderDepartments = await (
+                                from d in _dbContext.TrnJobOrderDepartments
+                                where d.JobDepartmentId == jobDepartmentId
+                                && d.AssignedToUserId == activeUser.Id
+                                && d.Status != "DONE"
+                                && d.TrnJobOrder_JOId.IsLocked == true
+                                select d
+                        ).ToListAsync();
+
+                        if (jobOrderDepartments.Any())
+                        {
+                            numberOfJobDepartmentCount = jobOrderDepartments.Count();
+                        }
+
+                        listUsers.Add(new DTO.MstUserDTO()
+                        {
+                            Id = activeUser.Id,
+                            Username = activeUser.Username,
+                            Fullname = activeUser.Fullname,
+                            CompanyId = activeUser.CompanyId,
+                            Company = new DTO.MstCompanyDTO
+                            {
+                                CompanyCode = activeUser.MstCompany_CompanyId.CompanyCode,
+                                ManualCode = activeUser.MstCompany_CompanyId.ManualCode,
+                                Company = activeUser.MstCompany_CompanyId.Company,
+                                ImageURL = activeUser.MstCompany_CompanyId.ImageURL
+                            },
+                            BranchId = activeUser.BranchId,
+                            Branch = new DTO.MstCompanyBranchDTO
+                            {
+                                BranchCode = activeUser.MstCompanyBranch_BranchId.BranchCode,
+                                ManualCode = activeUser.MstCompanyBranch_BranchId.ManualCode,
+                                Branch = activeUser.MstCompanyBranch_BranchId.Branch
+                            },
+                            IsActive = activeUser.IsActive,
+                            NumberOfJobDepartment = numberOfJobDepartmentCount
+                        });
+                    }
+                }
+
+                return StatusCode(200, listUsers);
             }
             catch (Exception e)
             {
