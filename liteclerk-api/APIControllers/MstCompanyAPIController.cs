@@ -66,6 +66,12 @@ namespace liteclerk_api.APIControllers
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         CostMethod = d.CostMethod,
+                        IncomeAccountId = d.IncomeAccountId,
+                        IncomeAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_IncomeAccountId.ManualCode,
+                            Account = d.MstAccount_IncomeAccountId.Account
+                        },
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -114,6 +120,12 @@ namespace liteclerk_api.APIControllers
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
                         CostMethod = d.CostMethod,
+                        IncomeAccountId = d.IncomeAccountId,
+                        IncomeAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_IncomeAccountId.ManualCode,
+                            Account = d.MstAccount_IncomeAccountId.Account
+                        },
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -162,6 +174,12 @@ namespace liteclerk_api.APIControllers
                              Currency = d.MstCurrency_CurrencyId.Currency
                          },
                          CostMethod = d.CostMethod,
+                         IncomeAccountId = d.IncomeAccountId,
+                         IncomeAccount = new DTO.MstAccountDTO
+                         {
+                             ManualCode = d.MstAccount_IncomeAccountId.ManualCode,
+                             Account = d.MstAccount_IncomeAccountId.Account
+                         },
                          IsLocked = d.IsLocked,
                          CreatedByUser = new DTO.MstUserDTO
                          {
@@ -237,6 +255,7 @@ namespace liteclerk_api.APIControllers
                     ImageURL = "",
                     CurrencyId = currency.Id,
                     CostMethod = "Last Purchase Cost",
+                    IncomeAccountId = null,
                     IsLocked = false,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
@@ -300,6 +319,20 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
+                if (mstCompanyDTO.IncomeAccountId != null)
+                {
+                    DBSets.MstAccountDBSet incomeAccount = await (
+                        from d in _dbContext.MstAccounts
+                        where d.Id == mstCompanyDTO.IncomeAccountId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (incomeAccount == null)
+                    {
+                        return StatusCode(404, "Income account not found.");
+                    }
+                }
+
                 DBSets.MstCompanyDBSet saveCompany = company;
                 saveCompany.ManualCode = mstCompanyDTO.ManualCode;
                 saveCompany.Company = mstCompanyDTO.Company;
@@ -308,6 +341,7 @@ namespace liteclerk_api.APIControllers
                 saveCompany.ImageURL = mstCompanyDTO.ImageURL;
                 saveCompany.CurrencyId = mstCompanyDTO.CurrencyId;
                 saveCompany.CostMethod = mstCompanyDTO.CostMethod;
+                saveCompany.IncomeAccountId = mstCompanyDTO.IncomeAccountId;
                 saveCompany.UpdatedByUserId = loginUserId;
                 saveCompany.UpdatedDateTime = DateTime.Now;
 
@@ -366,6 +400,20 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
+                if (mstCompanyDTO.IncomeAccountId != null)
+                {
+                    DBSets.MstAccountDBSet incomeAccount = await (
+                        from d in _dbContext.MstAccounts
+                        where d.Id == mstCompanyDTO.IncomeAccountId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (incomeAccount == null)
+                    {
+                        return StatusCode(404, "Income account not found.");
+                    }
+                }
+
                 DBSets.MstCompanyDBSet lockCompany = company;
                 lockCompany.ManualCode = mstCompanyDTO.ManualCode;
                 lockCompany.Company = mstCompanyDTO.Company;
@@ -374,6 +422,7 @@ namespace liteclerk_api.APIControllers
                 lockCompany.ImageURL = mstCompanyDTO.ImageURL;
                 lockCompany.CurrencyId = mstCompanyDTO.CurrencyId;
                 lockCompany.CostMethod = mstCompanyDTO.CostMethod;
+                lockCompany.IncomeAccountId = mstCompanyDTO.IncomeAccountId;
                 lockCompany.IsLocked = true;
                 lockCompany.UpdatedByUserId = loginUserId;
                 lockCompany.UpdatedDateTime = DateTime.Now;

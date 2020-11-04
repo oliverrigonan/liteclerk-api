@@ -25,8 +25,11 @@ namespace liteclerk_api.DBModelBuilder
 
                 entity.Property(e => e.CurrencyId).HasColumnName("CurrencyId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCurrency_CurrencyId).WithMany(f => f.MstCompanies_CurrencyId).HasForeignKey(f => f.CurrencyId).OnDelete(DeleteBehavior.Restrict);
-
+                
                 entity.Property(e => e.CostMethod).HasColumnName("CostMethod").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
+
+                entity.Property(e => e.IncomeAccountId).HasColumnName("IncomeAccountId").HasColumnType("int");
+                entity.HasOne(f => f.MstAccount_IncomeAccountId).WithMany(f => f.MstCompanies_IncomeAccountId).HasForeignKey(f => f.IncomeAccountId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();
 

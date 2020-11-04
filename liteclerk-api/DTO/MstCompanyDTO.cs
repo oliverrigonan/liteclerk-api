@@ -17,6 +17,8 @@ namespace liteclerk_api.DTO
         public Int32 CurrencyId { get; set; }
         public MstCurrencyDTO Currency { get; set; }
         public String CostMethod { get; set; }
+        public Int32? IncomeAccountId { get; set; }
+        public MstAccountDTO IncomeAccount { get; set; }
         public Boolean IsLocked { get; set; }
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }

@@ -17,6 +17,8 @@ namespace liteclerk_api.DBSets
         public Int32 CurrencyId { get; set; }
         public virtual MstCurrencyDBSet MstCurrency_CurrencyId { get; set; }
         public String CostMethod { get; set; }
+        public Int32? IncomeAccountId { get; set; }
+        public virtual MstAccountDBSet MstAccount_IncomeAccountId { get; set; }
         public Boolean IsLocked { get; set; }
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUserId { get; set; }

@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201104061216_AddedIncomeAccountIdInMstCompanyTable.cs" />
+    <Compile Remove="Migrations\20201104061216_AddedIncomeAccountIdInMstCompanyTable.Designer.cs" />
+    <Compile Remove="Migrations\20201104061933_AddedIncomeAccountIdInMstCompanyTable.cs" />
+    <Compile Remove="Migrations\20201104061933_AddedIncomeAccountIdInMstCompanyTable.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.6.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
