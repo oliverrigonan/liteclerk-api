@@ -45,13 +45,15 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnJobOrderDepartmentDTO> productions = await (
+                var productions = new List<DTO.TrnJobOrderDepartmentDTO>();
+
+                var jobOrderDepartments = await (
                     from d in _dbContext.TrnJobOrderDepartments
                     where d.TrnJobOrder_JOId.BranchId == loginUser.BranchId
                     && d.TrnJobOrder_JOId.JODate >= Convert.ToDateTime(startDate)
@@ -60,69 +62,165 @@ namespace liteclerk_api.APIControllers
                     && d.JobDepartmentId == jobDepartmentId
                     && d.Status != "DONE"
                     orderby d.Id descending
-                    select new DTO.TrnJobOrderDepartmentDTO
-                    {
-                        Id = d.Id,
-                        JOId = d.TrnJobOrder_JOId.Id,
-                        JobOrder = new DTO.TrnJobOrderDTO
-                        {
-                            JONumber = d.TrnJobOrder_JOId.JONumber,
-                            JODate = d.TrnJobOrder_JOId.JODate.ToShortDateString(),
-                            ManualNumber = d.TrnJobOrder_JOId.ManualNumber,
-                            DocumentReference = d.TrnJobOrder_JOId.DocumentReference,
-                            DateScheduled = d.TrnJobOrder_JOId.DateScheduled.ToShortDateString(),
-                            DateNeeded = d.TrnJobOrder_JOId.DateNeeded.ToShortDateString(),
-                            SIId = d.TrnJobOrder_JOId.SIId,
-                            SalesInvoice = new DTO.TrnSalesInvoiceDTO
-                            {
-                                SINumber = d.TrnJobOrder_JOId.SIId != null ? d.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SINumber : "",
-                                SIDate = d.TrnJobOrder_JOId.SIId != null ? d.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SIDate.ToShortDateString() : "",
-                                ManualNumber = d.TrnJobOrder_JOId.SIId != null ? d.TrnJobOrder_JOId.TrnSalesInvoice_SIId.ManualNumber : "",
-                                DocumentReference = d.TrnJobOrder_JOId.SIId != null ? d.TrnJobOrder_JOId.DocumentReference : "",
-                                Customer = new DTO.MstArticleCustomerDTO
-                                {
-                                    Customer = d.TrnJobOrder_JOId.SIId != null ?
-                                           d.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                           d.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "" : ""
-                                }
-                            },
-                            ItemId = d.TrnJobOrder_JOId.ItemId,
-                            Item = new DTO.MstArticleItemDTO
-                            {
-                                Article = new DTO.MstArticleDTO
-                                {
-                                    ManualCode = d.TrnJobOrder_JOId.MstArticle_ItemId.ManualCode
-                                },
-                                SKUCode = d.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = d.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                Description = d.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
-                            },
-                            ItemJobTypeId = d.TrnJobOrder_JOId.ItemJobTypeId,
-                            ItemJobType = new DTO.MstJobTypeDTO
-                            {
-                                JobType = d.TrnJobOrder_JOId.MstJobType_ItemJobTypeId.JobType
-                            },
-                            Quantity = d.TrnJobOrder_JOId.Quantity,
-                            UnitId = d.TrnJobOrder_JOId.UnitId,
-                            Unit = new DTO.MstUnitDTO
-                            {
-                                UnitCode = d.TrnJobOrder_JOId.MstUnit_UnitId.UnitCode,
-                                ManualCode = d.TrnJobOrder_JOId.MstUnit_UnitId.ManualCode,
-                                Unit = d.TrnJobOrder_JOId.MstUnit_UnitId.Unit
-                            },
-                            Remarks = d.TrnJobOrder_JOId.Remarks,
-                            BaseQuantity = d.TrnJobOrder_JOId.BaseQuantity,
-                            BaseUnitId = d.TrnJobOrder_JOId.BaseUnitId,
-                            BaseUnit = new DTO.MstUnitDTO
-                            {
-                                UnitCode = d.TrnJobOrder_JOId.MstUnit_BaseUnitId.UnitCode,
-                                ManualCode = d.TrnJobOrder_JOId.MstUnit_BaseUnitId.ManualCode,
-                                Unit = d.TrnJobOrder_JOId.MstUnit_BaseUnitId.Unit
-                            },
-                        },
-                        Status = d.Status
-                    }
+                    select d
                 ).ToListAsync();
+
+                if (productions.Any())
+                {
+                    Boolean isFirstJobOrderDepartment = true;
+
+                    foreach (var jobOrderDepartment in jobOrderDepartments)
+                    {
+                        if (isFirstJobOrderDepartment == true)
+                        {
+                            isFirstJobOrderDepartment = false;
+
+                            productions.Add(new DTO.TrnJobOrderDepartmentDTO
+                            {
+                                Id = jobOrderDepartment.Id,
+                                JOId = jobOrderDepartment.TrnJobOrder_JOId.Id,
+                                JobOrder = new DTO.TrnJobOrderDTO
+                                {
+                                    JONumber = jobOrderDepartment.TrnJobOrder_JOId.JONumber,
+                                    JODate = jobOrderDepartment.TrnJobOrder_JOId.JODate.ToShortDateString(),
+                                    ManualNumber = jobOrderDepartment.TrnJobOrder_JOId.ManualNumber,
+                                    DocumentReference = jobOrderDepartment.TrnJobOrder_JOId.DocumentReference,
+                                    DateScheduled = jobOrderDepartment.TrnJobOrder_JOId.DateScheduled.ToShortDateString(),
+                                    DateNeeded = jobOrderDepartment.TrnJobOrder_JOId.DateNeeded.ToShortDateString(),
+                                    SIId = jobOrderDepartment.TrnJobOrder_JOId.SIId,
+                                    SalesInvoice = new DTO.TrnSalesInvoiceDTO
+                                    {
+                                        SINumber = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SINumber : "",
+                                        SIDate = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SIDate.ToShortDateString() : "",
+                                        ManualNumber = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.ManualNumber : "",
+                                        DocumentReference = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.DocumentReference : "",
+                                        Customer = new DTO.MstArticleCustomerDTO
+                                        {
+                                            Customer = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ?
+                                           jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                           jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "" : ""
+                                        }
+                                    },
+                                    ItemId = jobOrderDepartment.TrnJobOrder_JOId.ItemId,
+                                    Item = new DTO.MstArticleItemDTO
+                                    {
+                                        Article = new DTO.MstArticleDTO
+                                        {
+                                            ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.ManualCode
+                                        },
+                                        SKUCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                        BarCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                        Description = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                                    },
+                                    ItemJobTypeId = jobOrderDepartment.TrnJobOrder_JOId.ItemJobTypeId,
+                                    ItemJobType = new DTO.MstJobTypeDTO
+                                    {
+                                        JobType = jobOrderDepartment.TrnJobOrder_JOId.MstJobType_ItemJobTypeId.JobType
+                                    },
+                                    Quantity = jobOrderDepartment.TrnJobOrder_JOId.Quantity,
+                                    UnitId = jobOrderDepartment.TrnJobOrder_JOId.UnitId,
+                                    Unit = new DTO.MstUnitDTO
+                                    {
+                                        UnitCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.UnitCode,
+                                        ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.ManualCode,
+                                        Unit = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.Unit
+                                    },
+                                    Remarks = jobOrderDepartment.TrnJobOrder_JOId.Remarks,
+                                    BaseQuantity = jobOrderDepartment.TrnJobOrder_JOId.BaseQuantity,
+                                    BaseUnitId = jobOrderDepartment.TrnJobOrder_JOId.BaseUnitId,
+                                    BaseUnit = new DTO.MstUnitDTO
+                                    {
+                                        UnitCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.UnitCode,
+                                        ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.ManualCode,
+                                        Unit = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.Unit
+                                    },
+                                },
+                                Status = jobOrderDepartment.Status
+                            });
+                        }
+
+                        if (jobOrderDepartment.IsRequired == false)
+                        {
+                            productions.Add(new DTO.TrnJobOrderDepartmentDTO
+                            {
+                                Id = jobOrderDepartment.Id,
+                                JOId = jobOrderDepartment.TrnJobOrder_JOId.Id,
+                                JobOrder = new DTO.TrnJobOrderDTO
+                                {
+                                    JONumber = jobOrderDepartment.TrnJobOrder_JOId.JONumber,
+                                    JODate = jobOrderDepartment.TrnJobOrder_JOId.JODate.ToShortDateString(),
+                                    ManualNumber = jobOrderDepartment.TrnJobOrder_JOId.ManualNumber,
+                                    DocumentReference = jobOrderDepartment.TrnJobOrder_JOId.DocumentReference,
+                                    DateScheduled = jobOrderDepartment.TrnJobOrder_JOId.DateScheduled.ToShortDateString(),
+                                    DateNeeded = jobOrderDepartment.TrnJobOrder_JOId.DateNeeded.ToShortDateString(),
+                                    SIId = jobOrderDepartment.TrnJobOrder_JOId.SIId,
+                                    SalesInvoice = new DTO.TrnSalesInvoiceDTO
+                                    {
+                                        SINumber = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SINumber : "",
+                                        SIDate = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SIDate.ToShortDateString() : "",
+                                        ManualNumber = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.ManualNumber : "",
+                                        DocumentReference = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.DocumentReference : "",
+                                        Customer = new DTO.MstArticleCustomerDTO
+                                        {
+                                            Customer = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ?
+                                               jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
+                                               jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "" : ""
+                                        }
+                                    },
+                                    ItemId = jobOrderDepartment.TrnJobOrder_JOId.ItemId,
+                                    Item = new DTO.MstArticleItemDTO
+                                    {
+                                        Article = new DTO.MstArticleDTO
+                                        {
+                                            ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.ManualCode
+                                        },
+                                        SKUCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                        BarCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                        Description = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                                    },
+                                    ItemJobTypeId = jobOrderDepartment.TrnJobOrder_JOId.ItemJobTypeId,
+                                    ItemJobType = new DTO.MstJobTypeDTO
+                                    {
+                                        JobType = jobOrderDepartment.TrnJobOrder_JOId.MstJobType_ItemJobTypeId.JobType
+                                    },
+                                    Quantity = jobOrderDepartment.TrnJobOrder_JOId.Quantity,
+                                    UnitId = jobOrderDepartment.TrnJobOrder_JOId.UnitId,
+                                    Unit = new DTO.MstUnitDTO
+                                    {
+                                        UnitCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.UnitCode,
+                                        ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.ManualCode,
+                                        Unit = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.Unit
+                                    },
+                                    Remarks = jobOrderDepartment.TrnJobOrder_JOId.Remarks,
+                                    BaseQuantity = jobOrderDepartment.TrnJobOrder_JOId.BaseQuantity,
+                                    BaseUnitId = jobOrderDepartment.TrnJobOrder_JOId.BaseUnitId,
+                                    BaseUnit = new DTO.MstUnitDTO
+                                    {
+                                        UnitCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.UnitCode,
+                                        ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.ManualCode,
+                                        Unit = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.Unit
+                                    },
+                                },
+                                Status = jobOrderDepartment.Status
+                            });
+                        }
+                    }
+                }
+
+                //var productions = await (
+                //    from d in _dbContext.TrnJobOrderDepartments
+                //    where d.TrnJobOrder_JOId.BranchId == loginUser.BranchId
+                //    && d.TrnJobOrder_JOId.JODate >= Convert.ToDateTime(startDate)
+                //    && d.TrnJobOrder_JOId.JODate <= Convert.ToDateTime(endDate)
+                //    && d.TrnJobOrder_JOId.IsLocked == true
+                //    && d.JobDepartmentId == jobDepartmentId
+                //    && d.Status != "DONE"
+                //    orderby d.Id descending
+                //    select new DTO.TrnJobOrderDepartmentDTO
+                //    {
+
+                //    }
+                //).ToListAsync();
 
                 return StatusCode(200, productions);
             }
