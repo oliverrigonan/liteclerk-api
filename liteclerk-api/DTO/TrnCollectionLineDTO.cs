@@ -9,6 +9,7 @@ namespace liteclerk_api.DTO
     {
         public Int32 Id { get; set; }
         public Int32 CIId { get; set; }
+        public TrnCollectionDTO Collection { get; set; }
         public Int32 BranchId { get; set; }
         public MstCompanyBranchDTO Branch { get; set; }
         public Int32 AccountId { get; set; }
