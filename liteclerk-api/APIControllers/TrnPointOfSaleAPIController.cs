@@ -32,17 +32,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnPointOfSaleDTO> pointOfSales = await (
+                var pointOfSales = await (
                     from d in _dbContext.TrnPointOfSales
                     where d.BranchId == loginUser.BranchId
                     && d.TerminalCode == terminalCode
                     && d.POSDate == Convert.ToDateTime(date)
+                    && (d.PostCode != null || d.PostCode != String.Empty)
                     select new DTO.TrnPointOfSaleDTO
                     {
                         Id = d.Id,
@@ -50,7 +51,6 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
@@ -78,7 +78,12 @@ namespace liteclerk_api.APIControllers
                             },
                             SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                            Unit = new DTO.MstUnitDTO
+                            {
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode : "",
+                                Unit = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit : ""
+                            }
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
@@ -90,7 +95,6 @@ namespace liteclerk_api.APIControllers
                         TaxId = d.TaxId,
                         Tax = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_TaxId.TaxCode,
                             ManualCode = d.MstTax_TaxId.ManualCode,
                             TaxDescription = d.MstTax_TaxId.TaxDescription
                         },
@@ -122,7 +126,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -133,29 +137,30 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
-                    from d in _dbContext.MstUserForms
-                    where d.UserId == loginUserId
-                    && d.SysForm_FormId.Form == "ActivityPOSSales"
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUserForm = await (
+                     from d in _dbContext.MstUserForms
+                     where d.UserId == loginUserId
+                     && d.SysForm_FormId.Form == "ActivityPOSSales"
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (loginUserForm == null)
                 {
                     return StatusCode(404, "No rights to validate a POS Sales.");
                 }
 
-                //if (loginUserForm.CanEdit == false)
-                //{
-                //    return StatusCode(400, "No rights to validate a POS Sales.");
-                //}
+                if (loginUserForm.CanEdit == false)
+                {
+                    return StatusCode(400, "No rights to validate a POS Sales.");
+                }
 
-                IEnumerable<DBSets.TrnPointOfSaleDBSet> pointOfSales = await (
+                var pointOfSales = await (
                     from d in _dbContext.TrnPointOfSales
                     where d.BranchId == loginUser.BranchId
                     && d.TerminalCode == terminalCode
                     && d.POSDate == Convert.ToDateTime(date)
                     && (d.CustomerId == null || d.ItemId == null || d.TaxId == null || d.CashierUserId == null)
+                    && (d.PostCode != null || d.PostCode != String.Empty)
                     select d
                 ).ToListAsync();
 
@@ -168,7 +173,7 @@ namespace liteclerk_api.APIControllers
                         Int32? taxId = null;
                         Int32? cashierUserId = null;
 
-                        DBSets.MstArticleCustomerDBSet customer = await (
+                        var customer = await (
                             from d in _dbContext.MstArticleCustomers
                             where d.MstArticle_ArticleId.IsLocked == true
                             && d.MstArticle_ArticleId.ManualCode == pointOfSale.CustomerCode
@@ -180,7 +185,7 @@ namespace liteclerk_api.APIControllers
                             customerId = customer.ArticleId;
                         }
 
-                        DBSets.MstArticleItemDBSet item = await (
+                        var item = await (
                             from d in _dbContext.MstArticleItems
                             where d.MstArticle_ArticleId.IsLocked == true
                             && d.BarCode == pointOfSale.ItemCode
@@ -192,7 +197,7 @@ namespace liteclerk_api.APIControllers
                             itemId = item.ArticleId;
                         }
 
-                        DBSets.MstTaxDBSet tax = await (
+                        var tax = await (
                             from d in _dbContext.MstTaxes
                             where d.ManualCode == pointOfSale.TaxCode
                             select d
@@ -203,7 +208,7 @@ namespace liteclerk_api.APIControllers
                             taxId = tax.Id;
                         }
 
-                        DBSets.MstUserDBSet cashierUser = await (
+                        var cashierUser = await (
                             from d in _dbContext.MstUsers
                             where d.Username == pointOfSale.CashierUserCode
                             select d
@@ -212,6 +217,24 @@ namespace liteclerk_api.APIControllers
                         if (cashierUser != null)
                         {
                             cashierUserId = cashierUser.Id;
+                        }
+                        else
+                        {
+                            var newCashierUser = new DBSets.MstUserDBSet()
+                            {
+                                Username = pointOfSale.CashierUserCode,
+                                Password = "easypos",
+                                Fullname = pointOfSale.CashierUserCode,
+                                CompanyId = null,
+                                BranchId = null,
+                                IsActive = false,
+                                IsLocked = true
+                            };
+
+                            _dbContext.MstUsers.Add(newCashierUser);
+                            await _dbContext.SaveChangesAsync();
+
+                            cashierUserId = newCashierUser.Id;
                         }
 
                         if (customerId != null && itemId != null && taxId != null && cashierUserId != null)
@@ -234,6 +257,5 @@ namespace liteclerk_api.APIControllers
                 return StatusCode(500, e.InnerException.Message);
             }
         }
-
     }
 }

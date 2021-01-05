@@ -43,7 +43,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemDTO> articleItems = await (
+                var articleItems = await (
                     from d in _dbContext.MstArticleItems
                     select new DTO.MstArticleItemDTO
                     {
@@ -65,7 +65,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -74,35 +73,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -110,21 +104,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -158,7 +149,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemDTO> lockedArticleItems = await (
+                var lockedArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     select new DTO.MstArticleItemDTO
@@ -181,7 +172,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -190,35 +180,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -226,21 +211,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -274,11 +256,11 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemDTO> inventoryArticleItems = await (
+                var inventoryArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == true
-                    && (d.Kitting == "NONE" || d.Kitting == "PRODUCED" || d.Kitting == "COMPONENT")
+                    && (d.Kitting == "NONE" || d.Kitting == "PRODUCED")
                     select new DTO.MstArticleItemDTO
                     {
                         Id = d.Id,
@@ -299,7 +281,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -308,35 +289,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -344,21 +320,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -392,7 +365,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemDTO> inventoryArticleItems = await (
+                var inventoryArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     && d.ArticleId != articleId
@@ -418,7 +391,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -427,35 +399,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -463,21 +430,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -511,11 +475,11 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemDTO> nonInventoryArticleItems = await (
+                var nonInventoryArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == false
-                    && (d.Kitting == "NONE" || d.Kitting == "PACKAGE")
+                    && (d.Kitting == "NONE" || d.Kitting == "PACKAGE" || d.Kitting == "COMPONENT")
                     select new DTO.MstArticleItemDTO
                     {
                         Id = d.Id,
@@ -536,7 +500,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -544,35 +507,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -580,21 +538,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -628,7 +583,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemDTO> producedArticleItems = await (
+                var producedArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == true
@@ -653,7 +608,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -662,35 +616,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -698,21 +647,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -746,7 +692,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemDTO> producedArticleItems = await (
+                var producedArticleItems = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == true
@@ -771,7 +717,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -780,35 +725,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -816,21 +756,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -887,7 +824,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -896,35 +832,30 @@ namespace liteclerk_api.APIControllers
                         ArticleAccountGroupId = d.ArticleAccountGroupId,
                         ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
                         {
-                            ArticleAccountGroupCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroupCode,
                             ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
                             ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
                         },
                         AssetAccountId = d.AssetAccountId,
                         AssetAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AssetAccountId.AccountCode,
                             ManualCode = d.MstAccount_AssetAccountId.ManualCode,
                             Account = d.MstAccount_AssetAccountId.Account
                         },
                         SalesAccountId = d.SalesAccountId,
                         SalesAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_SalesAccountId.AccountCode,
                             ManualCode = d.MstAccount_SalesAccountId.ManualCode,
                             Account = d.MstAccount_SalesAccountId.Account
                         },
                         CostAccountId = d.CostAccountId,
                         CostAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_CostAccountId.AccountCode,
                             ManualCode = d.MstAccount_CostAccountId.ManualCode,
                             Account = d.MstAccount_CostAccountId.Account
                         },
                         ExpenseAccountId = d.ExpenseAccountId,
                         ExpenseAccount = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_ExpenseAccountId.AccountCode,
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
@@ -932,21 +863,18 @@ namespace liteclerk_api.APIControllers
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_RRVATId.TaxCode,
                             ManualCode = d.MstTax_RRVATId.ManualCode,
                             TaxDescription = d.MstTax_RRVATId.TaxDescription
                         },
                         SIVATId = d.SIVATId,
                         SIVAT = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_SIVATId.TaxCode,
                             ManualCode = d.MstTax_SIVATId.ManualCode,
                             TaxDescription = d.MstTax_SIVATId.TaxDescription
                         },
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
@@ -982,18 +910,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemList"
@@ -1010,7 +927,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add an item.");
                 }
 
-                DBSets.MstUnitDBSet unit = await (
+                var unit = await (
                     from d in _dbContext.MstUnits
                     select d
                 ).FirstOrDefaultAsync();
@@ -1020,7 +937,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Unit not found.");
                 }
 
-                DBSets.MstArticleAccountGroupDBSet articleAccountGroup = await (
+                var articleAccountGroup = await (
                     from d in _dbContext.MstArticleAccountGroups
                     select d
                 ).FirstOrDefaultAsync();
@@ -1030,7 +947,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account group not found.");
                 }
 
-                DBSets.MstTaxDBSet tax = await (
+                var tax = await (
                     from d in _dbContext.MstTaxes
                     select d
                 ).FirstOrDefaultAsync();
@@ -1040,7 +957,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Tax not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableKitting = await (
+                var codeTableKitting = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "ITEM KITTING"
                     select d
@@ -1052,7 +969,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String articleCode = "0000000001";
-                DBSets.MstArticleDBSet lastArticle = await (
+                var lastArticle = await (
                     from d in _dbContext.MstArticles
                     where d.ArticleTypeId == 1
                     orderby d.Id descending
@@ -1065,7 +982,7 @@ namespace liteclerk_api.APIControllers
                     articleCode = PadZeroes(lastArticleCode, 10);
                 }
 
-                DBSets.MstArticleDBSet newArticle = new DBSets.MstArticleDBSet()
+                var newArticle = new DBSets.MstArticleDBSet()
                 {
                     ArticleCode = articleCode,
                     ManualCode = articleCode,
@@ -1083,11 +1000,11 @@ namespace liteclerk_api.APIControllers
                 _dbContext.MstArticles.Add(newArticle);
                 await _dbContext.SaveChangesAsync();
 
-                DBSets.MstArticleItemDBSet newArticleItem = new DBSets.MstArticleItemDBSet()
+                var newArticleItem = new DBSets.MstArticleItemDBSet()
                 {
                     ArticleId = newArticle.Id,
-                    SKUCode = articleCode,
-                    BarCode = articleCode,
+                    SKUCode = "",
+                    BarCode = "",
                     Description = "",
                     UnitId = unit.Id,
                     Category = "",
@@ -1122,18 +1039,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -1150,7 +1056,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save an item.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.Id == id
                     select d
@@ -1166,7 +1072,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to an item that is locked.");
                 }
 
-                DBSets.MstUnitDBSet unit = await (
+                var unit = await (
                     from d in _dbContext.MstUnits
                     where d.Id == mstArticleItemDTO.UnitId
                     select d
@@ -1177,7 +1083,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Unit not found.");
                 }
 
-                DBSets.MstArticleAccountGroupDBSet articleAccountGroup = await (
+                var articleAccountGroup = await (
                     from d in _dbContext.MstArticleAccountGroups
                     where d.Id == mstArticleItemDTO.ArticleAccountGroupId
                     select d
@@ -1188,7 +1094,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account group not found.");
                 }
 
-                DBSets.MstTaxDBSet RRVAT = await (
+                var RRVAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == mstArticleItemDTO.RRVATId
                     select d
@@ -1199,7 +1105,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "RR VAT not found.");
                 }
 
-                DBSets.MstTaxDBSet SIVAT = await (
+                var SIVAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == mstArticleItemDTO.SIVATId
                     select d
@@ -1210,7 +1116,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "SI VAT not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableKitting = await (
+                var codeTableKitting = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == mstArticleItemDTO.Kitting
                     && d.Category == "ITEM KITTING"
@@ -1222,7 +1128,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Kitting not found.");
                 }
 
-                DBSets.MstArticleItemDBSet saveArticleItem = articleItem;
+                var saveArticleItem = articleItem;
                 saveArticleItem.SKUCode = mstArticleItemDTO.SKUCode;
                 saveArticleItem.BarCode = mstArticleItemDTO.BarCode;
                 saveArticleItem.Description = mstArticleItemDTO.Description;
@@ -1242,7 +1148,7 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == articleItem.ArticleId
                     select d
@@ -1253,7 +1159,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Article not found.");
                 }
 
-                DBSets.MstArticleDBSet saveArticle = article;
+                var saveArticle = article;
                 saveArticle.ManualCode = mstArticleItemDTO.ArticleManualCode;
                 saveArticle.Article = mstArticleItemDTO.Description;
                 saveArticle.Particulars = mstArticleItemDTO.ArticleParticulars;
@@ -1277,18 +1183,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -1305,7 +1200,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock an item.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.Id == id
                     select d
@@ -1321,7 +1216,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock an item that is locked.");
                 }
 
-                DBSets.MstUnitDBSet unit = await (
+                var unit = await (
                     from d in _dbContext.MstUnits
                     where d.Id == mstArticleItemDTO.UnitId
                     select d
@@ -1332,7 +1227,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Unit not found.");
                 }
 
-                DBSets.MstArticleAccountGroupDBSet articleAccountGroup = await (
+                var articleAccountGroup = await (
                     from d in _dbContext.MstArticleAccountGroups
                     where d.Id == mstArticleItemDTO.ArticleAccountGroupId
                     select d
@@ -1343,7 +1238,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account group not found.");
                 }
 
-                DBSets.MstTaxDBSet RRVAT = await (
+                var RRVAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == mstArticleItemDTO.RRVATId
                     select d
@@ -1354,7 +1249,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "RR VAT not found.");
                 }
 
-                DBSets.MstTaxDBSet SIVAT = await (
+                var SIVAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == mstArticleItemDTO.SIVATId
                     select d
@@ -1365,7 +1260,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "SI VAT not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableKitting = await (
+                var codeTableKitting = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == mstArticleItemDTO.Kitting
                     && d.Category == "ITEM KITTING"
@@ -1377,7 +1272,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Kitting not found.");
                 }
 
-                DBSets.MstArticleItemDBSet lockArticleItem = articleItem;
+                var lockArticleItem = articleItem;
                 lockArticleItem.SKUCode = mstArticleItemDTO.SKUCode;
                 lockArticleItem.BarCode = mstArticleItemDTO.BarCode;
                 lockArticleItem.Description = mstArticleItemDTO.Description;
@@ -1397,7 +1292,7 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == articleItem.ArticleId
                     select d
@@ -1408,7 +1303,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Article not found.");
                 }
 
-                DBSets.MstArticleDBSet lockArticle = article;
+                var lockArticle = article;
                 lockArticle.ManualCode = mstArticleItemDTO.ArticleManualCode;
                 lockArticle.Article = mstArticleItemDTO.Description;
                 lockArticle.Particulars = mstArticleItemDTO.ArticleParticulars;
@@ -1433,18 +1328,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -1461,7 +1345,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock an item.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.Id == id
                     select d
@@ -1477,7 +1361,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock an item that is unlocked.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == articleItem.ArticleId
                     select d
@@ -1488,7 +1372,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Article not found.");
                 }
 
-                DBSets.MstArticleDBSet unlockArticle = article;
+                var unlockArticle = article;
                 unlockArticle.IsLocked = false;
                 unlockArticle.UpdatedByUserId = loginUserId;
                 unlockArticle.UpdatedDateTime = DateTime.Now;
@@ -1510,18 +1394,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemList"
@@ -1538,7 +1411,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete an item.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.Id == id
                     select d
@@ -1557,7 +1430,7 @@ namespace liteclerk_api.APIControllers
                 _dbContext.MstArticleItems.Remove(articleItem);
                 await _dbContext.SaveChangesAsync();
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == articleItem.ArticleId
                     select d

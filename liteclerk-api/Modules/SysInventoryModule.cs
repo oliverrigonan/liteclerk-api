@@ -15,13 +15,13 @@ namespace liteclerk_api.Modules
             _dbContext = dbContext;
         }
 
-        public async Task UpdateArticleInventory(Int32 articleInventoryId)
+        public async Task UpdateArticleInventory(Int32 articleItemInventoryId)
         {
             try
             {
-                DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                var itemInventory = await (
                     from d in _dbContext.MstArticleItemInventories
-                    where d.Id == articleInventoryId
+                    where d.Id == articleItemInventoryId
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -31,13 +31,13 @@ namespace liteclerk_api.Modules
                     Decimal cost = 0;
                     Decimal amount = 0;
 
-                    List<DBSets.SysInventoryDBSet> inventories = await (
+                    var inventories = await (
                         from d in _dbContext.SysInventories
-                        where d.ArticleItemInventoryId == articleInventoryId
+                        where d.ArticleItemInventoryId == articleItemInventoryId
                         select d
                     ).ToListAsync();
 
-                    if (inventories.Any())
+                    if (inventories.Any() == true)
                     {
                         quantity = inventories.Sum(d => d.Quantity);
 
@@ -45,7 +45,7 @@ namespace liteclerk_api.Modules
                                                where d.RRId != null
                                                select d;
 
-                        if (lastPurchaseCost.Any())
+                        if (lastPurchaseCost.Any() == true)
                         {
                             cost = lastPurchaseCost.OrderByDescending(d => d.Id).FirstOrDefault().Cost;
                         }
@@ -55,7 +55,7 @@ namespace liteclerk_api.Modules
                                               where d.INId != null
                                               select d;
 
-                            if (stockInCost.Any())
+                            if (stockInCost.Any() == true)
                             {
                                 cost = stockInCost.FirstOrDefault().Cost;
                             }
@@ -64,7 +64,7 @@ namespace liteclerk_api.Modules
                         amount = quantity * cost;
                     }
 
-                    DBSets.MstArticleItemInventoryDBSet updateItemInventory = itemInventory;
+                    var updateItemInventory = itemInventory;
                     updateItemInventory.Quantity = quantity;
                     updateItemInventory.Cost = cost;
                     updateItemInventory.Amount = amount;
@@ -82,7 +82,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                      from d in _dbContext.TrnReceivingReceipts
                      where d.Id == RRId
                      select d
@@ -90,35 +90,34 @@ namespace liteclerk_api.Modules
 
                 if (receivingReceipt != null)
                 {
-                    List<DBSets.TrnReceivingReceiptItemDBSet> receivingReceiptItems = await (
+                    var receivingReceiptItems = await (
                         from d in _dbContext.TrnReceivingReceiptItems
                         where d.RRId == RRId
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
                         && d.BaseQuantity > 0
                         select d
                     ).ToListAsync();
 
-                    if (receivingReceiptItems.Any())
+                    if (receivingReceiptItems.Any() == true)
                     {
                         foreach (var receivingReceiptItem in receivingReceiptItems)
                         {
-                            DBSets.MstArticleItemDBSet item = await (
+                            var item = await (
                                 from d in _dbContext.MstArticleItems
                                 where d.ArticleId == receivingReceiptItem.ItemId
+                                && d.IsInventory == true
                                 && d.MstArticle_ArticleId.IsLocked == true
                                 select d
                             ).FirstOrDefaultAsync();
 
                             if (item != null)
                             {
-                                Int32 articleInventoryId = 0;
+                                Int32 articleItemInventoryId = 0;
 
                                 Decimal quantity = receivingReceiptItem.BaseQuantity;
                                 Decimal cost = receivingReceiptItem.BaseCost;
-                                Decimal amount = receivingReceiptItem.BaseQuantity * receivingReceiptItem.BaseCost;
+                                Decimal amount = quantity * cost;
 
-                                DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                                var itemInventory = await (
                                      from d in _dbContext.MstArticleItemInventories
                                      where d.ArticleId == receivingReceiptItem.ItemId
                                      && d.BranchId == receivingReceipt.BranchId
@@ -127,15 +126,17 @@ namespace liteclerk_api.Modules
 
                                 if (itemInventory != null)
                                 {
-                                    articleInventoryId = itemInventory.Id;
+                                    articleItemInventoryId = itemInventory.Id;
                                 }
                                 else
                                 {
-                                    DBSets.MstArticleItemInventoryDBSet newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
+                                    String inventoryCode = "RR-" + receivingReceipt.MstCompanyBranch_BranchId.BranchCode + "-" + receivingReceipt.RRNumber;
+
+                                    var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
                                     {
                                         ArticleId = receivingReceiptItem.ItemId,
                                         BranchId = receivingReceipt.BranchId,
-                                        InventoryCode = "RR-" + receivingReceipt.RRNumber,
+                                        InventoryCode = inventoryCode,
                                         Quantity = quantity,
                                         Cost = cost,
                                         Amount = amount
@@ -144,17 +145,17 @@ namespace liteclerk_api.Modules
                                     _dbContext.MstArticleItemInventories.Add(newItemInventory);
                                     await _dbContext.SaveChangesAsync();
 
-                                    articleInventoryId = newItemInventory.Id;
+                                    articleItemInventoryId = newItemInventory.Id;
                                 }
 
-                                if (articleInventoryId != 0)
+                                if (articleItemInventoryId != 0)
                                 {
-                                    DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
+                                    var newInventory = new DBSets.SysInventoryDBSet()
                                     {
                                         BranchId = receivingReceipt.BranchId,
                                         InventoryDate = DateTime.Today,
                                         ArticleId = receivingReceiptItem.ItemId,
-                                        ArticleItemInventoryId = articleInventoryId,
+                                        ArticleItemInventoryId = articleItemInventoryId,
                                         AccountId = item.ExpenseAccountId,
                                         QuantityIn = quantity,
                                         QuantityOut = 0,
@@ -173,68 +174,7 @@ namespace liteclerk_api.Modules
                                     _dbContext.SysInventories.Add(newInventory);
                                     await _dbContext.SaveChangesAsync();
 
-                                    await UpdateArticleInventory(articleInventoryId);
-
-                                    if (receivingReceiptItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any())
-                                    {
-                                        if (receivingReceiptItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Kitting == "COMPONENT")
-                                        {
-                                            List<DBSets.MstArticleItemComponentDBSet> articleItemComponents = await (
-                                                from d in _dbContext.MstArticleItemComponents
-                                                where d.ArticleId == receivingReceiptItem.ItemId
-                                                select d
-                                            ).ToListAsync();
-
-                                            if (articleItemComponents.Any())
-                                            {
-                                                foreach (var articleItemComponent in articleItemComponents)
-                                                {
-                                                    DBSets.MstArticleItemInventoryDBSet componentItemInventory = await (
-                                                         from d in _dbContext.MstArticleItemInventories
-                                                         where d.ArticleId == articleItemComponent.ComponentArticleId
-                                                         && d.BranchId == receivingReceipt.BranchId
-                                                         select d
-                                                    ).FirstOrDefaultAsync();
-
-                                                    if (componentItemInventory != null)
-                                                    {
-                                                        Int32 componentItemInventoryId = componentItemInventory.Id;
-
-                                                        Decimal componentQuantity = articleItemComponent.Quantity * receivingReceiptItem.BaseQuantity;
-                                                        Decimal componentCost = componentItemInventory.Cost;
-                                                        Decimal componentAmount = (articleItemComponent.Quantity * receivingReceiptItem.BaseQuantity) * componentItemInventory.Cost;
-
-                                                        DBSets.SysInventoryDBSet newComponentInventory = new DBSets.SysInventoryDBSet()
-                                                        {
-                                                            BranchId = receivingReceipt.BranchId,
-                                                            InventoryDate = DateTime.Today,
-                                                            ArticleId = articleItemComponent.ComponentArticleId,
-                                                            ArticleItemInventoryId = componentItemInventoryId,
-                                                            AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
-                                                                        articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().ExpenseAccountId : 0,
-                                                            QuantityIn = componentQuantity,
-                                                            QuantityOut = 0,
-                                                            Quantity = componentQuantity,
-                                                            Cost = componentCost,
-                                                            Amount = componentAmount,
-                                                            Particulars = receivingReceiptItem.Particulars,
-                                                            RRId = RRId,
-                                                            SIId = null,
-                                                            INId = null,
-                                                            OTId = null,
-                                                            STId = null,
-                                                            SWId = null
-                                                        };
-
-                                                        _dbContext.SysInventories.Add(newComponentInventory);
-                                                        await _dbContext.SaveChangesAsync();
-
-                                                        await UpdateArticleInventory(componentItemInventoryId);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    await UpdateArticleInventory(articleItemInventoryId);
                                 }
                             }
                         }
@@ -251,23 +191,21 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                List<DBSets.SysInventoryDBSet> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.RRId == RRId
                     select d
                 ).ToListAsync();
 
-                if (inventories.Any())
+                if (inventories.Any() == true)
                 {
                     _dbContext.SysInventories.RemoveRange(inventories);
                     await _dbContext.SaveChangesAsync();
                 }
 
-                List<DBSets.TrnReceivingReceiptItemDBSet> receivingReceiptItems = await (
+                var receivingReceiptItems = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.RRId == RRId
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
                     select d
                 ).ToListAsync();
 
@@ -275,19 +213,19 @@ namespace liteclerk_api.Modules
                 {
                     foreach (var receivingReceiptItem in receivingReceiptItems)
                     {
-                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                        var itemInventories = await (
                             from d in _dbContext.MstArticleItemInventories
                             where d.ArticleId == receivingReceiptItem.ItemId
                             && d.BranchId == receivingReceiptItem.TrnReceivingReceipt_RRId.BranchId
                             select d
                         ).ToListAsync();
 
-                        if (itemInventories.Any())
+                        if (itemInventories.Any() == true)
                         {
                             foreach (var itemInventory in itemInventories)
                             {
-                                Int32 articleInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleInventoryId);
+                                Int32 articleItemInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleItemInventoryId);
                             }
                         }
                     }
@@ -303,7 +241,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnStockInDBSet stockIn = await (
+                var stockIn = await (
                      from d in _dbContext.TrnStockIns
                      where d.Id == INId
                      select d
@@ -311,123 +249,131 @@ namespace liteclerk_api.Modules
 
                 if (stockIn != null)
                 {
-                    List<DBSets.TrnStockInItemDBSet> stockInItems = await (
+                    var stockInItems = await (
                         from d in _dbContext.TrnStockInItems
                         where d.INId == INId
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
                         && d.BaseQuantity > 0
                         select d
                     ).ToListAsync();
 
-                    if (stockInItems.Any())
+                    if (stockInItems.Any() == true)
                     {
                         foreach (var stockInItem in stockInItems)
                         {
-                            Int32 articleInventoryId = 0;
-
-                            Decimal quantity = stockInItem.BaseQuantity;
-                            Decimal cost = stockInItem.BaseCost;
-                            Decimal amount = stockInItem.BaseQuantity * stockInItem.BaseCost;
-
-                            DBSets.MstArticleItemInventoryDBSet itemInventory = await (
-                                 from d in _dbContext.MstArticleItemInventories
-                                 where d.ArticleId == stockInItem.ItemId
-                                 && d.BranchId == stockIn.BranchId
-                                 select d
+                            var item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == stockInItem.ItemId
+                                && d.IsInventory == true
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
                             ).FirstOrDefaultAsync();
 
-                            if (itemInventory != null)
+                            if (item != null)
                             {
-                                articleInventoryId = itemInventory.Id;
-                            }
-                            else
-                            {
-                                DBSets.MstArticleItemInventoryDBSet newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
+                                Int32 articleItemInventoryId = 0;
+
+                                Decimal quantity = stockInItem.BaseQuantity;
+                                Decimal cost = stockInItem.BaseCost;
+                                Decimal amount = quantity * cost;
+
+                                var itemInventory = await (
+                                    from d in _dbContext.MstArticleItemInventories
+                                    where d.ArticleId == stockInItem.ItemId
+                                    && d.BranchId == stockIn.BranchId
+                                    select d
+                                ).FirstOrDefaultAsync();
+
+                                if (itemInventory != null)
                                 {
-                                    ArticleId = stockInItem.ItemId,
-                                    BranchId = stockIn.BranchId,
-                                    InventoryCode = "IN-" + stockIn.INNumber,
-                                    Quantity = quantity,
-                                    Cost = cost,
-                                    Amount = amount
-                                };
-
-                                _dbContext.MstArticleItemInventories.Add(newItemInventory);
-                                await _dbContext.SaveChangesAsync();
-
-                                articleInventoryId = newItemInventory.Id;
-                            }
-
-                            if (articleInventoryId != 0)
-                            {
-                                DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
+                                    articleItemInventoryId = itemInventory.Id;
+                                }
+                                else
                                 {
-                                    BranchId = stockIn.BranchId,
-                                    InventoryDate = DateTime.Today,
-                                    ArticleId = stockInItem.ItemId,
-                                    ArticleItemInventoryId = articleInventoryId,
-                                    AccountId = stockIn.AccountId,
-                                    QuantityIn = quantity,
-                                    QuantityOut = 0,
-                                    Quantity = quantity,
-                                    Cost = cost,
-                                    Amount = amount,
-                                    Particulars = stockInItem.Particulars,
-                                    RRId = null,
-                                    SIId = null,
-                                    INId = INId,
-                                    OTId = null,
-                                    STId = null,
-                                    SWId = null
-                                };
+                                    String inventoryCode = "IN-" + stockIn.MstCompanyBranch_BranchId.BranchCode + "-" + stockIn.INNumber;
 
-                                _dbContext.SysInventories.Add(newInventory);
-                                await _dbContext.SaveChangesAsync();
-
-                                await UpdateArticleInventory(articleInventoryId);
-
-                                if (stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any())
-                                {
-                                    if (stockInItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Kitting == "COMPONENT")
+                                    var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
                                     {
-                                        List<DBSets.MstArticleItemComponentDBSet> articleItemComponents = await (
+                                        ArticleId = stockInItem.ItemId,
+                                        BranchId = stockIn.BranchId,
+                                        InventoryCode = inventoryCode,
+                                        Quantity = quantity,
+                                        Cost = cost,
+                                        Amount = amount
+                                    };
+
+                                    _dbContext.MstArticleItemInventories.Add(newItemInventory);
+                                    await _dbContext.SaveChangesAsync();
+
+                                    articleItemInventoryId = newItemInventory.Id;
+                                }
+
+                                if (articleItemInventoryId != 0)
+                                {
+                                    var newInventory = new DBSets.SysInventoryDBSet()
+                                    {
+                                        BranchId = stockIn.BranchId,
+                                        InventoryDate = DateTime.Today,
+                                        ArticleId = stockInItem.ItemId,
+                                        ArticleItemInventoryId = articleItemInventoryId,
+                                        AccountId = stockIn.AccountId,
+                                        QuantityIn = quantity,
+                                        QuantityOut = 0,
+                                        Quantity = quantity,
+                                        Cost = cost,
+                                        Amount = amount,
+                                        Particulars = stockInItem.Particulars,
+                                        RRId = null,
+                                        SIId = null,
+                                        INId = INId,
+                                        OTId = null,
+                                        STId = null,
+                                        SWId = null
+                                    };
+
+                                    _dbContext.SysInventories.Add(newInventory);
+                                    await _dbContext.SaveChangesAsync();
+
+                                    await UpdateArticleInventory(articleItemInventoryId);
+
+                                    if (stockInItem.JOId != null && item.Kitting == "PRODUCED")
+                                    {
+                                        var itemComponents = await (
                                             from d in _dbContext.MstArticleItemComponents
                                             where d.ArticleId == stockInItem.ItemId
                                             select d
                                         ).ToListAsync();
 
-                                        if (articleItemComponents.Any())
+                                        if (itemComponents.Any() == true)
                                         {
-                                            foreach (var articleItemComponent in articleItemComponents)
+                                            foreach (var itemComponent in itemComponents)
                                             {
-                                                DBSets.MstArticleItemInventoryDBSet componentItemInventory = await (
+                                                var componentItemInventory = await (
                                                      from d in _dbContext.MstArticleItemInventories
-                                                     where d.ArticleId == articleItemComponent.ComponentArticleId
+                                                     where d.ArticleId == itemComponent.ComponentArticleId
                                                      && d.BranchId == stockIn.BranchId
                                                      select d
                                                 ).FirstOrDefaultAsync();
 
                                                 if (componentItemInventory != null)
                                                 {
-                                                    Int32 componentItemInventoryId = componentItemInventory.Id;
+                                                    Int32 componentArticleItemInventoryId = componentItemInventory.Id;
 
-                                                    Decimal componentQuantity = articleItemComponent.Quantity * stockInItem.BaseQuantity;
+                                                    Decimal componentQuantity = itemComponent.Quantity * stockInItem.BaseQuantity;
                                                     Decimal componentCost = componentItemInventory.Cost;
-                                                    Decimal componentAmount = (articleItemComponent.Quantity * stockInItem.BaseQuantity) * componentItemInventory.Cost;
+                                                    Decimal componentAmount = componentQuantity * componentCost;
 
-                                                    DBSets.SysInventoryDBSet newComponentInventory = new DBSets.SysInventoryDBSet()
+                                                    var newComponentInventory = new DBSets.SysInventoryDBSet()
                                                     {
                                                         BranchId = stockIn.BranchId,
                                                         InventoryDate = DateTime.Today,
-                                                        ArticleId = articleItemComponent.ComponentArticleId,
-                                                        ArticleItemInventoryId = componentItemInventoryId,
+                                                        ArticleId = itemComponent.ComponentArticleId,
+                                                        ArticleItemInventoryId = componentArticleItemInventoryId,
                                                         AccountId = stockIn.AccountId,
-                                                        QuantityIn = componentQuantity,
-                                                        QuantityOut = 0,
-                                                        Quantity = componentQuantity,
+                                                        QuantityIn = 0,
+                                                        QuantityOut = componentQuantity,
+                                                        Quantity = componentQuantity * -1,
                                                         Cost = componentCost,
-                                                        Amount = componentAmount,
+                                                        Amount = componentAmount * -1,
                                                         Particulars = stockInItem.Particulars,
                                                         RRId = null,
                                                         SIId = null,
@@ -440,7 +386,7 @@ namespace liteclerk_api.Modules
                                                     _dbContext.SysInventories.Add(newComponentInventory);
                                                     await _dbContext.SaveChangesAsync();
 
-                                                    await UpdateArticleInventory(componentItemInventoryId);
+                                                    await UpdateArticleInventory(componentArticleItemInventoryId);
                                                 }
                                             }
                                         }
@@ -461,23 +407,21 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                List<DBSets.SysInventoryDBSet> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.INId == INId
                     select d
                 ).ToListAsync();
 
-                if (inventories.Any())
+                if (inventories.Any() == true)
                 {
                     _dbContext.SysInventories.RemoveRange(inventories);
                     await _dbContext.SaveChangesAsync();
                 }
 
-                List<DBSets.TrnStockInItemDBSet> stockInItems = await (
+                var stockInItems = await (
                     from d in _dbContext.TrnStockInItems
                     where d.INId == INId
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
                     select d
                 ).ToListAsync();
 
@@ -485,19 +429,19 @@ namespace liteclerk_api.Modules
                 {
                     foreach (var stockInItem in stockInItems)
                     {
-                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                        var itemInventories = await (
                             from d in _dbContext.MstArticleItemInventories
                             where d.ArticleId == stockInItem.ItemId
                             && d.BranchId == stockInItem.TrnStockIn_INId.BranchId
                             select d
                         ).ToListAsync();
 
-                        if (itemInventories.Any())
+                        if (itemInventories.Any() == true)
                         {
                             foreach (var itemInventory in itemInventories)
                             {
-                                Int32 articleInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleInventoryId);
+                                Int32 articleItemInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleItemInventoryId);
                             }
                         }
                     }
@@ -513,7 +457,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnStockOutDBSet stockOut = await (
+                var stockOut = await (
                      from d in _dbContext.TrnStockOuts
                      where d.Id == OTId
                      select d
@@ -521,56 +465,65 @@ namespace liteclerk_api.Modules
 
                 if (stockOut != null)
                 {
-                    List<DBSets.TrnStockOutItemDBSet> stockOutItems = await (
+                    var stockOutItems = await (
                         from d in _dbContext.TrnStockOutItems
                         where d.OTId == OTId
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
                         && d.BaseQuantity > 0
                         select d
                     ).ToListAsync();
 
-                    if (stockOutItems.Any())
+                    if (stockOutItems.Any() == true)
                     {
                         foreach (var stockOutItem in stockOutItems)
                         {
-                            Int32 articleInventoryId = Convert.ToInt32(stockOutItem.ItemInventoryId);
-
-                            DBSets.MstArticleItemInventoryDBSet itemInventory = await (
-                                 from d in _dbContext.MstArticleItemInventories
-                                 where d.Id == articleInventoryId
-                                 select d
+                            var item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == stockOutItem.ItemId
+                                && d.IsInventory == true
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
                             ).FirstOrDefaultAsync();
 
-                            if (itemInventory != null)
+                            if (item != null)
                             {
-                                Decimal quantity = stockOutItem.BaseQuantity;
-                                Decimal cost = stockOutItem.BaseCost;
-                                Decimal amount = stockOutItem.BaseQuantity * stockOutItem.BaseCost;
+                                Int32 articleItemInventoryId = Convert.ToInt32(stockOutItem.ItemInventoryId);
 
-                                DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
+                                var itemInventory = await (
+                                     from d in _dbContext.MstArticleItemInventories
+                                     where d.Id == articleItemInventoryId
+                                     select d
+                                ).FirstOrDefaultAsync();
+
+                                if (itemInventory != null)
                                 {
-                                    BranchId = stockOut.BranchId,
-                                    InventoryDate = DateTime.Today,
-                                    ArticleId = stockOutItem.ItemId,
-                                    ArticleItemInventoryId = articleInventoryId,
-                                    AccountId = stockOut.AccountId,
-                                    QuantityIn = 0,
-                                    QuantityOut = quantity,
-                                    Quantity = quantity * -1,
-                                    Cost = cost,
-                                    Amount = amount * -1,
-                                    Particulars = stockOutItem.Particulars,
-                                    RRId = null,
-                                    SIId = null,
-                                    INId = null,
-                                    OTId = OTId,
-                                    STId = null,
-                                    SWId = null
-                                };
+                                    Decimal quantity = stockOutItem.BaseQuantity;
+                                    Decimal cost = stockOutItem.BaseCost;
+                                    Decimal amount = quantity * cost;
 
-                                _dbContext.SysInventories.Add(newInventory);
-                                await _dbContext.SaveChangesAsync();
+                                    var newInventory = new DBSets.SysInventoryDBSet()
+                                    {
+                                        BranchId = stockOut.BranchId,
+                                        InventoryDate = DateTime.Today,
+                                        ArticleId = stockOutItem.ItemId,
+                                        ArticleItemInventoryId = articleItemInventoryId,
+                                        AccountId = stockOut.AccountId,
+                                        QuantityIn = 0,
+                                        QuantityOut = quantity,
+                                        Quantity = quantity * -1,
+                                        Cost = cost,
+                                        Amount = amount * -1,
+                                        Particulars = stockOutItem.Particulars,
+                                        RRId = null,
+                                        SIId = null,
+                                        INId = null,
+                                        OTId = OTId,
+                                        STId = null,
+                                        SWId = null
+                                    };
+
+                                    _dbContext.SysInventories.Add(newInventory);
+                                    await _dbContext.SaveChangesAsync();
+                                }
                             }
                         }
                     }
@@ -586,23 +539,21 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                List<DBSets.SysInventoryDBSet> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.OTId == OTId
                     select d
                 ).ToListAsync();
 
-                if (inventories.Any())
+                if (inventories.Any() == true)
                 {
                     _dbContext.SysInventories.RemoveRange(inventories);
                     await _dbContext.SaveChangesAsync();
                 }
 
-                List<DBSets.TrnStockOutItemDBSet> stockOutItems = await (
+                var stockOutItems = await (
                     from d in _dbContext.TrnStockOutItems
                     where d.OTId == OTId
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
                     select d
                 ).ToListAsync();
 
@@ -610,19 +561,19 @@ namespace liteclerk_api.Modules
                 {
                     foreach (var stockOutItem in stockOutItems)
                     {
-                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                        var itemInventories = await (
                             from d in _dbContext.MstArticleItemInventories
                             where d.ArticleId == stockOutItem.ItemId
                             && d.BranchId == stockOutItem.TrnStockOut_OTId.BranchId
                             select d
                         ).ToListAsync();
 
-                        if (itemInventories.Any())
+                        if (itemInventories.Any() == true)
                         {
                             foreach (var itemInventory in itemInventories)
                             {
-                                Int32 articleInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleInventoryId);
+                                Int32 articleItemInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleItemInventoryId);
                             }
                         }
                     }
@@ -638,7 +589,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnStockTransferDBSet stockTransfer = await (
+                var stockTransfer = await (
                      from d in _dbContext.TrnStockTransfers
                      where d.Id == STId
                      select d
@@ -646,80 +597,125 @@ namespace liteclerk_api.Modules
 
                 if (stockTransfer != null)
                 {
-                    List<DBSets.TrnStockTransferItemDBSet> stockTransferItems = await (
+                    var stockTransferItems = await (
                         from d in _dbContext.TrnStockTransferItems
                         where d.STId == STId
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
                         && d.BaseQuantity > 0
                         select d
                     ).ToListAsync();
 
-                    if (stockTransferItems.Any())
+                    if (stockTransferItems.Any() == true)
                     {
                         foreach (var stockTransferItem in stockTransferItems)
                         {
-                            Int32 articleInventoryId = Convert.ToInt32(stockTransferItem.ItemInventoryId);
-
-                            DBSets.MstArticleItemInventoryDBSet itemInventory = await (
-                                 from d in _dbContext.MstArticleItemInventories
-                                 where d.Id == articleInventoryId
-                                 select d
+                            var item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == stockTransferItem.ItemId
+                                && d.IsInventory == true
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
                             ).FirstOrDefaultAsync();
 
-                            if (itemInventory != null)
+                            if (item != null)
                             {
+                                Int32 outArticleItemInventoryId = Convert.ToInt32(stockTransferItem.ItemInventoryId);
+
                                 Decimal quantity = stockTransferItem.BaseQuantity;
                                 Decimal cost = stockTransferItem.BaseCost;
-                                Decimal amount = stockTransferItem.BaseQuantity * stockTransferItem.BaseCost;
+                                Decimal amount = quantity * cost;
 
-                                DBSets.SysInventoryDBSet newOutInventory = new DBSets.SysInventoryDBSet()
+                                var outItemInventory = await (
+                                     from d in _dbContext.MstArticleItemInventories
+                                     where d.Id == outArticleItemInventoryId
+                                     select d
+                                ).FirstOrDefaultAsync();
+
+                                if (outItemInventory != null)
                                 {
-                                    BranchId = stockTransfer.BranchId,
-                                    InventoryDate = DateTime.Today,
-                                    ArticleId = stockTransferItem.ItemId,
-                                    ArticleItemInventoryId = articleInventoryId,
-                                    AccountId = stockTransfer.AccountId,
-                                    QuantityIn = 0,
-                                    QuantityOut = quantity,
-                                    Quantity = quantity * -1,
-                                    Cost = cost,
-                                    Amount = amount * -1,
-                                    Particulars = stockTransferItem.Particulars,
-                                    RRId = null,
-                                    SIId = null,
-                                    INId = null,
-                                    OTId = null,
-                                    STId = STId,
-                                    SWId = null
-                                };
+                                    var newOutInventory = new DBSets.SysInventoryDBSet()
+                                    {
+                                        BranchId = stockTransfer.BranchId,
+                                        InventoryDate = DateTime.Today,
+                                        ArticleId = stockTransferItem.ItemId,
+                                        ArticleItemInventoryId = outArticleItemInventoryId,
+                                        AccountId = stockTransfer.AccountId,
+                                        QuantityIn = 0,
+                                        QuantityOut = quantity,
+                                        Quantity = quantity * -1,
+                                        Cost = cost,
+                                        Amount = amount * -1,
+                                        Particulars = stockTransferItem.Particulars,
+                                        RRId = null,
+                                        SIId = null,
+                                        INId = null,
+                                        OTId = null,
+                                        STId = STId,
+                                        SWId = null
+                                    };
 
-                                _dbContext.SysInventories.Add(newOutInventory);
-                                await _dbContext.SaveChangesAsync();
+                                    _dbContext.SysInventories.Add(newOutInventory);
+                                    await _dbContext.SaveChangesAsync();
 
-                                DBSets.SysInventoryDBSet newInInventory = new DBSets.SysInventoryDBSet()
-                                {
-                                    BranchId = stockTransfer.ToBranchId,
-                                    InventoryDate = DateTime.Today,
-                                    ArticleId = stockTransferItem.ItemId,
-                                    ArticleItemInventoryId = articleInventoryId,
-                                    AccountId = stockTransfer.AccountId,
-                                    QuantityIn = quantity,
-                                    QuantityOut = 0,
-                                    Quantity = quantity,
-                                    Cost = cost,
-                                    Amount = amount,
-                                    Particulars = stockTransferItem.Particulars,
-                                    RRId = null,
-                                    SIId = null,
-                                    INId = null,
-                                    OTId = null,
-                                    STId = STId,
-                                    SWId = null
-                                };
+                                    Int32 inArticleItemInventoryId = 0;
 
-                                _dbContext.SysInventories.Add(newInInventory);
-                                await _dbContext.SaveChangesAsync();
+                                    var inItemInventory = await (
+                                         from d in _dbContext.MstArticleItemInventories
+                                         where d.ArticleId == stockTransferItem.ItemId
+                                         && d.BranchId == stockTransfer.ToBranchId
+                                         select d
+                                    ).FirstOrDefaultAsync();
+
+                                    if (inItemInventory != null)
+                                    {
+                                        inArticleItemInventoryId = inItemInventory.Id;
+                                    }
+                                    else
+                                    {
+                                        String inventoryCode = "ST-" + stockTransfer.MstCompanyBranch_ToBranchId.BranchCode + "-" + stockTransfer.STNumber;
+
+                                        var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
+                                        {
+                                            ArticleId = stockTransferItem.ItemId,
+                                            BranchId = stockTransfer.ToBranchId,
+                                            InventoryCode = inventoryCode,
+                                            Quantity = quantity,
+                                            Cost = cost,
+                                            Amount = amount
+                                        };
+
+                                        _dbContext.MstArticleItemInventories.Add(newItemInventory);
+                                        await _dbContext.SaveChangesAsync();
+
+                                        inArticleItemInventoryId = newItemInventory.Id;
+                                    }
+
+                                    if (inArticleItemInventoryId != 0)
+                                    {
+                                        var newInInventory = new DBSets.SysInventoryDBSet()
+                                        {
+                                            BranchId = stockTransfer.ToBranchId,
+                                            InventoryDate = DateTime.Today,
+                                            ArticleId = stockTransferItem.ItemId,
+                                            ArticleItemInventoryId = inArticleItemInventoryId,
+                                            AccountId = stockTransfer.AccountId,
+                                            QuantityIn = quantity,
+                                            QuantityOut = 0,
+                                            Quantity = quantity,
+                                            Cost = cost,
+                                            Amount = amount,
+                                            Particulars = stockTransferItem.Particulars,
+                                            RRId = null,
+                                            SIId = null,
+                                            INId = null,
+                                            OTId = null,
+                                            STId = STId,
+                                            SWId = null
+                                        };
+
+                                        _dbContext.SysInventories.Add(newInInventory);
+                                        await _dbContext.SaveChangesAsync();
+                                    }
+                                }
                             }
                         }
                     }
@@ -735,23 +731,21 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                List<DBSets.SysInventoryDBSet> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.STId == STId
                     select d
                 ).ToListAsync();
 
-                if (inventories.Any())
+                if (inventories.Any() == true)
                 {
                     _dbContext.SysInventories.RemoveRange(inventories);
                     await _dbContext.SaveChangesAsync();
                 }
 
-                List<DBSets.TrnStockTransferItemDBSet> stockTransferItems = await (
+                var stockTransferItems = await (
                     from d in _dbContext.TrnStockTransferItems
                     where d.STId == STId
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
                     select d
                 ).ToListAsync();
 
@@ -759,19 +753,19 @@ namespace liteclerk_api.Modules
                 {
                     foreach (var stockTransferItem in stockTransferItems)
                     {
-                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                        var itemInventories = await (
                             from d in _dbContext.MstArticleItemInventories
                             where d.ArticleId == stockTransferItem.ItemId
                             && d.BranchId == stockTransferItem.TrnStockTransfer_STId.BranchId
                             select d
                         ).ToListAsync();
 
-                        if (itemInventories.Any())
+                        if (itemInventories.Any() == true)
                         {
                             foreach (var itemInventory in itemInventories)
                             {
-                                Int32 articleInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleInventoryId);
+                                Int32 articleItemInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleItemInventoryId);
                             }
                         }
                     }
@@ -787,7 +781,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                var salesInvoice = await (
                      from d in _dbContext.TrnSalesInvoices
                      where d.Id == SIId
                      select d
@@ -795,13 +789,9 @@ namespace liteclerk_api.Modules
 
                 if (salesInvoice != null)
                 {
-                    List<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
+                    var salesInvoiceItems = await (
                         from d in _dbContext.TrnSalesInvoiceItems
                         where d.SIId == SIId
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
-                        && d.ItemInventoryId != null
-                        && d.BaseQuantity > 0
                         select d
                     ).ToListAsync();
 
@@ -809,7 +799,7 @@ namespace liteclerk_api.Modules
                     {
                         foreach (var salesInvoiceItem in salesInvoiceItems)
                         {
-                            DBSets.MstArticleItemDBSet item = await (
+                            var item = await (
                                 from d in _dbContext.MstArticleItems
                                 where d.ArticleId == salesInvoiceItem.ItemId
                                 && d.MstArticle_ArticleId.IsLocked == true
@@ -818,81 +808,94 @@ namespace liteclerk_api.Modules
 
                             if (item != null)
                             {
-                                Int32 articleInventoryId = Convert.ToInt32(salesInvoiceItem.ItemInventoryId);
-
-                                DBSets.MstArticleItemInventoryDBSet itemInventory = await (
-                                     from d in _dbContext.MstArticleItemInventories
-                                     where d.Id == articleInventoryId
-                                     select d
-                                ).FirstOrDefaultAsync();
-
-                                if (itemInventory != null)
+                                if (item.IsInventory == true)
                                 {
-                                    Decimal quantity = salesInvoiceItem.BaseQuantity;
-                                    Decimal cost = itemInventory.Cost;
-                                    Decimal amount = salesInvoiceItem.BaseQuantity * itemInventory.Cost;
-
-                                    DBSets.SysInventoryDBSet newInventory = new DBSets.SysInventoryDBSet()
+                                    Int32 articleItemInventoryId = 0;
+                                    if (salesInvoiceItem.ItemInventoryId != null)
                                     {
-                                        BranchId = salesInvoice.BranchId,
-                                        InventoryDate = DateTime.Today,
-                                        ArticleId = salesInvoiceItem.ItemId,
-                                        ArticleItemInventoryId = articleInventoryId,
-                                        AccountId = item.CostAccountId,
-                                        QuantityIn = 0,
-                                        QuantityOut = quantity,
-                                        Quantity = quantity * -1,
-                                        Cost = cost,
-                                        Amount = amount * -1,
-                                        Particulars = salesInvoiceItem.Particulars,
-                                        RRId = null,
-                                        SIId = SIId,
-                                        INId = null,
-                                        OTId = null,
-                                        STId = null,
-                                        SWId = null
-                                    };
+                                        articleItemInventoryId = Convert.ToInt32(salesInvoiceItem.ItemInventoryId);
+                                    }
 
-                                    _dbContext.SysInventories.Add(newInventory);
-                                    await _dbContext.SaveChangesAsync();
+                                    if (articleItemInventoryId != 0)
+                                    {
+                                        var itemInventory = await (
+                                             from d in _dbContext.MstArticleItemInventories
+                                             where d.Id == articleItemInventoryId
+                                             select d
+                                        ).FirstOrDefaultAsync();
 
-                                    await UpdateArticleInventory(articleInventoryId);
+                                        if (itemInventory != null)
+                                        {
+                                            Decimal quantity = salesInvoiceItem.BaseQuantity;
+                                            Decimal cost = itemInventory.Cost;
+                                            Decimal amount = quantity * cost;
 
+                                            var newInventory = new DBSets.SysInventoryDBSet()
+                                            {
+                                                BranchId = salesInvoice.BranchId,
+                                                InventoryDate = DateTime.Today,
+                                                ArticleId = salesInvoiceItem.ItemId,
+                                                ArticleItemInventoryId = articleItemInventoryId,
+                                                AccountId = item.CostAccountId,
+                                                QuantityIn = 0,
+                                                QuantityOut = quantity,
+                                                Quantity = quantity * -1,
+                                                Cost = cost,
+                                                Amount = amount * -1,
+                                                Particulars = salesInvoiceItem.Particulars,
+                                                RRId = null,
+                                                SIId = SIId,
+                                                INId = null,
+                                                OTId = null,
+                                                STId = null,
+                                                SWId = null
+                                            };
+
+                                            _dbContext.SysInventories.Add(newInventory);
+                                            await _dbContext.SaveChangesAsync();
+
+                                            await UpdateArticleInventory(articleItemInventoryId);
+                                        }
+                                    }
+                                }
+                                else
+                                {
                                     if (item.Kitting == "COMPONENT")
                                     {
-                                        List<DBSets.MstArticleItemComponentDBSet> articleItemComponents = await (
+                                        var itemComponents = await (
                                             from d in _dbContext.MstArticleItemComponents
-                                            where d.ArticleId == item.ArticleId
+                                            where d.ArticleId == salesInvoiceItem.ItemId
                                             select d
                                         ).ToListAsync();
 
-                                        if (articleItemComponents.Any())
+                                        if (itemComponents.Any() == true)
                                         {
-                                            foreach (var articleItemComponent in articleItemComponents)
+                                            foreach (var itemComponent in itemComponents)
                                             {
-                                                DBSets.MstArticleItemInventoryDBSet componentItemInventory = await (
+                                                var componentItemInventory = await (
                                                      from d in _dbContext.MstArticleItemInventories
-                                                     where d.ArticleId == articleItemComponent.ComponentArticleId
+                                                     where d.ArticleId == itemComponent.ComponentArticleId
                                                      && d.BranchId == salesInvoice.BranchId
                                                      select d
                                                 ).FirstOrDefaultAsync();
 
                                                 if (componentItemInventory != null)
                                                 {
-                                                    Int32 componentItemInventoryId = componentItemInventory.Id;
+                                                    Int32 componentArticleItemInventoryId = componentItemInventory.Id;
+                                                    Int32 componentItemAccountId = itemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() == true ?
+                                                                                   itemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().CostAccountId : 0;
 
-                                                    Decimal componentQuantity = articleItemComponent.Quantity * salesInvoiceItem.BaseQuantity;
+                                                    Decimal componentQuantity = itemComponent.Quantity * salesInvoiceItem.BaseQuantity;
                                                     Decimal componentCost = componentItemInventory.Cost;
-                                                    Decimal componentAmount = (articleItemComponent.Quantity * salesInvoiceItem.BaseQuantity) * componentItemInventory.Cost;
+                                                    Decimal componentAmount = componentQuantity * componentCost;
 
                                                     DBSets.SysInventoryDBSet newComponentInventory = new DBSets.SysInventoryDBSet()
                                                     {
                                                         BranchId = salesInvoice.BranchId,
                                                         InventoryDate = DateTime.Today,
-                                                        ArticleId = articleItemComponent.ComponentArticleId,
-                                                        ArticleItemInventoryId = componentItemInventoryId,
-                                                        AccountId = articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.Any() ?
-                                                                    articleItemComponent.MstArticle_ComponentArticleId.MstArticleItems_ArticleId.FirstOrDefault().CostAccountId : 0,
+                                                        ArticleId = itemComponent.ComponentArticleId,
+                                                        ArticleItemInventoryId = componentArticleItemInventoryId,
+                                                        AccountId = componentItemAccountId,
                                                         QuantityIn = 0,
                                                         QuantityOut = componentQuantity,
                                                         Quantity = componentQuantity * -1,
@@ -910,7 +913,7 @@ namespace liteclerk_api.Modules
                                                     _dbContext.SysInventories.Add(newComponentInventory);
                                                     await _dbContext.SaveChangesAsync();
 
-                                                    await UpdateArticleInventory(componentItemInventoryId);
+                                                    await UpdateArticleInventory(componentArticleItemInventoryId);
                                                 }
                                             }
                                         }
@@ -931,23 +934,21 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                List<DBSets.SysInventoryDBSet> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.SIId == SIId
                     select d
                 ).ToListAsync();
 
-                if (inventories.Any())
+                if (inventories.Any() == true)
                 {
                     _dbContext.SysInventories.RemoveRange(inventories);
                     await _dbContext.SaveChangesAsync();
                 }
 
-                List<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
+                var salesInvoiceItems = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                       d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
                     && d.ItemInventoryId != null
                     select d
                 ).ToListAsync();
@@ -956,19 +957,19 @@ namespace liteclerk_api.Modules
                 {
                     foreach (var salesInvoiceItem in salesInvoiceItems)
                     {
-                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                        var itemInventories = await (
                             from d in _dbContext.MstArticleItemInventories
                             where d.ArticleId == salesInvoiceItem.ItemId
                             && d.BranchId == salesInvoiceItem.TrnSalesInvoice_SIId.BranchId
                             select d
                         ).ToListAsync();
 
-                        if (itemInventories.Any())
+                        if (itemInventories.Any() == true)
                         {
                             foreach (var itemInventory in itemInventories)
                             {
-                                Int32 articleInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleInventoryId);
+                                Int32 articleItemInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleItemInventoryId);
                             }
                         }
                     }
@@ -984,7 +985,7 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                DBSets.TrnStockWithdrawalDBSet stockWithdrawal = await (
+                var stockWithdrawal = await (
                      from d in _dbContext.TrnStockWithdrawals
                      where d.Id == SWId
                      select d
@@ -992,48 +993,47 @@ namespace liteclerk_api.Modules
 
                 if (stockWithdrawal != null)
                 {
-                    List<DBSets.TrnStockWithdrawalItemDBSet> stockWithdrawalItems = await (
+                    var stockWithdrawalItems = await (
                         from d in _dbContext.TrnStockWithdrawalItems
                         where d.SWId == SWId
-                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
-                           d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true : false
                         && d.BaseQuantity > 0
                         select d
                     ).ToListAsync();
 
-                    if (stockWithdrawalItems.Any())
+                    if (stockWithdrawalItems.Any() == true)
                     {
                         foreach (var stockWithdrawalItem in stockWithdrawalItems)
                         {
-                            DBSets.MstArticleItemDBSet item = await (
+                            var item = await (
                                 from d in _dbContext.MstArticleItems
                                 where d.ArticleId == stockWithdrawalItem.ItemId
+                                && d.IsInventory == true
                                 && d.MstArticle_ArticleId.IsLocked == true
                                 select d
                             ).FirstOrDefaultAsync();
 
                             if (item != null)
                             {
-                                Int32 articleInventoryId = Convert.ToInt32(stockWithdrawalItem.ItemInventoryId);
+                                Int32 outArticleItemInventoryId = Convert.ToInt32(stockWithdrawalItem.ItemInventoryId);
 
-                                DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                                Decimal quantity = stockWithdrawalItem.BaseQuantity;
+                                Decimal cost = stockWithdrawalItem.BaseCost;
+                                Decimal amount = quantity * cost;
+
+                                var outItemInventory = await (
                                      from d in _dbContext.MstArticleItemInventories
-                                     where d.Id == articleInventoryId
+                                     where d.Id == outArticleItemInventoryId
                                      select d
                                 ).FirstOrDefaultAsync();
 
-                                if (itemInventory != null)
+                                if (outItemInventory != null)
                                 {
-                                    Decimal quantity = stockWithdrawalItem.BaseQuantity;
-                                    Decimal cost = stockWithdrawalItem.BaseCost;
-                                    Decimal amount = stockWithdrawalItem.BaseQuantity * stockWithdrawalItem.BaseCost;
-
-                                    DBSets.SysInventoryDBSet newOutInventory = new DBSets.SysInventoryDBSet()
+                                    var newOutInventory = new DBSets.SysInventoryDBSet()
                                     {
                                         BranchId = stockWithdrawal.BranchId,
                                         InventoryDate = DateTime.Today,
                                         ArticleId = stockWithdrawalItem.ItemId,
-                                        ArticleItemInventoryId = articleInventoryId,
+                                        ArticleItemInventoryId = outArticleItemInventoryId,
                                         AccountId = item.ExpenseAccountId,
                                         QuantityIn = 0,
                                         QuantityOut = quantity,
@@ -1052,29 +1052,65 @@ namespace liteclerk_api.Modules
                                     _dbContext.SysInventories.Add(newOutInventory);
                                     await _dbContext.SaveChangesAsync();
 
-                                    DBSets.SysInventoryDBSet newInInventory = new DBSets.SysInventoryDBSet()
-                                    {
-                                        BranchId = stockWithdrawal.FromBranchId,
-                                        InventoryDate = DateTime.Today,
-                                        ArticleId = stockWithdrawalItem.ItemId,
-                                        ArticleItemInventoryId = articleInventoryId,
-                                        AccountId = item.ExpenseAccountId,
-                                        QuantityIn = quantity,
-                                        QuantityOut = 0,
-                                        Quantity = quantity,
-                                        Cost = cost,
-                                        Amount = amount,
-                                        Particulars = stockWithdrawalItem.Particulars,
-                                        RRId = null,
-                                        SIId = null,
-                                        INId = null,
-                                        OTId = null,
-                                        STId = null,
-                                        SWId = SWId
-                                    };
+                                    Int32 inArticleItemInventoryId = 0;
 
-                                    _dbContext.SysInventories.Add(newInInventory);
-                                    await _dbContext.SaveChangesAsync();
+                                    var inItemInventory = await (
+                                         from d in _dbContext.MstArticleItemInventories
+                                         where d.ArticleId == stockWithdrawalItem.ItemId
+                                         && d.BranchId == stockWithdrawal.FromBranchId
+                                         select d
+                                    ).FirstOrDefaultAsync();
+
+                                    if (inItemInventory != null)
+                                    {
+                                        inArticleItemInventoryId = inItemInventory.Id;
+                                    }
+                                    else
+                                    {
+                                        String inventoryCode = "SW-" + stockWithdrawal.MstCompanyBranch_FromBranchId.BranchCode + "-" + stockWithdrawal.SWNumber;
+
+                                        var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
+                                        {
+                                            ArticleId = stockWithdrawalItem.ItemId,
+                                            BranchId = stockWithdrawal.FromBranchId,
+                                            InventoryCode = inventoryCode,
+                                            Quantity = quantity,
+                                            Cost = cost,
+                                            Amount = amount
+                                        };
+
+                                        _dbContext.MstArticleItemInventories.Add(newItemInventory);
+                                        await _dbContext.SaveChangesAsync();
+
+                                        inArticleItemInventoryId = newItemInventory.Id;
+                                    }
+
+                                    if (inArticleItemInventoryId != 0)
+                                    {
+                                        var newInInventory = new DBSets.SysInventoryDBSet()
+                                        {
+                                            BranchId = stockWithdrawal.FromBranchId,
+                                            InventoryDate = DateTime.Today,
+                                            ArticleId = stockWithdrawalItem.ItemId,
+                                            ArticleItemInventoryId = inArticleItemInventoryId,
+                                            AccountId = item.ExpenseAccountId,
+                                            QuantityIn = quantity,
+                                            QuantityOut = 0,
+                                            Quantity = quantity,
+                                            Cost = cost,
+                                            Amount = amount,
+                                            Particulars = stockWithdrawalItem.Particulars,
+                                            RRId = null,
+                                            SIId = null,
+                                            INId = null,
+                                            OTId = null,
+                                            STId = null,
+                                            SWId = SWId
+                                        };
+
+                                        _dbContext.SysInventories.Add(newInInventory);
+                                        await _dbContext.SaveChangesAsync();
+                                    }
                                 }
                             }
                         }
@@ -1091,23 +1127,21 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                List<DBSets.SysInventoryDBSet> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.SWId == SWId
                     select d
                 ).ToListAsync();
 
-                if (inventories.Any())
+                if (inventories.Any() == true)
                 {
                     _dbContext.SysInventories.RemoveRange(inventories);
                     await _dbContext.SaveChangesAsync();
                 }
 
-                List<DBSets.TrnStockWithdrawalItemDBSet> stockWithdrawalItems = await (
+                var stockWithdrawalItems = await (
                     from d in _dbContext.TrnStockWithdrawalItems
                     where d.SWId == SWId
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any()
-                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory == true
                     select d
                 ).ToListAsync();
 
@@ -1115,19 +1149,19 @@ namespace liteclerk_api.Modules
                 {
                     foreach (var stockWithdrawalItem in stockWithdrawalItems)
                     {
-                        List<DBSets.MstArticleItemInventoryDBSet> itemInventories = await (
+                        var itemInventories = await (
                             from d in _dbContext.MstArticleItemInventories
                             where d.ArticleId == stockWithdrawalItem.ItemId
                             && d.BranchId == stockWithdrawalItem.TrnStockWithdrawal_SWId.BranchId
                             select d
                         ).ToListAsync();
 
-                        if (itemInventories.Any())
+                        if (itemInventories.Any() == true)
                         {
                             foreach (var itemInventory in itemInventories)
                             {
-                                Int32 articleInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleInventoryId);
+                                Int32 articleItemInventoryId = itemInventory.Id;
+                                await UpdateArticleInventory(articleItemInventoryId);
                             }
                         }
                     }

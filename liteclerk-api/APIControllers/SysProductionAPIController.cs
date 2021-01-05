@@ -58,6 +58,7 @@ namespace liteclerk_api.APIControllers
                     && d.TrnJobOrder_JOId.JODate <= Convert.ToDateTime(endDate)
                     && d.TrnJobOrder_JOId.IsLocked == true
                     && d.JobDepartmentId == jobDepartmentId
+                    && d.Status != "DONE"
                     orderby d.Id descending
                     select new DTO.TrnJobOrderDepartmentDTO
                     {

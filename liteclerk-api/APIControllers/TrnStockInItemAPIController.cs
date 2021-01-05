@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnStockInItemDTO> stockInItems = await (
+                var stockInItems = await (
                     from d in _dbContext.TrnStockInItems
                     where d.INId == INId
                     orderby d.Id descending
@@ -38,6 +38,13 @@ namespace liteclerk_api.APIControllers
                         Id = d.Id,
                         INId = d.INId,
                         ItemId = d.ItemId,
+                        JOId = d.TrnJobOrder_JOId.Id,
+                        JobOrder = new DTO.TrnJobOrderDTO
+                        {
+                            JONumber = d.TrnJobOrder_JOId.JONumber,
+                            JODate = d.TrnJobOrder_JOId.JODate.ToShortDateString(),
+                            ManualNumber = d.TrnJobOrder_JOId.ManualNumber
+                        },
                         Item = new DTO.MstArticleItemDTO
                         {
                             Article = new DTO.MstArticleDTO
@@ -84,13 +91,20 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnStockInItemDTO stockInItem = await (
+                var stockInItem = await (
                     from d in _dbContext.TrnStockInItems
                     where d.Id == id
                     select new DTO.TrnStockInItemDTO
                     {
                         Id = d.Id,
                         INId = d.INId,
+                        JOId = d.TrnJobOrder_JOId.Id,
+                        JobOrder = new DTO.TrnJobOrderDTO
+                        {
+                            JONumber = d.TrnJobOrder_JOId.JONumber,
+                            JODate = d.TrnJobOrder_JOId.JODate.ToShortDateString(),
+                            ManualNumber = d.TrnJobOrder_JOId.ManualNumber
+                        },
                         ItemId = d.ItemId,
                         Item = new DTO.MstArticleItemDTO
                         {
@@ -140,18 +154,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockInDetail"
@@ -168,7 +171,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a stock in item.");
                 }
 
-                DBSets.TrnStockInDBSet stockIn = await (
+                var stockIn = await (
                     from d in _dbContext.TrnStockIns
                     where d.Id == trnStockInItemDTO.INId
                     select d
@@ -184,7 +187,21 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add stock in items if the current stock in is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                if (trnStockInItemDTO.JOId != null)
+                {
+                    var jobOrder = await (
+                        from d in _dbContext.TrnJobOrders
+                        where d.Id == trnStockInItemDTO.JOId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (jobOrder == null)
+                    {
+                        return StatusCode(404, "Job order not found.");
+                    }
+                }
+
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnStockInItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -196,7 +213,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnStockInItemDTO.ItemId
                     && d.UnitId == trnStockInItemDTO.UnitId
@@ -220,9 +237,10 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnStockInItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnStockInItemDBSet newStockInItems = new DBSets.TrnStockInItemDBSet()
+                var newStockInItems = new DBSets.TrnStockInItemDBSet()
                 {
                     INId = trnStockInItemDTO.INId,
+                    JOId = trnStockInItemDTO.JOId,
                     ItemId = trnStockInItemDTO.ItemId,
                     Particulars = trnStockInItemDTO.Particulars,
                     Quantity = trnStockInItemDTO.Quantity,
@@ -239,7 +257,7 @@ namespace liteclerk_api.APIControllers
 
                 Decimal amount = 0;
 
-                IEnumerable<DBSets.TrnStockInItemDBSet> stockInItemsByCurrentStockIn = await (
+                var stockInItemsByCurrentStockIn = await (
                     from d in _dbContext.TrnStockInItems
                     where d.INId == trnStockInItemDTO.INId
                     select d
@@ -250,7 +268,7 @@ namespace liteclerk_api.APIControllers
                     amount = stockInItemsByCurrentStockIn.Sum(d => d.Amount);
                 }
 
-                DBSets.TrnStockInDBSet updateStockIn = stockIn;
+                var updateStockIn = stockIn;
                 updateStockIn.Amount = amount;
                 updateStockIn.UpdatedByUserId = loginUserId;
                 updateStockIn.UpdatedDateTime = DateTime.Now;
@@ -272,7 +290,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -283,7 +301,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockInDetail"
@@ -300,7 +318,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a stock in item.");
                 }
 
-                DBSets.TrnStockInItemDBSet stockInItem = await (
+                var stockInItem = await (
                     from d in _dbContext.TrnStockInItems
                     where d.Id == id
                     select d
@@ -311,7 +329,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Stock in item not found.");
                 }
 
-                DBSets.TrnStockInDBSet stockIn = await (
+                var stockIn = await (
                     from d in _dbContext.TrnStockIns
                     where d.Id == trnStockInItemDTO.INId
                     select d
@@ -327,7 +345,21 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update stock in items if the current stock in is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                if (trnStockInItemDTO.JOId != null)
+                {
+                    var jobOrder = await (
+                        from d in _dbContext.TrnJobOrders
+                        where d.Id == trnStockInItemDTO.JOId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (jobOrder == null)
+                    {
+                        return StatusCode(404, "Job order not found.");
+                    }
+                }
+
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnStockInItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -339,7 +371,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnStockInItemDTO.ItemId
                     && d.UnitId == trnStockInItemDTO.UnitId
@@ -363,8 +395,9 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnStockInItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnStockInItemDBSet updateStockInItems = stockInItem;
+                var updateStockInItems = stockInItem;
                 updateStockInItems.INId = trnStockInItemDTO.INId;
+                updateStockInItems.JOId = trnStockInItemDTO.JOId;
                 updateStockInItems.Particulars = trnStockInItemDTO.Particulars;
                 updateStockInItems.Quantity = trnStockInItemDTO.Quantity;
                 updateStockInItems.UnitId = trnStockInItemDTO.UnitId;
@@ -378,7 +411,7 @@ namespace liteclerk_api.APIControllers
 
                 Decimal amount = 0;
 
-                IEnumerable<DBSets.TrnStockInItemDBSet> stockInItemsByCurrentStockIn = await (
+                var stockInItemsByCurrentStockIn = await (
                     from d in _dbContext.TrnStockInItems
                     where d.INId == trnStockInItemDTO.INId
                     select d
@@ -389,7 +422,7 @@ namespace liteclerk_api.APIControllers
                     amount = stockInItemsByCurrentStockIn.Sum(d => d.Amount);
                 }
 
-                DBSets.TrnStockInDBSet updateStockIn = stockIn;
+                var updateStockIn = stockIn;
                 updateStockIn.Amount = amount;
                 updateStockIn.UpdatedByUserId = loginUserId;
                 updateStockIn.UpdatedDateTime = DateTime.Now;
@@ -411,7 +444,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -422,7 +455,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockInDetail"
@@ -441,7 +474,7 @@ namespace liteclerk_api.APIControllers
 
                 Int32 INId = 0;
 
-                DBSets.TrnStockInItemDBSet stockInItem = await (
+                var stockInItem = await (
                     from d in _dbContext.TrnStockInItems
                     where d.Id == id
                     select d
@@ -454,7 +487,7 @@ namespace liteclerk_api.APIControllers
 
                 INId = stockInItem.INId;
 
-                DBSets.TrnStockInDBSet stockIn = await (
+                var stockIn = await (
                     from d in _dbContext.TrnStockIns
                     where d.Id == INId
                     select d
@@ -475,7 +508,7 @@ namespace liteclerk_api.APIControllers
 
                 Decimal amount = 0;
 
-                IEnumerable<DBSets.TrnStockInItemDBSet> stockInItemsByCurrentStockIn = await (
+                var stockInItemsByCurrentStockIn = await (
                     from d in _dbContext.TrnStockInItems
                     where d.INId == INId
                     select d
@@ -486,7 +519,7 @@ namespace liteclerk_api.APIControllers
                     amount = stockInItemsByCurrentStockIn.Sum(d => d.Amount);
                 }
 
-                DBSets.TrnStockInDBSet updateStockIn = stockIn;
+                var updateStockIn = stockIn;
                 updateStockIn.Amount = amount;
                 updateStockIn.UpdatedByUserId = loginUserId;
                 updateStockIn.UpdatedDateTime = DateTime.Now;

@@ -4955,6 +4955,10 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ItemId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("JOId")
+                        .HasColumnName("JOId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Particulars")
                         .IsRequired()
                         .HasColumnName("Particulars")
@@ -4975,6 +4979,8 @@ namespace liteclerk_api.Migrations
                     b.HasIndex("INId");
 
                     b.HasIndex("ItemId");
+
+                    b.HasIndex("JOId");
 
                     b.HasIndex("UnitId");
 
@@ -6007,7 +6013,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobTypeId")
                         .WithMany("MstJobTypeAttachments_JobTypeId")
                         .HasForeignKey("JobTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -6037,7 +6043,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobTypeId")
                         .WithMany("MstJobTypeDepartments_JobTypeId")
                         .HasForeignKey("JobTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -6046,7 +6052,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstJobTypeDBSet", "MstJobType_JobTypeId")
                         .WithMany("MstJobTypeInformations_JobTypeId")
                         .HasForeignKey("JobTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -6133,7 +6139,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UserId")
                         .WithMany("MstUserBranches_UserId")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -6161,7 +6167,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UserId")
                         .WithMany("MstUserForms_UserId")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -6176,7 +6182,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_UserId")
                         .WithMany("MstUserJobDepartments_UserId")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -6511,7 +6517,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnDisbursementDBSet", "TrnDisbursement_CVId")
                         .WithMany("TrnDisbursementLines_CVId")
                         .HasForeignKey("CVId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.TrnReceivingReceiptDBSet", "TrnReceivingReceipt_RRId")
@@ -6971,7 +6977,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnPurchaseOrderDBSet", "TrnPurchaseOrder_POId")
                         .WithMany("TrnPurchaseOrderItems_POId")
                         .HasForeignKey("POId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
@@ -7061,7 +7067,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnPurchaseRequestDBSet", "TrnPurchaseRequest_PRId")
                         .WithMany("TrnPurchaseRequestItems_PRId")
                         .HasForeignKey("PRId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
@@ -7247,7 +7253,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnReceivingReceiptDBSet", "TrnReceivingReceipt_RRId")
                         .WithMany("TrnReceivingReceiptItems_RRId")
                         .HasForeignKey("RRId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
@@ -7637,6 +7643,10 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("liteclerk_api.DBSets.TrnJobOrderDBSet", "TrnJobOrder_JOId")
+                        .WithMany("TrnStockInItems_JOId")
+                        .HasForeignKey("JOId");
+
                     b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")
                         .WithMany("TrnStockInItems_UnitId")
                         .HasForeignKey("UnitId")
@@ -7724,7 +7734,7 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.TrnStockOutDBSet", "TrnStockOut_OTId")
                         .WithMany("TrnStockOutItems_OTId")
                         .HasForeignKey("OTId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("liteclerk_api.DBSets.MstUnitDBSet", "MstUnit_UnitId")

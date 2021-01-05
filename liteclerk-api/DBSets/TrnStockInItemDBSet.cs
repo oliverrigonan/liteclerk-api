@@ -12,6 +12,9 @@ namespace liteclerk_api.DBSets
         public Int32 INId { get; set; }
         public virtual TrnStockInDBSet TrnStockIn_INId { get; set; }
 
+        public Int32? JOId { get; set; }
+        public virtual TrnJobOrderDBSet TrnJobOrder_JOId { get; set; }
+
         public Int32 ItemId { get; set; }
         public virtual MstArticleDBSet MstArticle_ItemId { get; set; }
 

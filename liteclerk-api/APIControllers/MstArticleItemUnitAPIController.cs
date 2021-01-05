@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemUnitDTO> articleItemUnits = await (
+                var articleItemUnits = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == articleId
                     select new DTO.MstArticleItemUnitDTO
@@ -49,7 +49,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -70,7 +69,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.MstArticleItemUnitDTO articleItemUnit = await (
+                var articleItemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.Id == id
                     select new DTO.MstArticleItemUnitDTO
@@ -90,7 +89,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -113,18 +111,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "User login not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -141,7 +128,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add an item unit.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == mstArticleItemUnitDTO.ArticleId
                     select d
@@ -157,7 +144,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add an item unit if the current item is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == mstArticleItemUnitDTO.ArticleId
                     select d
@@ -168,7 +155,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstUnitDBSet unit = await (
+                var unit = await (
                     from d in _dbContext.MstUnits
                     where d.Id == mstArticleItemUnitDTO.UnitId
                     select d
@@ -179,7 +166,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Unit not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet newItemUnit = new DBSets.MstArticleItemUnitDBSet()
+                var newItemUnit = new DBSets.MstArticleItemUnitDBSet()
                 {
                     ArticleId = mstArticleItemUnitDTO.ArticleId,
                     UnitId = mstArticleItemUnitDTO.UnitId,
@@ -204,18 +191,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "User login not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -232,7 +208,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update an item unit.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.Id == id
                     select d
@@ -248,7 +224,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update an item unit if the current item is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == mstArticleItemUnitDTO.ArticleId
                     select d
@@ -259,7 +235,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstUnitDBSet unit = await (
+                var unit = await (
                     from d in _dbContext.MstUnits
                     where d.Id == mstArticleItemUnitDTO.UnitId
                     select d
@@ -270,7 +246,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Unit not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet updateItemUnit = itemUnit;
+                var updateItemUnit = itemUnit;
                 updateItemUnit.UnitId = mstArticleItemUnitDTO.UnitId;
                 updateItemUnit.Multiplier = mstArticleItemUnitDTO.Multiplier;
 
@@ -291,18 +267,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "User login not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -319,7 +284,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete an item unit.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.Id == id
                     select d

@@ -71,5 +71,6 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<TrnJobOrderAttachmentDBSet> TrnJobOrderAttachments_JOId { get; set; }
         public virtual ICollection<TrnJobOrderInformationDBSet> TrnJobOrderInformations_JOId { get; set; }
         public virtual ICollection<TrnJobOrderDepartmentDBSet> TrnJobOrderDepartments_JOId { get; set; }
+        public virtual ICollection<TrnStockInItemDBSet> TrnStockInItems_JOId { get; set; }
     }
 }

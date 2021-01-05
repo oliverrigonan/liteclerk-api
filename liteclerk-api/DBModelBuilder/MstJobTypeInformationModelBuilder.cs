@@ -17,7 +17,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.JobTypeId).HasColumnName("JobTypeId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.MstJobType_JobTypeId).WithMany(f => f.MstJobTypeInformations_JobTypeId).HasForeignKey(f => f.JobTypeId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.MstJobType_JobTypeId).WithMany(f => f.MstJobTypeInformations_JobTypeId).HasForeignKey(f => f.JobTypeId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.InformationCode).HasColumnName("InformationCode").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.InformationGroup).HasColumnName("InformationGroup").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();

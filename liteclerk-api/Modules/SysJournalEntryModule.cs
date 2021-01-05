@@ -19,23 +19,29 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var inventoryLedger = await (from d in _dbContext.TrnInventories
-                                             where d.Id == ILId
-                                             select d).FirstOrDefaultAsync();
+                var inventoryLedger = await (
+                    from d in _dbContext.TrnInventories
+                    where d.Id == ILId
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (inventoryLedger != null)
                 {
-                    var otherArticle = await (from d in _dbContext.MstArticleOthers
-                                              select d).FirstOrDefaultAsync();
+                    var otherArticle = await (
+                        from d in _dbContext.MstArticleOthers
+                        select d
+                    ).FirstOrDefaultAsync();
 
                     if (otherArticle != null)
                     {
-                        var inventories = await (from d in _dbContext.SysInventories
-                                                 where d.ILId == ILId
-                                                 && d.Amount != 0
-                                                 select d).ToListAsync();
+                        var inventories = await (
+                            from d in _dbContext.SysInventories
+                            where d.ILId == ILId
+                            && d.Amount != 0
+                            select d
+                        ).ToListAsync();
 
-                        if (inventories.Any())
+                        if (inventories.Any() == true)
                         {
                             var inventoryAccounts = from d in inventories
                                                     where d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() == true
@@ -49,7 +55,7 @@ namespace liteclerk_api.Modules
                                                         Amount = g.Sum(s => s.Amount)
                                                     };
 
-                            if (inventoryAccounts.ToList().Any())
+                            if (inventoryAccounts.ToList().Any() == true)
                             {
                                 foreach (var inventoryAccount in inventoryAccounts)
                                 {
@@ -62,7 +68,7 @@ namespace liteclerk_api.Modules
                                         creditAmount = inventoryAccount.Amount;
                                     }
 
-                                    DBSets.SysJournalEntryDBSet inventoryAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    var inventoryAccountJournal = new DBSets.SysJournalEntryDBSet
                                     {
                                         BranchId = inventoryLedger.BranchId,
                                         JournalEntryDate = DateTime.Today,
@@ -97,7 +103,7 @@ namespace liteclerk_api.Modules
                                                       Amount = g.Sum(s => s.Amount)
                                                   };
 
-                            if (expenseAccounts.ToList().Any())
+                            if (expenseAccounts.ToList().Any() == true)
                             {
                                 foreach (var expenseAccount in expenseAccounts)
                                 {
@@ -110,7 +116,7 @@ namespace liteclerk_api.Modules
                                         creditAmount = 0;
                                     }
 
-                                    DBSets.SysJournalEntryDBSet expenseAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    var expenseAccountJournal = new DBSets.SysJournalEntryDBSet
                                     {
                                         BranchId = inventoryLedger.BranchId,
                                         JournalEntryDate = DateTime.Today,
@@ -147,11 +153,13 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var journalEntries = await (from d in _dbContext.SysJournalEntries
-                                            where d.ILId == ILId
-                                            select d).ToListAsync();
+                var journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.ILId == ILId
+                    select d
+                ).ToListAsync();
 
-                if (journalEntries.Any())
+                if (journalEntries.Any() == true)
                 {
                     _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                     await _dbContext.SaveChangesAsync();
@@ -167,19 +175,23 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var receivingReceipt = await (from d in _dbContext.TrnReceivingReceipts
-                                              where d.Id == RRId
-                                              && d.Amount != 0
-                                              select d).FirstOrDefaultAsync();
+                var receivingReceipt = await (
+                    from d in _dbContext.TrnReceivingReceipts
+                    where d.Id == RRId
+                    && d.Amount != 0
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (receivingReceipt != null)
                 {
-                    var receivingReceiptItems = await (from d in _dbContext.TrnReceivingReceiptItems
-                                                       where d.RRId == RRId
-                                                       && d.Amount != 0
-                                                       select d).ToListAsync();
+                    var receivingReceiptItems = await (
+                        from d in _dbContext.TrnReceivingReceiptItems
+                        where d.RRId == RRId
+                        && d.Amount != 0
+                        select d
+                    ).ToListAsync();
 
-                    if (receivingReceiptItems.Any())
+                    if (receivingReceiptItems.Any() == true)
                     {
                         var receivingReceiptItemExpenseAccounts = from d in receivingReceiptItems
                                                                   where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
@@ -193,11 +205,11 @@ namespace liteclerk_api.Modules
                                                                       Amount = g.Sum(s => s.Amount - s.VATAmount)
                                                                   };
 
-                        if (receivingReceiptItemExpenseAccounts.ToList().Any())
+                        if (receivingReceiptItemExpenseAccounts.ToList().Any() == true)
                         {
                             foreach (var receivingReceiptItemExpenseAccount in receivingReceiptItemExpenseAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet salesAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var salesAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = receivingReceipt.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -233,11 +245,11 @@ namespace liteclerk_api.Modules
                                                                   VATAmount = g.Sum(s => s.VATAmount)
                                                               };
 
-                        if (receivingReceiptItemVATAccounts.ToList().Any())
+                        if (receivingReceiptItemVATAccounts.ToList().Any() == true)
                         {
                             foreach (var receivingReceiptItemVATAccount in receivingReceiptItemVATAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet VATAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var VATAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = receivingReceipt.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -262,7 +274,7 @@ namespace liteclerk_api.Modules
                         }
                     }
 
-                    DBSets.SysJournalEntryDBSet accountsPayableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsPayableJournal = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = receivingReceipt.BranchId,
                         JournalEntryDate = DateTime.Today,
@@ -295,11 +307,13 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var journalEntries = await (from d in _dbContext.SysJournalEntries
-                                            where d.RRId == RRId
-                                            select d).ToListAsync();
+                var journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.RRId == RRId
+                    select d
+                ).ToListAsync();
 
-                if (journalEntries.Any())
+                if (journalEntries.Any() == true)
                 {
                     _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                     await _dbContext.SaveChangesAsync();
@@ -315,14 +329,16 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var disbursement = await (from d in _dbContext.TrnDisbursements
-                                          where d.Id == CVId
-                                          && d.Amount != 0
-                                          select d).FirstOrDefaultAsync();
+                var disbursement = await (
+                    from d in _dbContext.TrnDisbursements
+                    where d.Id == CVId
+                    && d.Amount != 0
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (disbursement != null)
                 {
-                    DBSets.SysJournalEntryDBSet accountsPayableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsPayableJournal = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = disbursement.BranchId,
                         JournalEntryDate = DateTime.Today,
@@ -344,12 +360,14 @@ namespace liteclerk_api.Modules
                     _dbContext.SysJournalEntries.Add(accountsPayableJournal);
                     await _dbContext.SaveChangesAsync();
 
-                    var disbursementLines = await (from d in _dbContext.TrnDisbursementLines
-                                                   where d.CVId == CVId
-                                                   && d.Amount != 0
-                                                   select d).ToListAsync();
+                    var disbursementLines = await (
+                        from d in _dbContext.TrnDisbursementLines
+                        where d.CVId == CVId
+                        && d.Amount != 0
+                        select d
+                    ).ToListAsync();
 
-                    if (disbursementLines.Any())
+                    if (disbursementLines.Any() == true)
                     {
                         var disbursementLineAccounts = from d in disbursementLines
                                                        group d by new
@@ -364,11 +382,11 @@ namespace liteclerk_api.Modules
                                                            Amount = g.Sum(s => s.Amount)
                                                        };
 
-                        if (disbursementLineAccounts.Any())
+                        if (disbursementLineAccounts.Any() == true)
                         {
                             foreach (var disbursementLineAccount in disbursementLineAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = disbursement.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -404,11 +422,13 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var journalEntries = await (from d in _dbContext.SysJournalEntries
-                                            where d.CVId == CVId
-                                            select d).ToListAsync();
+                var journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.CVId == CVId
+                    select d
+                ).ToListAsync();
 
-                if (journalEntries.Any())
+                if (journalEntries.Any() == true)
                 {
                     _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                     await _dbContext.SaveChangesAsync();
@@ -440,7 +460,7 @@ namespace liteclerk_api.Modules
                         select d
                     ).ToListAsync();
 
-                    if (payableMemoLines.Any())
+                    if (payableMemoLines.Any() == true)
                     {
                         var payableMemoLineAccounts = from d in payableMemoLines
                                                       group d by new
@@ -455,11 +475,11 @@ namespace liteclerk_api.Modules
                                                           Amount = g.Sum(s => s.Amount)
                                                       };
 
-                        if (payableMemoLineAccounts.Any())
+                        if (payableMemoLineAccounts.Any() == true)
                         {
                             foreach (var payableMemoLineAccount in payableMemoLineAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = payableMemo.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -484,7 +504,7 @@ namespace liteclerk_api.Modules
                         }
                     }
 
-                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = payableMemo.BranchId,
                         JournalEntryDate = DateTime.Today,
@@ -523,7 +543,7 @@ namespace liteclerk_api.Modules
                     select d
                 ).ToListAsync();
 
-                if (journalEntries.Any())
+                if (journalEntries.Any() == true)
                 {
                     _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                     await _dbContext.SaveChangesAsync();
@@ -539,14 +559,16 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var salesInvoice = await (from d in _dbContext.TrnSalesInvoices
-                                          where d.Id == SIId
-                                          && d.Amount != 0
-                                          select d).FirstOrDefaultAsync();
+                var salesInvoice = await (
+                    from d in _dbContext.TrnSalesInvoices
+                    where d.Id == SIId
+                    && d.Amount != 0
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (salesInvoice != null)
                 {
-                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = salesInvoice.BranchId,
                         JournalEntryDate = DateTime.Today,
@@ -568,12 +590,14 @@ namespace liteclerk_api.Modules
                     _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
                     await _dbContext.SaveChangesAsync();
 
-                    var salesInvoiceItems = await (from d in _dbContext.TrnSalesInvoiceItems
-                                                   where d.SIId == SIId
-                                                   && d.Amount != 0
-                                                   select d).ToListAsync();
+                    var salesInvoiceItems = await (
+                        from d in _dbContext.TrnSalesInvoiceItems
+                        where d.SIId == SIId
+                        && d.Amount != 0
+                        select d
+                    ).ToListAsync();
 
-                    if (salesInvoiceItems.Any())
+                    if (salesInvoiceItems.Any() == true)
                     {
                         var salesInvoiceItemSalesAccounts = from d in salesInvoiceItems
                                                             where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
@@ -587,11 +611,11 @@ namespace liteclerk_api.Modules
                                                                 Amount = g.Sum(s => s.Amount - s.VATAmount)
                                                             };
 
-                        if (salesInvoiceItemSalesAccounts.ToList().Any())
+                        if (salesInvoiceItemSalesAccounts.ToList().Any() == true)
                         {
                             foreach (var salesInvoiceItemSalesAccount in salesInvoiceItemSalesAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet salesAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var salesAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = salesInvoice.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -627,11 +651,11 @@ namespace liteclerk_api.Modules
                                                               VATAmount = g.Sum(s => s.VATAmount)
                                                           };
 
-                        if (salesInvoiceItemVATAccounts.ToList().Any())
+                        if (salesInvoiceItemVATAccounts.ToList().Any() == true)
                         {
                             foreach (var salesInvoiceItemVATAccount in salesInvoiceItemVATAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet VATAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var VATAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = salesInvoice.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -667,11 +691,13 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var journalEntries = await (from d in _dbContext.SysJournalEntries
-                                            where d.SIId == SIId
-                                            select d).ToListAsync();
+                var journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.SIId == SIId
+                    select d
+                ).ToListAsync();
 
-                if (journalEntries.Any())
+                if (journalEntries.Any() == true)
                 {
                     _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                     await _dbContext.SaveChangesAsync();
@@ -687,19 +713,23 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var collection = await (from d in _dbContext.TrnCollections
-                                        where d.Id == CIId
-                                        && d.Amount != 0
-                                        select d).FirstOrDefaultAsync();
+                var collection = await (
+                    from d in _dbContext.TrnCollections
+                    where d.Id == CIId
+                    && d.Amount != 0
+                    select d
+                ).FirstOrDefaultAsync();
 
                 if (collection != null)
                 {
-                    var collectionLines = await (from d in _dbContext.TrnCollectionLines
-                                                 where d.CIId == CIId
-                                                 && d.Amount != 0
-                                                 select d).ToListAsync();
+                    var collectionLines = await (
+                        from d in _dbContext.TrnCollectionLines
+                        where d.CIId == CIId
+                        && d.Amount != 0
+                        select d
+                    ).ToListAsync();
 
-                    if (collectionLines.Any())
+                    if (collectionLines.Any() == true)
                     {
                         var collectionLinesPayTypeAccounts = from d in collectionLines
                                                              where d.Amount > 0
@@ -715,11 +745,11 @@ namespace liteclerk_api.Modules
                                                                  Amount = g.Sum(s => s.Amount)
                                                              };
 
-                        if (collectionLinesPayTypeAccounts.Any())
+                        if (collectionLinesPayTypeAccounts.Any() == true)
                         {
                             foreach (var collectionLinesPayTypeAccount in collectionLinesPayTypeAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = collection.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -744,7 +774,7 @@ namespace liteclerk_api.Modules
                         }
                     }
 
-                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = collection.BranchId,
                         JournalEntryDate = DateTime.Today,
@@ -777,11 +807,13 @@ namespace liteclerk_api.Modules
         {
             try
             {
-                var journalEntries = await (from d in _dbContext.SysJournalEntries
-                                            where d.CIId == CIId
-                                            select d).ToListAsync();
+                var journalEntries = await (
+                    from d in _dbContext.SysJournalEntries
+                    where d.CIId == CIId
+                    select d
+                ).ToListAsync();
 
-                if (journalEntries.Any())
+                if (journalEntries.Any() == true)
                 {
                     _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                     await _dbContext.SaveChangesAsync();
@@ -806,7 +838,7 @@ namespace liteclerk_api.Modules
 
                 if (receivableMemo != null)
                 {
-                    DBSets.SysJournalEntryDBSet accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = receivableMemo.BranchId,
                         JournalEntryDate = DateTime.Today,
@@ -835,7 +867,7 @@ namespace liteclerk_api.Modules
                         select d
                     ).ToListAsync();
 
-                    if (receivableMemoLines.Any())
+                    if (receivableMemoLines.Any() == true)
                     {
                         var receivableMemoLineAccounts = from d in receivableMemoLines
                                                          group d by new
@@ -850,11 +882,11 @@ namespace liteclerk_api.Modules
                                                              Amount = g.Sum(s => s.Amount)
                                                          };
 
-                        if (receivableMemoLineAccounts.Any())
+                        if (receivableMemoLineAccounts.Any() == true)
                         {
                             foreach (var receivableMemoLineAccount in receivableMemoLineAccounts)
                             {
-                                DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = receivableMemo.BranchId,
                                     JournalEntryDate = DateTime.Today,
@@ -896,7 +928,7 @@ namespace liteclerk_api.Modules
                     select d
                 ).ToListAsync();
 
-                if (journalEntries.Any())
+                if (journalEntries.Any() == true)
                 {
                     _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                     await _dbContext.SaveChangesAsync();
@@ -924,7 +956,7 @@ namespace liteclerk_api.Modules
                     select d
                 ).ToListAsync();
 
-                if (journalVoucherLines.Any())
+                if (journalVoucherLines.Any() == true)
                 {
                     var journalVoucherLinesAccounts = from d in journalVoucherLines
                                                       group d by new
@@ -942,11 +974,11 @@ namespace liteclerk_api.Modules
                                                           CreditAmount = g.Sum(s => s.CreditAmount),
                                                       };
 
-                    if (journalVoucherLinesAccounts.Any())
+                    if (journalVoucherLinesAccounts.Any() == true)
                     {
                         foreach (var journalVoucherLinesAccount in journalVoucherLinesAccounts)
                         {
-                            DBSets.SysJournalEntryDBSet payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                            var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
                             {
                                 BranchId = journalVoucher.BranchId,
                                 JournalEntryDate = DateTime.Today,
@@ -981,7 +1013,7 @@ namespace liteclerk_api.Modules
                 select d
             ).ToListAsync();
 
-            if (journalEntries.Any())
+            if (journalEntries.Any() == true)
             {
                 _dbContext.SysJournalEntries.RemoveRange(journalEntries);
                 await _dbContext.SaveChangesAsync();

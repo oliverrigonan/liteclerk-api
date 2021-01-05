@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemPriceDTO> articleItemPrices = await (
+                var articleItemPrices = await (
                     from d in _dbContext.MstArticleItemPrices
                     where d.ArticleId == articleId
                     select new DTO.MstArticleItemPriceDTO
@@ -64,7 +64,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.MstArticleItemPriceDTO articleItemPrice = await (
+                var articleItemPrice = await (
                     from d in _dbContext.MstArticleItemPrices
                     where d.Id == id
                     select new DTO.MstArticleItemPriceDTO
@@ -101,18 +101,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -129,7 +118,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add an item price.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == mstArticleItemPriceDTO.ArticleId
                     select d
@@ -145,7 +134,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add an item price if the current item is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == mstArticleItemPriceDTO.ArticleId
                     select d
@@ -156,7 +145,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemPriceDBSet newItemPrice = new DBSets.MstArticleItemPriceDBSet()
+                var newItemPrice = new DBSets.MstArticleItemPriceDBSet()
                 {
                     ArticleId = mstArticleItemPriceDTO.ArticleId,
                     PriceDescription = mstArticleItemPriceDTO.PriceDescription,
@@ -181,18 +170,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -209,7 +187,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update an item price.");
                 }
 
-                DBSets.MstArticleItemPriceDBSet itemPrice = await (
+                var itemPrice = await (
                     from d in _dbContext.MstArticleItemPrices
                     where d.Id == id
                     select d
@@ -225,7 +203,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update an item price if the current item is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet articleItem = await (
+                var articleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == mstArticleItemPriceDTO.ArticleId
                     select d
@@ -236,7 +214,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemPriceDBSet updateItemPrice = itemPrice;
+                var updateItemPrice = itemPrice;
                 updateItemPrice.PriceDescription = mstArticleItemPriceDTO.PriceDescription;
                 updateItemPrice.Price = mstArticleItemPriceDTO.Price;
 
@@ -257,18 +235,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (loginUser == null)
-                {
-                    return StatusCode(404, "Login user not found.");
-                }
-
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupItemDetail"
@@ -285,7 +252,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete an item price.");
                 }
 
-                DBSets.MstArticleItemPriceDBSet itemPrice = await (
+                var itemPrice = await (
                     from d in _dbContext.MstArticleItemPrices
                     where d.Id == id
                     select d

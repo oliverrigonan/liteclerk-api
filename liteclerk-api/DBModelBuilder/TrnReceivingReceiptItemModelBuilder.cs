@@ -17,7 +17,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.RRId).HasColumnName("RRId").HasColumnType("int").IsRequired();
-                entity.HasOne(f => f.TrnReceivingReceipt_RRId).WithMany(f => f.TrnReceivingReceiptItems_RRId).HasForeignKey(f => f.RRId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(f => f.TrnReceivingReceipt_RRId).WithMany(f => f.TrnReceivingReceiptItems_RRId).HasForeignKey(f => f.RRId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.BranchId).HasColumnName("BranchId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCompanyBranch_BranchId).WithMany(f => f.TrnReceivingReceiptItems_BranchId).HasForeignKey(f => f.BranchId).OnDelete(DeleteBehavior.Restrict);

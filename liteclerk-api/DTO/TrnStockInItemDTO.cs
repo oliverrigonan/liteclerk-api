@@ -9,6 +9,8 @@ namespace liteclerk_api.DTO
     {
         public Int32 Id { get; set; }
         public Int32 INId { get; set; }
+        public Int32? JOId { get; set; }
+        public TrnJobOrderDTO JobOrder { get; set; }
         public Int32 ItemId { get; set; }
         public MstArticleItemDTO Item { get; set; }
         public String Particulars { get; set; }

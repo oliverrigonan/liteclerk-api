@@ -287,7 +287,7 @@ namespace liteclerk_api.APIControllers
                 String articleCode = "0000000001";
                 DBSets.MstArticleDBSet lastArticle = await (
                     from d in _dbContext.MstArticles
-                    where d.ArticleTypeId == 1
+                    where d.ArticleTypeId == 3
                     orderby d.Id descending
                     select d
                 ).FirstOrDefaultAsync();
@@ -302,7 +302,7 @@ namespace liteclerk_api.APIControllers
                 {
                     ArticleCode = articleCode,
                     ManualCode = articleCode,
-                    ArticleTypeId = 2,
+                    ArticleTypeId = 3,
                     Article = "",
                     ImageURL = "",
                     Particulars = "",
