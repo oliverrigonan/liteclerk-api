@@ -9,6 +9,7 @@ namespace liteclerk_api.DTO
     {
         public Int32 Id { get; set; }
         public Int32 OTId { get; set; }
+        public TrnStockOutDTO StockOut { get; set; }
         public Int32 ItemId { get; set; }
         public MstArticleItemDTO Item { get; set; }
         public Int32 ItemInventoryId { get; set; }

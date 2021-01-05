@@ -106,7 +106,7 @@ namespace liteclerk_api.APIControllers
                                 Username = d.TrnReceivingReceipt_RRId.MstUser_ApprovedByUserId.Username,
                                 Fullname = d.TrnReceivingReceipt_RRId.MstUser_ApprovedByUserId.Fullname
                             },
-                            Amount = d.Amount,
+                            Amount = d.TrnReceivingReceipt_RRId.Amount,
                             PaidAmount = d.TrnReceivingReceipt_RRId.PaidAmount,
                             AdjustmentAmount = d.TrnReceivingReceipt_RRId.AdjustmentAmount,
                             BalanceAmount = d.TrnReceivingReceipt_RRId.BalanceAmount,
