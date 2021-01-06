@@ -65,81 +65,30 @@ namespace liteclerk_api.APIControllers
                     select d
                 ).ToListAsync();
 
-                if (productions.Any())
+                if (jobOrderDepartments.Any())
                 {
-                    Boolean isFirstJobOrderDepartment = true;
-
                     foreach (var jobOrderDepartment in jobOrderDepartments)
                     {
-                        if (isFirstJobOrderDepartment == true)
-                        {
-                            isFirstJobOrderDepartment = false;
+                        Boolean isValid = true;
 
-                            productions.Add(new DTO.TrnJobOrderDepartmentDTO
+                        if (jobOrderDepartment.IsRequired == true)
+                        {
+                            var previousJobOrderDepartments = await (
+                                from d in _dbContext.TrnJobOrderDepartments
+                                where d.Id != jobOrderDepartment.Id
+                                && d.JOId == jobOrderDepartment.JOId
+                                && d.SequenceNumber < jobOrderDepartment.SequenceNumber
+                                && d.Status != "DONE"
+                                select d
+                            ).OrderByDescending(d => d.SequenceNumber).ToListAsync();
+
+                            if (previousJobOrderDepartments.Any() == true)
                             {
-                                Id = jobOrderDepartment.Id,
-                                JOId = jobOrderDepartment.TrnJobOrder_JOId.Id,
-                                JobOrder = new DTO.TrnJobOrderDTO
-                                {
-                                    JONumber = jobOrderDepartment.TrnJobOrder_JOId.JONumber,
-                                    JODate = jobOrderDepartment.TrnJobOrder_JOId.JODate.ToShortDateString(),
-                                    ManualNumber = jobOrderDepartment.TrnJobOrder_JOId.ManualNumber,
-                                    DocumentReference = jobOrderDepartment.TrnJobOrder_JOId.DocumentReference,
-                                    DateScheduled = jobOrderDepartment.TrnJobOrder_JOId.DateScheduled.ToShortDateString(),
-                                    DateNeeded = jobOrderDepartment.TrnJobOrder_JOId.DateNeeded.ToShortDateString(),
-                                    SIId = jobOrderDepartment.TrnJobOrder_JOId.SIId,
-                                    SalesInvoice = new DTO.TrnSalesInvoiceDTO
-                                    {
-                                        SINumber = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SINumber : "",
-                                        SIDate = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.SIDate.ToShortDateString() : "",
-                                        ManualNumber = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.ManualNumber : "",
-                                        DocumentReference = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ? jobOrderDepartment.TrnJobOrder_JOId.DocumentReference : "",
-                                        Customer = new DTO.MstArticleCustomerDTO
-                                        {
-                                            Customer = jobOrderDepartment.TrnJobOrder_JOId.SIId != null ?
-                                           jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
-                                           jobOrderDepartment.TrnJobOrder_JOId.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "" : ""
-                                        }
-                                    },
-                                    ItemId = jobOrderDepartment.TrnJobOrder_JOId.ItemId,
-                                    Item = new DTO.MstArticleItemDTO
-                                    {
-                                        Article = new DTO.MstArticleDTO
-                                        {
-                                            ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.ManualCode
-                                        },
-                                        SKUCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                        BarCode = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                        Description = jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? jobOrderDepartment.TrnJobOrder_JOId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
-                                    },
-                                    ItemJobTypeId = jobOrderDepartment.TrnJobOrder_JOId.ItemJobTypeId,
-                                    ItemJobType = new DTO.MstJobTypeDTO
-                                    {
-                                        JobType = jobOrderDepartment.TrnJobOrder_JOId.MstJobType_ItemJobTypeId.JobType
-                                    },
-                                    Quantity = jobOrderDepartment.TrnJobOrder_JOId.Quantity,
-                                    UnitId = jobOrderDepartment.TrnJobOrder_JOId.UnitId,
-                                    Unit = new DTO.MstUnitDTO
-                                    {
-                                        UnitCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.UnitCode,
-                                        ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.ManualCode,
-                                        Unit = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_UnitId.Unit
-                                    },
-                                    Remarks = jobOrderDepartment.TrnJobOrder_JOId.Remarks,
-                                    BaseQuantity = jobOrderDepartment.TrnJobOrder_JOId.BaseQuantity,
-                                    BaseUnitId = jobOrderDepartment.TrnJobOrder_JOId.BaseUnitId,
-                                    BaseUnit = new DTO.MstUnitDTO
-                                    {
-                                        UnitCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.UnitCode,
-                                        ManualCode = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.ManualCode,
-                                        Unit = jobOrderDepartment.TrnJobOrder_JOId.MstUnit_BaseUnitId.Unit
-                                    },
-                                },
-                                Status = jobOrderDepartment.Status
-                            });
+                                isValid = false;
+                            }
                         }
 
-                        if (jobOrderDepartment.IsRequired == false)
+                        if (isValid == true)
                         {
                             productions.Add(new DTO.TrnJobOrderDepartmentDTO
                             {
@@ -206,21 +155,6 @@ namespace liteclerk_api.APIControllers
                         }
                     }
                 }
-
-                //var productions = await (
-                //    from d in _dbContext.TrnJobOrderDepartments
-                //    where d.TrnJobOrder_JOId.BranchId == loginUser.BranchId
-                //    && d.TrnJobOrder_JOId.JODate >= Convert.ToDateTime(startDate)
-                //    && d.TrnJobOrder_JOId.JODate <= Convert.ToDateTime(endDate)
-                //    && d.TrnJobOrder_JOId.IsLocked == true
-                //    && d.JobDepartmentId == jobDepartmentId
-                //    && d.Status != "DONE"
-                //    orderby d.Id descending
-                //    select new DTO.TrnJobOrderDepartmentDTO
-                //    {
-
-                //    }
-                //).ToListAsync();
 
                 return StatusCode(200, productions);
             }
