@@ -43,7 +43,7 @@ namespace liteclerk_api.APIControllers
                     where d.BranchId == loginUser.BranchId
                     && d.TerminalCode == terminalCode
                     && d.POSDate == Convert.ToDateTime(date)
-                    && (d.PostCode != null || d.PostCode != String.Empty)
+                    && (d.PostCode == null || d.PostCode == String.Empty)
                     select new DTO.TrnPointOfSaleDTO
                     {
                         Id = d.Id,
@@ -160,7 +160,7 @@ namespace liteclerk_api.APIControllers
                     && d.TerminalCode == terminalCode
                     && d.POSDate == Convert.ToDateTime(date)
                     && (d.CustomerId == null || d.ItemId == null || d.TaxId == null || d.CashierUserId == null)
-                    && (d.PostCode != null || d.PostCode != String.Empty)
+                    && (d.PostCode == null || d.PostCode == String.Empty)
                     select d
                 ).ToListAsync();
 

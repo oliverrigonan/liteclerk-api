@@ -568,27 +568,37 @@ namespace liteclerk_api.Modules
 
                 if (salesInvoice != null)
                 {
-                    var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
-                    {
-                        BranchId = salesInvoice.BranchId,
-                        JournalEntryDate = DateTime.Today,
-                        ArticleId = salesInvoice.CustomerId,
-                        AccountId = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
-                        DebitAmount = salesInvoice.Amount,
-                        CreditAmount = 0,
-                        Particulars = salesInvoice.Remarks,
-                        RRId = null,
-                        SIId = salesInvoice.Id,
-                        CIId = null,
-                        CVId = null,
-                        PMId = null,
-                        RMId = null,
-                        JVId = null,
-                        ILId = null
-                    };
+                    var customer = await (
+                        from d in _dbContext.MstArticleCustomers
+                        where d.ArticleId == salesInvoice.CustomerId
+                        && d.MstArticle_ArticleId.IsLocked == true
+                        select d
+                    ).FirstOrDefaultAsync();
 
-                    _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
-                    await _dbContext.SaveChangesAsync();
+                    if (customer != null)
+                    {
+                        var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                        {
+                            BranchId = salesInvoice.BranchId,
+                            JournalEntryDate = DateTime.Today,
+                            ArticleId = salesInvoice.CustomerId,
+                            AccountId = customer.ReceivableAccountId,
+                            DebitAmount = salesInvoice.Amount,
+                            CreditAmount = 0,
+                            Particulars = salesInvoice.Remarks,
+                            RRId = null,
+                            SIId = salesInvoice.Id,
+                            CIId = null,
+                            CVId = null,
+                            PMId = null,
+                            RMId = null,
+                            JVId = null,
+                            ILId = null
+                        };
+
+                        _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
+                        await _dbContext.SaveChangesAsync();
+                    }
 
                     var salesInvoiceItems = await (
                         from d in _dbContext.TrnSalesInvoiceItems
@@ -599,30 +609,59 @@ namespace liteclerk_api.Modules
 
                     if (salesInvoiceItems.Any() == true)
                     {
-                        var salesInvoiceItemSalesAccounts = from d in salesInvoiceItems
-                                                            where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
-                                                            group d by new
-                                                            {
-                                                                d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SalesAccountId
-                                                            } into g
-                                                            select new
-                                                            {
-                                                                g.Key.SalesAccountId,
-                                                                Amount = g.Sum(s => s.Amount - s.VATAmount)
-                                                            };
+                        List<DBSets.SysJournalEntryDBSet> salesAccountJournals = new List<DBSets.SysJournalEntryDBSet>();
+                        List<DBSets.SysJournalEntryDBSet> VATAccountJournals = new List<DBSets.SysJournalEntryDBSet>();
 
-                        if (salesInvoiceItemSalesAccounts.ToList().Any() == true)
+                        foreach (var salesInvoiceItem in salesInvoiceItems)
                         {
-                            foreach (var salesInvoiceItemSalesAccount in salesInvoiceItemSalesAccounts)
+                            var item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == salesInvoiceItem.ItemId
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (item != null)
+                            {
+                                salesAccountJournals.Add(new DBSets.SysJournalEntryDBSet
+                                {
+                                    AccountId = item.SalesAccountId,
+                                    DebitAmount = 0,
+                                    CreditAmount = salesInvoiceItem.Amount - salesInvoiceItem.VATAmount
+                                });
+
+                                VATAccountJournals.Add(new DBSets.SysJournalEntryDBSet
+                                {
+                                    AccountId = salesInvoiceItem.MstTax_VATId.AccountId,
+                                    DebitAmount = 0,
+                                    CreditAmount = salesInvoiceItem.VATAmount
+                                });
+                            }
+                        }
+
+                        var salesAccounts = from d in salesAccountJournals
+                                            group d by new
+                                            {
+                                                d.AccountId
+                                            } into g
+                                            select new
+                                            {
+                                                g.Key.AccountId,
+                                                Amount = g.Sum(s => s.CreditAmount)
+                                            };
+
+                        if (salesAccounts.ToList().Any() == true)
+                        {
+                            foreach (var salesAccount in salesAccounts)
                             {
                                 var salesAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = salesInvoice.BranchId,
                                     JournalEntryDate = DateTime.Today,
                                     ArticleId = salesInvoice.CustomerId,
-                                    AccountId = salesInvoiceItemSalesAccount.SalesAccountId,
+                                    AccountId = salesAccount.AccountId,
                                     DebitAmount = 0,
-                                    CreditAmount = salesInvoiceItemSalesAccount.Amount,
+                                    CreditAmount = salesAccount.Amount,
                                     Particulars = salesInvoice.Remarks,
                                     RRId = null,
                                     SIId = salesInvoice.Id,
@@ -639,30 +678,29 @@ namespace liteclerk_api.Modules
                             }
                         }
 
-                        var salesInvoiceItemVATAccounts = from d in salesInvoiceItems
-                                                          where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
-                                                          group d by new
-                                                          {
-                                                              d.MstTax_VATId.AccountId
-                                                          } into g
-                                                          select new
-                                                          {
-                                                              g.Key.AccountId,
-                                                              VATAmount = g.Sum(s => s.VATAmount)
-                                                          };
+                        var VATAccounts = from d in VATAccountJournals
+                                          group d by new
+                                          {
+                                              d.AccountId
+                                          } into g
+                                          select new
+                                          {
+                                              g.Key.AccountId,
+                                              VATAmount = g.Sum(s => s.CreditAmount)
+                                          };
 
-                        if (salesInvoiceItemVATAccounts.ToList().Any() == true)
+                        if (VATAccounts.ToList().Any() == true)
                         {
-                            foreach (var salesInvoiceItemVATAccount in salesInvoiceItemVATAccounts)
+                            foreach (var VATAccount in VATAccounts)
                             {
                                 var VATAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = salesInvoice.BranchId,
                                     JournalEntryDate = DateTime.Today,
                                     ArticleId = salesInvoice.CustomerId,
-                                    AccountId = salesInvoiceItemVATAccount.AccountId,
+                                    AccountId = VATAccount.AccountId,
                                     DebitAmount = 0,
-                                    CreditAmount = salesInvoiceItemVATAccount.VATAmount,
+                                    CreditAmount = VATAccount.VATAmount,
                                     Particulars = salesInvoice.Remarks,
                                     RRId = null,
                                     SIId = salesInvoice.Id,

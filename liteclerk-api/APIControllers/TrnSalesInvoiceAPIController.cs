@@ -1225,7 +1225,7 @@ namespace liteclerk_api.APIControllers
                                 BranchId = Convert.ToInt32(loginUser.BranchId),
                                 CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
                                 SINumber = SINumber,
-                                SIDate = Convert.ToDateTime(pointOfSalesCustomer.POSDate),
+                                SIDate = Convert.ToDateTime(date),
                                 ManualNumber = SINumber,
                                 DocumentReference = "",
                                 CustomerId = customer.ArticleId,
@@ -1401,6 +1401,21 @@ namespace liteclerk_api.APIControllers
                                 await _sysAccountsReceivable.UpdateAccountsReceivable(SIId);
                                 await _sysInventory.InsertSalesInvoiceInventory(SIId);
                                 await _sysJournalEntry.InsertSalesInvoiceJournalEntry(SIId);
+
+                                var pointOfSalesCustomerData = await (
+                                    from d in _dbContext.TrnPointOfSales
+                                    where d.BranchId == loginUser.BranchId
+                                    && d.TerminalCode == terminalCode
+                                    && d.POSDate == Convert.ToDateTime(date)
+                                    && d.CustomerId == pointOfSalesCustomer.CustomerId
+                                    select d
+                                ).ToListAsync();
+
+                                if (pointOfSalesCustomerData.Any())
+                                {
+                                    pointOfSalesCustomerData.ForEach(d => d.PostCode = salesInvoice.SINumber);
+                                    await _dbContext.SaveChangesAsync();
+                                }
                             }
                         }
                     }
