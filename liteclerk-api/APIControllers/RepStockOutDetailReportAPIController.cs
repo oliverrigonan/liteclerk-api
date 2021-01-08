@@ -24,7 +24,7 @@ namespace liteclerk_api.APIControllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("list/{startDate}/{endDate}/{companyId}/{branchId}")]
+        [HttpGet("list/byDateRange/{startDate}/{endDate}/byCompany/{companyId}/byBranch/{branchId}")]
         public async Task<ActionResult> GetStockOutDetailReport(String startDate, String endDate, Int32 companyId, Int32 branchId)
         {
             try
