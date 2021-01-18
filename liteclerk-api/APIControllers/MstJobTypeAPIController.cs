@@ -43,7 +43,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstJobTypeDTO> jobTypes = await (
+                var jobTypes = await (
                     from d in _dbContext.MstJobTypes
                     select new DTO.MstJobTypeDTO
                     {
@@ -53,6 +53,7 @@ namespace liteclerk_api.APIControllers
                         JobType = d.JobType,
                         TotalNumberOfDays = d.TotalNumberOfDays,
                         Remarks = d.Remarks,
+                        IsInventory = d.IsInventory,
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -82,7 +83,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstJobTypeDTO> lockedJobTypes = await (
+                var lockedJobTypes = await (
                     from d in _dbContext.MstJobTypes
                     where d.IsLocked == true
                     select new DTO.MstJobTypeDTO
@@ -93,6 +94,7 @@ namespace liteclerk_api.APIControllers
                         JobType = d.JobType,
                         TotalNumberOfDays = d.TotalNumberOfDays,
                         Remarks = d.Remarks,
+                        IsInventory = d.IsInventory,
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -117,12 +119,54 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/byIsInventory/{isInventory}")]
+        public async Task<ActionResult> GetJobTypeListByIsInventory(Boolean isInventory)
+        {
+            try
+            {
+                var jobTypes = await (
+                    from d in _dbContext.MstJobTypes
+                    where d.IsInventory == isInventory
+                    select new DTO.MstJobTypeDTO
+                    {
+                        Id = d.Id,
+                        JobTypeCode = d.JobTypeCode,
+                        ManualCode = d.ManualCode,
+                        JobType = d.JobType,
+                        TotalNumberOfDays = d.TotalNumberOfDays,
+                        Remarks = d.Remarks,
+                        IsInventory = d.IsInventory,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, jobTypes);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetJobTypeDetail(Int32 id)
         {
             try
             {
-                DTO.MstJobTypeDTO producedJobType = await (
+                var producedJobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == id
                     select new DTO.MstJobTypeDTO
@@ -133,6 +177,7 @@ namespace liteclerk_api.APIControllers
                         JobType = d.JobType,
                         TotalNumberOfDays = d.TotalNumberOfDays,
                         Remarks = d.Remarks,
+                        IsInventory = d.IsInventory,
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -164,7 +209,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -175,7 +220,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupJobTypeList"
@@ -193,7 +238,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String jobTypeCode = "0000000001";
-                DBSets.MstJobTypeDBSet lastJobType = await (
+                var lastJobType = await (
                     from d in _dbContext.MstJobTypes
                     orderby d.Id descending
                     select d
@@ -205,13 +250,14 @@ namespace liteclerk_api.APIControllers
                     jobTypeCode = PadZeroes(lastJobTypeCode, 10);
                 }
 
-                DBSets.MstJobTypeDBSet newJobType = new DBSets.MstJobTypeDBSet()
+                var newJobType = new DBSets.MstJobTypeDBSet()
                 {
                     JobTypeCode = jobTypeCode,
                     ManualCode = jobTypeCode,
                     JobType = "",
                     TotalNumberOfDays = 0,
                     Remarks = "",
+                    IsInventory = true,
                     IsLocked = false,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
@@ -237,7 +283,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -248,7 +294,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupJobTypeDetail"
@@ -265,7 +311,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a job type.");
                 }
 
-                DBSets.MstJobTypeDBSet jobType = await (
+                var jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == id
                     select d
@@ -281,11 +327,12 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a job type that is locked.");
                 }
 
-                DBSets.MstJobTypeDBSet saveJobType = jobType;
+                var saveJobType = jobType;
                 saveJobType.ManualCode = mstJobTypeDTO.ManualCode;
                 saveJobType.JobType = mstJobTypeDTO.JobType;
                 saveJobType.TotalNumberOfDays = mstJobTypeDTO.TotalNumberOfDays;
                 saveJobType.Remarks = mstJobTypeDTO.Remarks;
+                saveJobType.IsInventory = mstJobTypeDTO.IsInventory;
                 saveJobType.UpdatedByUserId = loginUserId;
                 saveJobType.UpdatedDateTime = DateTime.Now;
 
@@ -306,7 +353,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -317,7 +364,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupJobTypeDetail"
@@ -334,7 +381,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a job type.");
                 }
 
-                DBSets.MstJobTypeDBSet jobType = await (
+                var jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == id
                     select d
@@ -350,11 +397,12 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a job type that is locked.");
                 }
 
-                DBSets.MstJobTypeDBSet lockJobType = jobType;
+                var lockJobType = jobType;
                 lockJobType.ManualCode = mstJobTypeDTO.ManualCode;
                 lockJobType.JobType = mstJobTypeDTO.JobType;
                 lockJobType.TotalNumberOfDays = mstJobTypeDTO.TotalNumberOfDays;
                 lockJobType.Remarks = mstJobTypeDTO.Remarks;
+                lockJobType.IsInventory = mstJobTypeDTO.IsInventory;
                 lockJobType.IsLocked = true;
                 lockJobType.UpdatedByUserId = loginUserId;
                 lockJobType.UpdatedDateTime = DateTime.Now;
@@ -376,7 +424,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -387,7 +435,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupJobTypeDetail"
@@ -404,7 +452,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a job type.");
                 }
 
-                DBSets.MstJobTypeDBSet jobType = await (
+                var jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == id
                     select d
@@ -420,7 +468,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock a job type that is unlocked.");
                 }
 
-                DBSets.MstJobTypeDBSet unlockJobType = jobType;
+                var unlockJobType = jobType;
                 unlockJobType.IsLocked = false;
                 unlockJobType.UpdatedByUserId = loginUserId;
                 unlockJobType.UpdatedDateTime = DateTime.Now;
@@ -442,7 +490,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -453,7 +501,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SetupJobTypeList"
@@ -470,7 +518,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a job type.");
                 }
 
-                DBSets.MstJobTypeDBSet jobType = await (
+                var jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == id
                     select d

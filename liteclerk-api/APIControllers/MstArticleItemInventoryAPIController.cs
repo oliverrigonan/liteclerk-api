@@ -28,8 +28,9 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemInventoryDTO> articleItemInventories = await (
+                var articleItemInventories = await (
                     from d in _dbContext.MstArticleItemInventories
+                    where d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.MstArticleItemInventoryDTO
                     {
                         Id = d.Id,
@@ -40,34 +41,35 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ArticleId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
-                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
-                            UnitId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().UnitId : 0,
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            UnitId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().UnitId,
                             Unit = new DTO.MstUnitDTO
                             {
-                                UnitCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.UnitCode : "",
-                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode : "",
-                                Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit : ""
+                                UnitCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.UnitCode,
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode,
+                                Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit
                             },
-                            Price = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Price : 0,
-                            SIVATId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
+                            Price = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Price,
+                            SIVATId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId,
                             SIVAT = new DTO.MstTaxDTO
                             {
-                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode : "",
-                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
-                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : "",
-                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate : 0
+                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode,
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode,
+                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription,
+                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate
                             },
-                            WTAXId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId : 0,
+                            WTAXId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId,
                             WTAX = new DTO.MstTaxDTO
                             {
-                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode : "",
-                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode : "",
-                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription : "",
-                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate : 0
+                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode,
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode,
+                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription,
+                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate
                             },
-                            Kitting = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Kitting : ""
+                            Kitting = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Kitting,
+                            IsInventory = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
@@ -95,9 +97,10 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstArticleItemInventoryDTO> articleItemInventories = await (
+                var articleItemInventories = await (
                     from d in _dbContext.MstArticleItemInventories
                     where d.ArticleId == articleId
+                    && d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.MstArticleItemInventoryDTO
                     {
                         Id = d.Id,
@@ -108,34 +111,34 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ArticleId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
-                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
-                            UnitId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().UnitId : 0,
+                            SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            UnitId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().UnitId,
                             Unit = new DTO.MstUnitDTO
                             {
-                                UnitCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.UnitCode : "",
-                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode : "",
-                                Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit : ""
+                                UnitCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.UnitCode,
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.ManualCode,
+                                Unit = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit
                             },
-                            Price = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Price : 0,
-                            SIVATId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
+                            Price = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Price,
+                            SIVATId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId,
                             SIVAT = new DTO.MstTaxDTO
                             {
-                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode : "",
-                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
-                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : "",
-                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate : 0
+                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode,
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode,
+                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription,
+                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate
                             },
-                            WTAXId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId : 0,
+                            WTAXId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId,
                             WTAX = new DTO.MstTaxDTO
                             {
-                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode : "",
-                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode : "",
-                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription : "",
-                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate : 0
+                                TaxCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode,
+                                ManualCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode,
+                                TaxDescription = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription,
+                                TaxRate = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate
                             },
-                            Kitting = d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Kitting : ""
+                            Kitting = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Kitting
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO

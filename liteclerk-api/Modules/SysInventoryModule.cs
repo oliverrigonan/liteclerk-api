@@ -15,7 +15,7 @@ namespace liteclerk_api.Modules
             _dbContext = dbContext;
         }
 
-        public async Task UpdateArticleInventory(Int32 articleItemInventoryId)
+        public async Task UpdateArticleInventory(Int32 articleItemInventoryId, Boolean isProduced, Decimal productionCost)
         {
             try
             {
@@ -41,23 +41,30 @@ namespace liteclerk_api.Modules
                     {
                         quantity = inventories.Sum(d => d.Quantity);
 
-                        var lastPurchaseCost = from d in inventories
-                                               where d.RRId != null
-                                               select d;
-
-                        if (lastPurchaseCost.Any() == true)
+                        if (isProduced == true)
                         {
-                            cost = lastPurchaseCost.OrderByDescending(d => d.Id).FirstOrDefault().Cost;
+                            cost = productionCost;
                         }
                         else
                         {
-                            var stockInCost = from d in inventories
-                                              where d.INId != null
-                                              select d;
+                            var lastPurchaseCost = from d in inventories
+                                                   where d.RRId != null
+                                                   select d;
 
-                            if (stockInCost.Any() == true)
+                            if (lastPurchaseCost.Any() == true)
                             {
-                                cost = stockInCost.FirstOrDefault().Cost;
+                                cost = lastPurchaseCost.OrderByDescending(d => d.Id).FirstOrDefault().Cost;
+                            }
+                            else
+                            {
+                                var stockInCost = from d in inventories
+                                                  where d.INId != null
+                                                  select d;
+
+                                if (stockInCost.Any() == true)
+                                {
+                                    cost = stockInCost.FirstOrDefault().Cost;
+                                }
                             }
                         }
 
@@ -174,7 +181,7 @@ namespace liteclerk_api.Modules
                                     _dbContext.SysInventories.Add(newInventory);
                                     await _dbContext.SaveChangesAsync();
 
-                                    await UpdateArticleInventory(articleItemInventoryId);
+                                    await UpdateArticleInventory(articleItemInventoryId, false, 0);
                                 }
                             }
                         }
@@ -225,7 +232,7 @@ namespace liteclerk_api.Modules
                             foreach (var itemInventory in itemInventories)
                             {
                                 Int32 articleItemInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleItemInventoryId);
+                                await UpdateArticleInventory(articleItemInventoryId, false, 0);
                             }
                         }
                     }
@@ -242,9 +249,9 @@ namespace liteclerk_api.Modules
             try
             {
                 var stockIn = await (
-                     from d in _dbContext.TrnStockIns
-                     where d.Id == INId
-                     select d
+                    from d in _dbContext.TrnStockIns
+                    where d.Id == INId
+                    select d
                 ).FirstOrDefaultAsync();
 
                 if (stockIn != null)
@@ -333,10 +340,10 @@ namespace liteclerk_api.Modules
                                     _dbContext.SysInventories.Add(newInventory);
                                     await _dbContext.SaveChangesAsync();
 
-                                    await UpdateArticleInventory(articleItemInventoryId);
-
                                     if (stockInItem.JOId != null && item.Kitting == "PRODUCED")
                                     {
+                                        await UpdateArticleInventory(articleItemInventoryId, true, item.ProductionCost);
+
                                         var itemComponents = await (
                                             from d in _dbContext.MstArticleItemComponents
                                             where d.ArticleId == stockInItem.ItemId
@@ -386,10 +393,14 @@ namespace liteclerk_api.Modules
                                                     _dbContext.SysInventories.Add(newComponentInventory);
                                                     await _dbContext.SaveChangesAsync();
 
-                                                    await UpdateArticleInventory(componentArticleItemInventoryId);
+                                                    await UpdateArticleInventory(componentArticleItemInventoryId, false, 0);
                                                 }
                                             }
                                         }
+                                    }
+                                    else
+                                    {
+                                        await UpdateArticleInventory(articleItemInventoryId, false, 0);
                                     }
                                 }
                             }
@@ -429,19 +440,58 @@ namespace liteclerk_api.Modules
                 {
                     foreach (var stockInItem in stockInItems)
                     {
-                        var itemInventories = await (
-                            from d in _dbContext.MstArticleItemInventories
-                            where d.ArticleId == stockInItem.ItemId
-                            && d.BranchId == stockInItem.TrnStockIn_INId.BranchId
-                            select d
-                        ).ToListAsync();
-
-                        if (itemInventories.Any() == true)
+                        if (stockInItem.JOId != null)
                         {
-                            foreach (var itemInventory in itemInventories)
+                            Decimal productionCost = 0;
+
+                            var item = await (
+                                from d in _dbContext.MstArticleItems
+                                where d.ArticleId == stockInItem.ItemId
+                                && d.IsInventory == true
+                                && d.MstArticle_ArticleId.IsLocked == true
+                                select d
+                            ).FirstOrDefaultAsync();
+
+                            if (item != null)
                             {
-                                Int32 articleItemInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleItemInventoryId);
+                                if (item.Kitting == "PRODUCED")
+                                {
+                                    productionCost = item.ProductionCost;
+                                }
+                            }
+
+                            var itemInventories = await (
+                                from d in _dbContext.MstArticleItemInventories
+                                where d.ArticleId == stockInItem.ItemId
+                                && d.BranchId == stockInItem.TrnStockIn_INId.BranchId
+                                select d
+                            ).ToListAsync();
+
+                            if (itemInventories.Any() == true)
+                            {
+                                foreach (var itemInventory in itemInventories)
+                                {
+                                    Int32 articleItemInventoryId = itemInventory.Id;
+                                    await UpdateArticleInventory(articleItemInventoryId, true, productionCost);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var itemInventories = await (
+                                from d in _dbContext.MstArticleItemInventories
+                                where d.ArticleId == stockInItem.ItemId
+                                && d.BranchId == stockInItem.TrnStockIn_INId.BranchId
+                                select d
+                            ).ToListAsync();
+
+                            if (itemInventories.Any() == true)
+                            {
+                                foreach (var itemInventory in itemInventories)
+                                {
+                                    Int32 articleItemInventoryId = itemInventory.Id;
+                                    await UpdateArticleInventory(articleItemInventoryId, false, 0);
+                                }
                             }
                         }
                     }
@@ -523,6 +573,8 @@ namespace liteclerk_api.Modules
 
                                     _dbContext.SysInventories.Add(newInventory);
                                     await _dbContext.SaveChangesAsync();
+
+                                    await UpdateArticleInventory(articleItemInventoryId, false, 0);
                                 }
                             }
                         }
@@ -573,7 +625,7 @@ namespace liteclerk_api.Modules
                             foreach (var itemInventory in itemInventories)
                             {
                                 Int32 articleItemInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleItemInventoryId);
+                                await UpdateArticleInventory(articleItemInventoryId, false, 0);
                             }
                         }
                     }
@@ -765,7 +817,7 @@ namespace liteclerk_api.Modules
                             foreach (var itemInventory in itemInventories)
                             {
                                 Int32 articleItemInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleItemInventoryId);
+                                await UpdateArticleInventory(articleItemInventoryId, false, 0);
                             }
                         }
                     }
@@ -854,7 +906,7 @@ namespace liteclerk_api.Modules
                                             _dbContext.SysInventories.Add(newInventory);
                                             await _dbContext.SaveChangesAsync();
 
-                                            await UpdateArticleInventory(articleItemInventoryId);
+                                            await UpdateArticleInventory(articleItemInventoryId, false, 0);
                                         }
                                     }
                                 }
@@ -913,7 +965,7 @@ namespace liteclerk_api.Modules
                                                     _dbContext.SysInventories.Add(newComponentInventory);
                                                     await _dbContext.SaveChangesAsync();
 
-                                                    await UpdateArticleInventory(componentArticleItemInventoryId);
+                                                    await UpdateArticleInventory(componentArticleItemInventoryId, false, 0);
                                                 }
                                             }
                                         }
@@ -969,7 +1021,7 @@ namespace liteclerk_api.Modules
                             foreach (var itemInventory in itemInventories)
                             {
                                 Int32 articleItemInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleItemInventoryId);
+                                await UpdateArticleInventory(articleItemInventoryId, false, 0);
                             }
                         }
                     }
@@ -1161,7 +1213,7 @@ namespace liteclerk_api.Modules
                             foreach (var itemInventory in itemInventories)
                             {
                                 Int32 articleItemInventoryId = itemInventory.Id;
-                                await UpdateArticleInventory(articleItemInventoryId);
+                                await UpdateArticleInventory(articleItemInventoryId, false, 0);
                             }
                         }
                     }

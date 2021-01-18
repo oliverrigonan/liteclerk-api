@@ -830,5 +830,245 @@ namespace liteclerk_api.APIControllers
                 return StatusCode(500, e.InnerException.Message);
             }
         }
+
+        [HttpPost("create/fromJobOrder/{JOId}")]
+        public async Task<ActionResult> CreateStockInFromJobOrder(Int32 JOId)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                var loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUser == null)
+                {
+                    return StatusCode(404, "Login user not found.");
+                }
+
+                var loginUserForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == loginUserId
+                    && d.SysForm_FormId.Form == "ActivityStockInList"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUserForm == null)
+                {
+                    return StatusCode(404, "No rights to add a stock in.");
+                }
+
+                if (loginUserForm.CanAdd == false)
+                {
+                    return StatusCode(400, "No rights to add a stock in.");
+                }
+
+                var jobOrder = await (
+                    from d in _dbContext.TrnJobOrders
+                    where d.Id == JOId
+                    && d.IsLocked == true
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (jobOrder == null)
+                {
+                    return StatusCode(400, "Job order not found");
+                }
+
+                if (jobOrder.Status != "DONE")
+                {
+                    return StatusCode(400, "Job order must be done first.");
+                }
+
+                var existingStockIn = await (
+                    from d in _dbContext.TrnStockInItems
+                    where d.JOId == JOId
+                    && d.TrnStockIn_INId.IsLocked == true
+                    select d
+                ).ToListAsync();
+
+                if (existingStockIn.Any() == true)
+                {
+                    return StatusCode(400, "Stock in already exists.");
+                }
+
+                var item = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.ArticleId == jobOrder.ItemId
+                    && d.MstArticle_ArticleId.IsLocked == true
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (item == null)
+                {
+                    return StatusCode(404, "Item not found.");
+                }
+
+                if (item.IsInventory == false)
+                {
+                    return StatusCode(404, "The item must be inventoriable.");
+                }
+
+                var account = await (
+                    from d in _dbContext.MstAccounts
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (account == null)
+                {
+                    return StatusCode(404, "Account not found.");
+                }
+
+                var article = await (
+                    from d in _dbContext.MstArticles
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (article == null)
+                {
+                    return StatusCode(404, "Article not found.");
+                }
+
+                var codeTableStatus = await (
+                    from d in _dbContext.MstCodeTables
+                    where d.Category == "STOCK IN STATUS"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (codeTableStatus == null)
+                {
+                    return StatusCode(404, "Status not found.");
+                }
+
+                String INNumber = "0000000001";
+                var lastStockIn = await (
+                    from d in _dbContext.TrnStockIns
+                    where d.BranchId == loginUser.BranchId
+                    orderby d.Id descending
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (lastStockIn != null)
+                {
+                    Int32 lastINNumber = Convert.ToInt32(lastStockIn.INNumber) + 0000000001;
+                    INNumber = PadZeroes(lastINNumber, 10);
+                }
+
+                var newStockIn = new DBSets.TrnStockInDBSet()
+                {
+                    BranchId = Convert.ToInt32(loginUser.BranchId),
+                    CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    INNumber = INNumber,
+                    INDate = DateTime.Today,
+                    ManualNumber = INNumber,
+                    DocumentReference = "",
+                    AccountId = account.Id,
+                    ArticleId = article.Id,
+                    Remarks = "",
+                    PreparedByUserId = loginUserId,
+                    CheckedByUserId = loginUserId,
+                    ApprovedByUserId = loginUserId,
+                    Status = codeTableStatus.CodeValue,
+                    IsCancelled = false,
+                    IsPrinted = false,
+                    IsLocked = false,
+                    CreatedByUserId = loginUserId,
+                    CreatedDateTime = DateTime.Now,
+                    UpdatedByUserId = loginUserId,
+                    UpdatedDateTime = DateTime.Now
+                };
+
+                _dbContext.TrnStockIns.Add(newStockIn);
+                await _dbContext.SaveChangesAsync();
+
+                Int32 INId = newStockIn.Id;
+
+                var itemUnit = await (
+                    from d in _dbContext.MstArticleItemUnits
+                    where d.ArticleId == jobOrder.ItemId
+                    && d.UnitId == jobOrder.UnitId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (itemUnit == null)
+                {
+                    return StatusCode(404, "Item unit not found.");
+                }
+
+                Decimal amount = jobOrder.Quantity * item.ProductionCost;
+
+                Decimal baseQuantity = jobOrder.Quantity;
+                if (itemUnit.Multiplier > 0)
+                {
+                    baseQuantity = jobOrder.Quantity * (1 / itemUnit.Multiplier);
+                }
+
+                Decimal baseCost = amount;
+                if (baseQuantity > 0)
+                {
+                    baseCost = amount / baseQuantity;
+                }
+
+                var newStockInItems = new DBSets.TrnStockInItemDBSet()
+                {
+                    INId = INId,
+                    JOId = JOId,
+                    ItemId = jobOrder.ItemId,
+                    Particulars = jobOrder.Remarks,
+                    Quantity = jobOrder.Quantity,
+                    UnitId = jobOrder.UnitId,
+                    Cost = item.ProductionCost,
+                    Amount = amount,
+                    BaseQuantity = baseQuantity,
+                    BaseUnitId = item.UnitId,
+                    BaseCost = baseCost,
+                };
+
+                _dbContext.TrnStockInItems.Add(newStockInItems);
+                await _dbContext.SaveChangesAsync();
+
+                var stockIn = await (
+                    from d in _dbContext.TrnStockIns
+                    where d.Id == INId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (stockIn == null)
+                {
+                    return StatusCode(404, "Stock in not found.");
+                }
+
+                Decimal totalAmount = 0;
+
+                var stockInItems = await (
+                    from d in _dbContext.TrnStockInItems
+                    where d.INId == INId
+                    select d
+                ).ToListAsync();
+
+                if (stockInItems.Any())
+                {
+                    totalAmount = stockInItems.Sum(d => d.Amount);
+                }
+
+                var updateStockIn = stockIn;
+                updateStockIn.Amount = totalAmount;
+                updateStockIn.IsLocked = true;
+                updateStockIn.UpdatedByUserId = loginUserId;
+                updateStockIn.UpdatedDateTime = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
+
+                await _sysInventory.InsertStockInInventory(INId);
+
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
     }
 }

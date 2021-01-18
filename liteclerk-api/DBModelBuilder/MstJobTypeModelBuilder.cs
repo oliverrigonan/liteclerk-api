@@ -21,6 +21,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.JobType).HasColumnName("JobType").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
                 entity.Property(e => e.TotalNumberOfDays).HasColumnName("TotalNumberOfDays").HasColumnType("decimal(18,5)").IsRequired();
                 entity.Property(e => e.Remarks).HasColumnName("Remarks").HasColumnType("nvarchar(max)").IsRequired();
+                entity.Property(e => e.IsInventory).HasColumnName("IsInventory").HasColumnType("bit").IsRequired();
 
                 entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();
 

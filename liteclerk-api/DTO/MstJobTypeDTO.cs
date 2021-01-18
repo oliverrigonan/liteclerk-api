@@ -13,6 +13,7 @@ namespace liteclerk_api.DTO
         public String JobType { get; set; }
         public Decimal TotalNumberOfDays { get; set; }
         public String Remarks { get; set; }
+        public Boolean IsInventory { get; set; }
         public Boolean IsLocked { get; set; }
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }

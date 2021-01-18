@@ -36,7 +36,7 @@ namespace liteclerk_api
             IdentityModelEventSource.ShowPII = true;
 
             services.AddDbContext<DBContext.LiteclerkDBContext>(options => options
-                .UseLazyLoadingProxies()
+                .UseLazyLoadingProxies(true)
                 .UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"])
             );
 

@@ -37,6 +37,7 @@ namespace liteclerk_api.DTO
         public Int32 WTAXId { get; set; }
         public MstTaxDTO WTAX { get; set; }
         public String Kitting { get; set; }
+        public Decimal ProductionCost { get; set; }
         public Boolean IsLocked { get; set; }
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }

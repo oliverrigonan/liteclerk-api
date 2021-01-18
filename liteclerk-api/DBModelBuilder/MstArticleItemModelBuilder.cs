@@ -56,6 +56,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstTax_WTAXId).WithMany(f => f.MstArticleItems_WTAXId).HasForeignKey(f => f.WTAXId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.Kitting).HasColumnName("Kitting").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
+
+                entity.Property(e => e.ProductionCost).HasColumnName("ProductionCost").HasColumnType("decimal(18,5)").IsRequired();
             });
         }
     }

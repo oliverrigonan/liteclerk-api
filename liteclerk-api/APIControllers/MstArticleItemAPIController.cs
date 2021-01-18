@@ -120,6 +120,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -227,6 +228,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -336,6 +338,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -446,6 +449,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -479,7 +483,6 @@ namespace liteclerk_api.APIControllers
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     && d.IsInventory == false
-                    && (d.Kitting == "NONE" || d.Kitting == "PACKAGE" || d.Kitting == "COMPONENT")
                     select new DTO.MstArticleItemDTO
                     {
                         Id = d.Id,
@@ -554,6 +557,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -663,6 +667,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -772,6 +777,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -801,7 +807,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.MstArticleItemDTO producedArticleItem = await (
+                var producedArticleItem = await (
                     from d in _dbContext.MstArticleItems
                     where d.Id == id
                     select new DTO.MstArticleItemDTO
@@ -879,6 +885,7 @@ namespace liteclerk_api.APIControllers
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },
                         Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
                         IsLocked = d.MstArticle_ArticleId.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -1145,6 +1152,7 @@ namespace liteclerk_api.APIControllers
                 saveArticleItem.SIVATId = mstArticleItemDTO.SIVATId;
                 saveArticleItem.WTAXId = mstArticleItemDTO.WTAXId;
                 saveArticleItem.Kitting = mstArticleItemDTO.Kitting;
+                saveArticleItem.ProductionCost = mstArticleItemDTO.ProductionCost;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -1289,6 +1297,7 @@ namespace liteclerk_api.APIControllers
                 lockArticleItem.SIVATId = mstArticleItemDTO.SIVATId;
                 lockArticleItem.WTAXId = mstArticleItemDTO.WTAXId;
                 lockArticleItem.Kitting = mstArticleItemDTO.Kitting;
+                lockArticleItem.ProductionCost = mstArticleItemDTO.ProductionCost;
 
                 await _dbContext.SaveChangesAsync();
 

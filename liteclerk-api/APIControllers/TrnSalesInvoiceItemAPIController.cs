@@ -29,9 +29,10 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnSalesInvoiceItemDTO> salesInvoiceItems = await (
+                var salesInvoiceItems = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     orderby d.Id descending
                     select new DTO.TrnSalesInvoiceItemDTO
                     {
@@ -44,9 +45,10 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            IsInventory = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory
                         },
                         ItemInventoryId = d.ItemInventoryId,
                         ItemInventory = new DTO.MstArticleItemInventoryDTO
@@ -125,9 +127,10 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnSalesInvoiceItemDTO salesInvoiceItem = await (
+                var salesInvoiceItem = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.Id == id
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.TrnSalesInvoiceItemDTO
                     {
                         Id = d.Id,
@@ -139,9 +142,10 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            IsInventory = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory
                         },
                         ItemInventoryId = d.ItemInventoryId,
                         ItemInventory = new DTO.MstArticleItemInventoryDTO
@@ -222,7 +226,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -233,7 +237,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
@@ -250,7 +254,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a sales invoice item.");
                 }
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                var salesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
                     where d.Id == trnSalesInvoiceItemDTO.SIId
                     select d
@@ -266,7 +270,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add sales invoice items if the current sales invoice is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnSalesInvoiceItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -280,7 +284,7 @@ namespace liteclerk_api.APIControllers
 
                 if (trnSalesInvoiceItemDTO.ItemInventoryId != null)
                 {
-                    DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                    var itemInventory = await (
                         from d in _dbContext.MstArticleItemInventories
                         where d.Id == trnSalesInvoiceItemDTO.ItemInventoryId
                         select d
@@ -294,7 +298,7 @@ namespace liteclerk_api.APIControllers
 
                 if (trnSalesInvoiceItemDTO.ItemJobTypeId != null)
                 {
-                    DBSets.MstJobTypeDBSet itemJobType = await (
+                    var itemJobType = await (
                         from d in _dbContext.MstJobTypes
                         where d.Id == trnSalesInvoiceItemDTO.ItemJobTypeId
                         select d
@@ -306,7 +310,7 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
-                DBSets.MstDiscountDBSet discount = await (
+                var discount = await (
                     from d in _dbContext.MstDiscounts
                     where d.Id == trnSalesInvoiceItemDTO.DiscountId
                     select d
@@ -317,7 +321,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Discount not found.");
                 }
 
-                DBSets.MstTaxDBSet VAT = await (
+                var VAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnSalesInvoiceItemDTO.VATId
                     select d
@@ -328,7 +332,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "VAT not found.");
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnSalesInvoiceItemDTO.WTAXId
                     select d
@@ -339,7 +343,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Withholding tax not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnSalesInvoiceItemDTO.ItemId
                     && d.UnitId == trnSalesInvoiceItemDTO.UnitId
@@ -363,7 +367,7 @@ namespace liteclerk_api.APIControllers
                     baseNetPrice = trnSalesInvoiceItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnSalesInvoiceItemDBSet newSalesInvoiceItems = new DBSets.TrnSalesInvoiceItemDBSet()
+                var newSalesInvoiceItems = new DBSets.TrnSalesInvoiceItemDBSet()
                 {
                     SIId = trnSalesInvoiceItemDTO.SIId,
                     ItemId = trnSalesInvoiceItemDTO.ItemId,
@@ -395,7 +399,7 @@ namespace liteclerk_api.APIControllers
 
                 Decimal amount = 0;
 
-                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItemsByCurrentSalesInvoice = await (
+                var salesInvoiceItemsByCurrentSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == trnSalesInvoiceItemDTO.SIId
                     select d
@@ -406,7 +410,7 @@ namespace liteclerk_api.APIControllers
                     amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
                 }
 
-                DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
+                var updateSalesInvoice = salesInvoice;
                 updateSalesInvoice.Amount = amount;
                 updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
@@ -428,7 +432,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -439,7 +443,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
@@ -456,7 +460,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a sales invoice item.");
                 }
 
-                DBSets.TrnSalesInvoiceItemDBSet salesInvoiceItem = await (
+                var salesInvoiceItem = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.Id == id
                     select d
@@ -467,7 +471,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Sales invoice item not found.");
                 }
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                var salesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
                     where d.Id == trnSalesInvoiceItemDTO.SIId
                     select d
@@ -483,7 +487,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update sales invoice items if the current sales invoice is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnSalesInvoiceItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -497,7 +501,7 @@ namespace liteclerk_api.APIControllers
 
                 if (trnSalesInvoiceItemDTO.ItemInventoryId != null)
                 {
-                    DBSets.MstArticleItemInventoryDBSet itemInventory = await (
+                    var itemInventory = await (
                         from d in _dbContext.MstArticleItemInventories
                         where d.Id == trnSalesInvoiceItemDTO.ItemInventoryId
                         select d
@@ -511,7 +515,7 @@ namespace liteclerk_api.APIControllers
 
                 if (trnSalesInvoiceItemDTO.ItemJobTypeId != null)
                 {
-                    DBSets.MstJobTypeDBSet itemJobType = await (
+                    var itemJobType = await (
                         from d in _dbContext.MstJobTypes
                         where d.Id == trnSalesInvoiceItemDTO.ItemJobTypeId
                         select d
@@ -523,7 +527,7 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
-                DBSets.MstDiscountDBSet discount = await (
+                var discount = await (
                     from d in _dbContext.MstDiscounts
                     where d.Id == trnSalesInvoiceItemDTO.DiscountId
                     select d
@@ -534,7 +538,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Discount not found.");
                 }
 
-                DBSets.MstTaxDBSet VAT = await (
+                var VAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnSalesInvoiceItemDTO.VATId
                     select d
@@ -545,7 +549,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "VAT not found.");
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnSalesInvoiceItemDTO.WTAXId
                     select d
@@ -556,7 +560,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Withholding tax not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnSalesInvoiceItemDTO.ItemId
                     && d.UnitId == trnSalesInvoiceItemDTO.UnitId
@@ -580,7 +584,7 @@ namespace liteclerk_api.APIControllers
                     baseNetPrice = trnSalesInvoiceItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnSalesInvoiceItemDBSet updateSalesInvoiceItems = salesInvoiceItem;
+                var updateSalesInvoiceItems = salesInvoiceItem;
                 updateSalesInvoiceItems.SIId = trnSalesInvoiceItemDTO.SIId;
                 updateSalesInvoiceItems.ItemInventoryId = trnSalesInvoiceItemDTO.ItemInventoryId;
                 updateSalesInvoiceItems.ItemJobTypeId = trnSalesInvoiceItemDTO.ItemJobTypeId;
@@ -608,7 +612,7 @@ namespace liteclerk_api.APIControllers
 
                 Decimal amount = 0;
 
-                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItemsByCurrentSalesInvoice = await (
+                var salesInvoiceItemsByCurrentSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == trnSalesInvoiceItemDTO.SIId
                     select d
@@ -619,7 +623,7 @@ namespace liteclerk_api.APIControllers
                     amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
                 }
 
-                DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
+                var updateSalesInvoice = salesInvoice;
                 updateSalesInvoice.Amount = amount;
                 updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
@@ -641,7 +645,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -652,7 +656,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivitySalesInvoiceDetail"
@@ -671,7 +675,7 @@ namespace liteclerk_api.APIControllers
 
                 Int32 SIId = 0;
 
-                DBSets.TrnSalesInvoiceItemDBSet salesInvoiceItem = await (
+                var salesInvoiceItem = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.Id == id
                     select d
@@ -684,7 +688,7 @@ namespace liteclerk_api.APIControllers
 
                 SIId = salesInvoiceItem.SIId;
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                var salesInvoice = await (
                     from d in _dbContext.TrnSalesInvoices
                     where d.Id == SIId
                     select d
@@ -705,7 +709,7 @@ namespace liteclerk_api.APIControllers
 
                 Decimal amount = 0;
 
-                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItemsByCurrentSalesInvoice = await (
+                var salesInvoiceItemsByCurrentSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId
                     select d
@@ -716,7 +720,7 @@ namespace liteclerk_api.APIControllers
                     amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
                 }
 
-                DBSets.TrnSalesInvoiceDBSet updateSalesInvoice = salesInvoice;
+                var updateSalesInvoice = salesInvoice;
                 updateSalesInvoice.Amount = amount;
                 updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
