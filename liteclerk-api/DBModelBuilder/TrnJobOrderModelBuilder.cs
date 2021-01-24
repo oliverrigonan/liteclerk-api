@@ -54,6 +54,10 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.BaseUnitId).HasColumnName("BaseUnitId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUnit_BaseUnitId).WithMany(f => f.TrnJobOrders_BaseUnitId).HasForeignKey(f => f.BaseUnitId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.CurrentDepartment).HasColumnName("CurrentDepartment").HasColumnType("nvarchar(255)").HasMaxLength(50);
+                entity.Property(e => e.CurrentDepartmentStatus).HasColumnName("CurrentDepartmentStatus").HasColumnType("nvarchar(50)").HasMaxLength(50);
+                entity.Property(e => e.CurrentDepartmentUserFullName).HasColumnName("CurrentDepartmentUserFullName").HasColumnType("nvarchar(255)").HasMaxLength(50);
+
                 entity.Property(e => e.PreparedByUserId).HasColumnName("PreparedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_PreparedByUserId).WithMany(f => f.TrnJobOrders_PreparedByUserId).HasForeignKey(f => f.PreparedByUserId).OnDelete(DeleteBehavior.Restrict);
 

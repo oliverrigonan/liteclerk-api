@@ -251,6 +251,21 @@ namespace liteclerk_api.APIControllers
                 _dbContext.SysProductions.Add(newProduction);
                 await _dbContext.SaveChangesAsync();
 
+                var jobOrder = await (
+                    from d in _dbContext.TrnJobOrders
+                    where d.Id == jobOrderDepartment.JOId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (jobOrder != null)
+                {
+                    var updateJobOrder = jobOrder;
+                    updateJobOrder.CurrentDepartment = jobOrderDepartment.MstJobDepartment_JobDepartmentId.JobDepartment;
+                    updateJobOrder.CurrentDepartmentStatus = jobOrderDepartment.Status;
+                    updateJobOrder.CurrentDepartmentUserFullName = jobOrderDepartment.MstUser_StatusByUserId.Fullname;
+                    await _dbContext.SaveChangesAsync();
+                }
+
                 return StatusCode(200);
             }
             catch (Exception e)

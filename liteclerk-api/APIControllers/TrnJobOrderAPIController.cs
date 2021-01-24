@@ -48,17 +48,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnJobOrderDTO> jobOrders = await (
+                var jobOrders = await (
                     from d in _dbContext.TrnJobOrders
                     where d.BranchId == loginUser.BranchId
                     && d.JODate >= Convert.ToDateTime(startDate)
                     && d.JODate <= Convert.ToDateTime(endDate)
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     orderby d.Id descending
                     select new DTO.TrnJobOrderDTO
                     {
@@ -66,14 +67,12 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -97,7 +96,8 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.ManualCode
                                 },
-                                Customer = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                                Customer = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true ?
+                                           d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                             }
                         },
                         SIItemId = d.SIItemId,
@@ -109,9 +109,14 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.ManualCode
                                 },
-                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                          d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                          d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
+                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                              d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                                IsInventory = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                              d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory : false
                             }
                         },
                         ItemId = d.ItemId,
@@ -121,9 +126,10 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            IsInventory = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory,
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
@@ -134,7 +140,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -143,10 +148,12 @@ namespace liteclerk_api.APIControllers
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
                             ManualCode = d.MstUnit_BaseUnitId.ManualCode,
                             Unit = d.MstUnit_BaseUnitId.Unit
                         },
+                        CurrentDepartment = d.CurrentDepartment,
+                        CurrentDepartmentStatus = d.CurrentDepartmentStatus,
+                        CurrentDepartmentUserFullName = d.CurrentDepartmentUserFullName,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -197,9 +204,10 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnJobOrderDTO> jobOrders = await (
+                var jobOrders = await (
                     from d in _dbContext.TrnJobOrders
                     where d.SIId == SIId
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     orderby d.Id descending
                     select new DTO.TrnJobOrderDTO
                     {
@@ -207,14 +215,12 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -230,7 +236,17 @@ namespace liteclerk_api.APIControllers
                             SINumber = d.TrnSalesInvoice_SIId.SINumber,
                             SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
                             ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
-                            DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
+                            DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference,
+                            CustomerId = d.TrnSalesInvoice_SIId.CustomerId,
+                            Customer = new DTO.MstArticleCustomerDTO
+                            {
+                                Article = new DTO.MstArticleDTO
+                                {
+                                    ManualCode = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.ManualCode
+                                },
+                                Customer = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true ?
+                                           d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            }
                         },
                         SIItemId = d.SIItemId,
                         SalesInvoiceItem = new DTO.TrnSalesInvoiceItemDTO
@@ -241,9 +257,14 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.ManualCode
                                 },
-                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                          d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                          d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
+                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                              d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                                IsInventory = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                              d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory : false
                             }
                         },
                         ItemId = d.ItemId,
@@ -253,9 +274,10 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            IsInventory = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory,
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
@@ -266,7 +288,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -275,10 +296,12 @@ namespace liteclerk_api.APIControllers
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
                             ManualCode = d.MstUnit_BaseUnitId.ManualCode,
                             Unit = d.MstUnit_BaseUnitId.Unit
                         },
+                        CurrentDepartment = d.CurrentDepartment,
+                        CurrentDepartmentStatus = d.CurrentDepartmentStatus,
+                        CurrentDepartmentUserFullName = d.CurrentDepartmentUserFullName,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -329,23 +352,22 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnJobOrderDTO jobOrder = await (
+                var jobOrder = await (
                     from d in _dbContext.TrnJobOrders
                     where d.Id == id
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.TrnJobOrderDTO
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -369,7 +391,8 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.ManualCode
                                 },
-                                Customer = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                                Customer = d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true ?
+                                           d.TrnSalesInvoice_SIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                             }
                         },
                         SIItemId = d.SIItemId,
@@ -381,9 +404,14 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.ManualCode
                                 },
-                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                                SKUCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                          d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
+                                BarCode = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                          d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "",
+                                Description = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                              d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                                IsInventory = d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true ?
+                                              d.TrnSalesInvoiceItem_SIItemId.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory : false
                             }
                         },
                         ItemId = d.ItemId,
@@ -393,9 +421,10 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            IsInventory = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().IsInventory,
                         },
                         ItemJobTypeId = d.ItemJobTypeId,
                         ItemJobType = new DTO.MstJobTypeDTO
@@ -406,7 +435,6 @@ namespace liteclerk_api.APIControllers
                         UnitId = d.UnitId,
                         Unit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_UnitId.UnitCode,
                             ManualCode = d.MstUnit_UnitId.ManualCode,
                             Unit = d.MstUnit_UnitId.Unit
                         },
@@ -415,10 +443,12 @@ namespace liteclerk_api.APIControllers
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
                         {
-                            UnitCode = d.MstUnit_BaseUnitId.UnitCode,
                             ManualCode = d.MstUnit_BaseUnitId.ManualCode,
                             Unit = d.MstUnit_BaseUnitId.Unit
                         },
+                        CurrentDepartment = d.CurrentDepartment,
+                        CurrentDepartmentStatus = d.CurrentDepartmentStatus,
+                        CurrentDepartmentUserFullName = d.CurrentDepartmentUserFullName,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -471,7 +501,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -482,7 +512,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderList"
@@ -499,7 +529,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a job order.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.MstArticle_ArticleId.IsLocked == true
                     select d
@@ -510,7 +540,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstJobTypeDBSet jobType = await (
+                var jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.IsLocked == true
                     select d
@@ -521,7 +551,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job type not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "JOB ORDER STATUS"
                     select d
@@ -546,7 +576,7 @@ namespace liteclerk_api.APIControllers
                     JONumber = PadZeroes(lastSINumber, 10);
                 }
 
-                DBSets.TrnJobOrderDBSet newJobOrder = new DBSets.TrnJobOrderDBSet()
+                var newJobOrder = new DBSets.TrnJobOrderDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
@@ -565,6 +595,9 @@ namespace liteclerk_api.APIControllers
                     Remarks = "",
                     BaseQuantity = 0,
                     BaseUnitId = item.UnitId,
+                    CurrentDepartment = "",
+                    CurrentDepartmentStatus = "",
+                    CurrentDepartmentUserFullName = "",
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
@@ -596,7 +629,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -607,7 +640,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
@@ -624,7 +657,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a job order.");
                 }
 
-                DBSets.TrnJobOrderDBSet jobOrder = await (
+                var jobOrder = await (
                     from d in _dbContext.TrnJobOrders
                     where d.Id == id
                     select d
@@ -640,7 +673,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a job order that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var currency = await (
                     from d in _dbContext.MstCurrencies
                     where d.Id == trnJobOrderDTO.CurrencyId
                     select d
@@ -651,7 +684,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnJobOrderDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -663,7 +696,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstJobTypeDBSet jobType = await (
+                var jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == trnJobOrderDTO.ItemJobTypeId
                     select d
@@ -674,7 +707,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job type not found.");
                 }
 
-                DBSets.MstUnitDBSet unit = await (
+                var unit = await (
                     from d in _dbContext.MstUnits
                     where d.Id == trnJobOrderDTO.UnitId
                     select d
@@ -685,7 +718,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Unit not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnJobOrderDTO.ItemId
                     && d.UnitId == trnJobOrderDTO.UnitId
@@ -703,7 +736,7 @@ namespace liteclerk_api.APIControllers
                     baseQuantity = trnJobOrderDTO.Quantity * (1 / itemUnit.Multiplier);
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnJobOrderDTO.CheckedByUserId
                     select d
@@ -714,7 +747,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnJobOrderDTO.ApprovedByUserId
                     select d
@@ -725,7 +758,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnJobOrderDTO.Status
                     && d.Category == "JOB ORDER STATUS"
@@ -737,7 +770,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnJobOrderDBSet saveJobOrder = jobOrder;
+                var saveJobOrder = jobOrder;
                 saveJobOrder.CurrencyId = trnJobOrderDTO.CurrencyId;
                 saveJobOrder.JODate = Convert.ToDateTime(trnJobOrderDTO.JODate);
                 saveJobOrder.ManualNumber = trnJobOrderDTO.ManualNumber;
@@ -774,7 +807,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -785,7 +818,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
@@ -802,7 +835,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a job order.");
                 }
 
-                DBSets.TrnJobOrderDBSet jobOrder = await (
+                var jobOrder = await (
                     from d in _dbContext.TrnJobOrders
                     where d.Id == id
                     select d
@@ -818,7 +851,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a job order that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var currency = await (
                     from d in _dbContext.MstCurrencies
                     where d.Id == trnJobOrderDTO.CurrencyId
                     select d
@@ -829,7 +862,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnJobOrderDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -841,7 +874,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstJobTypeDBSet jobType = await (
+                var jobType = await (
                     from d in _dbContext.MstJobTypes
                     where d.Id == trnJobOrderDTO.ItemJobTypeId
                     select d
@@ -852,7 +885,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job type not found.");
                 }
 
-                DBSets.MstUnitDBSet unit = await (
+                var unit = await (
                     from d in _dbContext.MstUnits
                     where d.Id == trnJobOrderDTO.UnitId
                     select d
@@ -863,7 +896,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Unit not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnJobOrderDTO.ItemId
                     && d.UnitId == trnJobOrderDTO.UnitId
@@ -881,7 +914,7 @@ namespace liteclerk_api.APIControllers
                     baseQuantity = trnJobOrderDTO.Quantity * (1 / itemUnit.Multiplier);
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnJobOrderDTO.CheckedByUserId
                     select d
@@ -892,7 +925,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnJobOrderDTO.ApprovedByUserId
                     select d
@@ -903,7 +936,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnJobOrderDTO.Status
                     && d.Category == "JOB ORDER STATUS"
@@ -915,7 +948,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnJobOrderDBSet lockJobOrder = jobOrder;
+                var lockJobOrder = jobOrder;
                 lockJobOrder.CurrencyId = trnJobOrderDTO.CurrencyId;
                 lockJobOrder.JODate = Convert.ToDateTime(trnJobOrderDTO.JODate);
                 lockJobOrder.ManualNumber = trnJobOrderDTO.ManualNumber;
@@ -953,7 +986,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -964,7 +997,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
@@ -981,7 +1014,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a job order.");
                 }
 
-                DBSets.TrnJobOrderDBSet jobOrder = await (
+                var jobOrder = await (
                      from d in _dbContext.TrnJobOrders
                      where d.Id == id
                      select d
@@ -997,7 +1030,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock a job order that is unlocked.");
                 }
 
-                DBSets.TrnJobOrderDBSet unlockJobOrder = jobOrder;
+                var unlockJobOrder = jobOrder;
                 unlockJobOrder.IsLocked = false;
                 unlockJobOrder.UpdatedByUserId = loginUserId;
                 unlockJobOrder.UpdatedDateTime = DateTime.Now;
@@ -1019,7 +1052,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -1030,7 +1063,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"
@@ -1047,7 +1080,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to cancel a job order.");
                 }
 
-                DBSets.TrnJobOrderDBSet jobOrder = await (
+                var jobOrder = await (
                      from d in _dbContext.TrnJobOrders
                      where d.Id == id
                      select d
@@ -1063,7 +1096,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot cancel a job order that is unlocked.");
                 }
 
-                DBSets.TrnJobOrderDBSet unlockJobOrder = jobOrder;
+                var unlockJobOrder = jobOrder;
                 unlockJobOrder.IsCancelled = true;
                 unlockJobOrder.UpdatedByUserId = loginUserId;
                 unlockJobOrder.UpdatedDateTime = DateTime.Now;
@@ -1085,7 +1118,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -1096,7 +1129,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderList"
@@ -1113,7 +1146,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a job order.");
                 }
 
-                DBSets.TrnJobOrderDBSet jobOrder = await (
+                var jobOrder = await (
                      from d in _dbContext.TrnJobOrders
                      where d.Id == id
                      select d
@@ -1147,7 +1180,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -1158,11 +1191,11 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
-                    from d in _dbContext.TrnSalesInvoices
-                    where d.Id == SIId
-                    select d
-                ).FirstOrDefaultAsync(); ;
+                var salesInvoice = await (
+                     from d in _dbContext.TrnSalesInvoices
+                     where d.Id == SIId
+                     select d
+                 ).FirstOrDefaultAsync(); ;
 
                 if (salesInvoice == null)
                 {
@@ -1174,7 +1207,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Cannot create job orders if the referenced sales invoice is unlocked.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "JOB ORDER STATUS"
                     select d
@@ -1185,7 +1218,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                IEnumerable<DBSets.TrnSalesInvoiceItemDBSet> salesInvoiceItems = await (
+                var salesInvoiceItems = await (
                     from d in _dbContext.TrnSalesInvoiceItems
                     where d.SIId == SIId
                     && d.ItemJobTypeId != null
@@ -1199,7 +1232,7 @@ namespace liteclerk_api.APIControllers
 
                 foreach (var salesInvoiceItem in salesInvoiceItems)
                 {
-                    DBSets.TrnJobOrderDBSet existingJobOrder = await (
+                    var existingJobOrder = await (
                         from d in _dbContext.TrnJobOrders
                         where d.SIItemId == salesInvoiceItem.Id
                         select d
@@ -1208,7 +1241,7 @@ namespace liteclerk_api.APIControllers
                     if (existingJobOrder == null)
                     {
                         String JONumber = "0000000001";
-                        DBSets.TrnJobOrderDBSet lastJobOrder = await (
+                        var lastJobOrder = await (
                             from d in _dbContext.TrnJobOrders
                             where d.BranchId == loginUser.BranchId
                             orderby d.Id descending
@@ -1221,7 +1254,7 @@ namespace liteclerk_api.APIControllers
                             JONumber = PadZeroes(lastJONumber, 10);
                         }
 
-                        DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                        var itemUnit = await (
                             from d in _dbContext.MstArticleItemUnits
                             where d.ArticleId == salesInvoiceItem.ItemId
                             && d.UnitId == salesInvoiceItem.UnitId
@@ -1241,7 +1274,7 @@ namespace liteclerk_api.APIControllers
 
                         Int32 baseUnitId = salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? salesInvoiceItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().UnitId : 0;
 
-                        DBSets.TrnJobOrderDBSet newJobOrder = new DBSets.TrnJobOrderDBSet()
+                        var newJobOrder = new DBSets.TrnJobOrderDBSet()
                         {
                             BranchId = Convert.ToInt32(loginUser.BranchId),
                             CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
@@ -1260,6 +1293,9 @@ namespace liteclerk_api.APIControllers
                             Remarks = salesInvoiceItem.Particulars,
                             BaseQuantity = baseQuantity,
                             BaseUnitId = baseUnitId,
+                            CurrentDepartment = "",
+                            CurrentDepartmentStatus = "",
+                            CurrentDepartmentUserFullName = "",
                             PreparedByUserId = salesInvoice.PreparedByUserId,
                             CheckedByUserId = salesInvoice.CheckedByUserId,
                             ApprovedByUserId = salesInvoice.ApprovedByUserId,
@@ -1276,7 +1312,7 @@ namespace liteclerk_api.APIControllers
                         _dbContext.TrnJobOrders.Add(newJobOrder);
                         await _dbContext.SaveChangesAsync();
 
-                        DBSets.MstJobTypeDBSet jobType = await (
+                        var jobType = await (
                             from d in _dbContext.MstJobTypes
                             where d.Id == Convert.ToInt32(salesInvoiceItem.ItemJobTypeId)
                             select d
@@ -1284,7 +1320,7 @@ namespace liteclerk_api.APIControllers
 
                         if (jobType != null)
                         {
-                            IEnumerable<DBSets.MstJobTypeAttachmentDBSet> jobTypeAttachments = await (
+                            var jobTypeAttachments = await (
                                 from d in _dbContext.MstJobTypeAttachments
                                 where d.JobTypeId == Convert.ToInt32(salesInvoiceItem.ItemJobTypeId)
                                 select d
@@ -1294,7 +1330,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 foreach (var jobTypeAttachment in jobTypeAttachments)
                                 {
-                                    DBSets.TrnJobOrderAttachmentDBSet newJobOrderAttachment = new DBSets.TrnJobOrderAttachmentDBSet()
+                                    var newJobOrderAttachment = new DBSets.TrnJobOrderAttachmentDBSet()
                                     {
                                         JOId = newJobOrder.Id,
                                         AttachmentCode = jobTypeAttachment.AttachmentCode,
@@ -1309,7 +1345,7 @@ namespace liteclerk_api.APIControllers
                                 }
                             }
 
-                            IEnumerable<DBSets.MstJobTypeDepartmentDBSet> jobTypeDepartments = await (
+                            var jobTypeDepartments = await (
                                 from d in _dbContext.MstJobTypeDepartments
                                 where d.JobTypeId == Convert.ToInt32(salesInvoiceItem.ItemJobTypeId)
                                 select d
@@ -1319,7 +1355,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 String status = "";
 
-                                DBSets.MstCodeTableDBSet codeTableJobOrderDepartmentStatus = await (
+                                var codeTableJobOrderDepartmentStatus = await (
                                     from d in _dbContext.MstCodeTables
                                     where d.Category == "PRODUCTION DEPARTMENT STATUS"
                                     select d
@@ -1332,7 +1368,7 @@ namespace liteclerk_api.APIControllers
 
                                 foreach (var jobTypeDepartment in jobTypeDepartments)
                                 {
-                                    DBSets.TrnJobOrderDepartmentDBSet newJobOrderDepartment = new DBSets.TrnJobOrderDepartmentDBSet()
+                                    var newJobOrderDepartment = new DBSets.TrnJobOrderDepartmentDBSet()
                                     {
                                         JOId = newJobOrder.Id,
                                         JobDepartmentId = jobTypeDepartment.JobDepartmentId,
@@ -1350,7 +1386,7 @@ namespace liteclerk_api.APIControllers
                                 }
                             }
 
-                            IEnumerable<DBSets.MstJobTypeInformationDBSet> jobTypeInformations = await (
+                            var jobTypeInformations = await (
                                 from d in _dbContext.MstJobTypeInformations
                                 where d.JobTypeId == Convert.ToInt32(salesInvoiceItem.ItemJobTypeId)
                                 select d
@@ -1360,7 +1396,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 foreach (var jobTypeInformation in jobTypeInformations)
                                 {
-                                    DBSets.TrnJobOrderInformationDBSet newJobOrderInformation = new DBSets.TrnJobOrderInformationDBSet()
+                                    var newJobOrderInformation = new DBSets.TrnJobOrderInformationDBSet()
                                     {
                                         JOId = newJobOrder.Id,
                                         InformationCode = jobTypeInformation.InformationCode,
@@ -1423,7 +1459,7 @@ namespace liteclerk_api.APIControllers
 
             Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-            DBSets.MstUserDBSet loginUser = await (
+            var loginUser = await (
                 from d in _dbContext.MstUsers
                 where d.Id == loginUserId
                 select d
@@ -1431,7 +1467,7 @@ namespace liteclerk_api.APIControllers
 
             if (loginUser != null)
             {
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityJobOrderDetail"

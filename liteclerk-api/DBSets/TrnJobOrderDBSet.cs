@@ -46,6 +46,10 @@ namespace liteclerk_api.DBSets
         public Int32 BaseUnitId { get; set; }
         public virtual MstUnitDBSet MstUnit_BaseUnitId { get; set; }
 
+        public String CurrentDepartment { get; set; }
+        public String CurrentDepartmentStatus { get; set; }
+        public String CurrentDepartmentUserFullName { get; set; }
+
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUserId { get; set; }
 

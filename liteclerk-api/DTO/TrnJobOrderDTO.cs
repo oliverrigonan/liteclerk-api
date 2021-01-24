@@ -33,6 +33,9 @@ namespace liteclerk_api.DTO
         public Decimal BaseQuantity { get; set; }
         public Int32 BaseUnitId { get; set; }
         public MstUnitDTO BaseUnit { get; set; }
+        public String CurrentDepartment { get; set; }
+        public String CurrentDepartmentStatus { get; set; }
+        public String CurrentDepartmentUserFullName { get; set; }
         public Int32 PreparedByUserId { get; set; }
         public MstUserDTO PreparedByUser { get; set; }
         public Int32 CheckedByUserId { get; set; }
