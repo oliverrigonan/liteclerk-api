@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -28,9 +29,18 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                var loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
                 var articleItemInventories = await (
                     from d in _dbContext.MstArticleItemInventories
-                    where d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() == true
+                    where d.BranchId == loginUser.BranchId
+                    && d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.MstArticleItemInventoryDTO
                     {
                         Id = d.Id,
@@ -44,6 +54,7 @@ namespace liteclerk_api.APIControllers
                             SKUCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
                             BarCode = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
                             Description = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Description,
+                            Category = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().Category,
                             UnitId = d.MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().UnitId,
                             Unit = new DTO.MstUnitDTO
                             {

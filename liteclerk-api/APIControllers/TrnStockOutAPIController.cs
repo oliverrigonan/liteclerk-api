@@ -829,5 +829,242 @@ namespace liteclerk_api.APIControllers
                 return StatusCode(500, e.InnerException.Message);
             }
         }
+
+        [HttpGet("print/{id}")]
+        public async Task<ActionResult> PrintStockOut(Int32 id)
+        {
+            FontFactory.RegisterDirectories();
+
+            Font fontSegoeUI09 = FontFactory.GetFont("Segoe UI light", 9);
+            Font fontSegoeUI09Bold = FontFactory.GetFont("Segoe UI light", 9, Font.BOLD);
+            Font fontSegoeUI10 = FontFactory.GetFont("Segoe UI light", 10);
+            Font fontSegoeUI10Bold = FontFactory.GetFont("Segoe UI light", 10, Font.BOLD);
+            Font fontSegoeUI11 = FontFactory.GetFont("Segoe UI light", 11);
+            Font fontSegoeUI11Bold = FontFactory.GetFont("Segoe UI light", 11, Font.BOLD);
+            Font fontSegoeUI12 = FontFactory.GetFont("Segoe UI light", 12);
+            Font fontSegoeUI12Bold = FontFactory.GetFont("Segoe UI light", 12, Font.BOLD);
+            Font fontSegoeUI13 = FontFactory.GetFont("Segoe UI light", 13);
+            Font fontSegoeUI13Bold = FontFactory.GetFont("Segoe UI light", 13, Font.BOLD);
+            Font fontSegoeUI14 = FontFactory.GetFont("Segoe UI light", 14);
+            Font fontSegoeUI14Bold = FontFactory.GetFont("Segoe UI light", 14, Font.BOLD);
+            Font fontSegoeUI15 = FontFactory.GetFont("Segoe UI light", 15);
+            Font fontSegoeUI15Bold = FontFactory.GetFont("Segoe UI light", 15, Font.BOLD);
+            Font fontSegoeUI16 = FontFactory.GetFont("Segoe UI light", 16);
+            Font fontSegoeUI16Bold = FontFactory.GetFont("Segoe UI light", 16, Font.BOLD);
+
+            Document document = new Document(PageSize.Letter, 30f, 30f, 30f, 30f);
+            MemoryStream workStream = new MemoryStream();
+
+            PdfWriter.GetInstance(document, workStream).CloseStream = false;
+            document.SetMargins(30f, 30f, 30f, 30f);
+
+            document.Open();
+
+            Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.Black, Element.ALIGN_LEFT, 1)));
+            Paragraph headerLine = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(2F, 100.0F, BaseColor.Black, Element.ALIGN_MIDDLE, 5F)));
+
+            Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+            var loginUser = await (
+                from d in _dbContext.MstUsers
+                where d.Id == loginUserId
+                select d
+            ).FirstOrDefaultAsync();
+
+            if (loginUser != null)
+            {
+                var loginUserForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == loginUserId
+                    && d.SysForm_FormId.Form == "ActivityStockOutDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUserForm != null)
+                {
+                    if (loginUserForm.CanPrint == true)
+                    {
+                        String companyName = "";
+                        String companyAddress = "";
+                        String companyTaxNumber = "";
+                        String companyImageURL = "";
+
+                        if (loginUser.CompanyId != null)
+                        {
+                            companyName = loginUser.MstCompany_CompanyId.Company;
+                            companyAddress = loginUser.MstCompany_CompanyId.Address;
+                            companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
+                            companyImageURL = loginUser.MstCompany_CompanyId.ImageURL;
+                        }
+
+                        var stockOut = await (
+                             from d in _dbContext.TrnStockOuts
+                             where d.Id == id
+                             && d.IsLocked == true
+                             select d
+                         ).FirstOrDefaultAsync(); ;
+
+                        if (stockOut != null)
+                        {
+                            String reprinted = "";
+                            if (stockOut.IsPrinted == true)
+                            {
+                                reprinted = "(REPRINTED)";
+                            }
+
+                            //String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\colorideas_logo.png";
+                            String logoPath = companyImageURL;
+
+                            Image logoPhoto = Image.GetInstance(logoPath);
+                            logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;
+
+                            PdfPCell logoPhotoPdfCell = new PdfPCell(logoPhoto, true) { FixedHeight = 40f };
+                            logoPhotoPdfCell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+
+                            PdfPTable tableHeader = new PdfPTable(2);
+                            tableHeader.SetWidths(new float[] { 80f, 20f });
+                            tableHeader.WidthPercentage = 100f;
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyName, fontSegoeUI13Bold)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(logoPhotoPdfCell) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 3f, Rowspan = 4 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyAddress, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyTaxNumber, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("Printed " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt") + " " + reprinted, fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 3f });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("STOCK OUT", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
+                            document.Add(tableHeader);
+
+                            String account = stockOut.MstAccount_AccountId.Account;
+                            String article = stockOut.MstArticle_ArticleId.Article;
+                            String remarks = stockOut.Remarks;
+
+                            String branch = stockOut.MstCompanyBranch_BranchId.Branch;
+                            String OTNumber = "OT-" + stockOut.MstCompanyBranch_BranchId.ManualCode + "-" + stockOut.OTNumber;
+                            String OTDate = stockOut.OTDate.ToString("MMMM dd, yyyy");
+                            String manualNumber = stockOut.ManualNumber;
+                            String documentReference = stockOut.DocumentReference;
+
+                            PdfPTable tableStockOut = new PdfPTable(4);
+                            tableStockOut.SetWidths(new float[] { 55f, 130f, 50f, 100f });
+                            tableStockOut.WidthPercentage = 100;
+
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("Account:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(account, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(OTNumber, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("Article:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(article, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("Branch:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(branch, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("Remarks", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f, Rowspan = 3 });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f, Rowspan = 3 });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("Date:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(OTDate, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("Manual No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(manualNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockOut.AddCell(new PdfPCell(new Phrase("Document Ref:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockOut.AddCell(new PdfPCell(new Phrase(documentReference, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            document.Add(tableStockOut);
+
+                            PdfPTable tableStockOutItems = new PdfPTable(6);
+                            tableStockOutItems.SetWidths(new float[] { 70f, 70f, 150f, 120f, 80f, 80f });
+                            tableStockOutItems.WidthPercentage = 100;
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase("Qty.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase("Unit", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase("Item", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase("Cost", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase("Amount", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+
+                            var stockOutItems = await (
+                                from d in _dbContext.TrnStockOutItems
+                                where d.OTId == id
+                                select d
+                            ).ToListAsync();
+
+                            if (stockOutItems.Any())
+                            {
+                                foreach (var stockOutItem in stockOutItems)
+                                {
+                                    String SKUCode = stockOutItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     stockOutItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
+                                    String barCode = stockOutItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     stockOutItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
+                                    String itemDescription = stockOutItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                             stockOutItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
+
+                                    tableStockOutItems.AddCell(new PdfPCell(new Phrase(stockOutItem.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockOutItems.AddCell(new PdfPCell(new Phrase(stockOutItem.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockOutItems.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockOutItems.AddCell(new PdfPCell(new Phrase(stockOutItem.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockOutItems.AddCell(new PdfPCell(new Phrase(stockOutItem.Cost.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockOutItems.AddCell(new PdfPCell(new Phrase(stockOutItem.Amount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                }
+                            }
+
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 5 });
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase(stockOutItems.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockOutItems.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 6 });
+                            document.Add(tableStockOutItems);
+
+                            String preparedBy = stockOut.MstUser_PreparedByUserId.Fullname;
+                            String checkedBy = stockOut.MstUser_CheckedByUserId.Fullname;
+                            String approvedBy = stockOut.MstUser_ApprovedByUserId.Fullname;
+
+                            PdfPTable tableUsers = new PdfPTable(4);
+                            tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });
+                            tableUsers.WidthPercentage = 100;
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Prepared by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Checked by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Approved by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Received by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(preparedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(checkedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            document.Add(tableUsers);
+                        }
+                    }
+                    else
+                    {
+                        Paragraph paragraph = new Paragraph
+                        {
+                            "No rights to print stock out"
+                        };
+
+                        document.Add(paragraph);
+                    }
+                }
+                else
+                {
+                    Paragraph paragraph = new Paragraph
+                    {
+                        "No rights to print stock out"
+                    };
+
+                    document.Add(paragraph);
+                }
+            }
+            else
+            {
+                document.Add(line);
+            }
+
+            document.Close();
+
+            byte[] byteInfo = workStream.ToArray();
+
+            workStream.Write(byteInfo, 0, byteInfo.Length);
+            workStream.Position = 0;
+
+            return new FileStreamResult(workStream, "application/pdf");
+        }
     }
 }

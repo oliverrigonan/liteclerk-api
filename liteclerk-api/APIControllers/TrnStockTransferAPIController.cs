@@ -50,13 +50,13 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnStockTransferDTO> stockTransfers = await (
+                var stockTransfers = await (
                     from d in _dbContext.TrnStockTransfers
                     where d.BranchId == loginUser.BranchId
                     && d.STDate >= Convert.ToDateTime(startDate)
@@ -68,14 +68,12 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -86,21 +84,18 @@ namespace liteclerk_api.APIControllers
                         ToBranchId = d.ToBranchId,
                         ToBranch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
-                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
-                            Branch = d.MstCompanyBranch_BranchId.Branch
+                            ManualCode = d.MstCompanyBranch_ToBranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_ToBranchId.Branch
                         },
                         AccountId = d.AccountId,
                         Account = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AccountId.AccountCode,
                             ManualCode = d.MstAccount_AccountId.ManualCode,
                             Account = d.MstAccount_AccountId.Account
                         },
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
@@ -155,7 +150,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnStockTransferDTO stockTransfer = await (
+                var stockTransfer = await (
                     from d in _dbContext.TrnStockTransfers
                     where d.Id == id
                     select new DTO.TrnStockTransferDTO
@@ -164,14 +159,12 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -182,21 +175,18 @@ namespace liteclerk_api.APIControllers
                         ToBranchId = d.ToBranchId,
                         ToBranch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
-                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
-                            Branch = d.MstCompanyBranch_BranchId.Branch
+                            ManualCode = d.MstCompanyBranch_ToBranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_ToBranchId.Branch
                         },
                         AccountId = d.AccountId,
                         Account = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AccountId.AccountCode,
                             ManualCode = d.MstAccount_AccountId.ManualCode,
                             Account = d.MstAccount_AccountId.Account
                         },
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
@@ -253,7 +243,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -264,7 +254,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockTransferList"
@@ -281,7 +271,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a stock transfer.");
                 }
 
-                DBSets.MstCompanyBranchDBSet toBranch = await (
+                var toBranch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id != Convert.ToInt32(loginUser.BranchId)
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -293,7 +283,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "To branch not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
+                var account = await (
                     from d in _dbContext.MstAccounts
                     select d
                 ).FirstOrDefaultAsync();
@@ -303,7 +293,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     select d
                 ).FirstOrDefaultAsync();
@@ -313,11 +303,11 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Article not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
-                    from d in _dbContext.MstCodeTables
-                    where d.Category == "STOCK TRANSFER STATUS"
-                    select d
-                ).FirstOrDefaultAsync();
+                var codeTableStatus = await (
+                     from d in _dbContext.MstCodeTables
+                     where d.Category == "STOCK TRANSFER STATUS"
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (codeTableStatus == null)
                 {
@@ -325,7 +315,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String STNumber = "0000000001";
-                DBSets.TrnStockTransferDBSet lastStockTransfer = await (
+                var lastStockTransfer = await (
                     from d in _dbContext.TrnStockTransfers
                     where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
@@ -338,7 +328,7 @@ namespace liteclerk_api.APIControllers
                     STNumber = PadZeroes(lastSTNumber, 10);
                 }
 
-                DBSets.TrnStockTransferDBSet newStockTransfer = new DBSets.TrnStockTransferDBSet()
+                var newStockTransfer = new DBSets.TrnStockTransferDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
@@ -382,7 +372,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -393,7 +383,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockTransferDetail"
@@ -410,7 +400,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a stock transfer.");
                 }
 
-                DBSets.TrnStockTransferDBSet stockTransfer = await (
+                var stockTransfer = await (
                     from d in _dbContext.TrnStockTransfers
                     where d.Id == id
                     select d
@@ -426,7 +416,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a stock transfer that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var currency = await (
                     from d in _dbContext.MstCurrencies
                     where d.Id == trnStockTransferDTO.CurrencyId
                     select d
@@ -437,7 +427,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstCompanyBranchDBSet toBranch = await (
+                var toBranch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnStockTransferDTO.ToBranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -449,7 +439,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "To branch not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
+                var account = await (
                     from d in _dbContext.MstAccounts
                     where d.Id == trnStockTransferDTO.AccountId
                     select d
@@ -460,7 +450,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == trnStockTransferDTO.ArticleId
                     select d
@@ -471,7 +461,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Article not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnStockTransferDTO.CheckedByUserId
                     select d
@@ -482,7 +472,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnStockTransferDTO.ApprovedByUserId
                     select d
@@ -493,19 +483,19 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
-                    from d in _dbContext.MstCodeTables
-                    where d.CodeValue == trnStockTransferDTO.Status
-                    && d.Category == "STOCK TRANSFER STATUS"
-                    select d
-                ).FirstOrDefaultAsync();
+                var codeTableStatus = await (
+                     from d in _dbContext.MstCodeTables
+                     where d.CodeValue == trnStockTransferDTO.Status
+                     && d.Category == "STOCK TRANSFER STATUS"
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (codeTableStatus == null)
                 {
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnStockTransferDBSet saveStockTransfer = stockTransfer;
+                var saveStockTransfer = stockTransfer;
                 saveStockTransfer.CurrencyId = trnStockTransferDTO.CurrencyId;
                 saveStockTransfer.STDate = Convert.ToDateTime(trnStockTransferDTO.STDate);
                 saveStockTransfer.ManualNumber = trnStockTransferDTO.ManualNumber;
@@ -537,7 +527,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -548,7 +538,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockTransferDetail"
@@ -565,7 +555,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a stock transfer.");
                 }
 
-                DBSets.TrnStockTransferDBSet stockTransfer = await (
+                var stockTransfer = await (
                      from d in _dbContext.TrnStockTransfers
                      where d.Id == id
                      select d
@@ -581,7 +571,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a stock transfer that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var currency = await (
                     from d in _dbContext.MstCurrencies
                     where d.Id == trnStockTransferDTO.CurrencyId
                     select d
@@ -592,7 +582,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Currency not found.");
                 }
 
-                DBSets.MstCompanyBranchDBSet toBranch = await (
+                var toBranch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnStockTransferDTO.ToBranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -604,7 +594,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "To branch not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
+                var account = await (
                     from d in _dbContext.MstAccounts
                     where d.Id == trnStockTransferDTO.AccountId
                     select d
@@ -615,7 +605,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == trnStockTransferDTO.ArticleId
                     select d
@@ -626,7 +616,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Article not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnStockTransferDTO.CheckedByUserId
                     select d
@@ -637,7 +627,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnStockTransferDTO.ApprovedByUserId
                     select d
@@ -648,19 +638,19 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
-                    from d in _dbContext.MstCodeTables
-                    where d.CodeValue == trnStockTransferDTO.Status
-                    && d.Category == "STOCK TRANSFER STATUS"
-                    select d
-                ).FirstOrDefaultAsync();
+                var codeTableStatus = await (
+                     from d in _dbContext.MstCodeTables
+                     where d.CodeValue == trnStockTransferDTO.Status
+                     && d.Category == "STOCK TRANSFER STATUS"
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (codeTableStatus == null)
                 {
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnStockTransferDBSet lockStockTransfer = stockTransfer;
+                var lockStockTransfer = stockTransfer;
                 lockStockTransfer.CurrencyId = trnStockTransferDTO.CurrencyId;
                 lockStockTransfer.STDate = Convert.ToDateTime(trnStockTransferDTO.STDate);
                 lockStockTransfer.ManualNumber = trnStockTransferDTO.ManualNumber;
@@ -695,7 +685,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -706,7 +696,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockTransferDetail"
@@ -723,7 +713,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a stock transfer.");
                 }
 
-                DBSets.TrnStockTransferDBSet stockTransfer = await (
+                var stockTransfer = await (
                      from d in _dbContext.TrnStockTransfers
                      where d.Id == id
                      select d
@@ -739,7 +729,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock a stock transfer that is unlocked.");
                 }
 
-                DBSets.TrnStockTransferDBSet unlockStockTransfer = stockTransfer;
+                var unlockStockTransfer = stockTransfer;
                 unlockStockTransfer.IsLocked = false;
                 unlockStockTransfer.UpdatedByUserId = loginUserId;
                 unlockStockTransfer.UpdatedDateTime = DateTime.Now;
@@ -763,7 +753,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -774,7 +764,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockTransferDetail"
@@ -791,7 +781,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to cancel a stock transfer.");
                 }
 
-                DBSets.TrnStockTransferDBSet stockTransfer = await (
+                var stockTransfer = await (
                      from d in _dbContext.TrnStockTransfers
                      where d.Id == id
                      select d
@@ -807,7 +797,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot cancel a stock transfer that is unlocked.");
                 }
 
-                DBSets.TrnStockTransferDBSet cancelStockTransfer = stockTransfer;
+                var cancelStockTransfer = stockTransfer;
                 cancelStockTransfer.IsCancelled = true;
                 cancelStockTransfer.UpdatedByUserId = loginUserId;
                 cancelStockTransfer.UpdatedDateTime = DateTime.Now;
@@ -829,7 +819,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -840,7 +830,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityStockTransferList"
@@ -857,7 +847,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a stock transfer.");
                 }
 
-                DBSets.TrnStockTransferDBSet stockTransfer = await (
+                var stockTransfer = await (
                      from d in _dbContext.TrnStockTransfers
                      where d.Id == id
                      select d
@@ -882,6 +872,247 @@ namespace liteclerk_api.APIControllers
             {
                 return StatusCode(500, e.InnerException.Message);
             }
+        }
+
+        [HttpGet("print/{id}")]
+        public async Task<ActionResult> PrintStockTransfer(Int32 id)
+        {
+            FontFactory.RegisterDirectories();
+
+            Font fontSegoeUI09 = FontFactory.GetFont("Segoe UI light", 9);
+            Font fontSegoeUI09Bold = FontFactory.GetFont("Segoe UI light", 9, Font.BOLD);
+            Font fontSegoeUI10 = FontFactory.GetFont("Segoe UI light", 10);
+            Font fontSegoeUI10Bold = FontFactory.GetFont("Segoe UI light", 10, Font.BOLD);
+            Font fontSegoeUI11 = FontFactory.GetFont("Segoe UI light", 11);
+            Font fontSegoeUI11Bold = FontFactory.GetFont("Segoe UI light", 11, Font.BOLD);
+            Font fontSegoeUI12 = FontFactory.GetFont("Segoe UI light", 12);
+            Font fontSegoeUI12Bold = FontFactory.GetFont("Segoe UI light", 12, Font.BOLD);
+            Font fontSegoeUI13 = FontFactory.GetFont("Segoe UI light", 13);
+            Font fontSegoeUI13Bold = FontFactory.GetFont("Segoe UI light", 13, Font.BOLD);
+            Font fontSegoeUI14 = FontFactory.GetFont("Segoe UI light", 14);
+            Font fontSegoeUI14Bold = FontFactory.GetFont("Segoe UI light", 14, Font.BOLD);
+            Font fontSegoeUI15 = FontFactory.GetFont("Segoe UI light", 15);
+            Font fontSegoeUI15Bold = FontFactory.GetFont("Segoe UI light", 15, Font.BOLD);
+            Font fontSegoeUI16 = FontFactory.GetFont("Segoe UI light", 16);
+            Font fontSegoeUI16Bold = FontFactory.GetFont("Segoe UI light", 16, Font.BOLD);
+
+            Document document = new Document(PageSize.Letter, 30f, 30f, 30f, 30f);
+            MemoryStream workStream = new MemoryStream();
+
+            PdfWriter.GetInstance(document, workStream).CloseStream = false;
+            document.SetMargins(30f, 30f, 30f, 30f);
+
+            document.Open();
+
+            Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.Black, Element.ALIGN_LEFT, 1)));
+            Paragraph headerLine = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(2F, 100.0F, BaseColor.Black, Element.ALIGN_MIDDLE, 5F)));
+
+            Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+            var loginUser = await (
+                from d in _dbContext.MstUsers
+                where d.Id == loginUserId
+                select d
+            ).FirstOrDefaultAsync();
+
+            if (loginUser != null)
+            {
+                var loginUserForm = await (
+                    from d in _dbContext.MstUserForms
+                    where d.UserId == loginUserId
+                    && d.SysForm_FormId.Form == "ActivityStockTransferDetail"
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (loginUserForm != null)
+                {
+                    if (loginUserForm.CanPrint == true)
+                    {
+                        String companyName = "";
+                        String companyAddress = "";
+                        String companyTaxNumber = "";
+                        String companyImageURL = "";
+
+                        if (loginUser.CompanyId != null)
+                        {
+                            companyName = loginUser.MstCompany_CompanyId.Company;
+                            companyAddress = loginUser.MstCompany_CompanyId.Address;
+                            companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
+                            companyImageURL = loginUser.MstCompany_CompanyId.ImageURL;
+                        }
+
+                        var stockTransfer = await (
+                             from d in _dbContext.TrnStockTransfers
+                             where d.Id == id
+                             && d.IsLocked == true
+                             select d
+                         ).FirstOrDefaultAsync(); ;
+
+                        if (stockTransfer != null)
+                        {
+                            String reprinted = "";
+                            if (stockTransfer.IsPrinted == true)
+                            {
+                                reprinted = "(REPRINTED)";
+                            }
+
+                            //String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\colorideas_logo.png";
+                            String logoPath = companyImageURL;
+
+                            Image logoPhoto = Image.GetInstance(logoPath);
+                            logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;
+
+                            PdfPCell logoPhotoPdfCell = new PdfPCell(logoPhoto, true) { FixedHeight = 40f };
+                            logoPhotoPdfCell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+
+                            PdfPTable tableHeader = new PdfPTable(2);
+                            tableHeader.SetWidths(new float[] { 80f, 20f });
+                            tableHeader.WidthPercentage = 100f;
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyName, fontSegoeUI13Bold)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(logoPhotoPdfCell) { Border = PdfCell.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 3f, Rowspan = 4 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyAddress, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase(companyTaxNumber, fontSegoeUI09)) { Border = 0 });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("Printed " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt") + " " + reprinted, fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 3f });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("STOCK TRANSFER", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
+                            document.Add(tableHeader);
+
+                            String account = stockTransfer.MstAccount_AccountId.Account;
+                            String article = stockTransfer.MstArticle_ArticleId.Article;
+                            String remarks = stockTransfer.Remarks;
+
+                            String branch = stockTransfer.MstCompanyBranch_BranchId.Branch;
+                            String STNumber = "ST-" + stockTransfer.MstCompanyBranch_BranchId.ManualCode + "-" + stockTransfer.STNumber;
+                            String STDate = stockTransfer.STDate.ToString("MMMM dd, yyyy");
+                            String toBranch = stockTransfer.MstCompanyBranch_ToBranchId.Branch;
+                            String manualNumber = stockTransfer.ManualNumber;
+                            String documentReference = stockTransfer.DocumentReference;
+
+                            PdfPTable tableStockTransfer = new PdfPTable(4);
+                            tableStockTransfer.SetWidths(new float[] { 55f, 130f, 50f, 100f });
+                            tableStockTransfer.WidthPercentage = 100;
+
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("Account:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(account, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(STNumber, fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("Article:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(article, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("Branch:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(branch, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("Remarks", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f, Rowspan = 4 });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f, Rowspan = 4 });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("Date:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(STDate, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("To Branch:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(toBranch, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("Manual No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(manualNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase("Document Ref:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableStockTransfer.AddCell(new PdfPCell(new Phrase(documentReference, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                            document.Add(tableStockTransfer);
+
+                            PdfPTable tableStockTransferItems = new PdfPTable(6);
+                            tableStockTransferItems.SetWidths(new float[] { 70f, 70f, 150f, 120f, 80f, 80f });
+                            tableStockTransferItems.WidthPercentage = 100;
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase("Qty.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase("Unit", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase("Item", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase("Particulars", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase("Cost", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase("Amount", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+
+                            var stockTransferItems = await (
+                                from d in _dbContext.TrnStockTransferItems
+                                where d.STId == id
+                                select d
+                            ).ToListAsync();
+
+                            if (stockTransferItems.Any())
+                            {
+                                foreach (var stockTransferItem in stockTransferItems)
+                                {
+                                    String SKUCode = stockTransferItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     stockTransferItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "";
+                                    String barCode = stockTransferItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                     stockTransferItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode : "";
+                                    String itemDescription = stockTransferItem.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ?
+                                                             stockTransferItem.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "";
+
+                                    tableStockTransferItems.AddCell(new PdfPCell(new Phrase(stockTransferItem.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockTransferItems.AddCell(new PdfPCell(new Phrase(stockTransferItem.MstUnit_UnitId.Unit, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockTransferItems.AddCell(new PdfPCell(new Phrase(itemDescription + "\n" + SKUCode + "\n" + barCode, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockTransferItems.AddCell(new PdfPCell(new Phrase(stockTransferItem.Particulars, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockTransferItems.AddCell(new PdfPCell(new Phrase(stockTransferItem.Cost.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableStockTransferItems.AddCell(new PdfPCell(new Phrase(stockTransferItem.Amount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                }
+                            }
+
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 5 });
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase(stockTransferItems.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableStockTransferItems.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 6 });
+                            document.Add(tableStockTransferItems);
+
+                            String preparedBy = stockTransfer.MstUser_PreparedByUserId.Fullname;
+                            String checkedBy = stockTransfer.MstUser_CheckedByUserId.Fullname;
+                            String approvedBy = stockTransfer.MstUser_ApprovedByUserId.Fullname;
+
+                            PdfPTable tableUsers = new PdfPTable(4);
+                            tableUsers.SetWidths(new float[] { 100f, 100f, 100f, 100f });
+                            tableUsers.WidthPercentage = 100;
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Prepared by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Checked by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Approved by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Received by", fontSegoeUI09Bold)) { PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(" ")) { PaddingBottom = 30f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(preparedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(checkedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            document.Add(tableUsers);
+                        }
+                    }
+                    else
+                    {
+                        Paragraph paragraph = new Paragraph
+                        {
+                            "No rights to print stock transfer"
+                        };
+
+                        document.Add(paragraph);
+                    }
+                }
+                else
+                {
+                    Paragraph paragraph = new Paragraph
+                    {
+                        "No rights to print stock transfer"
+                    };
+
+                    document.Add(paragraph);
+                }
+            }
+            else
+            {
+                document.Add(line);
+            }
+
+            document.Close();
+
+            byte[] byteInfo = workStream.ToArray();
+
+            workStream.Write(byteInfo, 0, byteInfo.Length);
+            workStream.Position = 0;
+
+            return new FileStreamResult(workStream, "application/pdf");
         }
     }
 }

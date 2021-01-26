@@ -1004,48 +1004,49 @@ namespace liteclerk_api.APIControllers
 
                             document.Add(tableCollection);
 
-                            IEnumerable<DBSets.TrnCollectionLineDBSet> collectionItems = await (
+                            PdfPTable tableCollectionLines = new PdfPTable(7);
+                            tableCollectionLines.SetWidths(new float[] { 70f, 65f, 130f, 100f, 65f, 100f, 80f });
+                            tableCollectionLines.WidthPercentage = 100;
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("SI No.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("SI Date", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("Pay Type", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("Check No.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("Check Date", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("Check Bank", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("Amount", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+
+                            IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLines = await (
                                 from d in _dbContext.TrnCollectionLines
                                 where d.CIId == id
                                 select d
                             ).ToListAsync();
 
-                            if (collectionItems.Any())
+                            if (collectionLines.Any())
                             {
-                                PdfPTable tableCollectionLines = new PdfPTable(7);
-                                tableCollectionLines.SetWidths(new float[] { 70f, 65f, 130f, 100f, 65f, 100f, 80f });
-                                tableCollectionLines.WidthPercentage = 100;
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("SI No.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("SI Date", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("Pay Type", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("Check No.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("Check Date", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("Check Bank", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("Amount", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
-
                                 String checkDate = "";
 
-                                foreach (var collectionItem in collectionItems)
+                                foreach (var collectionLine in collectionLines)
                                 {
-                                    if (collectionItem.CheckDate != null)
+                                    if (collectionLine.CheckDate != null)
                                     {
-                                        checkDate = Convert.ToDateTime(collectionItem.CheckDate).ToShortDateString();
+                                        checkDate = Convert.ToDateTime(collectionLine.CheckDate).ToShortDateString();
                                     }
 
-                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionItem.TrnSalesInvoice_SIId.SINumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionItem.TrnSalesInvoice_SIId.SIDate.ToShortDateString(), fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionItem.MstPayType_PayTypeId.PayType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionItem.CheckNumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLine.TrnSalesInvoice_SIId.SINumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLine.TrnSalesInvoice_SIId.SIDate.ToShortDateString(), fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLine.MstPayType_PayTypeId.PayType, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLine.CheckNumber, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                     tableCollectionLines.AddCell(new PdfPCell(new Phrase(checkDate, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionItem.CheckBank, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionItem.Amount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLine.CheckBank, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLine.Amount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                 }
-
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 6 });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionItems.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableCollectionLines.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 6 });
-                                document.Add(tableCollectionLines);
                             }
+
+
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 6 });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLines.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
+                            tableCollectionLines.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 7 });
+                            document.Add(tableCollectionLines);
 
                             String preparedBy = collection.MstUser_PreparedByUserId.Fullname;
                             String checkedBy = collection.MstUser_CheckedByUserId.Fullname;
