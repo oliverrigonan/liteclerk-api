@@ -36,6 +36,8 @@ namespace liteclerk_api.APIControllers
                     && d.TrnPurchaseRequest_PRId.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.TrnPurchaseRequest_PRId.BranchId == branchId
                     && d.TrnPurchaseRequest_PRId.IsLocked == true
+                    && d.TrnPurchaseRequest_PRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.TrnPurchaseRequestItemDTO
                     {
                         Id = d.Id,
@@ -66,7 +68,7 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnPurchaseRequest_PRId.MstArticle_SupplierId.ManualCode
                                 },
-                                Supplier = d.TrnPurchaseRequest_PRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.TrnPurchaseRequest_PRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
+                                Supplier = d.TrnPurchaseRequest_PRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier,
                             },
                             TermId = d.TrnPurchaseRequest_PRId.TermId,
                             Term = new DTO.MstTermDTO
@@ -101,7 +103,22 @@ namespace liteclerk_api.APIControllers
                                 Fullname = d.TrnPurchaseRequest_PRId.MstUser_ApprovedByUserId.Fullname
                             },
                             Amount = d.TrnPurchaseRequest_PRId.Amount,
-                            Status = d.TrnPurchaseRequest_PRId.Status
+                            Status = d.TrnPurchaseRequest_PRId.Status,
+                            IsCancelled = d.TrnPurchaseRequest_PRId.IsCancelled,
+                            IsPrinted = d.TrnPurchaseRequest_PRId.IsPrinted,
+                            IsLocked = d.TrnPurchaseRequest_PRId.IsLocked,
+                            CreatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnPurchaseRequest_PRId.MstUser_CreatedByUserId.Username,
+                                Fullname = d.TrnPurchaseRequest_PRId.MstUser_CreatedByUserId.Fullname
+                            },
+                            CreatedDateTime = d.TrnPurchaseRequest_PRId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnPurchaseRequest_PRId.MstUser_UpdatedByUserId.Username,
+                                Fullname = d.TrnPurchaseRequest_PRId.MstUser_UpdatedByUserId.Fullname
+                            },
+                            UpdatedDateTime = d.TrnPurchaseRequest_PRId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                         },
                         ItemId = d.ItemId,
                         Item = new DTO.MstArticleItemDTO
@@ -110,9 +127,9 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,

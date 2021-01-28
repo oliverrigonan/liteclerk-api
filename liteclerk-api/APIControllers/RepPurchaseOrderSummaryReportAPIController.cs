@@ -36,6 +36,7 @@ namespace liteclerk_api.APIControllers
                     && d.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.BranchId == branchId
                     && d.IsLocked == true
+                    && d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
                     select new DTO.TrnPurchaseOrderDTO
                     {
                         Id = d.Id,
@@ -62,7 +63,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_SupplierId.ManualCode
                             },
-                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
+                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier,
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO

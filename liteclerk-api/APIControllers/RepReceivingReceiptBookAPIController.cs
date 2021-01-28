@@ -92,7 +92,6 @@ namespace liteclerk_api.APIControllers
                                PayableAccountId = d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId : 0,
                                PayableAccount = new DTO.MstAccountDTO
                                {
-                                   AccountCode = d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.AccountCode : "",
                                    ManualCode = d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.ManualCode : "",
                                    Account = d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.TrnReceivingReceipt_RRId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.Account : ""
                                }

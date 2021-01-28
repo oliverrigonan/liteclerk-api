@@ -36,6 +36,8 @@ namespace liteclerk_api.APIControllers
                     && d.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.BranchId == branchId
                     && d.IsLocked == true
+                    && d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
+                    && d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() == true
                     select new DTO.TrnDisbursementDTO
                     {
                         Id = d.Id,
@@ -62,7 +64,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_SupplierId.ManualCode
                             },
-                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
+                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier,
                         },
                         Payee = d.Payee,
                         Remarks = d.Remarks,
@@ -83,7 +85,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_BankId.ManualCode
                             },
-                            Bank = d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() ? d.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank : "",
+                            Bank = d.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank,
                         },
                         IsClear = d.IsClear,
                         PreparedByUserId = d.PreparedByUserId,

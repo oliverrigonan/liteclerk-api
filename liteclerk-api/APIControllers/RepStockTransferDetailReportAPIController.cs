@@ -36,6 +36,7 @@ namespace liteclerk_api.APIControllers
                     && d.TrnStockTransfer_STId.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.TrnStockTransfer_STId.BranchId == branchId
                     && d.TrnStockTransfer_STId.IsLocked == true
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.TrnStockTransferItemDTO
                     {
                         Id = d.Id,
@@ -46,14 +47,12 @@ namespace liteclerk_api.APIControllers
                             BranchId = d.TrnStockTransfer_STId.BranchId,
                             Branch = new DTO.MstCompanyBranchDTO
                             {
-                                BranchCode = d.TrnStockTransfer_STId.MstCompanyBranch_BranchId.BranchCode,
                                 ManualCode = d.TrnStockTransfer_STId.MstCompanyBranch_BranchId.ManualCode,
                                 Branch = d.TrnStockTransfer_STId.MstCompanyBranch_BranchId.Branch
                             },
                             CurrencyId = d.TrnStockTransfer_STId.CurrencyId,
                             Currency = new DTO.MstCurrencyDTO
                             {
-                                CurrencyCode = d.TrnStockTransfer_STId.MstCurrency_CurrencyId.CurrencyCode,
                                 ManualCode = d.TrnStockTransfer_STId.MstCurrency_CurrencyId.ManualCode,
                                 Currency = d.TrnStockTransfer_STId.MstCurrency_CurrencyId.Currency
                             },
@@ -64,21 +63,18 @@ namespace liteclerk_api.APIControllers
                             ToBranchId = d.TrnStockTransfer_STId.ToBranchId,
                             ToBranch = new DTO.MstCompanyBranchDTO
                             {
-                                BranchCode = d.TrnStockTransfer_STId.MstCompanyBranch_BranchId.BranchCode,
                                 ManualCode = d.TrnStockTransfer_STId.MstCompanyBranch_BranchId.ManualCode,
                                 Branch = d.TrnStockTransfer_STId.MstCompanyBranch_BranchId.Branch
                             },
                             AccountId = d.TrnStockTransfer_STId.AccountId,
                             Account = new DTO.MstAccountDTO
                             {
-                                AccountCode = d.TrnStockTransfer_STId.MstAccount_AccountId.AccountCode,
                                 ManualCode = d.TrnStockTransfer_STId.MstAccount_AccountId.ManualCode,
                                 Account = d.TrnStockTransfer_STId.MstAccount_AccountId.Account
                             },
                             ArticleId = d.TrnStockTransfer_STId.ArticleId,
                             Article = new DTO.MstArticleDTO
                             {
-                                ArticleCode = d.TrnStockTransfer_STId.MstArticle_ArticleId.ArticleCode,
                                 ManualCode = d.TrnStockTransfer_STId.MstArticle_ArticleId.ManualCode,
                                 Article = d.TrnStockTransfer_STId.MstArticle_ArticleId.Article
                             },
@@ -102,7 +98,22 @@ namespace liteclerk_api.APIControllers
                                 Fullname = d.TrnStockTransfer_STId.MstUser_ApprovedByUserId.Fullname
                             },
                             Amount = d.TrnStockTransfer_STId.Amount,
-                            Status = d.TrnStockTransfer_STId.Status
+                            Status = d.TrnStockTransfer_STId.Status,
+                            IsCancelled = d.TrnStockTransfer_STId.IsCancelled,
+                            IsPrinted = d.TrnStockTransfer_STId.IsPrinted,
+                            IsLocked = d.TrnStockTransfer_STId.IsLocked,
+                            CreatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnStockTransfer_STId.MstUser_CreatedByUserId.Username,
+                                Fullname = d.TrnStockTransfer_STId.MstUser_CreatedByUserId.Fullname
+                            },
+                            CreatedDateTime = d.TrnStockTransfer_STId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnStockTransfer_STId.MstUser_UpdatedByUserId.Username,
+                                Fullname = d.TrnStockTransfer_STId.MstUser_UpdatedByUserId.Fullname
+                            },
+                            UpdatedDateTime = d.TrnStockTransfer_STId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                         },
                         ItemId = d.ItemId,
                         Item = new DTO.MstArticleItemDTO
@@ -111,9 +122,9 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description
                         },
                         ItemInventoryId = d.ItemInventoryId,
                         ItemInventory = new DTO.MstArticleItemInventoryDTO

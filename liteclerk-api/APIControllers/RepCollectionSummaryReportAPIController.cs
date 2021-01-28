@@ -36,20 +36,19 @@ namespace liteclerk_api.APIControllers
                     && d.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.BranchId == branchId
                     && d.IsLocked == true
+                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
                     select new DTO.TrnCollectionDTO
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
@@ -64,7 +63,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
-                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer
                         },
                         Remarks = d.Remarks,
                         PreparedByUserId = d.PreparedByUserId,

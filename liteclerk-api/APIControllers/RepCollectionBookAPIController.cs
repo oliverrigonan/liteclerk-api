@@ -78,14 +78,12 @@ namespace liteclerk_api.APIControllers
                            BranchId = d.TrnCollection_CIId.BranchId,
                            Branch = new DTO.MstCompanyBranchDTO
                            {
-                               BranchCode = d.TrnCollection_CIId.MstCompanyBranch_BranchId.BranchCode,
                                ManualCode = d.TrnCollection_CIId.MstCompanyBranch_BranchId.ManualCode,
                                Branch = d.TrnCollection_CIId.MstCompanyBranch_BranchId.Branch
                            },
                            CurrencyId = d.TrnCollection_CIId.CurrencyId,
                            Currency = new DTO.MstCurrencyDTO
                            {
-                               CurrencyCode = d.TrnCollection_CIId.MstCurrency_CurrencyId.CurrencyCode,
                                ManualCode = d.TrnCollection_CIId.MstCurrency_CurrencyId.ManualCode,
                                Currency = d.TrnCollection_CIId.MstCurrency_CurrencyId.Currency
                            },

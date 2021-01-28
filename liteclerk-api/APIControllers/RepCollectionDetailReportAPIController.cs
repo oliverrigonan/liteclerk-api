@@ -36,6 +36,8 @@ namespace liteclerk_api.APIControllers
                     && d.TrnCollection_CIId.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.TrnCollection_CIId.BranchId == branchId
                     && d.TrnCollection_CIId.IsLocked == true
+                    && d.TrnCollection_CIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
+                    && d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() == true
                     select new DTO.TrnCollectionLineDTO
                     {
                         Id = d.Id,
@@ -46,14 +48,12 @@ namespace liteclerk_api.APIControllers
                             BranchId = d.TrnCollection_CIId.BranchId,
                             Branch = new DTO.MstCompanyBranchDTO
                             {
-                                BranchCode = d.TrnCollection_CIId.MstCompanyBranch_BranchId.BranchCode,
                                 ManualCode = d.TrnCollection_CIId.MstCompanyBranch_BranchId.ManualCode,
                                 Branch = d.TrnCollection_CIId.MstCompanyBranch_BranchId.Branch
                             },
                             CurrencyId = d.TrnCollection_CIId.CurrencyId,
                             Currency = new DTO.MstCurrencyDTO
                             {
-                                CurrencyCode = d.TrnCollection_CIId.MstCurrency_CurrencyId.CurrencyCode,
                                 ManualCode = d.TrnCollection_CIId.MstCurrency_CurrencyId.ManualCode,
                                 Currency = d.TrnCollection_CIId.MstCurrency_CurrencyId.Currency
                             },
@@ -68,7 +68,7 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnCollection_CIId.MstArticle_CustomerId.ManualCode
                                 },
-                                Customer = d.TrnCollection_CIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.TrnCollection_CIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                                Customer = d.TrnCollection_CIId.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer
                             },
                             Remarks = d.TrnCollection_CIId.Remarks,
                             PreparedByUserId = d.TrnCollection_CIId.PreparedByUserId,
@@ -90,26 +90,38 @@ namespace liteclerk_api.APIControllers
                                 Fullname = d.TrnCollection_CIId.MstUser_ApprovedByUserId.Fullname
                             },
                             Amount = d.TrnCollection_CIId.Amount,
-                            Status = d.TrnCollection_CIId.Status
+                            Status = d.TrnCollection_CIId.Status,
+                            IsCancelled = d.TrnCollection_CIId.IsCancelled,
+                            IsPrinted = d.TrnCollection_CIId.IsPrinted,
+                            IsLocked = d.TrnCollection_CIId.IsLocked,
+                            CreatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnCollection_CIId.MstUser_CreatedByUserId.Username,
+                                Fullname = d.TrnCollection_CIId.MstUser_CreatedByUserId.Fullname
+                            },
+                            CreatedDateTime = d.TrnCollection_CIId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnCollection_CIId.MstUser_UpdatedByUserId.Username,
+                                Fullname = d.TrnCollection_CIId.MstUser_UpdatedByUserId.Fullname
+                            },
+                            UpdatedDateTime = d.TrnCollection_CIId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         AccountId = d.AccountId,
                         Account = new DTO.MstAccountDTO
                         {
-                            AccountCode = d.MstAccount_AccountId.AccountCode,
                             ManualCode = d.MstAccount_AccountId.ManualCode,
                             Account = d.MstAccount_AccountId.Account
                         },
                         ArticleId = d.ArticleId,
                         Article = new DTO.MstArticleDTO
                         {
-                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
                             ManualCode = d.MstArticle_ArticleId.ManualCode,
                             Article = d.MstArticle_ArticleId.Article
                         },
@@ -126,7 +138,6 @@ namespace liteclerk_api.APIControllers
                         PayTypeId = d.PayTypeId,
                         PayType = new DTO.MstPayTypeDTO
                         {
-                            PayTypeCode = d.MstPayType_PayTypeId.PayTypeCode,
                             ManualCode = d.MstPayType_PayTypeId.ManualCode,
                             PayType = d.MstPayType_PayTypeId.PayType
                         },
@@ -140,13 +151,12 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_BankId.ManualCode
                             },
-                            Bank = d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() ? d.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank : "",
+                            Bank = d.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank
                         },
                         IsClear = d.IsClear,
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
                         {
-                            TaxCode = d.MstTax_WTAXId.TaxCode,
                             ManualCode = d.MstTax_WTAXId.ManualCode,
                             TaxDescription = d.MstTax_WTAXId.TaxDescription
                         },

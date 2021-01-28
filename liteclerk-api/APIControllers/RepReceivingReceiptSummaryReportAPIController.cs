@@ -36,6 +36,7 @@ namespace liteclerk_api.APIControllers
                     && d.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.BranchId == branchId
                     && d.IsLocked == true
+                    && d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
                     select new DTO.TrnReceivingReceiptDTO
                     {
                         Id = d.Id,
@@ -62,14 +63,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_SupplierId.ManualCode
                             },
-                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
-                            PayableAccountId = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId : 0,
-                            PayableAccount = new DTO.MstAccountDTO
-                            {
-                                AccountCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.AccountCode : "",
-                                ManualCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.ManualCode : "",
-                                Account = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.Account : ""
-                            }
+                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO

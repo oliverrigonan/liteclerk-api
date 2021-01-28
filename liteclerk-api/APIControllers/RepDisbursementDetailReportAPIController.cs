@@ -36,6 +36,8 @@ namespace liteclerk_api.APIControllers
                     && d.TrnDisbursement_CVId.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.TrnDisbursement_CVId.BranchId == branchId
                     && d.TrnDisbursement_CVId.IsLocked == true
+                    && d.TrnDisbursement_CVId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
+                    && d.TrnDisbursement_CVId.MstArticle_BankId.MstArticleBanks_ArticleId.Any() == true
                     select new DTO.TrnDisbursementLineDTO
                     {
                         Id = d.Id,
@@ -66,7 +68,7 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnDisbursement_CVId.MstArticle_SupplierId.ManualCode
                                 },
-                                Supplier = d.TrnDisbursement_CVId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.TrnDisbursement_CVId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
+                                Supplier = d.TrnDisbursement_CVId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier,
                             },
                             Payee = d.TrnDisbursement_CVId.Payee,
                             Remarks = d.TrnDisbursement_CVId.Remarks,
@@ -87,7 +89,7 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnDisbursement_CVId.MstArticle_BankId.ManualCode
                                 },
-                                Bank = d.TrnDisbursement_CVId.MstArticle_BankId.MstArticleBanks_ArticleId.Any() ? d.TrnDisbursement_CVId.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank : "",
+                                Bank = d.TrnDisbursement_CVId.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank,
                             },
                             IsClear = d.TrnDisbursement_CVId.IsClear,
                             PreparedByUserId = d.TrnDisbursement_CVId.PreparedByUserId,
@@ -109,7 +111,22 @@ namespace liteclerk_api.APIControllers
                                 Fullname = d.TrnDisbursement_CVId.MstUser_ApprovedByUserId.Fullname
                             },
                             Amount = d.TrnDisbursement_CVId.Amount,
-                            Status = d.TrnDisbursement_CVId.Status
+                            Status = d.TrnDisbursement_CVId.Status,
+                            IsCancelled = d.TrnDisbursement_CVId.IsCancelled,
+                            IsPrinted = d.TrnDisbursement_CVId.IsPrinted,
+                            IsLocked = d.TrnDisbursement_CVId.IsLocked,
+                            CreatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnDisbursement_CVId.MstUser_CreatedByUserId.Username,
+                                Fullname = d.TrnDisbursement_CVId.MstUser_CreatedByUserId.Fullname
+                            },
+                            CreatedDateTime = d.TrnDisbursement_CVId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnDisbursement_CVId.MstUser_UpdatedByUserId.Username,
+                                Fullname = d.TrnDisbursement_CVId.MstUser_UpdatedByUserId.Fullname
+                            },
+                            UpdatedDateTime = d.TrnDisbursement_CVId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                         },
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO

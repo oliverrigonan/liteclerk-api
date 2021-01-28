@@ -36,6 +36,7 @@ namespace liteclerk_api.APIControllers
                     && d.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.BranchId == branchId
                     && d.IsLocked == true
+                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
                     select new DTO.TrnSalesInvoiceDTO
                     {
                         Id = d.Id,
@@ -62,7 +63,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
-                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer,
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO

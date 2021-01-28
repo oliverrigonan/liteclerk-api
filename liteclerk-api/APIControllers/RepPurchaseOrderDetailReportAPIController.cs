@@ -36,6 +36,8 @@ namespace liteclerk_api.APIControllers
                     && d.TrnPurchaseOrder_POId.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.TrnPurchaseOrder_POId.BranchId == branchId
                     && d.TrnPurchaseOrder_POId.IsLocked == true
+                    && d.TrnPurchaseOrder_POId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.TrnPurchaseOrderItemDTO
                     {
                         Id = d.Id,
@@ -66,7 +68,7 @@ namespace liteclerk_api.APIControllers
                                 {
                                     ManualCode = d.TrnPurchaseOrder_POId.MstArticle_SupplierId.ManualCode
                                 },
-                                Supplier = d.TrnPurchaseOrder_POId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.TrnPurchaseOrder_POId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
+                                Supplier = d.TrnPurchaseOrder_POId.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier,
                             },
                             TermId = d.TrnPurchaseOrder_POId.TermId,
                             Term = new DTO.MstTermDTO
@@ -108,6 +110,21 @@ namespace liteclerk_api.APIControllers
                             },
                             Amount = d.TrnPurchaseOrder_POId.Amount,
                             Status = d.TrnPurchaseOrder_POId.Status,
+                            IsCancelled = d.TrnPurchaseOrder_POId.IsCancelled,
+                            IsPrinted = d.TrnPurchaseOrder_POId.IsPrinted,
+                            IsLocked = d.TrnPurchaseOrder_POId.IsLocked,
+                            CreatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnPurchaseOrder_POId.MstUser_CreatedByUserId.Username,
+                                Fullname = d.TrnPurchaseOrder_POId.MstUser_CreatedByUserId.Fullname
+                            },
+                            CreatedDateTime = d.TrnPurchaseOrder_POId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnPurchaseOrder_POId.MstUser_UpdatedByUserId.Username,
+                                Fullname = d.TrnPurchaseOrder_POId.MstUser_UpdatedByUserId.Fullname
+                            },
+                            UpdatedDateTime = d.TrnPurchaseOrder_POId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                         },
                         ItemId = d.ItemId,
                         Item = new DTO.MstArticleItemDTO
@@ -116,33 +133,9 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
-                            RRVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().RRVATId : 0,
-                            RRVAT = new DTO.MstTaxDTO
-                            {
-                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxCode : "",
-                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.ManualCode : "",
-                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxDescription : "",
-                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxRate : 0
-                            },
-                            SIVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
-                            SIVAT = new DTO.MstTaxDTO
-                            {
-                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode : "",
-                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
-                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : "",
-                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate : 0
-                            },
-                            WTAXId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId : 0,
-                            WTAX = new DTO.MstTaxDTO
-                            {
-                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode : "",
-                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode : "",
-                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription : "",
-                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate : 0
-                            }
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,

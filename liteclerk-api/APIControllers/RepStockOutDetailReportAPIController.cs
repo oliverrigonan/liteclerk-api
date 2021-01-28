@@ -36,6 +36,7 @@ namespace liteclerk_api.APIControllers
                     && d.TrnStockOut_OTId.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.TrnStockOut_OTId.BranchId == branchId
                     && d.TrnStockOut_OTId.IsLocked == true
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.TrnStockOutItemDTO
                     {
                         Id = d.Id,
@@ -91,7 +92,22 @@ namespace liteclerk_api.APIControllers
                                 Fullname = d.TrnStockOut_OTId.MstUser_ApprovedByUserId.Fullname
                             },
                             Amount = d.TrnStockOut_OTId.Amount,
-                            Status = d.TrnStockOut_OTId.Status
+                            Status = d.TrnStockOut_OTId.Status,
+                            IsCancelled = d.TrnStockOut_OTId.IsCancelled,
+                            IsPrinted = d.TrnStockOut_OTId.IsPrinted,
+                            IsLocked = d.TrnStockOut_OTId.IsLocked,
+                            CreatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnStockOut_OTId.MstUser_CreatedByUserId.Username,
+                                Fullname = d.TrnStockOut_OTId.MstUser_CreatedByUserId.Fullname
+                            },
+                            CreatedDateTime = d.TrnStockOut_OTId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnStockOut_OTId.MstUser_UpdatedByUserId.Username,
+                                Fullname = d.TrnStockOut_OTId.MstUser_UpdatedByUserId.Fullname
+                            },
+                            UpdatedDateTime = d.TrnStockOut_OTId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                         },
                         ItemId = d.ItemId,
                         Item = new DTO.MstArticleItemDTO
@@ -100,9 +116,9 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description
                         },
                         ItemInventoryId = d.ItemInventoryId,
                         ItemInventory = new DTO.MstArticleItemInventoryDTO
@@ -137,6 +153,5 @@ namespace liteclerk_api.APIControllers
                 return StatusCode(500, e.InnerException.Message);
             }
         }
-
     }
 }

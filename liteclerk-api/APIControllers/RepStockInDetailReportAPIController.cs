@@ -36,6 +36,7 @@ namespace liteclerk_api.APIControllers
                     && d.TrnStockIn_INId.MstCompanyBranch_BranchId.CompanyId == companyId
                     && d.TrnStockIn_INId.BranchId == branchId
                     && d.TrnStockIn_INId.IsLocked == true
+                    && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                     select new DTO.TrnStockInItemDTO
                     {
                         Id = d.Id,
@@ -91,7 +92,22 @@ namespace liteclerk_api.APIControllers
                                 Fullname = d.TrnStockIn_INId.MstUser_ApprovedByUserId.Fullname
                             },
                             Amount = d.TrnStockIn_INId.Amount,
-                            Status = d.TrnStockIn_INId.Status
+                            Status = d.TrnStockIn_INId.Status,
+                            IsCancelled = d.TrnStockIn_INId.IsCancelled,
+                            IsPrinted = d.TrnStockIn_INId.IsPrinted,
+                            IsLocked = d.TrnStockIn_INId.IsLocked,
+                            CreatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnStockIn_INId.MstUser_CreatedByUserId.Username,
+                                Fullname = d.TrnStockIn_INId.MstUser_CreatedByUserId.Fullname
+                            },
+                            CreatedDateTime = d.TrnStockIn_INId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                            UpdatedByUser = new DTO.MstUserDTO
+                            {
+                                Username = d.TrnStockIn_INId.MstUser_UpdatedByUserId.Username,
+                                Fullname = d.TrnStockIn_INId.MstUser_UpdatedByUserId.Fullname
+                            },
+                            UpdatedDateTime = d.TrnStockIn_INId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
                         },
                         ItemId = d.ItemId,
                         JOId = d.TrnJobOrder_JOId.Id,
@@ -107,9 +123,9 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_ItemId.ManualCode
                             },
-                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode,
+                            BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().BarCode,
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
