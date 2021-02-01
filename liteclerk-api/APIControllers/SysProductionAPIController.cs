@@ -164,6 +164,62 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/byJobOrder/{JOId}")]
+        public async Task<ActionResult> GetProductionListFilterByJobOrder(Int32 JOId)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                var loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                var jobOrders = await (
+                    from d in _dbContext.SysProductions
+                    where d.TrnJobOrderDepartment_JODepartmentId.JOId == JOId
+                    orderby d.Id descending
+                    select new DTO.SysProductionDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        PNNumber = d.PNNumber,
+                        PNDate = d.PNDate.ToShortDateString(),
+                        Status = d.Status,
+                        Particulars = d.Particulars,
+                        ProductionTimeStamp = d.ProductionTimeStamp.ToString(),
+                        UserId = d.UserId,
+                        User = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UserId.Username,
+                            Fullname = d.MstUser_UserId.Fullname
+                        },
+                        JODepartmentId = d.JODepartmentId,
+                        JODepartment = new DTO.TrnJobOrderDepartmentDTO
+                        {
+                            JobDepartment = new DTO.MstJobDepartmentDTO
+                            {
+                                JobDepartment = d.TrnJobOrderDepartment_JODepartmentId.MstJobDepartment_JobDepartmentId.JobDepartment
+                            }
+                        }
+                    }
+                ).OrderByDescending(d => d.Id).ToListAsync();
+
+                return StatusCode(200, jobOrders);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpPut("update/status/{id}")]
         public async Task<ActionResult> UpdateJobOrderDepartmentStatus(Int32 id, DTO.TrnJobOrderDepartmentDTO trnJobOrderDepartmentDTO)
         {
