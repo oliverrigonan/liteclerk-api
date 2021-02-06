@@ -28,7 +28,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstDiscountDTO> discounts = await (
+                var discounts = await (
                     from d in _dbContext.MstDiscounts
                     select new DTO.MstDiscountDTO
                     {

@@ -8,7 +8,9 @@ namespace liteclerk_api.DBSets
     public class MstArticleTypeDBSet
     {
         public Int32 Id { get; set; }
+
         public String ArticleType { get; set; }
+
         public virtual ICollection<MstArticleDBSet> MstArticles_ArticleTypeId { get; set; }
         public virtual ICollection<MstAccountArticleTypeDBSet> MstAccountArticleTypes_ArticleTypeId { get; set; }
     }

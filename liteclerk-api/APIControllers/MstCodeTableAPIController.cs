@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                List<String> categories = new List<String>()
+                var categories = new List<String>()
                 {
                     "ITEM KITTING",
                     "PRODUCTION ITEM INFORMATION",
@@ -70,7 +70,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstCodeTableDTO> units = await (
+                var units = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == category
                     select new DTO.MstCodeTableDTO
@@ -95,7 +95,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.MstCodeTableDTO producedCodeTable = await (
+                var producedCodeTable = await (
                     from d in _dbContext.MstCodeTables
                     where d.Id == id
                     select new DTO.MstCodeTableDTO
@@ -116,13 +116,13 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult> AddCodeTable()
+        public async Task<ActionResult> AddCodeTable([FromBody] DTO.MstCodeTableDTO mstCodeTableDTO)
         {
             try
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -133,7 +133,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SystemSytemTables"
@@ -150,11 +150,11 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a code table.");
                 }
 
-                DBSets.MstCodeTableDBSet newCodeTable = new DBSets.MstCodeTableDBSet()
+                var newCodeTable = new DBSets.MstCodeTableDBSet()
                 {
-                    Code = "",
-                    CodeValue = "",
-                    Category = ""
+                    Code = mstCodeTableDTO.Code,
+                    CodeValue = mstCodeTableDTO.CodeValue,
+                    Category = mstCodeTableDTO.Category
                 };
 
                 _dbContext.MstCodeTables.Add(newCodeTable);
@@ -175,7 +175,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -186,7 +186,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SystemSytemTables"
@@ -203,7 +203,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a code table.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTable = await (
+                var codeTable = await (
                     from d in _dbContext.MstCodeTables
                     where d.Id == id
                     select d
@@ -214,7 +214,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Code table not found.");
                 }
 
-                DBSets.MstCodeTableDBSet updateCodeTable = codeTable;
+                var updateCodeTable = codeTable;
                 updateCodeTable.Code = mstCodeTableDTO.Code;
                 updateCodeTable.CodeValue = mstCodeTableDTO.CodeValue;
                 updateCodeTable.Category = mstCodeTableDTO.Category;
@@ -236,7 +236,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -247,7 +247,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "SystemSytemTables"
@@ -264,7 +264,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a code table.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTable = await (
+                var codeTable = await (
                     from d in _dbContext.MstCodeTables
                     where d.Id == id
                     select d

@@ -33,16 +33,22 @@ namespace liteclerk_api.DBSets
 
         public Int32? RRId { get; set; }
         public virtual TrnReceivingReceiptDBSet TrnReceivingReceipt_RRId { get; set; }
+
         public Int32? SIId { get; set; }
         public virtual TrnSalesInvoiceDBSet TrnSalesInvoice_SIId { get; set; }
+
         public Int32? INId { get; set; }
         public virtual TrnStockInDBSet TrnStockIn_INId { get; set; }
+
         public Int32? OTId { get; set; }
         public virtual TrnStockOutDBSet TrnStockOut_OTId { get; set; }
+
         public Int32? STId { get; set; }
         public virtual TrnStockTransferDBSet TrnStockTransfer_STId { get; set; }
+
         public Int32? SWId { get; set; }
         public virtual TrnStockWithdrawalDBSet TrnStockWithdrawal_SWId { get; set; }
+
         public Int32? ILId { get; set; }
         public virtual TrnInventoryDBSet TrnInventory_ILId { get; set; }
     }

@@ -8,6 +8,7 @@ namespace liteclerk_api.DTO
     public class MstArticleTypeDTO
     {
         public Int32 Id { get; set; }
+
         public String ArticleType { get; set; }
     }
 }

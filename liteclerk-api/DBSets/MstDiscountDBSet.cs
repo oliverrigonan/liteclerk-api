@@ -8,17 +8,24 @@ namespace liteclerk_api.DBSets
     public class MstDiscountDBSet
     {
         public Int32 Id { get; set; }
+
         public String DiscountCode { get; set; }
         public String ManualCode { get; set; }
         public String Discount { get; set; }
         public Decimal DiscountRate { get; set; }
+
+        public Int32 AccountId { get; set; }
+        public virtual MstAccountDBSet MstAccount_AccountId { get; set; }
+
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }
+
         public Int32 UpdatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_UpdatedByUserId { get; set; }
         public DateTime UpdatedDateTime { get; set; }
-        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_DiscountId { get; set; }
+
         public virtual ICollection<TrnSalesOrderItemDBSet> TrnSalesOrderItems_DiscountId { get; set; }
+        public virtual ICollection<TrnSalesInvoiceItemDBSet> TrnSalesInvoiceItems_DiscountId { get; set; }
     }
 }

@@ -64,6 +64,5 @@ namespace liteclerk_api.DBSets
 
         public virtual ICollection<SysInventoryDBSet> SysInventories_RRId { get; set; }
         public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_RRId { get; set; }
-
     }
 }
