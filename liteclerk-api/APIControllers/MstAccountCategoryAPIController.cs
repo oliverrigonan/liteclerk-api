@@ -15,28 +15,28 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MstAccountCashFlowAPIController : ControllerBase
+    public class MstAccountCategoryAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
 
-        public MstAccountCashFlowAPIController(DBContext.LiteclerkDBContext dbContext)
+        public MstAccountCategoryAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult> GetAccountCashFlowList()
+        public async Task<ActionResult> GetAccountCategoryList()
         {
             try
             {
-                var accountCashFlows = await (
-                    from d in _dbContext.MstAccountCashFlows
-                    select new DTO.MstAccountCashFlowDTO
+                var accountCategories = await (
+                    from d in _dbContext.MstAccountCategories
+                    select new DTO.MstAccountCategoryDTO
                     {
                         Id = d.Id,
-                        AccountCashFlowCode = d.AccountCashFlowCode,
+                        AccountCategoryCode = d.AccountCategoryCode,
                         ManualCode = d.ManualCode,
-                        AccountCashFlow = d.AccountCashFlow,
+                        AccountCategory = d.AccountCategory,
                         CreatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstUser_CreatedByUserId.Username,
@@ -52,7 +52,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, accountCashFlows);
+                return StatusCode(200, accountCategories);
             }
             catch (Exception e)
             {

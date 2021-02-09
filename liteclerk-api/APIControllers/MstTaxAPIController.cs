@@ -52,6 +52,12 @@ namespace liteclerk_api.APIControllers
                         ManualCode = d.ManualCode,
                         TaxDescription = d.TaxDescription,
                         TaxRate = d.TaxRate,
+                        AccountId = d.AccountId,
+                        Account = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_AccountId.ManualCode,
+                            Account = d.MstAccount_AccountId.Account
+                        },
                         CreatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstUser_CreatedByUserId.Username,

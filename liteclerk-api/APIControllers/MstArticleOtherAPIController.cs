@@ -158,7 +158,7 @@ namespace liteclerk_api.APIControllers
                     Article = mstArticleOtherDTO.Other,
                     ImageURL = "",
                     Particulars = mstArticleOtherDTO.ArticleParticulars,
-                    IsLocked = false,
+                    IsLocked = true,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
                     UpdatedByUserId = loginUserId,
