@@ -15,11 +15,11 @@ namespace liteclerk_api.APIControllers
     [EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MstPayTypeAPIController : ControllerBase
+    public class MstArticleOtherAPIController : ControllerBase
     {
         private readonly DBContext.LiteclerkDBContext _dbContext;
 
-        public MstPayTypeAPIController(DBContext.LiteclerkDBContext dbContext)
+        public MstArticleOtherAPIController(DBContext.LiteclerkDBContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -39,40 +39,29 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult> GetPayTypeList()
+        public async Task<ActionResult> GetArticleOtherList()
         {
             try
             {
-                var payTypes = await (
-                    from d in _dbContext.MstPayTypes
-                    select new DTO.MstPayTypeDTO
+                var articleOthers = await (
+                    from d in _dbContext.MstArticleOthers
+                    select new DTO.MstArticleOtherDTO
                     {
                         Id = d.Id,
-                        PayTypeCode = d.PayTypeCode,
-                        ManualCode = d.ManualCode,
-                        PayType = d.PayType,
-                        AccountId = d.AccountId,
-                        Account = new DTO.MstAccountDTO
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
                         {
-                            ManualCode = d.MstAccount_AccountId.ManualCode,
-                            Account = d.MstAccount_AccountId.Account
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
-                        CreatedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_CreatedByUserId.Username,
-                            Fullname = d.MstUser_CreatedByUserId.Fullname
-                        },
-                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
-                        UpdatedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_UpdatedByUserId.Username,
-                            Fullname = d.MstUser_UpdatedByUserId.Fullname
-                        },
-                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        Other = d.Other
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, payTypes);
+                return StatusCode(200, articleOthers);
             }
             catch (Exception e)
             {
@@ -81,41 +70,30 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpGet("detail/{id}")]
-        public async Task<ActionResult> GetPayTypeDetail(Int32 id)
+        public async Task<ActionResult> GetArticleOtherDetail(Int32 id)
         {
             try
             {
-                var payType = await (
-                    from d in _dbContext.MstPayTypes
+                var articleOther = await (
+                    from d in _dbContext.MstArticleOthers
                     where d.Id == id
-                    select new DTO.MstPayTypeDTO
+                    select new DTO.MstArticleOtherDTO
                     {
                         Id = d.Id,
-                        PayTypeCode = d.PayTypeCode,
-                        ManualCode = d.ManualCode,
-                        PayType = d.PayType,
-                        AccountId = d.AccountId,
-                        Account = new DTO.MstAccountDTO
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
                         {
-                            ManualCode = d.MstAccount_AccountId.ManualCode,
-                            Account = d.MstAccount_AccountId.Account
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
                         },
-                        CreatedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_CreatedByUserId.Username,
-                            Fullname = d.MstUser_CreatedByUserId.Fullname
-                        },
-                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
-                        UpdatedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_UpdatedByUserId.Username,
-                            Fullname = d.MstUser_UpdatedByUserId.Fullname
-                        },
-                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                        Other = d.Other
                     }
                 ).FirstOrDefaultAsync();
 
-                return StatusCode(200, payType);
+                return StatusCode(200, articleOther);
             }
             catch (Exception e)
             {
@@ -124,7 +102,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult> AddPayType([FromBody] DTO.MstPayTypeDTO mstPayTypeDTO)
+        public async Task<ActionResult> AddArticleOther([FromBody] DTO.MstArticleOtherDTO mstArticleOtherDTO)
         {
             try
             {
@@ -150,51 +128,53 @@ namespace liteclerk_api.APIControllers
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to add a pay type.");
+                    return StatusCode(404, "No rights to add an other article.");
                 }
 
                 if (loginUserForm.CanAdd == false)
                 {
-                    return StatusCode(400, "No rights to add a pay type.");
+                    return StatusCode(400, "No rights to add an other article.");
                 }
 
-                var account = await (
-                    from d in _dbContext.MstAccounts
-                    where d.Id == mstPayTypeDTO.AccountId
-                    select d
-                ).FirstOrDefaultAsync();
-
-                if (account == null)
-                {
-                    return StatusCode(404, "Account not found.");
-                }
-
-                String payTypeCode = "0000000001";
-                var lastPayType = await (
-                    from d in _dbContext.MstPayTypes
+                String articleCode = "0000000001";
+                var lastArticle = await (
+                    from d in _dbContext.MstArticles
+                    where d.ArticleTypeId == 5
                     orderby d.Id descending
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (lastPayType != null)
+                if (lastArticle != null)
                 {
-                    Int32 lastPayTypeCode = Convert.ToInt32(lastPayType.PayTypeCode) + 0000000001;
-                    payTypeCode = PadZeroes(lastPayTypeCode, 10);
+                    Int32 lastArticleCode = Convert.ToInt32(lastArticle.ArticleCode) + 0000000001;
+                    articleCode = PadZeroes(lastArticleCode, 10);
                 }
 
-                var newPayType = new DBSets.MstPayTypeDBSet()
+                var newArticle = new DBSets.MstArticleDBSet()
                 {
-                    PayTypeCode = payTypeCode,
-                    ManualCode = mstPayTypeDTO.ManualCode,
-                    PayType = mstPayTypeDTO.PayType,
-                    AccountId = mstPayTypeDTO.AccountId,
+                    ArticleCode = articleCode,
+                    ManualCode = mstArticleOtherDTO.ArticleManualCode,
+                    ArticleTypeId = 5,
+                    Article = mstArticleOtherDTO.Other,
+                    ImageURL = "",
+                    Particulars = mstArticleOtherDTO.ArticleParticulars,
+                    IsLocked = false,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
                     UpdatedByUserId = loginUserId,
                     UpdatedDateTime = DateTime.Now
                 };
 
-                _dbContext.MstPayTypes.Add(newPayType);
+                _dbContext.MstArticles.Add(newArticle);
+                await _dbContext.SaveChangesAsync();
+
+                var newArticleOther = new DBSets.MstArticleOtherDBSet()
+                {
+                    ArticleId = newArticle.Id,
+                    Other = mstArticleOtherDTO.Other
+                };
+
+                _dbContext.MstArticleOthers.Add(newArticleOther);
                 await _dbContext.SaveChangesAsync();
 
                 return StatusCode(200);
@@ -206,7 +186,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult> UpdatePayType(int id, [FromBody] DTO.MstPayTypeDTO mstPayTypeDTO)
+        public async Task<ActionResult> UpdateArticleOther(int id, [FromBody] DTO.MstArticleOtherDTO mstArticleOtherDTO)
         {
             try
             {
@@ -232,42 +212,47 @@ namespace liteclerk_api.APIControllers
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to edit or update a pay type.");
+                    return StatusCode(404, "No rights to edit or update an other article.");
                 }
 
                 if (loginUserForm.CanEdit == false)
                 {
-                    return StatusCode(400, "No rights to edit or update a pay type.");
+                    return StatusCode(400, "No rights to edit or update an other article.");
                 }
 
-                var payType = await (
-                    from d in _dbContext.MstPayTypes
+                var articleOther = await (
+                    from d in _dbContext.MstArticleOthers
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (payType == null)
+                if (articleOther == null)
                 {
-                    return StatusCode(404, "Pay type not found.");
+                    return StatusCode(404, "Other article not found.");
                 }
 
-                var account = await (
-                    from d in _dbContext.MstAccounts
-                    where d.Id == mstPayTypeDTO.AccountId
+                var updateArticleOther = articleOther;
+                updateArticleOther.Other = mstArticleOtherDTO.Other;
+
+                await _dbContext.SaveChangesAsync();
+
+                var article = await (
+                    from d in _dbContext.MstArticles
+                    where d.Id == mstArticleOtherDTO.ArticleId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (account == null)
+                if (article == null)
                 {
-                    return StatusCode(404, "Account not found.");
+                    return StatusCode(404, "Article not found.");
                 }
 
-                var updatePayType = payType;
-                updatePayType.ManualCode = mstPayTypeDTO.ManualCode;
-                updatePayType.PayType = mstPayTypeDTO.PayType;
-                updatePayType.AccountId = mstPayTypeDTO.AccountId;
-                updatePayType.UpdatedByUserId = loginUserId;
-                updatePayType.UpdatedDateTime = DateTime.Now;
+                DBSets.MstArticleDBSet updateArticle = article;
+                updateArticle.ManualCode = mstArticleOtherDTO.ArticleManualCode;
+                updateArticle.Article = mstArticleOtherDTO.Other;
+                updateArticle.Particulars = mstArticleOtherDTO.ArticleParticulars;
+                updateArticle.UpdatedByUserId = loginUserId;
+                updateArticle.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
@@ -280,7 +265,7 @@ namespace liteclerk_api.APIControllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeletePayType(int id)
+        public async Task<ActionResult> DeleteArticleOther(int id)
         {
             try
             {
@@ -306,26 +291,40 @@ namespace liteclerk_api.APIControllers
 
                 if (loginUserForm == null)
                 {
-                    return StatusCode(404, "No rights to delete a pay type.");
+                    return StatusCode(404, "No rights to delete a other article.");
                 }
 
                 if (loginUserForm.CanDelete == false)
                 {
-                    return StatusCode(400, "No rights to delete a pay type.");
+                    return StatusCode(400, "No rights to delete a other article.");
                 }
 
-                var payType = await (
-                    from d in _dbContext.MstPayTypes
+                var articleOther = await (
+                    from d in _dbContext.MstArticleOthers
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (payType == null)
+                if (articleOther == null)
                 {
-                    return StatusCode(404, "Pay type not found.");
+                    return StatusCode(404, "Other article not found.");
                 }
 
-                _dbContext.MstPayTypes.Remove(payType);
+                _dbContext.MstArticleOthers.Remove(articleOther);
+                await _dbContext.SaveChangesAsync();
+
+                var article = await (
+                    from d in _dbContext.MstArticles
+                    where d.Id == articleOther.ArticleId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (article == null)
+                {
+                    return StatusCode(404, "Article not found.");
+                }
+
+                _dbContext.MstArticles.Remove(article);
                 await _dbContext.SaveChangesAsync();
 
                 return StatusCode(200);

@@ -20,7 +20,6 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstArticle_ArticleId).WithMany(f => f.MstArticleOthers_ArticleId).HasForeignKey(f => f.ArticleId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.Other).HasColumnName("Other").HasColumnType("nvarchar(255)").HasMaxLength(255).IsRequired();
-                entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
             });
         }
     }

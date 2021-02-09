@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210209034827_AddedAccountIdInMstDiscountTable")]
+    partial class AddedAccountIdInMstDiscountTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -783,6 +785,11 @@ namespace liteclerk_api.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
+                    b.Property<string>("Particulars")
+                        .IsRequired()
+                        .HasColumnName("Particulars")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
@@ -1085,7 +1092,8 @@ namespace liteclerk_api.Migrations
 
                     b.Property<int>("AccountId")
                         .HasColumnName("AccountId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasDefaultValue(13);
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnName("CreatedByUserId")

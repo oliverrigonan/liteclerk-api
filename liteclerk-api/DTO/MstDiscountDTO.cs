@@ -14,6 +14,9 @@ namespace liteclerk_api.DTO
         public String Discount { get; set; }
         public Decimal DiscountRate { get; set; }
 
+        public Int32 AccountId { get; set; }
+        public MstAccountDTO Account { get; set; }
+
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }
         public MstUserDTO UpdatedByUser { get; set; }
