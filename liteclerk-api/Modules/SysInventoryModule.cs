@@ -708,6 +708,8 @@ namespace liteclerk_api.Modules
                                     _dbContext.SysInventories.Add(newOutInventory);
                                     await _dbContext.SaveChangesAsync();
 
+                                    await UpdateArticleInventory(outArticleItemInventoryId, false, 0);
+
                                     Int32 inArticleItemInventoryId = 0;
 
                                     var inItemInventory = await (
@@ -766,6 +768,8 @@ namespace liteclerk_api.Modules
 
                                         _dbContext.SysInventories.Add(newInInventory);
                                         await _dbContext.SaveChangesAsync();
+
+                                        await UpdateArticleInventory(inArticleItemInventoryId, false, 0);
                                     }
                                 }
                             }
