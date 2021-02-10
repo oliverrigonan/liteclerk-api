@@ -48,7 +48,7 @@ namespace liteclerk_api.APIControllers
                     select new DTO.MstTermDTO
                     {
                         Id = d.Id,
-                        TermCode = d.Term,
+                        TermCode = d.TermCode,
                         ManualCode = d.ManualCode,
                         Term = d.Term,
                         NumberOfDays = d.NumberOfDays,
@@ -86,7 +86,7 @@ namespace liteclerk_api.APIControllers
                     select new DTO.MstTermDTO
                     {
                         Id = d.Id,
-                        TermCode = d.Term,
+                        TermCode = d.TermCode,
                         ManualCode = d.ManualCode,
                         Term = d.Term,
                         NumberOfDays = d.NumberOfDays,
