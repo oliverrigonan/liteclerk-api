@@ -24,6 +24,12 @@ namespace liteclerk_api.DBSets
         public Int32? IncomeAccountId { get; set; }
         public virtual MstAccountDBSet MstAccount_IncomeAccountId { get; set; }
 
+        public Int32? SalesInvoiceCheckedByUserId { get; set; }
+        public virtual MstUserDBSet MstUser_SalesInvoiceCheckedByUserId { get; set; }
+
+        public Int32? SalesInvoiceApprovedByUserId { get; set; }
+        public virtual MstUserDBSet MstUser_SalesInvoiceApprovedByUserId { get; set; }
+
         public Boolean IsLocked { get; set; }
 
         public Int32 CreatedByUserId { get; set; }

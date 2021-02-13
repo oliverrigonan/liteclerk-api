@@ -24,6 +24,12 @@ namespace liteclerk_api.DTO
         public Int32? IncomeAccountId { get; set; }
         public MstAccountDTO IncomeAccount { get; set; }
 
+        public Int32? SalesInvoiceCheckedByUserId { get; set; }
+        public MstUserDTO SalesInvoiceCheckedByUser { get; set; }
+
+        public Int32? SalesInvoiceApprovedByUserId { get; set; }
+        public MstUserDTO SalesInvoiceApprovedByUser { get; set; }
+
         public Boolean IsLocked { get; set; }
 
         public MstUserDTO CreatedByUser { get; set; }

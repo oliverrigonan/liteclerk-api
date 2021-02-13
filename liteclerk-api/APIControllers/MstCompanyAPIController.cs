@@ -126,6 +126,18 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstAccount_IncomeAccountId.ManualCode,
                             Account = d.MstAccount_IncomeAccountId.Account
                         },
+                        SalesInvoiceCheckedByUserId = d.SalesInvoiceCheckedByUserId,
+                        SalesInvoiceCheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SalesInvoiceCheckedByUserId.Username,
+                            Fullname = d.MstUser_SalesInvoiceCheckedByUserId.Fullname
+                        },
+                        SalesInvoiceApprovedByUserId = d.SalesInvoiceApprovedByUserId,
+                        SalesInvoiceApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SalesInvoiceApprovedByUserId.Username,
+                            Fullname = d.MstUser_SalesInvoiceApprovedByUserId.Fullname
+                        },
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -179,6 +191,18 @@ namespace liteclerk_api.APIControllers
                          {
                              ManualCode = d.MstAccount_IncomeAccountId.ManualCode,
                              Account = d.MstAccount_IncomeAccountId.Account
+                         },
+                         SalesInvoiceCheckedByUserId = d.SalesInvoiceCheckedByUserId,
+                         SalesInvoiceCheckedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_SalesInvoiceCheckedByUserId.Username,
+                             Fullname = d.MstUser_SalesInvoiceCheckedByUserId.Fullname
+                         },
+                         SalesInvoiceApprovedByUserId = d.SalesInvoiceApprovedByUserId,
+                         SalesInvoiceApprovedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_SalesInvoiceApprovedByUserId.Username,
+                             Fullname = d.MstUser_SalesInvoiceApprovedByUserId.Fullname
                          },
                          IsLocked = d.IsLocked,
                          CreatedByUser = new DTO.MstUserDTO
@@ -256,6 +280,8 @@ namespace liteclerk_api.APIControllers
                     CurrencyId = currency.Id,
                     CostMethod = "Last Purchase Cost",
                     IncomeAccountId = null,
+                    SalesInvoiceCheckedByUserId = null,
+                    SalesInvoiceApprovedByUserId = null,
                     IsLocked = false,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
@@ -333,6 +359,34 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
+                if (mstCompanyDTO.SalesInvoiceCheckedByUserId != null)
+                {
+                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                        from d in _dbContext.MstUsers
+                        where d.Id == mstCompanyDTO.SalesInvoiceCheckedByUserId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (salesInvoiceCheckedByUser == null)
+                    {
+                        return StatusCode(404, "Sales invoice checked by user not found.");
+                    }
+                }
+
+                if (mstCompanyDTO.SalesInvoiceApprovedByUserId != null)
+                {
+                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                        from d in _dbContext.MstUsers
+                        where d.Id == mstCompanyDTO.SalesInvoiceApprovedByUserId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (salesInvoiceCheckedByUser == null)
+                    {
+                        return StatusCode(404, "Sales invoice approved by user not found.");
+                    }
+                }
+
                 DBSets.MstCompanyDBSet saveCompany = company;
                 saveCompany.ManualCode = mstCompanyDTO.ManualCode;
                 saveCompany.Company = mstCompanyDTO.Company;
@@ -342,6 +396,8 @@ namespace liteclerk_api.APIControllers
                 saveCompany.CurrencyId = mstCompanyDTO.CurrencyId;
                 saveCompany.CostMethod = mstCompanyDTO.CostMethod;
                 saveCompany.IncomeAccountId = mstCompanyDTO.IncomeAccountId;
+                saveCompany.SalesInvoiceCheckedByUserId = mstCompanyDTO.SalesInvoiceCheckedByUserId;
+                saveCompany.SalesInvoiceApprovedByUserId = mstCompanyDTO.SalesInvoiceApprovedByUserId;
                 saveCompany.UpdatedByUserId = loginUserId;
                 saveCompany.UpdatedDateTime = DateTime.Now;
 
@@ -414,6 +470,34 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
+                if (mstCompanyDTO.SalesInvoiceCheckedByUserId != null)
+                {
+                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                        from d in _dbContext.MstUsers
+                        where d.Id == mstCompanyDTO.SalesInvoiceCheckedByUserId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (salesInvoiceCheckedByUser == null)
+                    {
+                        return StatusCode(404, "Sales invoice checked by user not found.");
+                    }
+                }
+
+                if (mstCompanyDTO.SalesInvoiceApprovedByUserId != null)
+                {
+                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                        from d in _dbContext.MstUsers
+                        where d.Id == mstCompanyDTO.SalesInvoiceApprovedByUserId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (salesInvoiceCheckedByUser == null)
+                    {
+                        return StatusCode(404, "Sales invoice approved by user not found.");
+                    }
+                }
+
                 DBSets.MstCompanyDBSet lockCompany = company;
                 lockCompany.ManualCode = mstCompanyDTO.ManualCode;
                 lockCompany.Company = mstCompanyDTO.Company;
@@ -423,6 +507,8 @@ namespace liteclerk_api.APIControllers
                 lockCompany.CurrencyId = mstCompanyDTO.CurrencyId;
                 lockCompany.CostMethod = mstCompanyDTO.CostMethod;
                 lockCompany.IncomeAccountId = mstCompanyDTO.IncomeAccountId;
+                lockCompany.SalesInvoiceCheckedByUserId = mstCompanyDTO.SalesInvoiceCheckedByUserId;
+                lockCompany.SalesInvoiceApprovedByUserId = mstCompanyDTO.SalesInvoiceApprovedByUserId;
                 lockCompany.IsLocked = true;
                 lockCompany.UpdatedByUserId = loginUserId;
                 lockCompany.UpdatedDateTime = DateTime.Now;

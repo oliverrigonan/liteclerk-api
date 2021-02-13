@@ -186,5 +186,8 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<SysProductionDBSet> SysProductions_UserId { get; set; }
 
         public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_CashierUserId { get; set; }
+
+        public virtual ICollection<MstCompanyDBSet> MstCompanies_SalesInvoiceCheckedByUserId { get; set; }
+        public virtual ICollection<MstCompanyDBSet> MstCompanies_SalesInvoiceApprovedByUserId { get; set; }
     }
 }
