@@ -85,6 +85,7 @@ namespace liteclerk_api.APIControllers
                         String companyName = "";
                         String companyAddress = "";
                         String companyTaxNumber = "";
+                        String companyImageURL = "";
                         Int32? companyIncomeAccountId = null;
 
                         if (loginUser.CompanyId != null)
@@ -92,6 +93,7 @@ namespace liteclerk_api.APIControllers
                             companyName = loginUser.MstCompany_CompanyId.Company;
                             companyAddress = loginUser.MstCompany_CompanyId.Address;
                             companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
+                            companyImageURL = loginUser.MstCompany_CompanyId.ImageURL;
                             companyIncomeAccountId = loginUser.MstCompany_CompanyId.IncomeAccountId;
                         }
 
@@ -102,8 +104,9 @@ namespace liteclerk_api.APIControllers
                             Decimal totalOverallLiabilities = 0;
                             Decimal totalOverallEquities = 0;
 
-                            String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\prime_global_logo.png";
-
+                            //String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\prime_global_logo.png";
+                            String logoPath = companyImageURL;
+                            
                             Image logoPhoto = Image.GetInstance(logoPath);
                             logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;
 

@@ -281,7 +281,7 @@ namespace liteclerk_api.Modules
                         ArticleId = receivingReceipt.SupplierId,
                         AccountId = receivingReceipt.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId,
                         DebitAmount = 0,
-                        CreditAmount = receivingReceipt.Amount,
+                        CreditAmount = receivingReceipt.Amount - receivingReceiptItems.Sum(s => s.WTAXAmount),
                         Particulars = receivingReceipt.Remarks,
                         RRId = receivingReceipt.Id,
                         SIId = null,
@@ -295,6 +295,46 @@ namespace liteclerk_api.Modules
 
                     _dbContext.SysJournalEntries.Add(accountsPayableJournal);
                     await _dbContext.SaveChangesAsync();
+
+                    var receivingReceiptItemWTAXAccounts = from d in receivingReceiptItems
+                                                          where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
+                                                          group d by new
+                                                          {
+                                                              d.MstTax_WTAXId.AccountId
+                                                          } into g
+                                                          select new
+                                                          {
+                                                              g.Key.AccountId,
+                                                              WTAXAmount = g.Sum(s => s.WTAXAmount)
+                                                          };
+
+                    if (receivingReceiptItemWTAXAccounts.ToList().Any() == true)
+                    {
+                        foreach (var receivingReceiptItemWTAXAccount in receivingReceiptItemWTAXAccounts)
+                        {
+                            var WTAXAccountJournal = new DBSets.SysJournalEntryDBSet
+                            {
+                                BranchId = receivingReceipt.BranchId,
+                                JournalEntryDate = DateTime.Today,
+                                ArticleId = receivingReceipt.SupplierId,
+                                AccountId = receivingReceiptItemWTAXAccount.AccountId,
+                                DebitAmount = 0,
+                                CreditAmount = receivingReceiptItemWTAXAccount.WTAXAmount,
+                                Particulars = receivingReceipt.Remarks,
+                                RRId = receivingReceipt.Id,
+                                SIId = null,
+                                CIId = null,
+                                CVId = null,
+                                PMId = null,
+                                RMId = null,
+                                JVId = null,
+                                ILId = null
+                            };
+
+                            _dbContext.SysJournalEntries.Add(WTAXAccountJournal);
+                            await _dbContext.SaveChangesAsync();
+                        }
+                    }
                 }
             }
             catch (Exception e)

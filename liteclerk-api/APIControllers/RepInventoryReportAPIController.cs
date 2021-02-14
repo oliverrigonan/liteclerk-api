@@ -57,6 +57,7 @@ namespace liteclerk_api.APIControllers
                                        },
                                        Item = new DTO.MstArticleItemDTO
                                        {
+                                           ArticleId = d.MstArticle_ArticleId.Id,
                                            Article = new DTO.MstArticleDTO
                                            {
                                                ManualCode = d.MstArticle_ArticleId.ManualCode
@@ -105,6 +106,7 @@ namespace liteclerk_api.APIControllers
                                      },
                                      Item = new DTO.MstArticleItemDTO
                                      {
+                                         ArticleId = d.MstArticle_ArticleId.Id,
                                          Article = new DTO.MstArticleDTO
                                          {
                                              ManualCode = d.MstArticle_ArticleId.ManualCode
@@ -160,6 +162,7 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = g.Key.Item.Article.ManualCode
                             },
+                            ArticleId = g.Key.Item.ArticleId,
                             SKUCode = g.Key.Item.SKUCode,
                             BarCode = g.Key.Item.BarCode,
                             Description = g.Key.Item.Description,

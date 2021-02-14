@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.RRId == RRId
                     select new DTO.SysInventoryDTO
@@ -131,7 +131,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.INId == INId
                     select new DTO.SysInventoryDTO
@@ -233,7 +233,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.OTId == OTId
                     select new DTO.SysInventoryDTO
@@ -335,7 +335,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.STId == STId
                     select new DTO.SysInventoryDTO
@@ -437,7 +437,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.SIId == SIId
                     select new DTO.SysInventoryDTO
@@ -539,7 +539,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.SWId == SWId
                     select new DTO.SysInventoryDTO
@@ -643,13 +643,13 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DBSets.SysInventoryDBSet> getInventoryLedgerInventories = await (
+                var getInventoryLedgerInventories = await (
                     from d in _dbContext.SysInventories
                     where d.BranchId == loginUser.BranchId
                     && d.InventoryDate.Month == month
@@ -661,14 +661,27 @@ namespace liteclerk_api.APIControllers
                 {
                     foreach (var getInventoryLedgerInventory in getInventoryLedgerInventories)
                     {
-                        DBSets.SysInventoryDBSet updateInventoryILId = getInventoryLedgerInventory;
-                        updateInventoryILId.ILId = ILId;
+                        if (getInventoryLedgerInventory.ILId == null)
+                        {
+                            DBSets.SysInventoryDBSet updateInventoryILId = getInventoryLedgerInventory;
+                            updateInventoryILId.ILId = ILId;
 
-                        await _dbContext.SaveChangesAsync();
+                            await _dbContext.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            if (getInventoryLedgerInventory.ILId != ILId && getInventoryLedgerInventory.TrnInventory_ILId.IsLocked == false)
+                            {
+                                DBSets.SysInventoryDBSet updateInventoryILId = getInventoryLedgerInventory;
+                                updateInventoryILId.ILId = ILId;
+
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
                     }
                 }
 
-                IEnumerable<DTO.SysInventoryDTO> inventories = await (
+                var inventories = await (
                     from d in _dbContext.SysInventories
                     where d.InventoryDate.Month == month
                     && d.InventoryDate.Year == year

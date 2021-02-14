@@ -736,6 +736,23 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a stock in.");
                 }
 
+                var inventoryLedgerInventories = await (
+                    from d in _dbContext.SysInventories
+                    where d.ILId == id
+                    select d
+                ).ToListAsync();
+
+                if (inventoryLedgerInventories.Any())
+                {
+                    foreach(var inventoryLedgerInventory in inventoryLedgerInventories)
+                    {
+                        var updateInventoryILId = inventoryLedgerInventory;
+                        updateInventoryILId.ILId = null;
+
+                        await _dbContext.SaveChangesAsync();
+                    }
+                }
+
                 DBSets.TrnInventoryDBSet inventory = await (
                      from d in _dbContext.TrnInventories
                      where d.Id == id

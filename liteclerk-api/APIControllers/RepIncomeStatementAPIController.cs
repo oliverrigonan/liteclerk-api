@@ -85,18 +85,21 @@ namespace liteclerk_api.APIControllers
                         String companyName = "";
                         String companyAddress = "";
                         String companyTaxNumber = "";
+                        String companyImageURL = "";
 
                         if (loginUser.CompanyId != null)
                         {
                             companyName = loginUser.MstCompany_CompanyId.Company;
                             companyAddress = loginUser.MstCompany_CompanyId.Address;
                             companyTaxNumber = loginUser.MstCompany_CompanyId.TIN;
+                            companyImageURL = loginUser.MstCompany_CompanyId.ImageURL;
                         }
 
                         Decimal totalOverallIncomes = 0;
                         Decimal totalOverallExpenses = 0;
 
-                        String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\prime_global_logo.png";
+                        //String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\prime_global_logo.png";
+                        String logoPath = companyImageURL;
 
                         Image logoPhoto = Image.GetInstance(logoPath);
                         logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;
@@ -237,11 +240,11 @@ namespace liteclerk_api.APIControllers
                                         float[] widthCellsTotalCurrentIncomesTable = new float[] { 50f, 70f, 100f, 100f, 60f };
                                         totalCurrentIncomesTable.SetWidths(widthCellsTotalCurrentIncomesTable);
                                         totalCurrentIncomesTable.WidthPercentage = 100;
-                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("Sub Total " + incomeAccountCategory.AccountCategory, fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase(totalCurrentIncomes.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase("Sub Total " + incomeAccountCategory.AccountCategory, fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentIncomesTable.AddCell(new PdfPCell(new Phrase(totalCurrentIncomes.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
                                         document.Add(totalCurrentIncomesTable);
                                     }
                                 }
@@ -252,11 +255,11 @@ namespace liteclerk_api.APIControllers
                                 float[] widthCellsTotalAllIncomesTable = new float[] { 50f, 70f, 100f, 100f, 60f };
                                 totalAllIncomesTable.SetWidths(widthCellsTotalAllIncomesTable);
                                 totalAllIncomesTable.WidthPercentage = 100;
-                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("Total Income", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase(totalAllIncomes.ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase("Total Income", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllIncomesTable.AddCell(new PdfPCell(new Phrase(totalAllIncomes.ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
                                 document.Add(totalAllIncomesTable);
 
                                 totalOverallIncomes += totalAllIncomes;
@@ -386,11 +389,11 @@ namespace liteclerk_api.APIControllers
                                         float[] widthCellsTotalCurrentExpensesTable = new float[] { 50f, 70f, 100f, 100f, 60f };
                                         totalCurrentExpensesTable.SetWidths(widthCellsTotalCurrentExpensesTable);
                                         totalCurrentExpensesTable.WidthPercentage = 100;
-                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("Sub Total " + expenseAccountCategory.AccountCategory, fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase(totalCurrentExpenses.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase("Sub Total " + expenseAccountCategory.AccountCategory, fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                        totalCurrentExpensesTable.AddCell(new PdfPCell(new Phrase(totalCurrentExpenses.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
                                         document.Add(totalCurrentExpensesTable);
                                     }
                                 }
@@ -401,11 +404,11 @@ namespace liteclerk_api.APIControllers
                                 float[] widthCellsTotalAllExpensesTable = new float[] { 50f, 70f, 100f, 100f, 60f };
                                 totalAllExpensesTable.SetWidths(widthCellsTotalAllExpensesTable);
                                 totalAllExpensesTable.WidthPercentage = 100;
-                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("Total Expense", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase(totalAllExpenses.ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase("Total Expense", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                                totalAllExpensesTable.AddCell(new PdfPCell(new Phrase(totalAllExpenses.ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
                                 document.Add(totalAllExpensesTable);
 
                                 totalOverallExpenses += totalAllExpenses;
@@ -422,9 +425,9 @@ namespace liteclerk_api.APIControllers
                         float[] widthCellsNetIncomeTable = new float[] { 50f, 70f, 100f, 100f, 60f };
                         netIncomeTable.SetWidths(widthCellsNetIncomeTable);
                         netIncomeTable.WidthPercentage = 100;
-                        netIncomeTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                        netIncomeTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
-                        netIncomeTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, Rowspan = 2, PaddingTop = 3f, PaddingBottom = 5f });
+                        netIncomeTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                        netIncomeTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
+                        netIncomeTable.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 3f, PaddingBottom = 5f });
                         netIncomeTable.AddCell(new PdfPCell(new Phrase("Net Income (Loss)", fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
                         netIncomeTable.AddCell(new PdfPCell(new Phrase(NetIncome.ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 3f, PaddingBottom = 5f });
                         document.Add(netIncomeTable);
