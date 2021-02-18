@@ -183,6 +183,7 @@ namespace liteclerk_api.APIControllers
                     where d.BranchId == loginUser.BranchId
                     && d.SupplierId == supplierId
                     && d.IsLocked == true
+                    && d.BalanceAmount > 0
                     orderby d.Id descending
                     select new DTO.TrnReceivingReceiptDTO
                     {

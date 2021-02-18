@@ -79,7 +79,7 @@ namespace liteclerk_api.APIControllers
                             Unit = beginningInventories.FirstOrDefault().MstArticle_ArticleId.MstArticleItems_ArticleId.FirstOrDefault().MstUnit_UnitId.Unit
                         },
                         Cost = beginningInventories.FirstOrDefault().MstArticleItemInventory_ArticleItemInventoryId.Cost,
-                        Amount = beginningInventories.Sum(s => s.Amount)
+                        Amount = beginningInventories.FirstOrDefault().MstArticleItemInventory_ArticleItemInventoryId.Cost * beginningInventories.Sum(s => s.Quantity)
                     });
 
                     runningBalance += beginningInventories.Sum(s => s.Quantity);

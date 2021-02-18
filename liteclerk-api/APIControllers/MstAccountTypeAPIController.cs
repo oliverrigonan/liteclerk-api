@@ -159,7 +159,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 var accountCategory = await (
-                    from d in _dbContext.MstAccounts
+                    from d in _dbContext.MstAccountCategories
                     where d.Id == mstAccountTypeDTO.AccountCategoryId
                     select d
                 ).FirstOrDefaultAsync();
@@ -252,7 +252,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 var accountCategory = await (
-                    from d in _dbContext.MstAccounts
+                    from d in _dbContext.MstAccountCategories
                     where d.Id == mstAccountTypeDTO.AccountCategoryId
                     select d
                 ).FirstOrDefaultAsync();
