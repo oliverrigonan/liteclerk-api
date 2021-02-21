@@ -1629,8 +1629,148 @@ namespace liteclerk_api.APIControllers
 
                                 tableJobOrders.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 5 });
                                 tableJobOrders.AddCell(new PdfPCell(new Phrase(salesInvoiceItems.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableJobOrders.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 6 });
                                 document.Add(tableJobOrders);
+
+                                Decimal totalVATAmountWithoutDiscount = 0;
+                                Decimal totalVATAmountWithDiscount = 0;
+
+                                var VATItemsWithoutDiscount = from d in salesInvoiceItems
+                                                              where d.MstDiscount_DiscountId.Discount != "Senior Citizen Discount"
+                                                              || d.MstDiscount_DiscountId.Discount != "PWD"
+                                                              select d;
+
+                                if (VATItemsWithoutDiscount.Any())
+                                {
+                                    totalVATAmountWithoutDiscount = VATItemsWithoutDiscount.Sum(d => d.VATAmount);
+                                }
+
+                                var VATItemsWithDiscount = from d in salesInvoiceItems
+                                                           where d.MstDiscount_DiscountId.Discount == "Senior Citizen Discount"
+                                                           || d.MstDiscount_DiscountId.Discount == "PWD"
+                                                           select d;
+
+                                if (VATItemsWithDiscount.Any())
+                                {
+                                    foreach (var VATItemWithDiscount in VATItemsWithDiscount)
+                                    {
+                                        Decimal price = VATItemWithDiscount.Price;
+                                        Decimal quantity = VATItemWithDiscount.Quantity;
+
+                                        Decimal itemTaxRate = VATItemWithDiscount.MstTax_VATId.TaxRate;
+
+                                        totalVATAmountWithDiscount += ((itemTaxRate / 100) * (price * quantity)) / ((itemTaxRate / 100) + 1);
+                                    }
+                                }
+
+                                Decimal totalAmountNetofVAT = salesInvoiceItems.Sum(d => d.Amount) - (totalVATAmountWithoutDiscount + totalVATAmountWithDiscount);
+
+                                Decimal totalVATSalesAmount = 0;
+                                var VATItems = from d in salesInvoiceItems
+                                               where d.MstTax_VATId.TaxDescription == "VAT Output"
+                                               select d;
+
+                                if (VATItems.Any())
+                                {
+                                    totalVATSalesAmount = VATItems.Sum(d => d.Amount);
+                                }
+
+                                Decimal totalVATExemptSalesWithoutDiscountAmount = 0;
+                                var VATExemptItemsWithoutDiscount = from d in salesInvoiceItems
+                                                                    where d.MstTax_VATId.TaxDescription == "VAT Exempt"
+                                                                    && (d.MstDiscount_DiscountId.Discount != "Senior Citizen Discount"
+                                                                    || d.MstDiscount_DiscountId.Discount != "PWD")
+                                                                    select d;
+
+                                if (VATExemptItemsWithoutDiscount.Any())
+                                {
+                                    totalVATExemptSalesWithoutDiscountAmount = VATExemptItemsWithoutDiscount.Sum(d => d.Amount);
+                                }
+
+                                Decimal totalVATExemptSalesWithDiscountAmount = 0;
+                                var VATExemptItemsWithDiscount = from d in salesInvoiceItems
+                                                                 where d.MstTax_VATId.TaxDescription.Equals("VAT Exempt")
+                                                                 && (d.MstDiscount_DiscountId.Discount.Equals("Senior Citizen Discount")
+                                                                 || d.MstDiscount_DiscountId.Discount.Equals("PWD"))
+                                                                 select d;
+
+                                if (VATExemptItemsWithDiscount.Any())
+                                {
+                                    foreach (var VATExemptItemWithDiscount in VATExemptItemsWithDiscount)
+                                    {
+                                        Decimal price = VATExemptItemWithDiscount.Price;
+                                        Decimal quantity = VATExemptItemWithDiscount.Quantity;
+
+                                        Decimal itemTaxRate = VATExemptItemWithDiscount.MstTax_VATId.TaxRate;
+
+                                        totalVATExemptSalesWithDiscountAmount += ((itemTaxRate / 100) * (price * quantity)) / ((itemTaxRate / 100) + 1);
+                                    }
+                                }
+
+                                Decimal totalVATExemptAmount = totalVATExemptSalesWithoutDiscountAmount + totalVATExemptSalesWithDiscountAmount;
+
+                                Decimal totalVATZeroRatedAmount = 0;
+                                var VATZeroRatedItems = from d in salesInvoiceItems
+                                                        where d.MstTax_VATId.TaxDescription == "VAT Zero Rated"
+                                                        select d;
+
+                                if (VATZeroRatedItems.Any())
+                                {
+                                    totalVATZeroRatedAmount = VATZeroRatedItems.Sum(d => d.Amount);
+                                }
+
+                                Decimal totalDiscountedItems = 0;
+                                var discountedItems = from d in salesInvoiceItems
+                                                      where d.MstDiscount_DiscountId.Discount == "Senior Citizen Discount"
+                                                      || d.MstDiscount_DiscountId.Discount == "PWD"
+                                                      select d;
+
+                                if (discountedItems.Any())
+                                {
+                                    totalDiscountedItems = discountedItems.Sum(d => d.DiscountAmount * d.Quantity);
+                                }
+
+                                Decimal totalAmount = salesInvoiceItems.Sum(d => d.Amount);
+                                Decimal totalVATAmount = salesInvoiceItems.Sum(d => d.VATAmount);
+
+                                if (totalDiscountedItems > 0)
+                                {
+                                    Decimal amountDue = totalAmountNetofVAT - totalDiscountedItems;
+                                    totalAmount = amountDue;
+                                }
+
+                                PdfPTable tableVATAnalysis = new PdfPTable(5);
+                                tableVATAnalysis.SetWidths(new float[] { 100f, 50f, 50f, 70f, 50f });
+                                tableVATAnalysis.WidthPercentage = 100;
+
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 10f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("VATable Sales:", fontSegoeUI09)) { Border = 0, PaddingTop = 10f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalAmountNetofVAT.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 10f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("Total Sales (VAT Inclusive):", fontSegoeUI09)) { Border = 0, PaddingTop = 10f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalAmount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 10f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("VAT Exempt Sales:", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalVATExemptAmount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("Less VAT:", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase((totalVATAmountWithoutDiscount + totalVATAmountWithDiscount).ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("Zero Rated Sales:", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalVATZeroRatedAmount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("Amount Net of VAT:", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalAmountNetofVAT.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("VAT Amount:", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalVATAmount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("Less SC/PWD Discount:", fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalDiscountedItems.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, PaddingTop = 3f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 5f, PaddingBottom = 10f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 3, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase("TOTAL AMOUNT DUE:", fontSegoeUI09Bold)) { Border = 0, PaddingTop = 5f, PaddingBottom = 10f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+                                tableVATAnalysis.AddCell(new PdfPCell(new Phrase(totalAmount.ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = 0, PaddingTop = 5f, PaddingBottom = 10f, PaddingLeft = 5f, PaddingRight = 5f, HorizontalAlignment = 2 });
+
+                                document.Add(tableVATAnalysis);
                             }
 
                             String preparedBy = salesInvoice.MstUser_PreparedByUserId.Fullname;

@@ -131,11 +131,6 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job order not found.");
                 }
 
-                if (jobOrder.IsLocked == true)
-                {
-                    return StatusCode(400, "Cannot add job order attachments if the current job order is locked.");
-                }
-
                 DBSets.TrnJobOrderAttachmentDBSet newJobOrderAttachment = new DBSets.TrnJobOrderAttachmentDBSet()
                 {
                     JOId = trnJobOrderAttachmentDTO.JOId,
@@ -214,11 +209,6 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Job order not found.");
                 }
 
-                if (jobOrder.IsLocked == true)
-                {
-                    return StatusCode(400, "Cannot update job order attachments if the current job order is locked.");
-                }
-
                 DBSets.TrnJobOrderAttachmentDBSet updateJobOrderAttachments = jobOrderAttachment;
                 updateJobOrderAttachments.JOId = trnJobOrderAttachmentDTO.JOId;
                 updateJobOrderAttachments.AttachmentCode = trnJobOrderAttachmentDTO.AttachmentCode;
@@ -281,11 +271,6 @@ namespace liteclerk_api.APIControllers
                 if (jobOrderAttachment == null)
                 {
                     return StatusCode(404, "Job order attachment not found.");
-                }
-
-                if (jobOrderAttachment.TrnJobOrder_JOId.IsLocked == true)
-                {
-                    return StatusCode(400, "Cannot delete job order attachments if the current job order is locked.");
                 }
 
                 _dbContext.TrnJobOrderAttachments.Remove(jobOrderAttachment);
