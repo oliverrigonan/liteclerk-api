@@ -10,6 +10,7 @@ namespace liteclerk_api.DTO
         public Int32 Id { get; set; }
 
         public Int32 JVId { get; set; }
+        public TrnJournalVoucherDTO JournalVoucher { get; set; }
 
         public Int32 BranchId { get; set; }
         public MstCompanyBranchDTO Branch { get; set; }
@@ -24,5 +25,7 @@ namespace liteclerk_api.DTO
         public Decimal CreditAmount { get; set; }
 
         public String Particulars { get; set; }
+
+        public Boolean IsClear { get; set; }
     }
 }

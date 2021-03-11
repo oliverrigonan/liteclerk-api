@@ -38,6 +38,7 @@ namespace liteclerk_api.Modules
                             from d in _dbContext.SysInventories
                             where d.ILId == ILId
                             && d.Amount != 0
+                            && d.MstArticle_ArticleId.MstArticleItems_ArticleId.Any() == true
                             select d
                         ).ToListAsync();
 
@@ -68,10 +69,10 @@ namespace liteclerk_api.Modules
                                         creditAmount = inventoryAccount.Amount;
                                     }
 
-                                    var inventoryAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    var inventoryEntry = new DBSets.SysJournalEntryDBSet
                                     {
                                         BranchId = inventoryLedger.BranchId,
-                                        JournalEntryDate = DateTime.Today,
+                                        JournalEntryDate = inventoryLedger.ILDate,
                                         ArticleId = otherArticle.ArticleId,
                                         AccountId = inventoryAccount.AssetAccountId,
                                         DebitAmount = debitAmount,
@@ -87,7 +88,7 @@ namespace liteclerk_api.Modules
                                         ILId = inventoryLedger.Id
                                     };
 
-                                    _dbContext.SysJournalEntries.Add(inventoryAccountJournal);
+                                    _dbContext.SysJournalEntries.Add(inventoryEntry);
                                     await _dbContext.SaveChangesAsync();
                                 }
                             }
@@ -116,10 +117,10 @@ namespace liteclerk_api.Modules
                                         creditAmount = 0;
                                     }
 
-                                    var expenseAccountJournal = new DBSets.SysJournalEntryDBSet
+                                    var expenseEntry = new DBSets.SysJournalEntryDBSet
                                     {
                                         BranchId = inventoryLedger.BranchId,
-                                        JournalEntryDate = DateTime.Today,
+                                        JournalEntryDate = inventoryLedger.ILDate,
                                         ArticleId = otherArticle.ArticleId,
                                         AccountId = expenseAccount.AccountId,
                                         DebitAmount = debitAmount,
@@ -135,7 +136,7 @@ namespace liteclerk_api.Modules
                                         ILId = inventoryLedger.Id
                                     };
 
-                                    _dbContext.SysJournalEntries.Add(expenseAccountJournal);
+                                    _dbContext.SysJournalEntries.Add(expenseEntry);
                                     await _dbContext.SaveChangesAsync();
                                 }
                             }
@@ -179,6 +180,7 @@ namespace liteclerk_api.Modules
                     from d in _dbContext.TrnReceivingReceipts
                     where d.Id == RRId
                     && d.Amount != 0
+                    && d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -188,19 +190,21 @@ namespace liteclerk_api.Modules
                         from d in _dbContext.TrnReceivingReceiptItems
                         where d.RRId == RRId
                         && d.Amount != 0
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                         select d
                     ).ToListAsync();
 
                     if (receivingReceiptItems.Any() == true)
                     {
                         var receivingReceiptItemExpenseAccounts = from d in receivingReceiptItems
-                                                                  where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                                                                   group d by new
                                                                   {
+                                                                      d.BranchId,
                                                                       d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().ExpenseAccountId
                                                                   } into g
                                                                   select new
                                                                   {
+                                                                      g.Key.BranchId,
                                                                       g.Key.ExpenseAccountId,
                                                                       Amount = g.Sum(s => s.Amount - s.VATAmount)
                                                                   };
@@ -209,10 +213,10 @@ namespace liteclerk_api.Modules
                         {
                             foreach (var receivingReceiptItemExpenseAccount in receivingReceiptItemExpenseAccounts)
                             {
-                                var salesAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var expenseEntry = new DBSets.SysJournalEntryDBSet
                                 {
-                                    BranchId = receivingReceipt.BranchId,
-                                    JournalEntryDate = DateTime.Today,
+                                    BranchId = receivingReceiptItemExpenseAccount.BranchId,
+                                    JournalEntryDate = receivingReceipt.RRDate,
                                     ArticleId = receivingReceipt.SupplierId,
                                     AccountId = receivingReceiptItemExpenseAccount.ExpenseAccountId,
                                     DebitAmount = receivingReceiptItemExpenseAccount.Amount,
@@ -228,19 +232,20 @@ namespace liteclerk_api.Modules
                                     ILId = null
                                 };
 
-                                _dbContext.SysJournalEntries.Add(salesAccountJournal);
+                                _dbContext.SysJournalEntries.Add(expenseEntry);
                                 await _dbContext.SaveChangesAsync();
                             }
                         }
 
                         var receivingReceiptItemVATAccounts = from d in receivingReceiptItems
-                                                              where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                                                               group d by new
                                                               {
+                                                                  d.BranchId,
                                                                   d.MstTax_VATId.AccountId
                                                               } into g
                                                               select new
                                                               {
+                                                                  g.Key.BranchId,
                                                                   g.Key.AccountId,
                                                                   VATAmount = g.Sum(s => s.VATAmount)
                                                               };
@@ -249,10 +254,10 @@ namespace liteclerk_api.Modules
                         {
                             foreach (var receivingReceiptItemVATAccount in receivingReceiptItemVATAccounts)
                             {
-                                var VATAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var VATEntry = new DBSets.SysJournalEntryDBSet
                                 {
-                                    BranchId = receivingReceipt.BranchId,
-                                    JournalEntryDate = DateTime.Today,
+                                    BranchId = receivingReceiptItemVATAccount.BranchId,
+                                    JournalEntryDate = receivingReceipt.RRDate,
                                     ArticleId = receivingReceipt.SupplierId,
                                     AccountId = receivingReceiptItemVATAccount.AccountId,
                                     DebitAmount = receivingReceiptItemVATAccount.VATAmount,
@@ -268,16 +273,57 @@ namespace liteclerk_api.Modules
                                     ILId = null
                                 };
 
-                                _dbContext.SysJournalEntries.Add(VATAccountJournal);
+                                _dbContext.SysJournalEntries.Add(VATEntry);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+
+                        var receivingReceiptItemWTAXAccounts = from d in receivingReceiptItems
+                                                               group d by new
+                                                               {
+                                                                   d.BranchId,
+                                                                   d.MstTax_WTAXId.AccountId
+                                                               } into g
+                                                               select new
+                                                               {
+                                                                   g.Key.BranchId,
+                                                                   g.Key.AccountId,
+                                                                   WTAXAmount = g.Sum(s => s.WTAXAmount)
+                                                               };
+
+                        if (receivingReceiptItemWTAXAccounts.ToList().Any() == true)
+                        {
+                            foreach (var receivingReceiptItemWTAXAccount in receivingReceiptItemWTAXAccounts)
+                            {
+                                var WTAXEntry = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = receivingReceiptItemWTAXAccount.BranchId,
+                                    JournalEntryDate = receivingReceipt.RRDate,
+                                    ArticleId = receivingReceipt.SupplierId,
+                                    AccountId = receivingReceiptItemWTAXAccount.AccountId,
+                                    DebitAmount = 0,
+                                    CreditAmount = receivingReceiptItemWTAXAccount.WTAXAmount,
+                                    Particulars = receivingReceipt.Remarks,
+                                    RRId = receivingReceipt.Id,
+                                    SIId = null,
+                                    CIId = null,
+                                    CVId = null,
+                                    PMId = null,
+                                    RMId = null,
+                                    JVId = null,
+                                    ILId = null
+                                };
+
+                                _dbContext.SysJournalEntries.Add(WTAXEntry);
                                 await _dbContext.SaveChangesAsync();
                             }
                         }
                     }
 
-                    var accountsPayableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsPayableEntry = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = receivingReceipt.BranchId,
-                        JournalEntryDate = DateTime.Today,
+                        JournalEntryDate = receivingReceipt.RRDate,
                         ArticleId = receivingReceipt.SupplierId,
                         AccountId = receivingReceipt.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId,
                         DebitAmount = 0,
@@ -293,48 +339,8 @@ namespace liteclerk_api.Modules
                         ILId = null
                     };
 
-                    _dbContext.SysJournalEntries.Add(accountsPayableJournal);
+                    _dbContext.SysJournalEntries.Add(accountsPayableEntry);
                     await _dbContext.SaveChangesAsync();
-
-                    var receivingReceiptItemWTAXAccounts = from d in receivingReceiptItems
-                                                          where d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
-                                                          group d by new
-                                                          {
-                                                              d.MstTax_WTAXId.AccountId
-                                                          } into g
-                                                          select new
-                                                          {
-                                                              g.Key.AccountId,
-                                                              WTAXAmount = g.Sum(s => s.WTAXAmount)
-                                                          };
-
-                    if (receivingReceiptItemWTAXAccounts.ToList().Any() == true)
-                    {
-                        foreach (var receivingReceiptItemWTAXAccount in receivingReceiptItemWTAXAccounts)
-                        {
-                            var WTAXAccountJournal = new DBSets.SysJournalEntryDBSet
-                            {
-                                BranchId = receivingReceipt.BranchId,
-                                JournalEntryDate = DateTime.Today,
-                                ArticleId = receivingReceipt.SupplierId,
-                                AccountId = receivingReceiptItemWTAXAccount.AccountId,
-                                DebitAmount = 0,
-                                CreditAmount = receivingReceiptItemWTAXAccount.WTAXAmount,
-                                Particulars = receivingReceipt.Remarks,
-                                RRId = receivingReceipt.Id,
-                                SIId = null,
-                                CIId = null,
-                                CVId = null,
-                                PMId = null,
-                                RMId = null,
-                                JVId = null,
-                                ILId = null
-                            };
-
-                            _dbContext.SysJournalEntries.Add(WTAXAccountJournal);
-                            await _dbContext.SaveChangesAsync();
-                        }
-                    }
                 }
             }
             catch (Exception e)
@@ -373,33 +379,13 @@ namespace liteclerk_api.Modules
                     from d in _dbContext.TrnDisbursements
                     where d.Id == CVId
                     && d.Amount != 0
+                    && d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
+                    && d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() == true
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (disbursement != null)
                 {
-                    var accountsPayableJournal = new DBSets.SysJournalEntryDBSet
-                    {
-                        BranchId = disbursement.BranchId,
-                        JournalEntryDate = DateTime.Today,
-                        ArticleId = disbursement.SupplierId,
-                        AccountId = disbursement.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId,
-                        DebitAmount = disbursement.Amount,
-                        CreditAmount = 0,
-                        Particulars = disbursement.Remarks,
-                        RRId = null,
-                        SIId = null,
-                        CIId = null,
-                        CVId = disbursement.Id,
-                        PMId = null,
-                        RMId = null,
-                        JVId = null,
-                        ILId = null
-                    };
-
-                    _dbContext.SysJournalEntries.Add(accountsPayableJournal);
-                    await _dbContext.SaveChangesAsync();
-
                     var disbursementLines = await (
                         from d in _dbContext.TrnDisbursementLines
                         where d.CVId == CVId
@@ -409,31 +395,34 @@ namespace liteclerk_api.Modules
 
                     if (disbursementLines.Any() == true)
                     {
-                        var disbursementLineAccounts = from d in disbursementLines
-                                                       group d by new
-                                                       {
-                                                           d.BranchId,
-                                                           d.AccountId
-                                                       } into g
-                                                       select new
-                                                       {
-                                                           g.Key.BranchId,
-                                                           g.Key.AccountId,
-                                                           Amount = g.Sum(s => s.Amount)
-                                                       };
+                        var postiveAmountDisbursementLines = from d in disbursementLines
+                                                             where d.Amount > 0
+                                                             group d by new
+                                                             {
+                                                                 d.BranchId,
+                                                                 d.AccountId,
+                                                                 d.ArticleId
+                                                             } into g
+                                                             select new
+                                                             {
+                                                                 g.Key.BranchId,
+                                                                 g.Key.AccountId,
+                                                                 g.Key.ArticleId,
+                                                                 Amount = g.Sum(s => s.Amount)
+                                                             };
 
-                        if (disbursementLineAccounts.Any() == true)
+                        if (postiveAmountDisbursementLines.Any() == true)
                         {
-                            foreach (var disbursementLineAccount in disbursementLineAccounts)
+                            foreach (var postiveAmountDisbursementLine in postiveAmountDisbursementLines)
                             {
-                                var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var postiveAmountEntry = new DBSets.SysJournalEntryDBSet
                                 {
-                                    BranchId = disbursement.BranchId,
-                                    JournalEntryDate = DateTime.Today,
-                                    ArticleId = disbursement.SupplierId,
-                                    AccountId = disbursementLineAccount.AccountId,
-                                    DebitAmount = 0,
-                                    CreditAmount = disbursementLineAccount.Amount,
+                                    BranchId = postiveAmountDisbursementLine.BranchId,
+                                    JournalEntryDate = disbursement.CVDate,
+                                    ArticleId = postiveAmountDisbursementLine.ArticleId,
+                                    AccountId = postiveAmountDisbursementLine.AccountId,
+                                    DebitAmount = postiveAmountDisbursementLine.Amount,
+                                    CreditAmount = 0,
                                     Particulars = disbursement.Remarks,
                                     RRId = null,
                                     SIId = null,
@@ -445,11 +434,77 @@ namespace liteclerk_api.Modules
                                     ILId = null
                                 };
 
-                                _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
+                                _dbContext.SysJournalEntries.Add(postiveAmountEntry);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+
+                        var negativeAmountDisbursementLines = from d in disbursementLines
+                                                              where d.Amount < 0
+                                                              group d by new
+                                                              {
+                                                                  d.BranchId,
+                                                                  d.AccountId,
+                                                                  d.ArticleId
+                                                              } into g
+                                                              select new
+                                                              {
+                                                                  g.Key.BranchId,
+                                                                  g.Key.AccountId,
+                                                                  g.Key.ArticleId,
+                                                                  Amount = g.Sum(s => s.Amount)
+                                                              };
+
+                        if (negativeAmountDisbursementLines.Any() == true)
+                        {
+                            foreach (var negativeAmountDisbursementLine in negativeAmountDisbursementLines)
+                            {
+                                var negativeAmountEntry = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = negativeAmountDisbursementLine.BranchId,
+                                    JournalEntryDate = disbursement.CVDate,
+                                    ArticleId = negativeAmountDisbursementLine.ArticleId,
+                                    AccountId = negativeAmountDisbursementLine.AccountId,
+                                    DebitAmount = 0,
+                                    CreditAmount = negativeAmountDisbursementLine.Amount,
+                                    Particulars = disbursement.Remarks,
+                                    RRId = null,
+                                    SIId = null,
+                                    CIId = null,
+                                    CVId = disbursement.Id,
+                                    PMId = null,
+                                    RMId = null,
+                                    JVId = null,
+                                    ILId = null
+                                };
+
+                                _dbContext.SysJournalEntries.Add(negativeAmountEntry);
                                 await _dbContext.SaveChangesAsync();
                             }
                         }
                     }
+
+                    var cashInBankEntry = new DBSets.SysJournalEntryDBSet
+                    {
+                        BranchId = disbursement.BranchId,
+                        JournalEntryDate = disbursement.CVDate,
+                        ArticleId = disbursement.BankId,
+                        AccountId = disbursement.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().CashInBankAccountId,
+                        DebitAmount = 0,
+                        CreditAmount = disbursement.Amount,
+                        Particulars = disbursement.Remarks,
+                        RRId = null,
+                        SIId = null,
+                        CIId = null,
+                        CVId = disbursement.Id,
+                        PMId = null,
+                        RMId = null,
+                        JVId = null,
+                        ILId = null
+                    };
+
+                    _dbContext.SysJournalEntries.Add(cashInBankEntry);
+                    await _dbContext.SaveChangesAsync();
                 }
             }
             catch (Exception e)
@@ -488,6 +543,7 @@ namespace liteclerk_api.Modules
                     from d in _dbContext.TrnPayableMemos
                     where d.Id == PMId
                     && d.Amount != 0
+                    && d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -519,10 +575,10 @@ namespace liteclerk_api.Modules
                         {
                             foreach (var payableMemoLineAccount in payableMemoLineAccounts)
                             {
-                                var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var payableMemoLineAccountEntry = new DBSets.SysJournalEntryDBSet
                                 {
-                                    BranchId = payableMemo.BranchId,
-                                    JournalEntryDate = DateTime.Today,
+                                    BranchId = payableMemoLineAccount.BranchId,
+                                    JournalEntryDate = payableMemo.PMDate,
                                     ArticleId = payableMemo.SupplierId,
                                     AccountId = payableMemoLineAccount.AccountId,
                                     DebitAmount = payableMemoLineAccount.Amount,
@@ -538,16 +594,16 @@ namespace liteclerk_api.Modules
                                     ILId = null
                                 };
 
-                                _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
+                                _dbContext.SysJournalEntries.Add(payableMemoLineAccountEntry);
                                 await _dbContext.SaveChangesAsync();
                             }
                         }
                     }
 
-                    var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
+                    var accountsPayableEntry = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = payableMemo.BranchId,
-                        JournalEntryDate = DateTime.Today,
+                        JournalEntryDate = payableMemo.PMDate,
                         ArticleId = payableMemo.SupplierId,
                         AccountId = payableMemo.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId,
                         DebitAmount = 0,
@@ -563,7 +619,7 @@ namespace liteclerk_api.Modules
                         ILId = null
                     };
 
-                    _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
+                    _dbContext.SysJournalEntries.Add(accountsPayableEntry);
                     await _dbContext.SaveChangesAsync();
                 }
             }
@@ -603,105 +659,67 @@ namespace liteclerk_api.Modules
                     from d in _dbContext.TrnSalesInvoices
                     where d.Id == SIId
                     && d.Amount != 0
+                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
                     select d
                 ).FirstOrDefaultAsync();
 
                 if (salesInvoice != null)
                 {
-                    var customer = await (
-                        from d in _dbContext.MstArticleCustomers
-                        where d.ArticleId == salesInvoice.CustomerId
-                        && d.MstArticle_ArticleId.IsLocked == true
-                        select d
-                    ).FirstOrDefaultAsync();
-
-                    if (customer != null)
+                    var accountsReceivableEntry = new DBSets.SysJournalEntryDBSet
                     {
-                        var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
-                        {
-                            BranchId = salesInvoice.BranchId,
-                            JournalEntryDate = DateTime.Today,
-                            ArticleId = salesInvoice.CustomerId,
-                            AccountId = customer.ReceivableAccountId,
-                            DebitAmount = salesInvoice.Amount,
-                            CreditAmount = 0,
-                            Particulars = salesInvoice.Remarks,
-                            RRId = null,
-                            SIId = salesInvoice.Id,
-                            CIId = null,
-                            CVId = null,
-                            PMId = null,
-                            RMId = null,
-                            JVId = null,
-                            ILId = null
-                        };
+                        BranchId = salesInvoice.BranchId,
+                        JournalEntryDate = salesInvoice.SIDate,
+                        ArticleId = salesInvoice.CustomerId,
+                        AccountId = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
+                        DebitAmount = salesInvoice.Amount,
+                        CreditAmount = 0,
+                        Particulars = salesInvoice.Remarks,
+                        RRId = null,
+                        SIId = salesInvoice.Id,
+                        CIId = null,
+                        CVId = null,
+                        PMId = null,
+                        RMId = null,
+                        JVId = null,
+                        ILId = null
+                    };
 
-                        _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
-                        await _dbContext.SaveChangesAsync();
-                    }
+                    _dbContext.SysJournalEntries.Add(accountsReceivableEntry);
+                    await _dbContext.SaveChangesAsync();
 
                     var salesInvoiceItems = await (
                         from d in _dbContext.TrnSalesInvoiceItems
                         where d.SIId == SIId
                         && d.Amount != 0
+                        && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
                         select d
                     ).ToListAsync();
 
                     if (salesInvoiceItems.Any() == true)
                     {
-                        List<DBSets.SysJournalEntryDBSet> salesAccountJournals = new List<DBSets.SysJournalEntryDBSet>();
-                        List<DBSets.SysJournalEntryDBSet> VATAccountJournals = new List<DBSets.SysJournalEntryDBSet>();
+                        var salesInvoiceItemSalesAccounts = from d in salesInvoiceItems
+                                                            group d by new
+                                                            {
+                                                                d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SalesAccountId
+                                                            } into g
+                                                            select new
+                                                            {
+                                                                g.Key.SalesAccountId,
+                                                                Amount = g.Sum(s => s.Amount - s.VATAmount)
+                                                            };
 
-                        foreach (var salesInvoiceItem in salesInvoiceItems)
+                        if (salesInvoiceItemSalesAccounts.ToList().Any() == true)
                         {
-                            var item = await (
-                                from d in _dbContext.MstArticleItems
-                                where d.ArticleId == salesInvoiceItem.ItemId
-                                && d.MstArticle_ArticleId.IsLocked == true
-                                select d
-                            ).FirstOrDefaultAsync();
-
-                            if (item != null)
+                            foreach (var salesInvoiceItemSalesAccount in salesInvoiceItemSalesAccounts)
                             {
-                                salesAccountJournals.Add(new DBSets.SysJournalEntryDBSet
-                                {
-                                    AccountId = item.SalesAccountId,
-                                    DebitAmount = 0,
-                                    CreditAmount = salesInvoiceItem.Amount - salesInvoiceItem.VATAmount
-                                });
-
-                                VATAccountJournals.Add(new DBSets.SysJournalEntryDBSet
-                                {
-                                    AccountId = salesInvoiceItem.MstTax_VATId.AccountId,
-                                    DebitAmount = 0,
-                                    CreditAmount = salesInvoiceItem.VATAmount
-                                });
-                            }
-                        }
-
-                        var salesAccounts = from d in salesAccountJournals
-                                            group d by new
-                                            {
-                                                d.AccountId
-                                            } into g
-                                            select new
-                                            {
-                                                g.Key.AccountId,
-                                                Amount = g.Sum(s => s.CreditAmount)
-                                            };
-
-                        if (salesAccounts.ToList().Any() == true)
-                        {
-                            foreach (var salesAccount in salesAccounts)
-                            {
-                                var salesAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var salesEntry = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = salesInvoice.BranchId,
-                                    JournalEntryDate = DateTime.Today,
+                                    JournalEntryDate = salesInvoice.SIDate,
                                     ArticleId = salesInvoice.CustomerId,
-                                    AccountId = salesAccount.AccountId,
+                                    AccountId = salesInvoiceItemSalesAccount.SalesAccountId,
                                     DebitAmount = 0,
-                                    CreditAmount = salesAccount.Amount,
+                                    CreditAmount = salesInvoiceItemSalesAccount.Amount,
                                     Particulars = salesInvoice.Remarks,
                                     RRId = null,
                                     SIId = salesInvoice.Id,
@@ -713,34 +731,34 @@ namespace liteclerk_api.Modules
                                     ILId = null
                                 };
 
-                                _dbContext.SysJournalEntries.Add(salesAccountJournal);
+                                _dbContext.SysJournalEntries.Add(salesEntry);
                                 await _dbContext.SaveChangesAsync();
                             }
                         }
 
-                        var VATAccounts = from d in VATAccountJournals
-                                          group d by new
-                                          {
-                                              d.AccountId
-                                          } into g
-                                          select new
-                                          {
-                                              g.Key.AccountId,
-                                              VATAmount = g.Sum(s => s.CreditAmount)
-                                          };
+                        var salesInvoiceItemVATAccounts = from d in salesInvoiceItems
+                                                          group d by new
+                                                          {
+                                                              d.MstTax_VATId.AccountId
+                                                          } into g
+                                                          select new
+                                                          {
+                                                              g.Key.AccountId,
+                                                              VATAmount = g.Sum(s => s.VATAmount)
+                                                          };
 
-                        if (VATAccounts.ToList().Any() == true)
+                        if (salesInvoiceItemVATAccounts.ToList().Any() == true)
                         {
-                            foreach (var VATAccount in VATAccounts)
+                            foreach (var salesInvoiceItemVATAccount in salesInvoiceItemVATAccounts)
                             {
-                                var VATAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var VATEntry = new DBSets.SysJournalEntryDBSet
                                 {
                                     BranchId = salesInvoice.BranchId,
-                                    JournalEntryDate = DateTime.Today,
+                                    JournalEntryDate = salesInvoice.SIDate,
                                     ArticleId = salesInvoice.CustomerId,
-                                    AccountId = VATAccount.AccountId,
+                                    AccountId = salesInvoiceItemVATAccount.AccountId,
                                     DebitAmount = 0,
-                                    CreditAmount = VATAccount.VATAmount,
+                                    CreditAmount = salesInvoiceItemVATAccount.VATAmount,
                                     Particulars = salesInvoice.Remarks,
                                     RRId = null,
                                     SIId = salesInvoice.Id,
@@ -752,7 +770,7 @@ namespace liteclerk_api.Modules
                                     ILId = null
                                 };
 
-                                _dbContext.SysJournalEntries.Add(VATAccountJournal);
+                                _dbContext.SysJournalEntries.Add(VATEntry);
                                 await _dbContext.SaveChangesAsync();
                             }
                         }
@@ -795,6 +813,7 @@ namespace liteclerk_api.Modules
                     from d in _dbContext.TrnCollections
                     where d.Id == CIId
                     && d.Amount != 0
+                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -809,31 +828,33 @@ namespace liteclerk_api.Modules
 
                     if (collectionLines.Any() == true)
                     {
-                        var collectionLinesPayTypeAccounts = from d in collectionLines
-                                                             where d.Amount > 0
-                                                             group d by new
-                                                             {
-                                                                 d.BranchId,
-                                                                 d.MstPayType_PayTypeId.AccountId
-                                                             } into g
-                                                             select new
-                                                             {
-                                                                 g.Key.BranchId,
-                                                                 g.Key.AccountId,
-                                                                 Amount = g.Sum(s => s.Amount)
-                                                             };
+                        var postiveAmountCollectionLinesPayTypes = from d in collectionLines
+                                                                   where d.Amount > 0
+                                                                   group d by new
+                                                                   {
+                                                                       d.BranchId,
+                                                                       d.MstPayType_PayTypeId.AccountId,
+                                                                       d.ArticleId
+                                                                   } into g
+                                                                   select new
+                                                                   {
+                                                                       g.Key.BranchId,
+                                                                       g.Key.AccountId,
+                                                                       g.Key.ArticleId,
+                                                                       Amount = g.Sum(s => s.Amount)
+                                                                   };
 
-                        if (collectionLinesPayTypeAccounts.Any() == true)
+                        if (postiveAmountCollectionLinesPayTypes.Any() == true)
                         {
-                            foreach (var collectionLinesPayTypeAccount in collectionLinesPayTypeAccounts)
+                            foreach (var postiveAmountCollectionLinesPayType in postiveAmountCollectionLinesPayTypes)
                             {
-                                var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
+                                var positiveAmountPayTypeEntry = new DBSets.SysJournalEntryDBSet
                                 {
-                                    BranchId = collection.BranchId,
-                                    JournalEntryDate = DateTime.Today,
-                                    ArticleId = collection.CustomerId,
-                                    AccountId = collectionLinesPayTypeAccount.AccountId,
-                                    DebitAmount = collectionLinesPayTypeAccount.Amount,
+                                    BranchId = postiveAmountCollectionLinesPayType.BranchId,
+                                    JournalEntryDate = collection.CIDate,
+                                    ArticleId = postiveAmountCollectionLinesPayType.ArticleId,
+                                    AccountId = postiveAmountCollectionLinesPayType.AccountId,
+                                    DebitAmount = postiveAmountCollectionLinesPayType.Amount,
                                     CreditAmount = 0,
                                     Particulars = collection.Remarks,
                                     RRId = null,
@@ -846,33 +867,143 @@ namespace liteclerk_api.Modules
                                     ILId = null
                                 };
 
-                                _dbContext.SysJournalEntries.Add(payTypeAccountJournal);
+                                _dbContext.SysJournalEntries.Add(positiveAmountPayTypeEntry);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+
+                        var negativeAmountCollectionLinesPayTypes = from d in collectionLines
+                                                                    where d.Amount < 0
+                                                                    group d by new
+                                                                    {
+                                                                        d.BranchId,
+                                                                        d.MstPayType_PayTypeId.AccountId,
+                                                                        d.ArticleId
+                                                                    } into g
+                                                                    select new
+                                                                    {
+                                                                        g.Key.BranchId,
+                                                                        g.Key.AccountId,
+                                                                        g.Key.ArticleId,
+                                                                        Amount = g.Sum(s => s.Amount)
+                                                                    };
+
+                        if (negativeAmountCollectionLinesPayTypes.Any() == true)
+                        {
+                            foreach (var negativeAmountCollectionLinesPayType in negativeAmountCollectionLinesPayTypes)
+                            {
+                                var negativeAmountPayTypeEntry = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = negativeAmountCollectionLinesPayType.BranchId,
+                                    JournalEntryDate = collection.CIDate,
+                                    ArticleId = negativeAmountCollectionLinesPayType.ArticleId,
+                                    AccountId = negativeAmountCollectionLinesPayType.AccountId,
+                                    DebitAmount = 0,
+                                    CreditAmount = negativeAmountCollectionLinesPayType.Amount,
+                                    Particulars = collection.Remarks,
+                                    RRId = null,
+                                    SIId = null,
+                                    CIId = collection.Id,
+                                    CVId = null,
+                                    PMId = null,
+                                    RMId = null,
+                                    JVId = null,
+                                    ILId = null
+                                };
+
+                                _dbContext.SysJournalEntries.Add(negativeAmountPayTypeEntry);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+
+                        var postiveAmountCollectionLines = from d in collectionLines
+                                                           where d.Amount > 0
+                                                           group d by new
+                                                           {
+                                                               d.BranchId,
+                                                               d.AccountId,
+                                                               d.ArticleId
+                                                           } into g
+                                                           select new
+                                                           {
+                                                               g.Key.BranchId,
+                                                               g.Key.AccountId,
+                                                               g.Key.ArticleId,
+                                                               Amount = g.Sum(s => s.Amount)
+                                                           };
+
+                        if (postiveAmountCollectionLines.Any() == true)
+                        {
+                            foreach (var postiveAmountCollectionLine in postiveAmountCollectionLines)
+                            {
+                                var positiveAmountEntry = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = postiveAmountCollectionLine.BranchId,
+                                    JournalEntryDate = collection.CIDate,
+                                    ArticleId = postiveAmountCollectionLine.ArticleId,
+                                    AccountId = postiveAmountCollectionLine.AccountId,
+                                    DebitAmount = 0,
+                                    CreditAmount = postiveAmountCollectionLine.Amount,
+                                    Particulars = collection.Remarks,
+                                    RRId = null,
+                                    SIId = null,
+                                    CIId = collection.Id,
+                                    CVId = null,
+                                    PMId = null,
+                                    RMId = null,
+                                    JVId = null,
+                                    ILId = null
+                                };
+
+                                _dbContext.SysJournalEntries.Add(positiveAmountEntry);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+
+                        var negativeAmountCollectionLines = from d in collectionLines
+                                                            where d.Amount < 0
+                                                            group d by new
+                                                            {
+                                                                d.BranchId,
+                                                                d.AccountId,
+                                                                d.ArticleId
+                                                            } into g
+                                                            select new
+                                                            {
+                                                                g.Key.BranchId,
+                                                                g.Key.AccountId,
+                                                                g.Key.ArticleId,
+                                                                Amount = g.Sum(s => s.Amount)
+                                                            };
+
+                        if (negativeAmountCollectionLines.Any() == true)
+                        {
+                            foreach (var negativeAmountCollectionLine in negativeAmountCollectionLines)
+                            {
+                                var positiveAmountEntry = new DBSets.SysJournalEntryDBSet
+                                {
+                                    BranchId = negativeAmountCollectionLine.BranchId,
+                                    JournalEntryDate = collection.CIDate,
+                                    ArticleId = negativeAmountCollectionLine.ArticleId,
+                                    AccountId = negativeAmountCollectionLine.AccountId,
+                                    DebitAmount = negativeAmountCollectionLine.Amount,
+                                    CreditAmount = 0,
+                                    Particulars = collection.Remarks,
+                                    RRId = null,
+                                    SIId = null,
+                                    CIId = collection.Id,
+                                    CVId = null,
+                                    PMId = null,
+                                    RMId = null,
+                                    JVId = null,
+                                    ILId = null
+                                };
+
+                                _dbContext.SysJournalEntries.Add(positiveAmountEntry);
                                 await _dbContext.SaveChangesAsync();
                             }
                         }
                     }
-
-                    var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
-                    {
-                        BranchId = collection.BranchId,
-                        JournalEntryDate = DateTime.Today,
-                        ArticleId = collection.CustomerId,
-                        AccountId = collection.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
-                        DebitAmount = 0,
-                        CreditAmount = collection.Amount,
-                        Particulars = collection.Remarks,
-                        RRId = null,
-                        SIId = null,
-                        CIId = collection.Id,
-                        CVId = null,
-                        PMId = null,
-                        RMId = null,
-                        JVId = null,
-                        ILId = null
-                    };
-
-                    _dbContext.SysJournalEntries.Add(accountsReceivableJournal);
-                    await _dbContext.SaveChangesAsync();
                 }
             }
             catch (Exception e)
@@ -911,6 +1042,7 @@ namespace liteclerk_api.Modules
                     from d in _dbContext.TrnReceivableMemos
                     where d.Id == RMId
                     && d.Amount != 0
+                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
                     select d
                 ).FirstOrDefaultAsync();
 
@@ -919,7 +1051,7 @@ namespace liteclerk_api.Modules
                     var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
                     {
                         BranchId = receivableMemo.BranchId,
-                        JournalEntryDate = DateTime.Today,
+                        JournalEntryDate = receivableMemo.RMDate,
                         ArticleId = receivableMemo.CustomerId,
                         AccountId = receivableMemo.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
                         DebitAmount = receivableMemo.Amount,
@@ -966,8 +1098,8 @@ namespace liteclerk_api.Modules
                             {
                                 var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
                                 {
-                                    BranchId = receivableMemo.BranchId,
-                                    JournalEntryDate = DateTime.Today,
+                                    BranchId = receivableMemoLineAccount.BranchId,
+                                    JournalEntryDate = receivableMemo.RMDate,
                                     ArticleId = receivableMemo.CustomerId,
                                     AccountId = receivableMemoLineAccount.AccountId,
                                     DebitAmount = 0,
@@ -1058,8 +1190,8 @@ namespace liteclerk_api.Modules
                         {
                             var payTypeAccountJournal = new DBSets.SysJournalEntryDBSet
                             {
-                                BranchId = journalVoucher.BranchId,
-                                JournalEntryDate = DateTime.Today,
+                                BranchId = journalVoucherLinesAccount.BranchId,
+                                JournalEntryDate = journalVoucher.JVDate,
                                 ArticleId = journalVoucherLinesAccount.ArticleId,
                                 AccountId = journalVoucherLinesAccount.AccountId,
                                 DebitAmount = journalVoucherLinesAccount.DebitAmount,

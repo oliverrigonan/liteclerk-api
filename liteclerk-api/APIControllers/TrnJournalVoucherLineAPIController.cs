@@ -57,7 +57,8 @@ namespace liteclerk_api.APIControllers
                         },
                         DebitAmount = d.DebitAmount,
                         CreditAmount = d.CreditAmount,
-                        Particulars = d.Particulars
+                        Particulars = d.Particulars,
+                        IsClear = d.IsClear
                     }
                 ).ToListAsync();
 
@@ -101,7 +102,8 @@ namespace liteclerk_api.APIControllers
                         },
                         DebitAmount = d.DebitAmount,
                         CreditAmount = d.CreditAmount,
-                        Particulars = d.Particulars
+                        Particulars = d.Particulars,
+                        IsClear = d.IsClear
                     }
                 ).FirstOrDefaultAsync();
 
@@ -207,7 +209,8 @@ namespace liteclerk_api.APIControllers
                     ArticleId = trnJournalVoucherLineDTO.ArticleId,
                     DebitAmount = trnJournalVoucherLineDTO.DebitAmount,
                     CreditAmount = trnJournalVoucherLineDTO.CreditAmount,
-                    Particulars = trnJournalVoucherLineDTO.Particulars
+                    Particulars = trnJournalVoucherLineDTO.Particulars,
+                    IsClear = trnJournalVoucherLineDTO.IsClear
                 };
 
                 _dbContext.TrnJournalVoucherLines.Add(newJournalVoucherLines);
@@ -349,6 +352,7 @@ namespace liteclerk_api.APIControllers
                 updateJournalVoucherLines.DebitAmount = trnJournalVoucherLineDTO.DebitAmount;
                 updateJournalVoucherLines.CreditAmount = trnJournalVoucherLineDTO.CreditAmount;
                 updateJournalVoucherLines.Particulars = trnJournalVoucherLineDTO.Particulars;
+                updateJournalVoucherLines.IsClear = trnJournalVoucherLineDTO.IsClear;
 
                 await _dbContext.SaveChangesAsync();
 

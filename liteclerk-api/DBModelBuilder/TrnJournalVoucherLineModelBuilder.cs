@@ -32,6 +32,8 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.CreditAmount).HasColumnName("CreditAmount").HasColumnType("decimal(18,5)").IsRequired();
 
                 entity.Property(e => e.Particulars).HasColumnName("Particulars").HasColumnType("nvarchar(max)").IsRequired();
+
+                entity.Property(e => e.IsClear).HasColumnName("IsClear").HasColumnType("bit").IsRequired();
             });
         }
     }

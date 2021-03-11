@@ -25,5 +25,7 @@ namespace liteclerk_api.DBSets
         public Decimal CreditAmount { get; set; }
 
         public String Particulars { get; set; }
+
+        public Boolean IsClear { get; set; }
     }
 }

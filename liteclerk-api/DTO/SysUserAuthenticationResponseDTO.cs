@@ -14,6 +14,7 @@ namespace liteclerk_api.DTO
         public String FullName { get; set; }
         public Int32? CompanyId { get; set; }
         public String Company { get; set; }
+        public String CompanyImageURL { get; set; }
         public Int32? BranchId { get; set; }
         public String Branch { get; set; }
 
@@ -26,6 +27,7 @@ namespace liteclerk_api.DTO
             FullName = mstUserDBSet.Fullname;
             CompanyId = mstUserDBSet.CompanyId != null ? mstUserDBSet.CompanyId : 0;
             Company = mstUserDBSet.CompanyId != null ? mstUserDBSet.MstCompany_CompanyId.Company : "";
+            CompanyImageURL = mstUserDBSet.CompanyId != null ? mstUserDBSet.MstCompany_CompanyId.ImageURL : "";
             BranchId = mstUserDBSet.BranchId != null ? mstUserDBSet.BranchId : 0;
             Branch = mstUserDBSet.BranchId != null ? mstUserDBSet.MstCompanyBranch_BranchId.Branch : "";
         }

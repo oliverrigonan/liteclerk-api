@@ -161,7 +161,7 @@ namespace liteclerk_api.APIControllers
                                                              select new
                                                              {
                                                                  g.Key.AccountCategory,
-                                                                 Balance = g.Sum(d => d.CreditAmount - d.DebitAmount)
+                                                                 Balance = g.Sum(d => d.DebitAmount - d.CreditAmount)
                                                              };
 
                                 if (assetAccountCategories.Any())
@@ -186,7 +186,7 @@ namespace liteclerk_api.APIControllers
                                                                 select new
                                                                 {
                                                                     g.Key.AccountType,
-                                                                    Balance = g.Sum(d => d.CreditAmount - d.DebitAmount)
+                                                                    Balance = g.Sum(d => d.DebitAmount - d.CreditAmount)
                                                                 };
 
                                         if (assetAccountTypes.Any())
@@ -218,7 +218,7 @@ namespace liteclerk_api.APIControllers
                                                                         g.Key.Account,
                                                                         DebitAmount = g.Sum(d => d.DebitAmount),
                                                                         CreditAmount = g.Sum(d => d.CreditAmount),
-                                                                        Balance = g.Sum(d => d.CreditAmount - d.DebitAmount)
+                                                                        Balance = g.Sum(d => d.DebitAmount - d.CreditAmount)
                                                                     };
 
                                                 if (assetAccounts.Any())

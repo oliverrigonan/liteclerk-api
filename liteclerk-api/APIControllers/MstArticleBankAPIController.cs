@@ -277,7 +277,7 @@ namespace liteclerk_api.APIControllers
                 {
                     ArticleCode = articleCode,
                     ManualCode = articleCode,
-                    ArticleTypeId = 1,
+                    ArticleTypeId = 4,
                     Article = "",
                     ImageURL = "",
                     Particulars = "",
