@@ -327,7 +327,7 @@ namespace liteclerk_api.Modules
                         ArticleId = receivingReceipt.SupplierId,
                         AccountId = receivingReceipt.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId,
                         DebitAmount = 0,
-                        CreditAmount = receivingReceipt.Amount - receivingReceiptItems.Sum(s => s.WTAXAmount),
+                        CreditAmount = receivingReceipt.Amount,
                         Particulars = receivingReceipt.Remarks,
                         RRId = receivingReceipt.Id,
                         SIId = null,

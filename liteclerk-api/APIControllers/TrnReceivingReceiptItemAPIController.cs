@@ -357,7 +357,7 @@ namespace liteclerk_api.APIControllers
 
                 if (receivingReceiptItemsByCurrentReceivingReceipt.Any())
                 {
-                    amount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount);
+                    amount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount) - receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.WTAXAmount);
                 }
 
                 DBSets.TrnReceivingReceiptDBSet updateReceivingReceipt = receivingReceipt;
@@ -550,7 +550,7 @@ namespace liteclerk_api.APIControllers
 
                 if (receivingReceiptItemsByCurrentReceivingReceipt.Any())
                 {
-                    amount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount);
+                    amount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount) - receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.WTAXAmount);
                 }
 
                 DBSets.TrnReceivingReceiptDBSet updateReceivingReceipt = receivingReceipt;
