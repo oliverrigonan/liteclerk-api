@@ -353,10 +353,11 @@ namespace liteclerk_api.APIControllers
                             {
                                 foreach (var payType in payTypes)
                                 {
-                                    PdfPTable tablePayTypes = new PdfPTable(1);
-                                    tablePayTypes.SetWidths(new float[] { 100f });
+                                    PdfPTable tablePayTypes = new PdfPTable(2);
+                                    tablePayTypes.SetWidths(new float[] { 100f, 50f });
                                     tablePayTypes.WidthPercentage = 100;
                                     tablePayTypes.AddCell(new PdfPCell(new Phrase(payType.Key.PayType, fontSegoeUI09Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tablePayTypes.AddCell(new PdfPCell(new Phrase(payType.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { HorizontalAlignment = 2, Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                     document.Add(tablePayTypes);
 
                                     var collectionLinesPerPayType = from d in collectionLines
@@ -406,7 +407,7 @@ namespace liteclerk_api.APIControllers
                     {
                         Paragraph paragraph = new Paragraph
                         {
-                            "No rights to print sales order"
+                            "No rights to print collection detail report (Per pay type)"
                         };
 
                         document.Add(paragraph);
@@ -416,7 +417,7 @@ namespace liteclerk_api.APIControllers
                 {
                     Paragraph paragraph = new Paragraph
                     {
-                        "No rights to print sales order"
+                        "No rights to print collection detail report (Per pay type)"
                     };
 
                     document.Add(paragraph);

@@ -528,6 +528,24 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
+                var journalVoucherLines = await (
+                    from d in _dbContext.TrnJournalVoucherLines
+                    where d.JVId == id
+                    select d
+                ).ToListAsync();
+
+                if (journalVoucherLines.Any() == true)
+                {
+                    Decimal totalDebitAmount = journalVoucherLines.Sum(d => d.DebitAmount);
+                    Decimal totalCreditAmount = journalVoucherLines.Sum(d => d.CreditAmount);
+                    Decimal totalBalanceAmount = totalDebitAmount - totalCreditAmount;
+
+                    if (totalBalanceAmount != 0)
+                    {
+                        return StatusCode(400, "Journal entry is not balance.");
+                    }
+                }
+
                 var lockJournalVoucher = journalVoucher;
                 lockJournalVoucher.CurrencyId = trnJournalVoucherDTO.CurrencyId;
                 lockJournalVoucher.JVDate = Convert.ToDateTime(trnJournalVoucherDTO.JVDate);

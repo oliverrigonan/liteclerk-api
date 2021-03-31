@@ -154,7 +154,7 @@ namespace liteclerk_api.APIControllers
                                                                       DebitAmount = d.DebitAmount,
                                                                       CreditAmount = d.CreditAmount,
                                                                       Balance = d.CreditAmount - d.DebitAmount
-                                                                  }).ToListAsync();
+                                                                  }).OrderBy(d => d.Account.ManualCode).ToListAsync();
 
                             var cashFlowBalanceSheets = await (from d in _dbContext.SysJournalEntries
                                                                where d.JournalEntryDate >= Convert.ToDateTime(startDate)
@@ -188,7 +188,7 @@ namespace liteclerk_api.APIControllers
                                                                    DebitAmount = d.DebitAmount,
                                                                    CreditAmount = d.CreditAmount,
                                                                    Balance = d.CreditAmount - d.DebitAmount
-                                                               }).ToListAsync();
+                                                               }).OrderBy(d => d.Account.ManualCode).ToListAsync();
 
                             var unionCashFlows = cashFlowIncomeStatements.Union(cashFlowBalanceSheets);
 

@@ -99,6 +99,7 @@ namespace liteclerk_api.APIControllers
                         },
                         SalesInvoice = new DTO.TrnSalesInvoiceDTO
                         {
+                            Id = d.Id,
                             SINumber = d.SINumber,
                             SIDate = d.SIDate.ToShortDateString(),
                             ManualNumber = d.ManualNumber,
@@ -165,6 +166,7 @@ namespace liteclerk_api.APIControllers
                         },
                         SalesInvoice = new DTO.TrnSalesInvoiceDTO
                         {
+                            Id = d.Id,
                             SINumber = d.SINumber,
                             SIDate = d.SIDate.ToShortDateString(),
                             ManualNumber = d.ManualNumber,

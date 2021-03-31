@@ -144,7 +144,7 @@ namespace liteclerk_api.APIControllers
                                                  DebitAmount = d.DebitAmount,
                                                  CreditAmount = d.CreditAmount,
                                                  Balance = d.CreditAmount - d.DebitAmount
-                                             }).ToListAsync();
+                                             }).OrderBy(d => d.Account.ManualCode).ToListAsync();
 
                         if (incomes.Any())
                         {
@@ -293,7 +293,7 @@ namespace liteclerk_api.APIControllers
                                                   DebitAmount = d.DebitAmount,
                                                   CreditAmount = d.CreditAmount,
                                                   Balance = d.CreditAmount - d.DebitAmount
-                                              }).ToListAsync();
+                                              }).OrderBy(d => d.Account.ManualCode).ToListAsync();
 
                         if (expenses.Any())
                         {

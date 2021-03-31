@@ -99,6 +99,7 @@ namespace liteclerk_api.APIControllers
                         },
                         ReceivingReceipt = new DTO.TrnReceivingReceiptDTO
                         {
+                            Id = d.Id,
                             RRNumber = d.RRNumber,
                             RRDate = d.RRDate.ToShortDateString(),
                             ManualNumber = d.ManualNumber,
@@ -165,6 +166,7 @@ namespace liteclerk_api.APIControllers
                         },
                         ReceivingReceipt = new DTO.TrnReceivingReceiptDTO
                         {
+                            Id = d.Id,
                             RRNumber = d.RRNumber,
                             RRDate = d.RRDate.ToShortDateString(),
                             ManualNumber = d.ManualNumber,

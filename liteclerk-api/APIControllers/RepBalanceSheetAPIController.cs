@@ -106,7 +106,7 @@ namespace liteclerk_api.APIControllers
 
                             //String logoPath = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Images\prime_global_logo.png";
                             String logoPath = companyImageURL;
-                            
+
                             Image logoPhoto = Image.GetInstance(logoPath);
                             logoPhoto.Alignment = Image.ALIGN_JUSTIFIED;
 
@@ -149,7 +149,7 @@ namespace liteclerk_api.APIControllers
                                                     DebitAmount = d.DebitAmount,
                                                     CreditAmount = d.CreditAmount,
                                                     Balance = d.DebitAmount - d.CreditAmount
-                                                }).ToListAsync();
+                                                }).OrderBy(d => d.Account.ManualCode).ToListAsync();
 
                             if (assets.Any())
                             {
@@ -284,7 +284,7 @@ namespace liteclerk_api.APIControllers
                                                          DebitAmount = d.DebitAmount,
                                                          CreditAmount = d.CreditAmount,
                                                          Balance = d.CreditAmount - d.DebitAmount
-                                                     }).ToListAsync();
+                                                     }).OrderBy(d => d.Account.ManualCode).ToListAsync();
 
                             if (liabilities.Any())
                             {
@@ -475,7 +475,7 @@ namespace liteclerk_api.APIControllers
                                                       DebitAmount = d.DebitAmount,
                                                       CreditAmount = d.CreditAmount,
                                                       Balance = d.CreditAmount - d.DebitAmount
-                                                  }).ToListAsync();
+                                                  }).OrderBy(d => d.Account.ManualCode).ToListAsync();
 
                             var unionEquitiesWithRetainEarnings = equities.Union(retainedEarnings);
 
@@ -586,7 +586,7 @@ namespace liteclerk_api.APIControllers
                                     document.Add(Chunk.Newline);
                                 }
                             }
-                            
+
                             Decimal totalLiabilityAndEquity = totalOverallLiabilities + totalOverallEquities;
 
                             document.Add(line);
