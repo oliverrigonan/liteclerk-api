@@ -1748,6 +1748,42 @@ namespace liteclerk_api.APIControllers
                             tableSpace.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = 0, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                             document.Add(tableSpace);
 
+                            IEnumerable<DBSets.TrnJobOrderAttachmentDBSet> jobOrderAttachments = await (
+                                from d in _dbContext.TrnJobOrderAttachments
+                                where d.JOId == jobOrder.Id
+                                && d.AttachmentURL != String.Empty
+                                select d
+                            ).ToListAsync();
+
+                            if (jobOrderAttachments.Any())
+                            {
+                                PdfPTable tableJobOrderAttachment = new PdfPTable(1);
+                                tableJobOrderAttachment.SetWidths(new float[] { 100f });
+                                tableJobOrderAttachment.WidthPercentage = 100;
+                                tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase("Attachments", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                                foreach (var jobOrderAttachment in jobOrderAttachments)
+                                {
+                                    tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase(jobOrderAttachment.AttachmentCode, fontSegoeUI09)) { HorizontalAlignment = 1, Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                                    if (String.IsNullOrEmpty(jobOrderAttachment.AttachmentURL) == true)
+                                    {
+                                        tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    }
+                                    else
+                                    {
+                                        Image attachmentPhoto = Image.GetInstance(new Uri(jobOrderAttachment.AttachmentURL));
+                                        PdfPCell attachmentPhotoPdfCell = new PdfPCell(attachmentPhoto, true) { };
+                                        attachmentPhotoPdfCell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+
+                                        tableJobOrderAttachment.AddCell(new PdfPCell(attachmentPhotoPdfCell) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 70f, PaddingRight = 70f });
+                                    }
+                                }
+
+                                document.Add(tableJobOrderAttachment);
+                                document.Add(tableSpace);
+                            }
+
                             IEnumerable<DBSets.TrnJobOrderInformationDBSet> jobOrderInformations = await (
                                 from d in _dbContext.TrnJobOrderInformations
                                 where d.JOId == jobOrder.Id
@@ -1820,42 +1856,6 @@ namespace liteclerk_api.APIControllers
                                 tableJobOrderInformation.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
 
                                 document.Add(tableJobOrderInformation);
-                                document.Add(tableSpace);
-                            }
-
-                            IEnumerable<DBSets.TrnJobOrderAttachmentDBSet> jobOrderAttachments = await (
-                                from d in _dbContext.TrnJobOrderAttachments
-                                where d.JOId == jobOrder.Id
-                                && d.AttachmentURL != String.Empty
-                                select d
-                            ).ToListAsync();
-
-                            if (jobOrderAttachments.Any())
-                            {
-                                PdfPTable tableJobOrderAttachment = new PdfPTable(1);
-                                tableJobOrderAttachment.SetWidths(new float[] { 100f });
-                                tableJobOrderAttachment.WidthPercentage = 100;
-                                tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase("Attachments", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                                foreach (var jobOrderAttachment in jobOrderAttachments)
-                                {
-                                    tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase(jobOrderAttachment.AttachmentCode, fontSegoeUI09)) { HorizontalAlignment = 1, Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-
-                                    if (String.IsNullOrEmpty(jobOrderAttachment.AttachmentURL) == true)
-                                    {
-                                        tableJobOrderAttachment.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09)) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                    }
-                                    else
-                                    {
-                                        Image attachmentPhoto = Image.GetInstance(new Uri(jobOrderAttachment.AttachmentURL));
-                                        PdfPCell attachmentPhotoPdfCell = new PdfPCell(attachmentPhoto, true) { };
-                                        attachmentPhotoPdfCell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
-
-                                        tableJobOrderAttachment.AddCell(new PdfPCell(attachmentPhotoPdfCell) { Border = 0, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 70f, PaddingRight = 70f });
-                                    }
-                                }
-
-                                document.Add(tableJobOrderAttachment);
                                 document.Add(tableSpace);
                             }
 
