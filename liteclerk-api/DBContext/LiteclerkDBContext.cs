@@ -60,6 +60,8 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnStockInDBSet> TrnStockIns { get; set; }
         public virtual DbSet<DBSets.TrnStockInItemDBSet> TrnStockInItems { get; set; }
         public virtual DbSet<DBSets.SysFormDBSet> SysForms { get; set; }
+        public virtual DbSet<DBSets.SysFormTableDBSet> SysFormTables { get; set; }
+        public virtual DbSet<DBSets.SysFormTableColumnDBSet> SysFormTableColumns { get; set; }
         public virtual DbSet<DBSets.SysProductionDBSet> SysProductions { get; set; }
         public virtual DbSet<DBSets.TrnPurchaseRequestDBSet> TrnPurchaseRequests { get; set; }
         public virtual DbSet<DBSets.TrnPurchaseRequestItemDBSet> TrnPurchaseRequestItems { get; set; }
@@ -140,6 +142,8 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.TrnStockInModelBuilder.CreateTrnStockInModel(modelBuilder);
             DBModelBuilder.TrnStockInItemModelBuilder.CreateTrnStockInItemModel(modelBuilder);
             DBModelBuilder.SysFormModelBuilder.CreateSysFormModel(modelBuilder);
+            DBModelBuilder.SysFormTableModelBuilder.CreateSysFormTableModel(modelBuilder);
+            DBModelBuilder.SysFormTableColumnModelBuilder.CreateSysFormTableColumnModel(modelBuilder);
             DBModelBuilder.SysProductionModelBuilder.CreateSysProductionModel(modelBuilder);
             DBModelBuilder.TrnPurchaseRequestModelBuilder.CreateTrnPurchaseRequestModel(modelBuilder);
             DBModelBuilder.TrnPurchaseRequestItemModelBuilder.CreateTrnPurchaseRequestItemModel(modelBuilder);

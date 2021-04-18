@@ -13,5 +13,6 @@ namespace liteclerk_api.DBSets
         public String Description { get; set; }
 
         public virtual ICollection<MstUserFormDBSet> MstUserForms_FormId { get; set; }
+        public virtual ICollection<SysFormTableDBSet> SysFormTables_FormId { get; set; }
     }
 }
