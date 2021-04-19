@@ -52,6 +52,35 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/byForm/{formId}")]
+        public async Task<ActionResult> GetFormTableListByForm(Int32 formId)
+        {
+            try
+            {
+                var formTables = await (
+                    from d in _dbContext.SysFormTables
+                    where d.FormId == formId
+                    select new DTO.SysFormTableDTO
+                    {
+                        Id = d.Id,
+                        FormId = d.FormId,
+                        Form = new DTO.SysFormDTO
+                        {
+                            Form = d.SysForm_FormId.Form,
+                            Description = d.SysForm_FormId.Description
+                        },
+                        Table = d.Table
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, formTables);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetFormTableDetail(Int32 id)
         {
