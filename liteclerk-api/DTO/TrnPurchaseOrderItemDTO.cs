@@ -22,7 +22,9 @@ namespace liteclerk_api.DTO
         public MstUnitDTO Unit { get; set; }
 
         public Decimal Cost { get; set; }
+
         public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
 
         public Decimal BaseQuantity { get; set; }
         public Int32 BaseUnitId { get; set; }

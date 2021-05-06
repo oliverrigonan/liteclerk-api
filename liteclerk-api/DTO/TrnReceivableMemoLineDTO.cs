@@ -24,6 +24,7 @@ namespace liteclerk_api.DTO
         public TrnSalesInvoiceDTO SalesInvoice { get; set; }
 
         public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
 
         public String Particulars { get; set; }
     }

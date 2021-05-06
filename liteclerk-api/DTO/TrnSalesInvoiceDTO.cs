@@ -15,6 +15,11 @@ namespace liteclerk_api.DTO
         public Int32 CurrencyId { get; set; }
         public MstCurrencyDTO Currency { get; set; }
 
+        public Int32 ExchangeCurrencyId { get; set; }
+        public MstCurrencyDTO ExchangeCurrency { get; set; }
+
+        public Decimal ExchangeRate { get; set; }
+
         public String SINumber { get; set; }
         public String SIDate { get; set; }
         public String ManualNumber { get; set; }
@@ -42,9 +47,13 @@ namespace liteclerk_api.DTO
         public MstUserDTO ApprovedByUser { get; set; }
 
         public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
         public Decimal PaidAmount { get; set; }
+        public Decimal BasePaidAmount { get; set; }
         public Decimal AdjustmentAmount { get; set; }
+        public Decimal BaseAdjustmentAmount { get; set; }
         public Decimal BalanceAmount { get; set; }
+        public Decimal BaseBalanceAmount { get; set; }
 
         public String Status { get; set; }
         public Boolean IsCancelled { get; set; }

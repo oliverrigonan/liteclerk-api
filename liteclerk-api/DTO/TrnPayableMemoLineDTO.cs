@@ -24,6 +24,7 @@ namespace liteclerk_api.DTO
         public TrnReceivingReceiptDTO ReceivingReceipt { get; set; }
 
         public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
 
         public String Particulars { get; set; }
     }
