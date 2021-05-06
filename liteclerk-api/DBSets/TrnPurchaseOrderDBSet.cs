@@ -15,6 +15,11 @@ namespace liteclerk_api.DBSets
         public Int32 CurrencyId { get; set; }
         public virtual MstCurrencyDBSet MstCurrency_CurrencyId { get; set; }
 
+        public Int32 ExchangeCurrencyId { get; set; }
+        public virtual MstCurrencyDBSet MstCurrency_ExchangeCurrencyId { get; set; }
+
+        public Decimal ExchangeRate { get; set; }
+
         public String PONumber { get; set; }
         public DateTime PODate { get; set; }
         public String ManualNumber { get; set; }
@@ -32,6 +37,9 @@ namespace liteclerk_api.DBSets
         public Int32? PRId { get; set; }
         public virtual TrnPurchaseRequestDBSet TrnPurchaseRequest_PRId { get; set; }
 
+        public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
+
         public Int32 RequestedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_RequestedByUserId { get; set; }
 
@@ -43,8 +51,6 @@ namespace liteclerk_api.DBSets
 
         public Int32 ApprovedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_ApprovedByUserId { get; set; }
-
-        public Decimal Amount { get; set; }
 
         public String Status { get; set; }
         public Boolean IsCancelled { get; set; }

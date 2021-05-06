@@ -22,6 +22,11 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.CurrencyId).HasColumnName("CurrencyId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCurrency_CurrencyId).WithMany(f => f.TrnPurchaseOrders_CurrencyId).HasForeignKey(f => f.CurrencyId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.ExchangeCurrencyId).HasColumnName("ExchangeCurrencyId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstCurrency_ExchangeCurrencyId).WithMany(f => f.TrnPurchaseOrders_ExchangeCurrencyId).HasForeignKey(f => f.ExchangeCurrencyId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.ExchangeRate).HasColumnName("ExchangeRate").HasColumnType("decimal(18,5)").IsRequired();
+
                 entity.Property(e => e.PONumber).HasColumnName("PONumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.PODate).HasColumnName("PODate").HasColumnType("datetime").IsRequired();
                 entity.Property(e => e.ManualNumber).HasColumnName("ManualNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
@@ -39,6 +44,9 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.PRId).HasColumnName("PRId").HasColumnType("int");
                 entity.HasOne(f => f.TrnPurchaseRequest_PRId).WithMany(f => f.TrnPurchaseOrders_PRId).HasForeignKey(f => f.PRId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.BaseAmount).HasColumnName("BaseAmount").HasColumnType("decimal(18,5)").IsRequired();
+
                 entity.Property(e => e.RequestedByUserId).HasColumnName("RequestedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_RequestedByUserId).WithMany(f => f.TrnPurchaseOrders_RequestedByUserId).HasForeignKey(f => f.RequestedByUserId).OnDelete(DeleteBehavior.Restrict);
 
@@ -55,8 +63,6 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.IsCancelled).HasColumnName("IsCancelled").HasColumnType("bit").IsRequired();
                 entity.Property(e => e.IsPrinted).HasColumnName("IsPrinted").HasColumnType("bit").IsRequired();
                 entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();
-
-                entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
 
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_CreatedByUserId).WithMany(f => f.TrnPurchaseOrders_CreatedByUserId).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);

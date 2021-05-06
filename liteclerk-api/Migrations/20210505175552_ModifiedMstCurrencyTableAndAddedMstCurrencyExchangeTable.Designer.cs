@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using liteclerk_api.DBContext;
 
 namespace liteclerk_api.Migrations
 {
     [DbContext(typeof(LiteclerkDBContext))]
-    partial class LiteclerkDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210505175552_ModifiedMstCurrencyTableAndAddedMstCurrencyExchangeTable")]
+    partial class ModifiedMstCurrencyTableAndAddedMstCurrencyExchangeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2134,10 +2136,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -2177,14 +2175,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -2241,8 +2231,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("UpdatedByUserId");
@@ -2272,10 +2260,6 @@ namespace liteclerk_api.Migrations
                     b.Property<int>("BankId")
                         .HasColumnName("BankId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
@@ -2370,10 +2354,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("BankId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -2425,14 +2405,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -2511,8 +2483,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PayTypeId");
 
                     b.HasIndex("PreparedByUserId");
@@ -2542,10 +2512,6 @@ namespace liteclerk_api.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnName("ArticleId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
@@ -3226,10 +3192,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -3255,14 +3217,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -3331,8 +3285,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("SupplierId");
@@ -3360,10 +3312,6 @@ namespace liteclerk_api.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnName("ArticleId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
@@ -3538,10 +3486,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -3571,14 +3515,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -3659,8 +3595,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PRId");
 
                     b.HasIndex("PreparedByUserId");
@@ -3685,10 +3619,6 @@ namespace liteclerk_api.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
                         .HasColumnType("decimal(18,5)");
 
                     b.Property<decimal>("BaseCost")
@@ -3756,10 +3686,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -3789,14 +3715,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -3873,8 +3791,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("RequestedByUserId");
@@ -3897,10 +3813,6 @@ namespace liteclerk_api.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
                         .HasColumnType("decimal(18,5)");
 
                     b.Property<decimal>("BaseCost")
@@ -3968,10 +3880,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -4001,14 +3909,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -4075,8 +3975,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("UpdatedByUserId");
@@ -4102,10 +4000,6 @@ namespace liteclerk_api.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnName("ArticleId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
@@ -4162,22 +4056,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("BalanceAmount")
                         .HasColumnType("decimal(18,5)");
 
-                    b.Property<decimal>("BaseAdjustmentAmount")
-                        .HasColumnName("BaseAdjustmentAmount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseBalanceAmount")
-                        .HasColumnName("BaseBalanceAmount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BasePaidAmount")
-                        .HasColumnName("BasePaidAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -4203,14 +4081,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -4291,8 +4161,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("ReceivedByUserId");
@@ -4315,10 +4183,6 @@ namespace liteclerk_api.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
                         .HasColumnType("decimal(18,5)");
 
                     b.Property<decimal>("BaseCost")
@@ -4434,22 +4298,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("BalanceAmount")
                         .HasColumnType("decimal(18,5)");
 
-                    b.Property<decimal>("BaseAdjustmentAmount")
-                        .HasColumnName("BaseAdjustmentAmount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseBalanceAmount")
-                        .HasColumnName("BaseBalanceAmount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BasePaidAmount")
-                        .HasColumnName("BasePaidAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -4483,14 +4331,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -4569,8 +4409,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("SoldByUserId");
@@ -4591,10 +4429,6 @@ namespace liteclerk_api.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
                         .HasColumnType("decimal(18,5)");
 
                     b.Property<decimal>("BaseNetPrice")
@@ -4724,10 +4558,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("ApprovedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
-                        .HasColumnType("decimal(18,5)");
-
                     b.Property<int>("BranchId")
                         .HasColumnName("BranchId")
                         .HasColumnType("int");
@@ -4761,14 +4591,6 @@ namespace liteclerk_api.Migrations
                         .HasColumnName("DocumentReference")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
-
-                    b.Property<int>("ExchangeCurrencyId")
-                        .HasColumnName("ExchangeCurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnName("ExchangeRate")
-                        .HasColumnType("decimal(18,5)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnName("IsCancelled")
@@ -4843,8 +4665,6 @@ namespace liteclerk_api.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ExchangeCurrencyId");
-
                     b.HasIndex("PreparedByUserId");
 
                     b.HasIndex("SoldByUserId");
@@ -4865,10 +4685,6 @@ namespace liteclerk_api.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnName("Amount")
-                        .HasColumnType("decimal(18,5)");
-
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnName("BaseAmount")
                         .HasColumnType("decimal(18,5)");
 
                     b.Property<decimal>("BaseNetPrice")
@@ -6737,12 +6553,6 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnCollections_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
                         .WithMany("TrnCollections_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
@@ -6841,12 +6651,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
                         .WithMany("TrnDisbursements_CurrencyId")
                         .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnDisbursements_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -7192,12 +6996,6 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnPayableMemos_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
                         .WithMany("TrnPayableMemos_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
@@ -7311,12 +7109,6 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnPurchaseOrders_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("liteclerk_api.DBSets.TrnPurchaseRequestDBSet", "TrnPurchaseRequest_PRId")
                         .WithMany("TrnPurchaseOrders_PRId")
                         .HasForeignKey("PRId")
@@ -7409,12 +7201,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
                         .WithMany("TrnPurchaseRequests_CurrencyId")
                         .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnPurchaseRequests_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -7514,12 +7300,6 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnReceivableMemos_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
                         .WithMany("TrnReceivableMemos_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
@@ -7595,12 +7375,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_CurrencyId")
                         .WithMany("TrnReceivingReceipts_CurrencyId")
                         .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnReceivingReceipts_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -7724,12 +7498,6 @@ namespace liteclerk_api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnSalesInvoices_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("liteclerk_api.DBSets.MstUserDBSet", "MstUser_PreparedByUserId")
                         .WithMany("TrnSalesInvoices_PreparedByUserId")
                         .HasForeignKey("PreparedByUserId")
@@ -7845,12 +7613,6 @@ namespace liteclerk_api.Migrations
                     b.HasOne("liteclerk_api.DBSets.MstArticleDBSet", "MstArticle_CustomerId")
                         .WithMany("TrnSalesOrders_CustomerId")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("liteclerk_api.DBSets.MstCurrencyDBSet", "MstCurrency_ExchangeCurrencyId")
-                        .WithMany("TrnSalesOrders_ExchangeCurrencyId")
-                        .HasForeignKey("ExchangeCurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

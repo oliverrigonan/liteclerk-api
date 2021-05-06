@@ -15,6 +15,11 @@ namespace liteclerk_api.DBSets
         public Int32 CurrencyId { get; set; }
         public virtual MstCurrencyDBSet MstCurrency_CurrencyId { get; set; }
 
+        public Int32 ExchangeCurrencyId { get; set; }
+        public virtual MstCurrencyDBSet MstCurrency_ExchangeCurrencyId { get; set; }
+
+        public Decimal ExchangeRate { get; set; }
+
         public String SONumber { get; set; }
         public DateTime SODate { get; set; }
         public String ManualNumber { get; set; }
@@ -29,10 +34,11 @@ namespace liteclerk_api.DBSets
         public DateTime DateNeeded { get; set; }
         public String Remarks { get; set; }
 
+        public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
+
         public Int32 SoldByUserId { get; set; }
         public virtual MstUserDBSet MstUser_SoldByUserId { get; set; }
-
-        public Decimal Amount { get; set; }
 
         public Int32 PreparedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_PreparedByUserId { get; set; }

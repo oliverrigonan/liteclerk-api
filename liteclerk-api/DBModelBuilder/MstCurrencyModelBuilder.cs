@@ -19,6 +19,9 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.CurrencyCode).HasColumnName("CurrencyCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.ManualCode).HasColumnName("ManualCode").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Currency).HasColumnName("Currency").HasColumnType("nvarchar(255)").HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Remarks).HasColumnName("Remarks").HasColumnType("nvarchar(max)").HasMaxLength(50).IsRequired();
+
+                entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();
 
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_CreatedByUserId).WithMany(f => f.MstCurrencies_CreatedByUserId).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);

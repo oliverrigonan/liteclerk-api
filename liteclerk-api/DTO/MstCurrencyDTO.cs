@@ -12,6 +12,9 @@ namespace liteclerk_api.DTO
         public String CurrencyCode { get; set; }
         public String ManualCode { get; set; }
         public String Currency { get; set; }
+        public String Remarks { get; set; }
+
+        public Boolean IsLocked { get; set; }
 
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }

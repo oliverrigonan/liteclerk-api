@@ -22,6 +22,11 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.CurrencyId).HasColumnName("CurrencyId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstCurrency_CurrencyId).WithMany(f => f.TrnDisbursements_CurrencyId).HasForeignKey(f => f.CurrencyId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.ExchangeCurrencyId).HasColumnName("ExchangeCurrencyId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstCurrency_ExchangeCurrencyId).WithMany(f => f.TrnDisbursements_ExchangeCurrencyId).HasForeignKey(f => f.ExchangeCurrencyId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.ExchangeRate).HasColumnName("ExchangeRate").HasColumnType("decimal(18,5)").IsRequired();
+
                 entity.Property(e => e.CVNumber).HasColumnName("CVNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
                 entity.Property(e => e.CVDate).HasColumnName("CVDate").HasColumnType("datetime").IsRequired();
                 entity.Property(e => e.ManualNumber).HasColumnName("ManualNumber").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
@@ -47,6 +52,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.IsClear).HasColumnName("IsClear").HasColumnType("bit").IsRequired();
 
                 entity.Property(e => e.Amount).HasColumnName("Amount").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.BaseAmount).HasColumnName("BaseAmount").HasColumnType("decimal(18,5)").IsRequired();
 
                 entity.Property(e => e.PreparedByUserId).HasColumnName("PreparedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_PreparedByUserId).WithMany(f => f.TrnDisbursements_PreparedByUserId).HasForeignKey(f => f.PreparedByUserId).OnDelete(DeleteBehavior.Restrict);

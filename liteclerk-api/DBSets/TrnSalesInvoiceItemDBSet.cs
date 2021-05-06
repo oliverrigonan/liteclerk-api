@@ -36,7 +36,9 @@ namespace liteclerk_api.DBSets
         public Decimal DiscountAmount { get; set; }
 
         public Decimal NetPrice { get; set; }
+
         public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
 
         public Int32 VATId { get; set; }
         public virtual MstTaxDBSet MstTax_VATId { get; set; }

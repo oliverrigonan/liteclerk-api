@@ -25,6 +25,7 @@ namespace liteclerk_api.DBSets
         public virtual TrnSalesInvoiceDBSet TrnSalesInvoice_SIId { get; set; }
 
         public Decimal Amount { get; set; }
+        public Decimal BaseAmount { get; set; }
 
         public String Particulars { get; set; }
     }
