@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnDisbursementLineDTO> disbursementLines = await (
+                var disbursementLines = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.CVId == CVId
                     orderby d.Id descending
@@ -64,6 +64,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnReceivingReceipt_RRId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars,
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
@@ -89,7 +90,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnDisbursementLineDTO disbursementLine = await (
+                var disbursementLine = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.Id == id
                     select new DTO.TrnDisbursementLineDTO
@@ -123,6 +124,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnReceivingReceipt_RRId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars,
                         WTAXId = d.WTAXId,
                         WTAX = new DTO.MstTaxDTO
@@ -150,7 +152,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -161,7 +163,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementDetail"
@@ -178,7 +180,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a disbursement line.");
                 }
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                     from d in _dbContext.TrnDisbursements
                     where d.Id == trnDisbursementLineDTO.CVId
                     select d
@@ -194,7 +196,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add disbursement line if the current disbursement is locked.");
                 }
 
-                DBSets.MstCompanyBranchDBSet branch = await (
+                var branch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnDisbursementLineDTO.BranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -206,7 +208,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
+                var account = await (
                     from d in _dbContext.MstAccounts
                     where d.Id == trnDisbursementLineDTO.AccountId
                     select d
@@ -217,7 +219,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == trnDisbursementLineDTO.ArticleId
                     && d.IsLocked == true
@@ -231,20 +233,20 @@ namespace liteclerk_api.APIControllers
 
                 if (trnDisbursementLineDTO.RRId != null)
                 {
-                    DBSets.TrnReceivingReceiptDBSet salesInvoice = await (
+                    var receivingReceipt = await (
                         from d in _dbContext.TrnReceivingReceipts
                         where d.Id == trnDisbursementLineDTO.RRId
                         && d.IsLocked == true
                         select d
                     ).FirstOrDefaultAsync();
 
-                    if (salesInvoice == null)
+                    if (receivingReceipt == null)
                     {
-                        return StatusCode(404, "Sales invoice not found.");
+                        return StatusCode(404, "Receiving receipt not found.");
                     }
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnDisbursementLineDTO.WTAXId
                     select d
@@ -255,7 +257,15 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Withholding tax not found.");
                 }
 
-                DBSets.TrnDisbursementLineDBSet newDisbursementLines = new DBSets.TrnDisbursementLineDBSet()
+                Decimal exchangeRate = disbursement.ExchangeRate;
+                Decimal baseAmount = trnDisbursementLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnDisbursementLineDTO.Amount * exchangeRate;
+                }
+
+                var newDisbursementLines = new DBSets.TrnDisbursementLineDBSet()
                 {
                     CVId = trnDisbursementLineDTO.CVId,
                     BranchId = trnDisbursementLineDTO.BranchId,
@@ -263,6 +273,7 @@ namespace liteclerk_api.APIControllers
                     ArticleId = trnDisbursementLineDTO.ArticleId,
                     RRId = trnDisbursementLineDTO.RRId,
                     Amount = trnDisbursementLineDTO.Amount,
+                    BaseAmount = baseAmount,
                     Particulars = trnDisbursementLineDTO.Particulars,
                     WTAXId = trnDisbursementLineDTO.WTAXId,
                     WTAXRate = trnDisbursementLineDTO.WTAXRate,
@@ -272,9 +283,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnDisbursementLines.Add(newDisbursementLines);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                var disbursementLinesByCurrentDisbursement = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.CVId == trnDisbursementLineDTO.CVId
                     select d
@@ -282,11 +294,13 @@ namespace liteclerk_api.APIControllers
 
                 if (disbursementLinesByCurrentDisbursement.Any())
                 {
-                    amount = disbursementLinesByCurrentDisbursement.Sum(d => d.Amount);
+                    totalAmount = disbursementLinesByCurrentDisbursement.Sum(d => d.Amount);
+                    totalBaseAmount = disbursementLinesByCurrentDisbursement.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnDisbursementDBSet updateDisbursement = disbursement;
-                updateDisbursement.Amount = amount;
+                var updateDisbursement = disbursement;
+                updateDisbursement.Amount = totalAmount;
+                updateDisbursement.BaseAmount = totalBaseAmount;
                 updateDisbursement.UpdatedByUserId = loginUserId;
                 updateDisbursement.UpdatedDateTime = DateTime.Now;
 
@@ -307,7 +321,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -318,7 +332,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementDetail"
@@ -335,7 +349,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a disbursement line.");
                 }
 
-                DBSets.TrnDisbursementLineDBSet disbursementLine = await (
+                var disbursementLine = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.Id == id
                     select d
@@ -346,7 +360,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Disbursement line not found.");
                 }
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                     from d in _dbContext.TrnDisbursements
                     where d.Id == trnDisbursementLineDTO.CVId
                     select d
@@ -362,7 +376,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update disbursement line if the current disbursement is locked.");
                 }
 
-                DBSets.MstCompanyBranchDBSet branch = await (
+                var branch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnDisbursementLineDTO.BranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -374,7 +388,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
+                var account = await (
                     from d in _dbContext.MstAccounts
                     where d.Id == trnDisbursementLineDTO.AccountId
                     select d
@@ -385,7 +399,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == trnDisbursementLineDTO.ArticleId
                     && d.IsLocked == true
@@ -399,7 +413,7 @@ namespace liteclerk_api.APIControllers
 
                 if (trnDisbursementLineDTO.RRId != null)
                 {
-                    DBSets.TrnReceivingReceiptDBSet salesInvoice = await (
+                    var salesInvoice = await (
                         from d in _dbContext.TrnReceivingReceipts
                         where d.Id == trnDisbursementLineDTO.RRId
                         && d.IsLocked == true
@@ -412,7 +426,7 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnDisbursementLineDTO.WTAXId
                     select d
@@ -423,13 +437,22 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Withholding tax not found.");
                 }
 
-                DBSets.TrnDisbursementLineDBSet updateDisbursementLines = disbursementLine;
+                Decimal exchangeRate = disbursement.ExchangeRate;
+                Decimal baseAmount = trnDisbursementLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnDisbursementLineDTO.Amount * exchangeRate;
+                }
+
+                var updateDisbursementLines = disbursementLine;
                 updateDisbursementLines.CVId = trnDisbursementLineDTO.CVId;
                 updateDisbursementLines.BranchId = trnDisbursementLineDTO.BranchId;
                 updateDisbursementLines.AccountId = trnDisbursementLineDTO.AccountId;
                 updateDisbursementLines.ArticleId = trnDisbursementLineDTO.ArticleId;
                 updateDisbursementLines.RRId = trnDisbursementLineDTO.RRId;
                 updateDisbursementLines.Amount = trnDisbursementLineDTO.Amount;
+                updateDisbursementLines.BaseAmount = baseAmount;
                 updateDisbursementLines.Particulars = trnDisbursementLineDTO.Particulars;
                 updateDisbursementLines.WTAXId = trnDisbursementLineDTO.WTAXId;
                 updateDisbursementLines.WTAXRate = trnDisbursementLineDTO.WTAXRate;
@@ -437,9 +460,10 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                var disbursementLinesByCurrentDisbursement = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.CVId == trnDisbursementLineDTO.CVId
                     select d
@@ -447,11 +471,13 @@ namespace liteclerk_api.APIControllers
 
                 if (disbursementLinesByCurrentDisbursement.Any())
                 {
-                    amount = disbursementLinesByCurrentDisbursement.Sum(d => d.Amount);
+                    totalAmount = disbursementLinesByCurrentDisbursement.Sum(d => d.Amount);
+                    totalBaseAmount = disbursementLinesByCurrentDisbursement.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnDisbursementDBSet updateDisbursement = disbursement;
-                updateDisbursement.Amount = amount;
+                var updateDisbursement = disbursement;
+                updateDisbursement.Amount = totalAmount;
+                updateDisbursement.BaseAmount = totalBaseAmount;
                 updateDisbursement.UpdatedByUserId = loginUserId;
                 updateDisbursement.UpdatedDateTime = DateTime.Now;
 
@@ -472,7 +498,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -483,7 +509,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementDetail"
@@ -502,7 +528,7 @@ namespace liteclerk_api.APIControllers
 
                 Int32 CVId = 0;
 
-                DBSets.TrnDisbursementLineDBSet disbursementLine = await (
+                var disbursementLine = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.Id == id
                     select d
@@ -515,7 +541,7 @@ namespace liteclerk_api.APIControllers
 
                 CVId = disbursementLine.CVId;
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                     from d in _dbContext.TrnDisbursements
                     where d.Id == CVId
                     select d
@@ -534,9 +560,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnDisbursementLines.Remove(disbursementLine);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                var disbursementLinesByCurrentDisbursement = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.CVId == CVId
                     select d
@@ -544,11 +571,13 @@ namespace liteclerk_api.APIControllers
 
                 if (disbursementLinesByCurrentDisbursement.Any())
                 {
-                    amount = disbursementLinesByCurrentDisbursement.Sum(d => d.Amount);
+                    totalAmount = disbursementLinesByCurrentDisbursement.Sum(d => d.Amount);
+                    totalBaseAmount = disbursementLinesByCurrentDisbursement.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnDisbursementDBSet updateDisbursement = disbursement;
-                updateDisbursement.Amount = amount;
+                var updateDisbursement = disbursement;
+                updateDisbursement.Amount = totalAmount;
+                updateDisbursement.BaseAmount = totalBaseAmount;
                 updateDisbursement.UpdatedByUserId = loginUserId;
                 updateDisbursement.UpdatedDateTime = DateTime.Now;
 

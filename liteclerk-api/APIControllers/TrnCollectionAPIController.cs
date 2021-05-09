@@ -54,13 +54,13 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnCollectionDTO> collections = await (
+                var collections = await (
                     from d in _dbContext.TrnCollections
                     where d.BranchId == loginUser.BranchId
                     && d.CIDate >= Convert.ToDateTime(startDate)
@@ -72,17 +72,22 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         CINumber = d.CINumber,
                         CIDate = d.CIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -97,6 +102,8 @@ namespace liteclerk_api.APIControllers
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         },
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -115,7 +122,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -148,7 +154,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnCollectionDTO salesInvoice = await (
+                var salesInvoice = await (
                     from d in _dbContext.TrnCollections
                     where d.Id == id
                     select new DTO.TrnCollectionDTO
@@ -157,17 +163,22 @@ namespace liteclerk_api.APIControllers
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
                         {
-                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
                             Branch = d.MstCompanyBranch_BranchId.Branch
                         },
                         CurrencyId = d.CurrencyId,
                         Currency = new DTO.MstCurrencyDTO
                         {
-                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         CINumber = d.CINumber,
                         CIDate = d.CIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -182,6 +193,8 @@ namespace liteclerk_api.APIControllers
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
                         },
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -200,7 +213,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -235,7 +247,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -246,7 +258,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionList"
@@ -263,7 +275,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a collection.");
                 }
 
-                DBSets.MstArticleCustomerDBSet customer = await (
+                var customer = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.MstArticle_ArticleId.IsLocked == true
                     select d
@@ -274,7 +286,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "COLLECTION INVOICE STATUS"
                     select d
@@ -286,7 +298,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String CINumber = "0000000001";
-                DBSets.TrnCollectionDBSet lastCollection = await (
+                var lastCollection = await (
                     from d in _dbContext.TrnCollections
                     where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
@@ -299,20 +311,23 @@ namespace liteclerk_api.APIControllers
                     CINumber = PadZeroes(lastCINumber, 10);
                 }
 
-                DBSets.TrnCollectionDBSet newCollection = new DBSets.TrnCollectionDBSet()
+                var newCollection = new DBSets.TrnCollectionDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeCurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeRate = 0,
                     CINumber = CINumber,
                     CIDate = DateTime.Today,
                     ManualNumber = CINumber,
                     DocumentReference = "",
                     CustomerId = customer.ArticleId,
                     Remarks = "",
+                    Amount = 0,
+                    BaseAmount = 0,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
-                    Amount = 0,
                     Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
@@ -341,7 +356,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -352,7 +367,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -369,34 +384,34 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a collection.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
+                var collection = await (
                     from d in _dbContext.TrnCollections
                     where d.Id == id
                     select d
                 ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (collection == null)
                 {
                     return StatusCode(404, "Collection not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (collection.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot save or make any changes to a collection that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnCollectionDTO.CurrencyId
+                    where d.Id == trnCollectionDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleCustomerDBSet customer = await (
+                var customer = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.ArticleId == trnCollectionDTO.CustomerId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -408,7 +423,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnCollectionDTO.CheckedByUserId
                     select d
@@ -419,7 +434,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnCollectionDTO.ApprovedByUserId
                     select d
@@ -430,7 +445,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnCollectionDTO.Status
                     && d.Category == "COLLECTION INVOICE STATUS"
@@ -442,8 +457,9 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnCollectionDBSet saveCollection = salesInvoice;
-                saveCollection.CurrencyId = trnCollectionDTO.CurrencyId;
+                var saveCollection = collection;
+                saveCollection.ExchangeCurrencyId = trnCollectionDTO.ExchangeCurrencyId;
+                saveCollection.ExchangeRate = trnCollectionDTO.ExchangeRate;
                 saveCollection.CIDate = Convert.ToDateTime(trnCollectionDTO.CIDate);
                 saveCollection.ManualNumber = trnCollectionDTO.ManualNumber;
                 saveCollection.DocumentReference = trnCollectionDTO.DocumentReference;
@@ -472,7 +488,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -483,7 +499,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -500,34 +516,34 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a collection.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
+                var collection = await (
                      from d in _dbContext.TrnCollections
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (collection == null)
                 {
                     return StatusCode(404, "Collection not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (collection.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot lock a collection that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnCollectionDTO.CurrencyId
+                    where d.Id == trnCollectionDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleCustomerDBSet customer = await (
+                var customer = await (
                     from d in _dbContext.MstArticleCustomers
                     where d.ArticleId == trnCollectionDTO.CustomerId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -539,7 +555,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Customer not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnCollectionDTO.CheckedByUserId
                     select d
@@ -550,7 +566,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnCollectionDTO.ApprovedByUserId
                     select d
@@ -561,7 +577,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnCollectionDTO.Status
                     && d.Category == "COLLECTION INVOICE STATUS"
@@ -573,8 +589,9 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnCollectionDBSet lockCollection = salesInvoice;
-                lockCollection.CurrencyId = trnCollectionDTO.CurrencyId;
+                var lockCollection = collection;
+                lockCollection.ExchangeCurrencyId = trnCollectionDTO.ExchangeCurrencyId;
+                lockCollection.ExchangeRate = trnCollectionDTO.ExchangeRate;
                 lockCollection.CIDate = Convert.ToDateTime(trnCollectionDTO.CIDate);
                 lockCollection.ManualNumber = trnCollectionDTO.ManualNumber;
                 lockCollection.DocumentReference = trnCollectionDTO.DocumentReference;
@@ -589,7 +606,7 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                var collectionLinesByCurrentCollection = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == id
                     && d.SIId != null
@@ -621,7 +638,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -632,7 +649,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -649,30 +666,30 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a collection.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
+                var collection = await (
                      from d in _dbContext.TrnCollections
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (collection == null)
                 {
                     return StatusCode(404, "Collection not found.");
                 }
 
-                if (salesInvoice.IsLocked == false)
+                if (collection.IsLocked == false)
                 {
                     return StatusCode(400, "Cannot unlock a collection that is unlocked.");
                 }
 
-                DBSets.TrnCollectionDBSet unlockCollection = salesInvoice;
+                var unlockCollection = collection;
                 unlockCollection.IsLocked = false;
                 unlockCollection.UpdatedByUserId = loginUserId;
                 unlockCollection.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                var collectionLinesByCurrentCollection = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == id
                     && d.SIId != null
@@ -704,7 +721,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -715,7 +732,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -732,30 +749,30 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to cancel a collection.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
+                var collection = await (
                      from d in _dbContext.TrnCollections
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (collection == null)
                 {
                     return StatusCode(404, "Collection not found.");
                 }
 
-                if (salesInvoice.IsLocked == false)
+                if (collection.IsLocked == false)
                 {
                     return StatusCode(400, "Cannot cancel a collection that is unlocked.");
                 }
 
-                DBSets.TrnCollectionDBSet unlockCollection = salesInvoice;
+                var unlockCollection = collection;
                 unlockCollection.IsCancelled = true;
                 unlockCollection.UpdatedByUserId = loginUserId;
                 unlockCollection.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                var collectionLinesByCurrentCollection = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == id
                     && d.SIId != null
@@ -785,7 +802,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -796,7 +813,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionList"
@@ -813,26 +830,26 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a collection.");
                 }
 
-                DBSets.TrnCollectionDBSet salesInvoice = await (
+                var collection = await (
                      from d in _dbContext.TrnCollections
                      where d.Id == id
                      select d
                  ).FirstOrDefaultAsync(); ;
 
-                if (salesInvoice == null)
+                if (collection == null)
                 {
                     return StatusCode(404, "Collection not found.");
                 }
 
-                if (salesInvoice.IsLocked == true)
+                if (collection.IsLocked == true)
                 {
                     return StatusCode(400, "Cannot delete a collection that is locked.");
                 }
 
-                _dbContext.TrnCollections.Remove(salesInvoice);
+                _dbContext.TrnCollections.Remove(collection);
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                var collectionLinesByCurrentCollection = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == id
                     && d.SIId != null
@@ -890,7 +907,7 @@ namespace liteclerk_api.APIControllers
 
             Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-            DBSets.MstUserDBSet loginUser = await (
+            var loginUser = await (
                 from d in _dbContext.MstUsers
                 where d.Id == loginUserId
                 select d
@@ -898,7 +915,7 @@ namespace liteclerk_api.APIControllers
 
             if (loginUser != null)
             {
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -922,7 +939,7 @@ namespace liteclerk_api.APIControllers
                             companyImageURL = loginUser.MstCompany_CompanyId.ImageURL;
                         }
 
-                        DBSets.TrnCollectionDBSet collection = await (
+                        var collection = await (
                              from d in _dbContext.TrnCollections
                              where d.Id == id
                              && d.IsLocked == true
@@ -1015,7 +1032,7 @@ namespace liteclerk_api.APIControllers
                             tableCollectionLines.AddCell(new PdfPCell(new Phrase("Check Bank", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
                             tableCollectionLines.AddCell(new PdfPCell(new Phrase("Amount", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
 
-                            IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLines = await (
+                            var collectionLines = await (
                                 from d in _dbContext.TrnCollectionLines
                                 where d.CIId == id
                                 select d
@@ -1041,7 +1058,6 @@ namespace liteclerk_api.APIControllers
                                     tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLine.Amount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                 }
                             }
-
 
                             tableCollectionLines.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 6 });
                             tableCollectionLines.AddCell(new PdfPCell(new Phrase(collectionLines.Sum(d => d.Amount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });

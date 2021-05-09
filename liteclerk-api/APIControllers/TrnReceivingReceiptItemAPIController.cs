@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnReceivingReceiptItemDTO> receivingReceiptItems = await (
+                var receivingReceiptItems = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.RRId == RRId
                     orderby d.Id descending
@@ -70,6 +70,7 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
@@ -112,7 +113,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnReceivingReceiptItemDTO receivingReceiptItem = await (
+                var receivingReceiptItem = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.Id == id
                     select new DTO.TrnReceivingReceiptItemDTO
@@ -152,6 +153,7 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
@@ -196,7 +198,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -207,7 +209,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptDetail"
@@ -224,7 +226,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a receiving receipt item.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.Id == trnReceivingReceiptItemDTO.RRId
                     select d
@@ -240,7 +242,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add receiving receipt items if the current receiving receipt is locked.");
                 }
 
-                DBSets.MstCompanyBranchDBSet branch = await (
+                var branch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnReceivingReceiptItemDTO.BranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -252,7 +254,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                var purchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrders
                     where d.Id == trnReceivingReceiptItemDTO.POId
                     && d.IsLocked == true
@@ -264,7 +266,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Purchase order not found.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnReceivingReceiptItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -276,7 +278,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstTaxDBSet VAT = await (
+                var VAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnReceivingReceiptItemDTO.VATId
                     select d
@@ -287,7 +289,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "VAT not found.");
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnReceivingReceiptItemDTO.WTAXId
                     select d
@@ -298,7 +300,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Withholding tax not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnReceivingReceiptItemDTO.ItemId
                     && d.UnitId == trnReceivingReceiptItemDTO.UnitId
@@ -322,7 +324,15 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnReceivingReceiptItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnReceivingReceiptItemDBSet newReceivingReceiptItems = new DBSets.TrnReceivingReceiptItemDBSet()
+                Decimal exchangeRate = receivingReceipt.ExchangeRate;
+                Decimal baseAmount = trnReceivingReceiptItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnReceivingReceiptItemDTO.Amount * exchangeRate;
+                }
+
+                var newReceivingReceiptItems = new DBSets.TrnReceivingReceiptItemDBSet()
                 {
                     RRId = trnReceivingReceiptItemDTO.RRId,
                     BranchId = trnReceivingReceiptItemDTO.BranchId,
@@ -333,6 +343,7 @@ namespace liteclerk_api.APIControllers
                     UnitId = trnReceivingReceiptItemDTO.UnitId,
                     Cost = trnReceivingReceiptItemDTO.Cost,
                     Amount = trnReceivingReceiptItemDTO.Amount,
+                    BaseAmount = baseAmount,
                     VATId = trnReceivingReceiptItemDTO.VATId,
                     VATRate = trnReceivingReceiptItemDTO.VATRate,
                     VATAmount = trnReceivingReceiptItemDTO.VATAmount,
@@ -347,9 +358,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnReceivingReceiptItems.Add(newReceivingReceiptItems);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnReceivingReceiptItemDBSet> receivingReceiptItemsByCurrentReceivingReceipt = await (
+                var receivingReceiptItemsByCurrentReceivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.RRId == trnReceivingReceiptItemDTO.RRId
                     select d
@@ -357,11 +369,13 @@ namespace liteclerk_api.APIControllers
 
                 if (receivingReceiptItemsByCurrentReceivingReceipt.Any())
                 {
-                    amount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount) - receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.WTAXAmount);
+                    totalAmount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount);
+                    totalBaseAmount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.BaseAmount) - receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.WTAXAmount);
                 }
 
-                DBSets.TrnReceivingReceiptDBSet updateReceivingReceipt = receivingReceipt;
-                updateReceivingReceipt.Amount = amount;
+                var updateReceivingReceipt = receivingReceipt;
+                updateReceivingReceipt.Amount = totalAmount;
+                updateReceivingReceipt.BaseAmount = totalBaseAmount;
                 updateReceivingReceipt.UpdatedByUserId = loginUserId;
                 updateReceivingReceipt.UpdatedDateTime = DateTime.Now;
 
@@ -382,7 +396,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -393,7 +407,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptDetail"
@@ -410,7 +424,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a receiving receipt item.");
                 }
 
-                DBSets.TrnReceivingReceiptItemDBSet receivingReceiptItem = await (
+                var receivingReceiptItem = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.Id == id
                     select d
@@ -421,7 +435,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Receiving receipt item not found.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.Id == trnReceivingReceiptItemDTO.RRId
                     select d
@@ -437,7 +451,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update receiving receipt items if the current receiving receipt is locked.");
                 }
 
-                DBSets.MstCompanyBranchDBSet branch = await (
+                var branch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnReceivingReceiptItemDTO.BranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -449,7 +463,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                var purchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrders
                     where d.Id == trnReceivingReceiptItemDTO.POId
                     && d.IsLocked == true
@@ -461,7 +475,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Purchase order not found.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnReceivingReceiptItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -473,7 +487,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstTaxDBSet VAT = await (
+                var VAT = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnReceivingReceiptItemDTO.VATId
                     select d
@@ -484,7 +498,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "VAT not found.");
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnReceivingReceiptItemDTO.WTAXId
                     select d
@@ -495,7 +509,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Withholding tax not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnReceivingReceiptItemDTO.ItemId
                     && d.UnitId == trnReceivingReceiptItemDTO.UnitId
@@ -519,7 +533,15 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnReceivingReceiptItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnReceivingReceiptItemDBSet updateReceivingReceiptItems = receivingReceiptItem;
+                Decimal exchangeRate = receivingReceipt.ExchangeRate;
+                Decimal baseAmount = trnReceivingReceiptItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnReceivingReceiptItemDTO.Amount * exchangeRate;
+                }
+
+                var updateReceivingReceiptItems = receivingReceiptItem;
                 updateReceivingReceiptItems.RRId = trnReceivingReceiptItemDTO.RRId;
                 updateReceivingReceiptItems.BranchId = trnReceivingReceiptItemDTO.BranchId;
                 updateReceivingReceiptItems.POId = trnReceivingReceiptItemDTO.POId;
@@ -528,6 +550,7 @@ namespace liteclerk_api.APIControllers
                 updateReceivingReceiptItems.UnitId = trnReceivingReceiptItemDTO.UnitId;
                 updateReceivingReceiptItems.Cost = trnReceivingReceiptItemDTO.Cost;
                 updateReceivingReceiptItems.Amount = trnReceivingReceiptItemDTO.Amount;
+                updateReceivingReceiptItems.BaseAmount = baseAmount;
                 updateReceivingReceiptItems.VATId = trnReceivingReceiptItemDTO.VATId;
                 updateReceivingReceiptItems.VATRate = trnReceivingReceiptItemDTO.VATRate;
                 updateReceivingReceiptItems.VATAmount = trnReceivingReceiptItemDTO.VATAmount;
@@ -540,9 +563,10 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnReceivingReceiptItemDBSet> receivingReceiptItemsByCurrentReceivingReceipt = await (
+                var receivingReceiptItemsByCurrentReceivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.RRId == trnReceivingReceiptItemDTO.RRId
                     select d
@@ -550,11 +574,13 @@ namespace liteclerk_api.APIControllers
 
                 if (receivingReceiptItemsByCurrentReceivingReceipt.Any())
                 {
-                    amount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount) - receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.WTAXAmount);
+                    totalAmount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount);
+                    totalBaseAmount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.BaseAmount) - receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.WTAXAmount);
                 }
 
-                DBSets.TrnReceivingReceiptDBSet updateReceivingReceipt = receivingReceipt;
-                updateReceivingReceipt.Amount = amount;
+                var updateReceivingReceipt = receivingReceipt;
+                updateReceivingReceipt.Amount = totalAmount;
+                updateReceivingReceipt.BaseAmount = totalBaseAmount;
                 updateReceivingReceipt.UpdatedByUserId = loginUserId;
                 updateReceivingReceipt.UpdatedDateTime = DateTime.Now;
 
@@ -575,7 +601,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -586,7 +612,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptDetail"
@@ -605,7 +631,7 @@ namespace liteclerk_api.APIControllers
 
                 Int32 RRId = 0;
 
-                DBSets.TrnReceivingReceiptItemDBSet receivingReceiptItem = await (
+                var receivingReceiptItem = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.Id == id
                     select d
@@ -618,7 +644,7 @@ namespace liteclerk_api.APIControllers
 
                 RRId = receivingReceiptItem.RRId;
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.Id == RRId
                     select d
@@ -637,9 +663,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnReceivingReceiptItems.Remove(receivingReceiptItem);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnReceivingReceiptItemDBSet> receivingReceiptItemsByCurrentReceivingReceipt = await (
+                var receivingReceiptItemsByCurrentReceivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceiptItems
                     where d.RRId == RRId
                     select d
@@ -647,11 +674,13 @@ namespace liteclerk_api.APIControllers
 
                 if (receivingReceiptItemsByCurrentReceivingReceipt.Any())
                 {
-                    amount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount);
+                    totalAmount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.Amount);
+                    totalBaseAmount = receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.BaseAmount) - receivingReceiptItemsByCurrentReceivingReceipt.Sum(d => d.WTAXAmount);
                 }
 
-                DBSets.TrnReceivingReceiptDBSet updateReceivingReceipt = receivingReceipt;
-                updateReceivingReceipt.Amount = amount;
+                var updateReceivingReceipt = receivingReceipt;
+                updateReceivingReceipt.Amount = totalAmount;
+                updateReceivingReceipt.BaseAmount = totalBaseAmount;
                 updateReceivingReceipt.UpdatedByUserId = loginUserId;
                 updateReceivingReceipt.UpdatedDateTime = DateTime.Now;
 

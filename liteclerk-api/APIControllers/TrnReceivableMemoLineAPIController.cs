@@ -64,6 +64,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars
                     }
                 ).ToListAsync();
@@ -115,6 +116,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars
                     }
                 ).FirstOrDefaultAsync();
@@ -225,6 +227,14 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Sales invoice not found.");
                 }
 
+                Decimal exchangeRate = receivableMemo.ExchangeRate;
+                Decimal baseAmount = trnReceivableMemoLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnReceivableMemoLineDTO.Amount * exchangeRate;
+                }
+
                 var newReceivableMemoLines = new DBSets.TrnReceivableMemoLineDBSet()
                 {
                     RMId = trnReceivableMemoLineDTO.RMId,
@@ -233,13 +243,15 @@ namespace liteclerk_api.APIControllers
                     ArticleId = trnReceivableMemoLineDTO.ArticleId,
                     SIId = trnReceivableMemoLineDTO.SIId,
                     Amount = trnReceivableMemoLineDTO.Amount,
+                    BaseAmount = baseAmount,
                     Particulars = trnReceivableMemoLineDTO.Particulars
                 };
 
                 _dbContext.TrnReceivableMemoLines.Add(newReceivableMemoLines);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var receivableMemoLinesByCurrentReceivableMemo = await (
                     from d in _dbContext.TrnReceivableMemoLines
@@ -249,11 +261,13 @@ namespace liteclerk_api.APIControllers
 
                 if (receivableMemoLinesByCurrentReceivableMemo.Any())
                 {
-                    amount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.Amount);
+                    totalAmount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.Amount);
+                    totalBaseAmount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.BaseAmount);
                 }
 
                 var updateReceivableMemo = receivableMemo;
-                updateReceivableMemo.Amount = amount;
+                updateReceivableMemo.Amount = totalAmount;
+                updateReceivableMemo.BaseAmount = totalBaseAmount;
                 updateReceivableMemo.UpdatedByUserId = loginUserId;
                 updateReceivableMemo.UpdatedDateTime = DateTime.Now;
 
@@ -376,6 +390,14 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Sales invoice not found.");
                 }
 
+                Decimal exchangeRate = receivableMemo.ExchangeRate;
+                Decimal baseAmount = trnReceivableMemoLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnReceivableMemoLineDTO.Amount * exchangeRate;
+                }
+
                 var updateReceivableMemoLines = receivableMemoLine;
                 updateReceivableMemoLines.RMId = trnReceivableMemoLineDTO.RMId;
                 updateReceivableMemoLines.BranchId = trnReceivableMemoLineDTO.BranchId;
@@ -383,11 +405,13 @@ namespace liteclerk_api.APIControllers
                 updateReceivableMemoLines.ArticleId = trnReceivableMemoLineDTO.ArticleId;
                 updateReceivableMemoLines.SIId = trnReceivableMemoLineDTO.SIId;
                 updateReceivableMemoLines.Amount = trnReceivableMemoLineDTO.Amount;
+                updateReceivableMemoLines.BaseAmount = baseAmount;
                 updateReceivableMemoLines.Particulars = trnReceivableMemoLineDTO.Particulars;
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var receivableMemoLinesByCurrentReceivableMemo = await (
                     from d in _dbContext.TrnReceivableMemoLines
@@ -397,11 +421,13 @@ namespace liteclerk_api.APIControllers
 
                 if (receivableMemoLinesByCurrentReceivableMemo.Any())
                 {
-                    amount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.Amount);
+                    totalAmount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.Amount);
+                    totalBaseAmount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.BaseAmount);
                 }
 
                 var updateReceivableMemo = receivableMemo;
-                updateReceivableMemo.Amount = amount;
+                updateReceivableMemo.Amount = totalAmount;
+                updateReceivableMemo.BaseAmount = totalBaseAmount;
                 updateReceivableMemo.UpdatedByUserId = loginUserId;
                 updateReceivableMemo.UpdatedDateTime = DateTime.Now;
 
@@ -484,7 +510,8 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnReceivableMemoLines.Remove(receivableMemoLine);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var receivableMemoLinesByCurrentReceivableMemo = await (
                     from d in _dbContext.TrnReceivableMemoLines
@@ -494,11 +521,13 @@ namespace liteclerk_api.APIControllers
 
                 if (receivableMemoLinesByCurrentReceivableMemo.Any())
                 {
-                    amount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.Amount);
+                    totalAmount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.Amount);
+                    totalBaseAmount = receivableMemoLinesByCurrentReceivableMemo.Sum(d => d.BaseAmount);
                 }
 
                 var updateReceivableMemo = receivableMemo;
-                updateReceivableMemo.Amount = amount;
+                updateReceivableMemo.Amount = totalAmount;
+                updateReceivableMemo.BaseAmount = totalBaseAmount;
                 updateReceivableMemo.UpdatedByUserId = loginUserId;
                 updateReceivableMemo.UpdatedDateTime = DateTime.Now;
 

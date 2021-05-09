@@ -54,105 +54,113 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnDisbursementDTO> disbursements = await (
-                    from d in _dbContext.TrnDisbursements
-                    where d.BranchId == loginUser.BranchId
-                    && d.CVDate >= Convert.ToDateTime(startDate)
-                    && d.CVDate <= Convert.ToDateTime(endDate)
-                    orderby d.Id descending
-                    select new DTO.TrnDisbursementDTO
-                    {
-                        Id = d.Id,
-                        BranchId = d.BranchId,
-                        Branch = new DTO.MstCompanyBranchDTO
-                        {
-                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
-                            Branch = d.MstCompanyBranch_BranchId.Branch
-                        },
-                        CurrencyId = d.CurrencyId,
-                        Currency = new DTO.MstCurrencyDTO
-                        {
-                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
-                            Currency = d.MstCurrency_CurrencyId.Currency
-                        },
-                        CVNumber = d.CVNumber,
-                        CVDate = d.CVDate.ToShortDateString(),
-                        ManualNumber = d.ManualNumber,
-                        DocumentReference = d.DocumentReference,
-                        SupplierId = d.SupplierId,
-                        Supplier = new DTO.MstArticleSupplierDTO
-                        {
-                            Article = new DTO.MstArticleDTO
-                            {
-                                ManualCode = d.MstArticle_SupplierId.ManualCode
-                            },
-                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
-                        },
-                        Payee = d.Payee,
-                        Remarks = d.Remarks,
-                        PayTypeId = d.PayTypeId,
-                        PayType = new DTO.MstPayTypeDTO
-                        {
-                            ManualCode = d.MstPayType_PayTypeId.ManualCode,
-                            PayType = d.MstPayType_PayTypeId.PayType
-                        },
-                        CheckNumber = d.CheckNumber,
-                        CheckDate = d.CheckDate != null ? Convert.ToDateTime(d.CheckDate).ToShortDateString() : "",
-                        CheckBank = d.CheckBank,
-                        IsCrossCheck = d.IsCrossCheck,
-                        BankId = d.BankId,
-                        Bank = new DTO.MstArticleBankDTO
-                        {
-                            Article = new DTO.MstArticleDTO
-                            {
-                                ManualCode = d.MstArticle_BankId.ManualCode
-                            },
-                            Bank = d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() ? d.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank : "",
-                        },
-                        IsClear = d.IsClear,
-                        PreparedByUserId = d.PreparedByUserId,
-                        PreparedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_PreparedByUserId.Username,
-                            Fullname = d.MstUser_PreparedByUserId.Fullname
-                        },
-                        CheckedByUserId = d.CheckedByUserId,
-                        CheckedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_CheckedByUserId.Username,
-                            Fullname = d.MstUser_CheckedByUserId.Fullname
-                        },
-                        ApprovedByUserId = d.ApprovedByUserId,
-                        ApprovedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_ApprovedByUserId.Username,
-                            Fullname = d.MstUser_ApprovedByUserId.Fullname
-                        },
-                        Amount = d.Amount,
-                        Status = d.Status,
-                        IsCancelled = d.IsCancelled,
-                        IsPrinted = d.IsPrinted,
-                        IsLocked = d.IsLocked,
-                        CreatedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_CreatedByUserId.Username,
-                            Fullname = d.MstUser_CreatedByUserId.Fullname
-                        },
-                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
-                        UpdatedByUser = new DTO.MstUserDTO
-                        {
-                            Username = d.MstUser_UpdatedByUserId.Username,
-                            Fullname = d.MstUser_UpdatedByUserId.Fullname
-                        },
-                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
-                    }
-                ).ToListAsync();
+                var disbursements = await (
+                     from d in _dbContext.TrnDisbursements
+                     where d.BranchId == loginUser.BranchId
+                     && d.CVDate >= Convert.ToDateTime(startDate)
+                     && d.CVDate <= Convert.ToDateTime(endDate)
+                     orderby d.Id descending
+                     select new DTO.TrnDisbursementDTO
+                     {
+                         Id = d.Id,
+                         BranchId = d.BranchId,
+                         Branch = new DTO.MstCompanyBranchDTO
+                         {
+                             ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                             Branch = d.MstCompanyBranch_BranchId.Branch
+                         },
+                         CurrencyId = d.CurrencyId,
+                         Currency = new DTO.MstCurrencyDTO
+                         {
+                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                             Currency = d.MstCurrency_CurrencyId.Currency
+                         },
+                         ExchangeCurrencyId = d.ExchangeCurrencyId,
+                         ExchangeCurrency = new DTO.MstCurrencyDTO
+                         {
+                             ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                             Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                         },
+                         ExchangeRate = d.ExchangeRate,
+                         CVNumber = d.CVNumber,
+                         CVDate = d.CVDate.ToShortDateString(),
+                         ManualNumber = d.ManualNumber,
+                         DocumentReference = d.DocumentReference,
+                         SupplierId = d.SupplierId,
+                         Supplier = new DTO.MstArticleSupplierDTO
+                         {
+                             Article = new DTO.MstArticleDTO
+                             {
+                                 ManualCode = d.MstArticle_SupplierId.ManualCode
+                             },
+                             Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier : "",
+                         },
+                         Payee = d.Payee,
+                         Remarks = d.Remarks,
+                         PayTypeId = d.PayTypeId,
+                         PayType = new DTO.MstPayTypeDTO
+                         {
+                             ManualCode = d.MstPayType_PayTypeId.ManualCode,
+                             PayType = d.MstPayType_PayTypeId.PayType
+                         },
+                         CheckNumber = d.CheckNumber,
+                         CheckDate = d.CheckDate != null ? Convert.ToDateTime(d.CheckDate).ToShortDateString() : "",
+                         CheckBank = d.CheckBank,
+                         IsCrossCheck = d.IsCrossCheck,
+                         BankId = d.BankId,
+                         Bank = new DTO.MstArticleBankDTO
+                         {
+                             Article = new DTO.MstArticleDTO
+                             {
+                                 ManualCode = d.MstArticle_BankId.ManualCode
+                             },
+                             Bank = d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() ? d.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank : "",
+                         },
+                         IsClear = d.IsClear,
+                         Amount = d.Amount,
+                         BaseAmount = d.BaseAmount,
+                         PreparedByUserId = d.PreparedByUserId,
+                         PreparedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_PreparedByUserId.Username,
+                             Fullname = d.MstUser_PreparedByUserId.Fullname
+                         },
+                         CheckedByUserId = d.CheckedByUserId,
+                         CheckedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_CheckedByUserId.Username,
+                             Fullname = d.MstUser_CheckedByUserId.Fullname
+                         },
+                         ApprovedByUserId = d.ApprovedByUserId,
+                         ApprovedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_ApprovedByUserId.Username,
+                             Fullname = d.MstUser_ApprovedByUserId.Fullname
+                         },
+                         Status = d.Status,
+                         IsCancelled = d.IsCancelled,
+                         IsPrinted = d.IsPrinted,
+                         IsLocked = d.IsLocked,
+                         CreatedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_CreatedByUserId.Username,
+                             Fullname = d.MstUser_CreatedByUserId.Fullname
+                         },
+                         CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                         UpdatedByUser = new DTO.MstUserDTO
+                         {
+                             Username = d.MstUser_UpdatedByUserId.Username,
+                             Fullname = d.MstUser_UpdatedByUserId.Fullname
+                         },
+                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                     }
+                 ).ToListAsync();
 
                 return StatusCode(200, disbursements);
             }
@@ -185,6 +193,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         CVNumber = d.CVNumber,
                         CVDate = d.CVDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -220,6 +235,8 @@ namespace liteclerk_api.APIControllers
                             Bank = d.MstArticle_BankId.MstArticleBanks_ArticleId.Any() ? d.MstArticle_BankId.MstArticleBanks_ArticleId.FirstOrDefault().Bank : "",
                         },
                         IsClear = d.IsClear,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         PreparedByUserId = d.PreparedByUserId,
                         PreparedByUser = new DTO.MstUserDTO
                         {
@@ -238,7 +255,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -273,18 +289,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == loginUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (loginUser == null)
                 {
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementList"
@@ -301,7 +317,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a disbursement.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
+                var supplier = await (
                     from d in _dbContext.MstArticleSuppliers
                     where d.MstArticle_ArticleId.IsLocked == true
                     select d
@@ -312,7 +328,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstPayTypeDBSet payType = await (
+                var payType = await (
                     from d in _dbContext.MstPayTypes
                     select d
                 ).FirstOrDefaultAsync();
@@ -322,7 +338,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Pay type not found.");
                 }
 
-                DBSets.MstArticleBankDBSet bank = await (
+                var bank = await (
                     from d in _dbContext.MstArticleBanks
                     where d.MstArticle_ArticleId.IsLocked == true
                     select d
@@ -333,7 +349,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Bank not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "DISBURSEMENT STATUS"
                     select d
@@ -345,7 +361,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String CVNumber = "0000000001";
-                DBSets.TrnDisbursementDBSet lastDisbursement = await (
+                var lastDisbursement = await (
                     from d in _dbContext.TrnDisbursements
                     where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
@@ -358,10 +374,12 @@ namespace liteclerk_api.APIControllers
                     CVNumber = PadZeroes(lastCVNumber, 10);
                 }
 
-                DBSets.TrnDisbursementDBSet newDisbursement = new DBSets.TrnDisbursementDBSet()
+                var newDisbursement = new DBSets.TrnDisbursementDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeCurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeRate = 0,
                     CVNumber = CVNumber,
                     CVDate = DateTime.Today,
                     ManualNumber = CVNumber,
@@ -376,10 +394,11 @@ namespace liteclerk_api.APIControllers
                     IsCrossCheck = false,
                     BankId = bank.ArticleId,
                     IsClear = false,
+                    Amount = 0,
+                    BaseAmount = 0,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
-                    Amount = 0,
                     Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
@@ -408,18 +427,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == loginUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (loginUser == null)
                 {
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementDetail"
@@ -436,7 +455,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                     from d in _dbContext.TrnDisbursements
                     where d.Id == id
                     select d
@@ -452,18 +471,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a disbursement that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnDisbursementDTO.CurrencyId
+                    where d.Id == trnDisbursementDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
+                var supplier = await (
                     from d in _dbContext.MstArticleSuppliers
                     where d.ArticleId == trnDisbursementDTO.SupplierId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -475,7 +494,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstPayTypeDBSet payType = await (
+                var payType = await (
                     from d in _dbContext.MstPayTypes
                     where d.Id == trnDisbursementDTO.PayTypeId
                     select d
@@ -486,7 +505,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Pay type not found.");
                 }
 
-                DBSets.MstArticleBankDBSet bank = await (
+                var bank = await (
                     from d in _dbContext.MstArticleBanks
                     where d.ArticleId == trnDisbursementDTO.BankId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -498,29 +517,29 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Bank not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == trnDisbursementDTO.CheckedByUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var checkedByUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == trnDisbursementDTO.CheckedByUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (checkedByUser == null)
                 {
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == trnDisbursementDTO.ApprovedByUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var approvedByUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == trnDisbursementDTO.ApprovedByUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (approvedByUser == null)
                 {
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnDisbursementDTO.Status
                     && d.Category == "DISBURSEMENT STATUS"
@@ -538,8 +557,9 @@ namespace liteclerk_api.APIControllers
                     checkDate = Convert.ToDateTime(trnDisbursementDTO.CheckDate);
                 }
 
-                DBSets.TrnDisbursementDBSet saveDisbursement = disbursement;
-                saveDisbursement.CurrencyId = trnDisbursementDTO.CurrencyId;
+                var saveDisbursement = disbursement;
+                saveDisbursement.ExchangeCurrencyId = trnDisbursementDTO.ExchangeCurrencyId;
+                saveDisbursement.ExchangeRate = trnDisbursementDTO.ExchangeRate;
                 saveDisbursement.CVDate = Convert.ToDateTime(trnDisbursementDTO.CVDate);
                 saveDisbursement.ManualNumber = trnDisbursementDTO.ManualNumber;
                 saveDisbursement.DocumentReference = trnDisbursementDTO.DocumentReference;
@@ -576,18 +596,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == loginUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (loginUser == null)
                 {
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementDetail"
@@ -604,7 +624,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
@@ -620,18 +640,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a disbursement that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnDisbursementDTO.CurrencyId
+                    where d.Id == trnDisbursementDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
+                var supplier = await (
                     from d in _dbContext.MstArticleSuppliers
                     where d.ArticleId == trnDisbursementDTO.SupplierId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -643,7 +663,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstPayTypeDBSet payType = await (
+                var payType = await (
                     from d in _dbContext.MstPayTypes
                     where d.Id == trnDisbursementDTO.PayTypeId
                     select d
@@ -654,7 +674,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Pay type not found.");
                 }
 
-                DBSets.MstArticleBankDBSet bank = await (
+                var bank = await (
                     from d in _dbContext.MstArticleBanks
                     where d.ArticleId == trnDisbursementDTO.BankId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -666,29 +686,29 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Bank not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == trnDisbursementDTO.CheckedByUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var checkedByUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == trnDisbursementDTO.CheckedByUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (checkedByUser == null)
                 {
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == trnDisbursementDTO.ApprovedByUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var approvedByUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == trnDisbursementDTO.ApprovedByUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (approvedByUser == null)
                 {
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnDisbursementDTO.Status
                     && d.Category == "DISBURSEMENT STATUS"
@@ -706,8 +726,9 @@ namespace liteclerk_api.APIControllers
                     checkDate = Convert.ToDateTime(trnDisbursementDTO.CheckDate);
                 }
 
-                DBSets.TrnDisbursementDBSet lockDisbursement = disbursement;
-                lockDisbursement.CurrencyId = trnDisbursementDTO.CurrencyId;
+                var lockDisbursement = disbursement;
+                lockDisbursement.ExchangeCurrencyId = trnDisbursementDTO.ExchangeCurrencyId;
+                lockDisbursement.ExchangeRate = trnDisbursementDTO.ExchangeRate;
                 lockDisbursement.CVDate = Convert.ToDateTime(trnDisbursementDTO.CVDate);
                 lockDisbursement.ManualNumber = trnDisbursementDTO.ManualNumber;
                 lockDisbursement.DocumentReference = trnDisbursementDTO.DocumentReference;
@@ -730,7 +751,7 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                var disbursementLinesByCurrentDisbursement = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.CVId == id
                     && d.RRId != null
@@ -762,18 +783,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == loginUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (loginUser == null)
                 {
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementDetail"
@@ -790,7 +811,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
@@ -806,14 +827,14 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock a disbursement that is unlocked.");
                 }
 
-                DBSets.TrnDisbursementDBSet unlockDisbursement = disbursement;
+                var unlockDisbursement = disbursement;
                 unlockDisbursement.IsLocked = false;
                 unlockDisbursement.UpdatedByUserId = loginUserId;
                 unlockDisbursement.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
+                var disbursementLinesByCurrentDisbursement = await (
                     from d in _dbContext.TrnDisbursementLines
                     where d.CVId == id
                     && d.RRId != null
@@ -845,18 +866,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == loginUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (loginUser == null)
                 {
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementDetail"
@@ -873,7 +894,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to cancel a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
@@ -889,19 +910,19 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot cancel a disbursement that is unlocked.");
                 }
 
-                DBSets.TrnDisbursementDBSet unlockDisbursement = disbursement;
+                var unlockDisbursement = disbursement;
                 unlockDisbursement.IsCancelled = true;
                 unlockDisbursement.UpdatedByUserId = loginUserId;
                 unlockDisbursement.UpdatedDateTime = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
-                    from d in _dbContext.TrnDisbursementLines
-                    where d.CVId == id
-                    && d.RRId != null
-                    select d
-                ).ToListAsync();
+                var disbursementLinesByCurrentDisbursement = await (
+                     from d in _dbContext.TrnDisbursementLines
+                     where d.CVId == id
+                     && d.RRId != null
+                     select d
+                 ).ToListAsync();
 
                 if (disbursementLinesByCurrentDisbursement.Any())
                 {
@@ -926,18 +947,18 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUser = await (
+                     from d in _dbContext.MstUsers
+                     where d.Id == loginUserId
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (loginUser == null)
                 {
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityDisbursementList"
@@ -954,7 +975,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a disbursement.");
                 }
 
-                DBSets.TrnDisbursementDBSet disbursement = await (
+                var disbursement = await (
                      from d in _dbContext.TrnDisbursements
                      where d.Id == id
                      select d
@@ -973,12 +994,12 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnDisbursements.Remove(disbursement);
                 await _dbContext.SaveChangesAsync();
 
-                IEnumerable<DBSets.TrnDisbursementLineDBSet> disbursementLinesByCurrentDisbursement = await (
-                    from d in _dbContext.TrnDisbursementLines
-                    where d.CVId == id
-                    && d.RRId != null
-                    select d
-                ).ToListAsync();
+                var disbursementLinesByCurrentDisbursement = await (
+                     from d in _dbContext.TrnDisbursementLines
+                     where d.CVId == id
+                     && d.RRId != null
+                     select d
+                 ).ToListAsync();
 
                 if (disbursementLinesByCurrentDisbursement.Any())
                 {

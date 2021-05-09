@@ -56,13 +56,13 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnReceivingReceiptDTO> receivingReceipts = await (
+                var receivingReceipts = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.BranchId == loginUser.BranchId
                     && d.RRDate >= Convert.ToDateTime(startDate)
@@ -83,6 +83,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         RRNumber = d.RRNumber,
                         RRDate = d.RRDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -98,7 +105,6 @@ namespace liteclerk_api.APIControllers
                             PayableAccountId = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId : 0,
                             PayableAccount = new DTO.MstAccountDTO
                             {
-                                AccountCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.AccountCode : "",
                                 ManualCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.ManualCode : "",
                                 Account = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.Account : ""
                             }
@@ -110,6 +116,14 @@ namespace liteclerk_api.APIControllers
                             Term = d.MstTerm_TermId.Term
                         },
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        PaidAmount = d.PaidAmount,
+                        BasePaidAmount = d.BasePaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BaseAdjustmentAmount = d.BaseAdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        BaseBalanceAmount = d.BaseBalanceAmount,
                         ReceivedByUserId = d.ReceivedByUserId,
                         ReceivedByUser = new DTO.MstUserDTO
                         {
@@ -134,10 +148,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
-                        PaidAmount = d.PaidAmount,
-                        AdjustmentAmount = d.AdjustmentAmount,
-                        BalanceAmount = d.BalanceAmount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -172,13 +182,13 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnReceivingReceiptDTO> receivingReceipts = await (
+                var receivingReceipts = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.BranchId == loginUser.BranchId
                     && d.SupplierId == supplierId
@@ -200,6 +210,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         RRNumber = d.RRNumber,
                         RRDate = d.RRDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -215,7 +232,6 @@ namespace liteclerk_api.APIControllers
                             PayableAccountId = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId : 0,
                             PayableAccount = new DTO.MstAccountDTO
                             {
-                                AccountCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.AccountCode : "",
                                 ManualCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.ManualCode : "",
                                 Account = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.Account : ""
                             }
@@ -227,6 +243,14 @@ namespace liteclerk_api.APIControllers
                             Term = d.MstTerm_TermId.Term
                         },
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        PaidAmount = d.PaidAmount,
+                        BasePaidAmount = d.BasePaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BaseAdjustmentAmount = d.BaseAdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        BaseBalanceAmount = d.BaseBalanceAmount,
                         ReceivedByUserId = d.ReceivedByUserId,
                         ReceivedByUser = new DTO.MstUserDTO
                         {
@@ -251,10 +275,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
-                        PaidAmount = d.PaidAmount,
-                        AdjustmentAmount = d.AdjustmentAmount,
-                        BalanceAmount = d.BalanceAmount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -287,12 +307,11 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnReceivingReceiptDTO receivingReceipt = await (
+                var receivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.Id == id
                     select new DTO.TrnReceivingReceiptDTO
                     {
-
                         Id = d.Id,
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
@@ -306,6 +325,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         RRNumber = d.RRNumber,
                         RRDate = d.RRDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -321,7 +347,6 @@ namespace liteclerk_api.APIControllers
                             PayableAccountId = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().PayableAccountId : 0,
                             PayableAccount = new DTO.MstAccountDTO
                             {
-                                AccountCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.AccountCode : "",
                                 ManualCode = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.ManualCode : "",
                                 Account = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().MstAccount_PayableAccountId.Account : ""
                             }
@@ -333,6 +358,14 @@ namespace liteclerk_api.APIControllers
                             Term = d.MstTerm_TermId.Term
                         },
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        PaidAmount = d.PaidAmount,
+                        BasePaidAmount = d.BasePaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BaseAdjustmentAmount = d.BaseAdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        BaseBalanceAmount = d.BaseBalanceAmount,
                         ReceivedByUserId = d.ReceivedByUserId,
                         ReceivedByUser = new DTO.MstUserDTO
                         {
@@ -357,10 +390,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
-                        PaidAmount = d.PaidAmount,
-                        AdjustmentAmount = d.AdjustmentAmount,
-                        BalanceAmount = d.BalanceAmount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -395,7 +424,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -406,7 +435,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptList"
@@ -423,7 +452,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a receiving receipt.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
+                var supplier = await (
                     from d in _dbContext.MstArticleSuppliers
                     where d.MstArticle_ArticleId.IsLocked == true
                     select d
@@ -434,7 +463,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "RECEIVING RECEIPT STATUS"
                     select d
@@ -446,7 +475,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String RRNumber = "0000000001";
-                DBSets.TrnReceivingReceiptDBSet lastReceivingReceipt = await (
+                var lastReceivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
@@ -459,10 +488,12 @@ namespace liteclerk_api.APIControllers
                     RRNumber = PadZeroes(lastRRNumber, 10);
                 }
 
-                DBSets.TrnReceivingReceiptDBSet newReceivingReceipt = new DBSets.TrnReceivingReceiptDBSet()
+                var newReceivingReceipt = new DBSets.TrnReceivingReceiptDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeCurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeRate = 0,
                     RRNumber = RRNumber,
                     RRDate = DateTime.Today,
                     ManualNumber = RRNumber,
@@ -470,14 +501,18 @@ namespace liteclerk_api.APIControllers
                     SupplierId = supplier.ArticleId,
                     TermId = supplier.TermId,
                     Remarks = "",
+                    Amount = 0,
+                    BaseAmount = 0,
+                    PaidAmount = 0,
+                    BasePaidAmount = 0,
+                    AdjustmentAmount = 0,
+                    BaseAdjustmentAmount = 0,
+                    BalanceAmount = 0,
+                    BaseBalanceAmount = 0,
                     ReceivedByUserId = loginUserId,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
-                    Amount = 0,
-                    PaidAmount = 0,
-                    AdjustmentAmount = 0,
-                    BalanceAmount = 0,
                     Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
@@ -506,7 +541,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -517,7 +552,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptDetail"
@@ -534,7 +569,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a receiving receipt.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                     from d in _dbContext.TrnReceivingReceipts
                     where d.Id == id
                     select d
@@ -550,18 +585,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a receiving receipt that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnReceivingReceiptDTO.CurrencyId
+                    where d.Id == trnReceivingReceiptDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
+                var supplier = await (
                     from d in _dbContext.MstArticleSuppliers
                     where d.ArticleId == trnReceivingReceiptDTO.SupplierId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -573,7 +608,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstTermDBSet term = await (
+                var term = await (
                     from d in _dbContext.MstTerms
                     where d.Id == trnReceivingReceiptDTO.TermId
                     select d
@@ -584,7 +619,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Term not found.");
                 }
 
-                DBSets.MstUserDBSet requestedByUser = await (
+                var requestedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnReceivingReceiptDTO.ReceivedByUserId
                     select d
@@ -595,7 +630,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Ordered by user not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnReceivingReceiptDTO.CheckedByUserId
                     select d
@@ -606,7 +641,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnReceivingReceiptDTO.ApprovedByUserId
                     select d
@@ -617,7 +652,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnReceivingReceiptDTO.Status
                     && d.Category == "RECEIVING RECEIPT STATUS"
@@ -629,8 +664,9 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet saveReceivingReceipt = receivingReceipt;
-                saveReceivingReceipt.CurrencyId = trnReceivingReceiptDTO.CurrencyId;
+                var saveReceivingReceipt = receivingReceipt;
+                saveReceivingReceipt.ExchangeCurrencyId = trnReceivingReceiptDTO.ExchangeCurrencyId;
+                saveReceivingReceipt.ExchangeRate = trnReceivingReceiptDTO.ExchangeRate;
                 saveReceivingReceipt.RRDate = Convert.ToDateTime(trnReceivingReceiptDTO.RRDate);
                 saveReceivingReceipt.ManualNumber = trnReceivingReceiptDTO.ManualNumber;
                 saveReceivingReceipt.DocumentReference = trnReceivingReceiptDTO.DocumentReference;
@@ -661,7 +697,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -672,7 +708,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptDetail"
@@ -689,7 +725,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a receiving receipt.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                      from d in _dbContext.TrnReceivingReceipts
                      where d.Id == id
                      select d
@@ -705,18 +741,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a receiving receipt that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnReceivingReceiptDTO.CurrencyId
+                    where d.Id == trnReceivingReceiptDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
+                var supplier = await (
                     from d in _dbContext.MstArticleSuppliers
                     where d.ArticleId == trnReceivingReceiptDTO.SupplierId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -728,7 +764,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstTermDBSet term = await (
+                var term = await (
                     from d in _dbContext.MstTerms
                     where d.Id == trnReceivingReceiptDTO.TermId
                     select d
@@ -739,7 +775,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Term not found.");
                 }
 
-                DBSets.MstUserDBSet requestedByUser = await (
+                var requestedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnReceivingReceiptDTO.ReceivedByUserId
                     select d
@@ -750,7 +786,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Ordered by user not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnReceivingReceiptDTO.CheckedByUserId
                     select d
@@ -761,7 +797,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnReceivingReceiptDTO.ApprovedByUserId
                     select d
@@ -772,7 +808,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnReceivingReceiptDTO.Status
                     && d.Category == "RECEIVING RECEIPT STATUS"
@@ -784,8 +820,9 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet lockReceivingReceipt = receivingReceipt;
-                lockReceivingReceipt.CurrencyId = trnReceivingReceiptDTO.CurrencyId;
+                var lockReceivingReceipt = receivingReceipt;
+                lockReceivingReceipt.ExchangeCurrencyId = trnReceivingReceiptDTO.ExchangeCurrencyId;
+                lockReceivingReceipt.ExchangeRate = trnReceivingReceiptDTO.ExchangeRate;
                 lockReceivingReceipt.RRDate = Convert.ToDateTime(trnReceivingReceiptDTO.RRDate);
                 lockReceivingReceipt.ManualNumber = trnReceivingReceiptDTO.ManualNumber;
                 lockReceivingReceipt.DocumentReference = trnReceivingReceiptDTO.DocumentReference;
@@ -821,7 +858,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -832,7 +869,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptDetail"
@@ -849,7 +886,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a receiving receipt.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                      from d in _dbContext.TrnReceivingReceipts
                      where d.Id == id
                      select d
@@ -865,7 +902,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock a receiving receipt that is unlocked.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet unlockReceivingReceipt = receivingReceipt;
+                var unlockReceivingReceipt = receivingReceipt;
                 unlockReceivingReceipt.IsLocked = false;
                 unlockReceivingReceipt.UpdatedByUserId = loginUserId;
                 unlockReceivingReceipt.UpdatedDateTime = DateTime.Now;
@@ -891,7 +928,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -902,7 +939,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptDetail"
@@ -919,7 +956,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to cancel a receiving receipt.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                      from d in _dbContext.TrnReceivingReceipts
                      where d.Id == id
                      select d
@@ -935,7 +972,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot cancel a receiving receipt that is unlocked.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet cancelReceivingReceipt = receivingReceipt;
+                var cancelReceivingReceipt = receivingReceipt;
                 cancelReceivingReceipt.IsCancelled = true;
                 cancelReceivingReceipt.UpdatedByUserId = loginUserId;
                 cancelReceivingReceipt.UpdatedDateTime = DateTime.Now;
@@ -957,7 +994,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -968,7 +1005,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityReceivingReceiptList"
@@ -985,7 +1022,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a receiving receipt.");
                 }
 
-                DBSets.TrnReceivingReceiptDBSet receivingReceipt = await (
+                var receivingReceipt = await (
                      from d in _dbContext.TrnReceivingReceipts
                      where d.Id == id
                      select d

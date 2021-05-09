@@ -28,8 +28,11 @@ namespace liteclerk_api.Modules
                 if (receivingReceipt != null)
                 {
                     Decimal amount = receivingReceipt.Amount;
+                    Decimal baseAmount = receivingReceipt.BaseAmount;
                     Decimal paidAmount = 0;
+                    Decimal basePaidAmount = 0;
                     Decimal adjustmentAmount = 0;
+                    Decimal baseAdjustmentAmount = 0;
 
                     var disbursementLine = await (
                          from d in _dbContext.TrnDisbursementLines
@@ -42,6 +45,7 @@ namespace liteclerk_api.Modules
                     if (disbursementLine.Any())
                     {
                         paidAmount = disbursementLine.Sum(d => d.Amount);
+                        basePaidAmount = disbursementLine.Sum(d => d.Amount) * receivingReceipt.ExchangeRate;
                     }
 
                     var payableMemoLines = await (
@@ -55,14 +59,19 @@ namespace liteclerk_api.Modules
                     if (payableMemoLines.Any())
                     {
                         adjustmentAmount = payableMemoLines.Sum(d => d.Amount);
+                        baseAdjustmentAmount = payableMemoLines.Sum(d => d.BaseAmount);
                     }
 
                     Decimal balanceAmount = (amount - paidAmount) + adjustmentAmount;
+                    Decimal baseBalanceAmount = (baseAmount - basePaidAmount) + baseAdjustmentAmount;
 
                     var updateReceivingReceipt = receivingReceipt;
                     updateReceivingReceipt.PaidAmount = paidAmount;
+                    updateReceivingReceipt.BasePaidAmount = basePaidAmount;
                     updateReceivingReceipt.AdjustmentAmount = adjustmentAmount;
+                    updateReceivingReceipt.BaseAdjustmentAmount = baseAdjustmentAmount;
                     updateReceivingReceipt.BalanceAmount = balanceAmount;
+                    updateReceivingReceipt.BaseBalanceAmount = baseBalanceAmount;
 
                     await _dbContext.SaveChangesAsync();
                 }

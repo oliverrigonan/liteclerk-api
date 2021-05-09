@@ -83,6 +83,7 @@ namespace liteclerk_api.APIControllers
                         DiscountAmount = d.DiscountAmount,
                         NetPrice = d.NetPrice,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
@@ -180,6 +181,7 @@ namespace liteclerk_api.APIControllers
                         DiscountAmount = d.DiscountAmount,
                         NetPrice = d.NetPrice,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         VATId = d.VATId,
                         VAT = new DTO.MstTaxDTO
                         {
@@ -367,6 +369,14 @@ namespace liteclerk_api.APIControllers
                     baseNetPrice = trnSalesInvoiceItemDTO.Amount / baseQuantity;
                 }
 
+                Decimal exchangeRate = salesInvoice.ExchangeRate;
+                Decimal baseAmount = trnSalesInvoiceItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnSalesInvoiceItemDTO.Amount * exchangeRate;
+                }
+
                 var newSalesInvoiceItems = new DBSets.TrnSalesInvoiceItemDBSet()
                 {
                     SIId = trnSalesInvoiceItemDTO.SIId,
@@ -382,6 +392,7 @@ namespace liteclerk_api.APIControllers
                     DiscountAmount = trnSalesInvoiceItemDTO.DiscountAmount,
                     NetPrice = trnSalesInvoiceItemDTO.NetPrice,
                     Amount = trnSalesInvoiceItemDTO.Amount,
+                    BaseAmount = baseAmount,
                     VATId = trnSalesInvoiceItemDTO.VATId,
                     VATRate = trnSalesInvoiceItemDTO.VATRate,
                     VATAmount = trnSalesInvoiceItemDTO.VATAmount,
@@ -397,7 +408,8 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnSalesInvoiceItems.Add(newSalesInvoiceItems);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var salesInvoiceItemsByCurrentSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoiceItems
@@ -407,11 +419,13 @@ namespace liteclerk_api.APIControllers
 
                 if (salesInvoiceItemsByCurrentSalesInvoice.Any())
                 {
-                    amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                    totalAmount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                    totalBaseAmount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.BaseAmount);
                 }
 
                 var updateSalesInvoice = salesInvoice;
-                updateSalesInvoice.Amount = amount;
+                updateSalesInvoice.Amount = totalAmount;
+                updateSalesInvoice.BaseAmount = totalBaseAmount;
                 updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
 
@@ -584,6 +598,14 @@ namespace liteclerk_api.APIControllers
                     baseNetPrice = trnSalesInvoiceItemDTO.Amount / baseQuantity;
                 }
 
+                Decimal exchangeRate = salesInvoice.ExchangeRate;
+                Decimal baseAmount = trnSalesInvoiceItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnSalesInvoiceItemDTO.Amount * exchangeRate;
+                }
+
                 var updateSalesInvoiceItems = salesInvoiceItem;
                 updateSalesInvoiceItems.SIId = trnSalesInvoiceItemDTO.SIId;
                 updateSalesInvoiceItems.ItemInventoryId = trnSalesInvoiceItemDTO.ItemInventoryId;
@@ -597,6 +619,7 @@ namespace liteclerk_api.APIControllers
                 updateSalesInvoiceItems.DiscountAmount = trnSalesInvoiceItemDTO.DiscountAmount;
                 updateSalesInvoiceItems.NetPrice = trnSalesInvoiceItemDTO.NetPrice;
                 updateSalesInvoiceItems.Amount = trnSalesInvoiceItemDTO.Amount;
+                updateSalesInvoiceItems.BaseAmount = baseAmount;
                 updateSalesInvoiceItems.VATId = trnSalesInvoiceItemDTO.VATId;
                 updateSalesInvoiceItems.VATRate = trnSalesInvoiceItemDTO.VATRate;
                 updateSalesInvoiceItems.VATAmount = trnSalesInvoiceItemDTO.VATAmount;
@@ -610,7 +633,8 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var salesInvoiceItemsByCurrentSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoiceItems
@@ -620,11 +644,13 @@ namespace liteclerk_api.APIControllers
 
                 if (salesInvoiceItemsByCurrentSalesInvoice.Any())
                 {
-                    amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                    totalAmount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                    totalBaseAmount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.BaseAmount);
                 }
 
                 var updateSalesInvoice = salesInvoice;
-                updateSalesInvoice.Amount = amount;
+                updateSalesInvoice.Amount = totalAmount;
+                updateSalesInvoice.BaseAmount = totalBaseAmount;
                 updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
 
@@ -707,7 +733,8 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnSalesInvoiceItems.Remove(salesInvoiceItem);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var salesInvoiceItemsByCurrentSalesInvoice = await (
                     from d in _dbContext.TrnSalesInvoiceItems
@@ -717,11 +744,13 @@ namespace liteclerk_api.APIControllers
 
                 if (salesInvoiceItemsByCurrentSalesInvoice.Any())
                 {
-                    amount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                    totalAmount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.Amount);
+                    totalBaseAmount = salesInvoiceItemsByCurrentSalesInvoice.Sum(d => d.BaseAmount);
                 }
 
                 var updateSalesInvoice = salesInvoice;
-                updateSalesInvoice.Amount = amount;
+                updateSalesInvoice.Amount = totalAmount;
+                updateSalesInvoice.BaseAmount = totalBaseAmount;
                 updateSalesInvoice.UpdatedByUserId = loginUserId;
                 updateSalesInvoice.UpdatedDateTime = DateTime.Now;
 

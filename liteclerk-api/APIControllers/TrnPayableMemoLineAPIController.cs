@@ -64,6 +64,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnReceivingReceipt_RRId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars
                     }
                 ).ToListAsync();
@@ -115,6 +116,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnReceivingReceipt_RRId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars
                     }
                 ).FirstOrDefaultAsync();
@@ -225,6 +227,14 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Receiving receipt not found.");
                 }
 
+                Decimal exchangeRate = payableMemo.ExchangeRate;
+                Decimal baseAmount = trnPayableMemoLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnPayableMemoLineDTO.Amount * exchangeRate;
+                }
+
                 var newPayableMemoLines = new DBSets.TrnPayableMemoLineDBSet()
                 {
                     PMId = trnPayableMemoLineDTO.PMId,
@@ -233,13 +243,15 @@ namespace liteclerk_api.APIControllers
                     ArticleId = trnPayableMemoLineDTO.ArticleId,
                     RRId = trnPayableMemoLineDTO.RRId,
                     Amount = trnPayableMemoLineDTO.Amount,
+                    BaseAmount = baseAmount,
                     Particulars = trnPayableMemoLineDTO.Particulars
                 };
 
                 _dbContext.TrnPayableMemoLines.Add(newPayableMemoLines);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var payableMemoLinesByCurrentPayableMemo = await (
                     from d in _dbContext.TrnPayableMemoLines
@@ -249,11 +261,13 @@ namespace liteclerk_api.APIControllers
 
                 if (payableMemoLinesByCurrentPayableMemo.Any())
                 {
-                    amount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.Amount);
+                    totalAmount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.Amount);
+                    totalBaseAmount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.BaseAmount);
                 }
 
                 var updatePayableMemo = payableMemo;
-                updatePayableMemo.Amount = amount;
+                updatePayableMemo.Amount = totalAmount;
+                updatePayableMemo.BaseAmount = totalBaseAmount;
                 updatePayableMemo.UpdatedByUserId = loginUserId;
                 updatePayableMemo.UpdatedDateTime = DateTime.Now;
 
@@ -376,6 +390,14 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Receiving receipt not found.");
                 }
 
+                Decimal exchangeRate = payableMemo.ExchangeRate;
+                Decimal baseAmount = trnPayableMemoLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnPayableMemoLineDTO.Amount * exchangeRate;
+                }
+
                 var updatePayableMemoLines = payableMemoLine;
                 updatePayableMemoLines.PMId = trnPayableMemoLineDTO.PMId;
                 updatePayableMemoLines.BranchId = trnPayableMemoLineDTO.BranchId;
@@ -383,11 +405,13 @@ namespace liteclerk_api.APIControllers
                 updatePayableMemoLines.ArticleId = trnPayableMemoLineDTO.ArticleId;
                 updatePayableMemoLines.RRId = trnPayableMemoLineDTO.RRId;
                 updatePayableMemoLines.Amount = trnPayableMemoLineDTO.Amount;
+                updatePayableMemoLines.BaseAmount = baseAmount;
                 updatePayableMemoLines.Particulars = trnPayableMemoLineDTO.Particulars;
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var payableMemoLinesByCurrentPayableMemo = await (
                     from d in _dbContext.TrnPayableMemoLines
@@ -397,11 +421,13 @@ namespace liteclerk_api.APIControllers
 
                 if (payableMemoLinesByCurrentPayableMemo.Any())
                 {
-                    amount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.Amount);
+                    totalAmount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.Amount);
+                    totalBaseAmount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.BaseAmount);
                 }
 
                 var updatePayableMemo = payableMemo;
-                updatePayableMemo.Amount = amount;
+                updatePayableMemo.Amount = totalAmount;
+                updatePayableMemo.BaseAmount = totalBaseAmount;
                 updatePayableMemo.UpdatedByUserId = loginUserId;
                 updatePayableMemo.UpdatedDateTime = DateTime.Now;
 
@@ -484,7 +510,8 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnPayableMemoLines.Remove(payableMemoLine);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
                 var payableMemoLinesByCurrentPayableMemo = await (
                     from d in _dbContext.TrnPayableMemoLines
@@ -494,11 +521,13 @@ namespace liteclerk_api.APIControllers
 
                 if (payableMemoLinesByCurrentPayableMemo.Any())
                 {
-                    amount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.Amount);
+                    totalAmount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.Amount);
+                    totalBaseAmount = payableMemoLinesByCurrentPayableMemo.Sum(d => d.BaseAmount);
                 }
 
                 var updatePayableMemo = payableMemo;
-                updatePayableMemo.Amount = amount;
+                updatePayableMemo.Amount = totalAmount;
+                updatePayableMemo.BaseAmount = totalBaseAmount;
                 updatePayableMemo.UpdatedByUserId = loginUserId;
                 updatePayableMemo.UpdatedDateTime = DateTime.Now;
 

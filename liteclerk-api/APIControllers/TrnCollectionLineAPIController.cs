@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnCollectionLineDTO> collectionLines = await (
+                var collectionLines = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == CIId
                     orderby d.Id descending
@@ -67,6 +67,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars,
                         PayTypeId = d.PayTypeId,
                         PayType = new DTO.MstPayTypeDTO
@@ -150,6 +151,7 @@ namespace liteclerk_api.APIControllers
                             DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
                         },
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         Particulars = d.Particulars,
                         PayTypeId = d.PayTypeId,
                         PayType = new DTO.MstPayTypeDTO
@@ -198,7 +200,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -209,7 +211,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -226,7 +228,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a collection line.");
                 }
 
-                DBSets.TrnCollectionDBSet collection = await (
+                var collection = await (
                     from d in _dbContext.TrnCollections
                     where d.Id == trnCollectionLineDTO.CIId
                     select d
@@ -242,7 +244,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add collection line if the current collection is locked.");
                 }
 
-                DBSets.MstCompanyBranchDBSet branch = await (
+                var branch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnCollectionLineDTO.BranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -254,7 +256,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
+                var account = await (
                     from d in _dbContext.MstAccounts
                     where d.Id == trnCollectionLineDTO.AccountId
                     select d
@@ -265,7 +267,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == trnCollectionLineDTO.ArticleId
                     && d.IsLocked == true
@@ -279,7 +281,7 @@ namespace liteclerk_api.APIControllers
 
                 if (trnCollectionLineDTO.SIId != null)
                 {
-                    DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                    var salesInvoice = await (
                         from d in _dbContext.TrnSalesInvoices
                         where d.Id == trnCollectionLineDTO.SIId
                         && d.IsLocked == true
@@ -292,7 +294,7 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
-                DBSets.MstPayTypeDBSet payType = await (
+                var payType = await (
                     from d in _dbContext.MstPayTypes
                     where d.Id == trnCollectionLineDTO.PayTypeId
                     select d
@@ -303,7 +305,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Pay type not found.");
                 }
 
-                DBSets.MstArticleBankDBSet bank = await (
+                var bank = await (
                     from d in _dbContext.MstArticleBanks
                     where d.ArticleId == trnCollectionLineDTO.BankId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -315,7 +317,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Bank not found.");
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnCollectionLineDTO.WTAXId
                     select d
@@ -332,7 +334,15 @@ namespace liteclerk_api.APIControllers
                     checkDate = Convert.ToDateTime(trnCollectionLineDTO.CheckDate);
                 }
 
-                DBSets.TrnCollectionLineDBSet newCollectionLines = new DBSets.TrnCollectionLineDBSet()
+                Decimal exchangeRate = collection.ExchangeRate;
+                Decimal baseAmount = trnCollectionLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnCollectionLineDTO.Amount * exchangeRate;
+                }
+
+                var newCollectionLines = new DBSets.TrnCollectionLineDBSet()
                 {
                     CIId = trnCollectionLineDTO.CIId,
                     BranchId = trnCollectionLineDTO.BranchId,
@@ -340,6 +350,7 @@ namespace liteclerk_api.APIControllers
                     ArticleId = trnCollectionLineDTO.ArticleId,
                     SIId = trnCollectionLineDTO.SIId,
                     Amount = trnCollectionLineDTO.Amount,
+                    BaseAmount = baseAmount,
                     Particulars = trnCollectionLineDTO.Particulars,
                     PayTypeId = trnCollectionLineDTO.PayTypeId,
                     CheckNumber = trnCollectionLineDTO.CheckNumber,
@@ -355,9 +366,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnCollectionLines.Add(newCollectionLines);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                var collectionLinesByCurrentCollection = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == trnCollectionLineDTO.CIId
                     select d
@@ -365,11 +377,13 @@ namespace liteclerk_api.APIControllers
 
                 if (collectionLinesByCurrentCollection.Any())
                 {
-                    amount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                    totalAmount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                    totalBaseAmount = collectionLinesByCurrentCollection.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnCollectionDBSet updateCollection = collection;
-                updateCollection.Amount = amount;
+                var updateCollection = collection;
+                updateCollection.Amount = totalAmount;
+                updateCollection.BaseAmount = totalBaseAmount;
                 updateCollection.UpdatedByUserId = loginUserId;
                 updateCollection.UpdatedDateTime = DateTime.Now;
 
@@ -390,7 +404,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -401,7 +415,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -418,7 +432,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a collection line.");
                 }
 
-                DBSets.TrnCollectionLineDBSet collectionLine = await (
+                var collectionLine = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.Id == id
                     select d
@@ -429,7 +443,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Collection line not found.");
                 }
 
-                DBSets.TrnCollectionDBSet collection = await (
+                var collection = await (
                     from d in _dbContext.TrnCollections
                     where d.Id == trnCollectionLineDTO.CIId
                     select d
@@ -445,7 +459,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update collection line if the current collection is locked.");
                 }
 
-                DBSets.MstCompanyBranchDBSet branch = await (
+                var branch = await (
                     from d in _dbContext.MstCompanyBranches
                     where d.Id == trnCollectionLineDTO.BranchId
                     && d.MstCompany_CompanyId.IsLocked == true
@@ -457,7 +471,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Branch not found.");
                 }
 
-                DBSets.MstAccountDBSet account = await (
+                var account = await (
                     from d in _dbContext.MstAccounts
                     where d.Id == trnCollectionLineDTO.AccountId
                     select d
@@ -468,7 +482,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Account not found.");
                 }
 
-                DBSets.MstArticleDBSet article = await (
+                var article = await (
                     from d in _dbContext.MstArticles
                     where d.Id == trnCollectionLineDTO.ArticleId
                     && d.IsLocked == true
@@ -482,7 +496,7 @@ namespace liteclerk_api.APIControllers
 
                 if (trnCollectionLineDTO.SIId != null)
                 {
-                    DBSets.TrnSalesInvoiceDBSet salesInvoice = await (
+                    var salesInvoice = await (
                         from d in _dbContext.TrnSalesInvoices
                         where d.Id == trnCollectionLineDTO.SIId
                         && d.IsLocked == true
@@ -495,7 +509,7 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
-                DBSets.MstPayTypeDBSet payType = await (
+                var payType = await (
                     from d in _dbContext.MstPayTypes
                     where d.Id == trnCollectionLineDTO.PayTypeId
                     select d
@@ -506,7 +520,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Pay type not found.");
                 }
 
-                DBSets.MstArticleBankDBSet bank = await (
+                var bank = await (
                     from d in _dbContext.MstArticleBanks
                     where d.ArticleId == trnCollectionLineDTO.BankId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -518,7 +532,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Bank not found.");
                 }
 
-                DBSets.MstTaxDBSet WTAX = await (
+                var WTAX = await (
                     from d in _dbContext.MstTaxes
                     where d.Id == trnCollectionLineDTO.WTAXId
                     select d
@@ -535,13 +549,22 @@ namespace liteclerk_api.APIControllers
                     checkDate = Convert.ToDateTime(trnCollectionLineDTO.CheckDate);
                 }
 
-                DBSets.TrnCollectionLineDBSet updateCollectionLines = collectionLine;
+                Decimal exchangeRate = collection.ExchangeRate;
+                Decimal baseAmount = trnCollectionLineDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnCollectionLineDTO.Amount * exchangeRate;
+                }
+
+                var updateCollectionLines = collectionLine;
                 updateCollectionLines.CIId = trnCollectionLineDTO.CIId;
                 updateCollectionLines.BranchId = trnCollectionLineDTO.BranchId;
                 updateCollectionLines.AccountId = trnCollectionLineDTO.AccountId;
                 updateCollectionLines.ArticleId = trnCollectionLineDTO.ArticleId;
                 updateCollectionLines.SIId = trnCollectionLineDTO.SIId;
                 updateCollectionLines.Amount = trnCollectionLineDTO.Amount;
+                updateCollectionLines.BaseAmount = baseAmount;
                 updateCollectionLines.Particulars = trnCollectionLineDTO.Particulars;
                 updateCollectionLines.PayTypeId = trnCollectionLineDTO.PayTypeId;
                 updateCollectionLines.CheckNumber = trnCollectionLineDTO.CheckNumber;
@@ -555,9 +578,10 @@ namespace liteclerk_api.APIControllers
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                var collectionLinesByCurrentCollection = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == trnCollectionLineDTO.CIId
                     select d
@@ -565,11 +589,13 @@ namespace liteclerk_api.APIControllers
 
                 if (collectionLinesByCurrentCollection.Any())
                 {
-                    amount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                    totalAmount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                    totalBaseAmount = collectionLinesByCurrentCollection.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnCollectionDBSet updateCollection = collection;
-                updateCollection.Amount = amount;
+                var updateCollection = collection;
+                updateCollection.Amount = totalAmount;
+                updateCollection.BaseAmount = totalBaseAmount;
                 updateCollection.UpdatedByUserId = loginUserId;
                 updateCollection.UpdatedDateTime = DateTime.Now;
 
@@ -590,7 +616,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -601,7 +627,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityCollectionDetail"
@@ -620,7 +646,7 @@ namespace liteclerk_api.APIControllers
 
                 Int32 CIId = 0;
 
-                DBSets.TrnCollectionLineDBSet collectionLine = await (
+                var collectionLine = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.Id == id
                     select d
@@ -633,7 +659,7 @@ namespace liteclerk_api.APIControllers
 
                 CIId = collectionLine.CIId;
 
-                DBSets.TrnCollectionDBSet collection = await (
+                var collection = await (
                     from d in _dbContext.TrnCollections
                     where d.Id == CIId
                     select d
@@ -652,9 +678,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnCollectionLines.Remove(collectionLine);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnCollectionLineDBSet> collectionLinesByCurrentCollection = await (
+                var collectionLinesByCurrentCollection = await (
                     from d in _dbContext.TrnCollectionLines
                     where d.CIId == CIId
                     select d
@@ -662,11 +689,13 @@ namespace liteclerk_api.APIControllers
 
                 if (collectionLinesByCurrentCollection.Any())
                 {
-                    amount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                    totalAmount = collectionLinesByCurrentCollection.Sum(d => d.Amount);
+                    totalBaseAmount = collectionLinesByCurrentCollection.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnCollectionDBSet updateCollection = collection;
-                updateCollection.Amount = amount;
+                var updateCollection = collection;
+                updateCollection.Amount = totalAmount;
+                updateCollection.BaseAmount = totalBaseAmount;
                 updateCollection.UpdatedByUserId = loginUserId;
                 updateCollection.UpdatedDateTime = DateTime.Now;
 

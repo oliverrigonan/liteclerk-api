@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnPurchaseOrderItemDTO> purchaseOrderItems = await (
+                var purchaseOrderItems = await (
                     from d in _dbContext.TrnPurchaseOrderItems
                     where d.POId == POId
                     orderby d.Id descending
@@ -82,6 +82,7 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -106,7 +107,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnPurchaseOrderItemDTO purchaseOrderItem = await (
+                var purchaseOrderItem = await (
                     from d in _dbContext.TrnPurchaseOrderItems
                     where d.Id == id
                     select new DTO.TrnPurchaseOrderItemDTO
@@ -158,6 +159,7 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -184,7 +186,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -195,7 +197,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseOrderDetail"
@@ -212,7 +214,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a purchase order item.");
                 }
 
-                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                var purchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrders
                     where d.Id == trnPurchaseOrderItemDTO.POId
                     select d
@@ -228,7 +230,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add purchase order items if the current purchase order is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnPurchaseOrderItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -240,7 +242,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnPurchaseOrderItemDTO.ItemId
                     && d.UnitId == trnPurchaseOrderItemDTO.UnitId
@@ -264,7 +266,15 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnPurchaseOrderItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnPurchaseOrderItemDBSet newPurchaseOrderItems = new DBSets.TrnPurchaseOrderItemDBSet()
+                Decimal exchangeRate = purchaseOrder.ExchangeRate;
+                Decimal baseAmount = trnPurchaseOrderItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnPurchaseOrderItemDTO.Amount * exchangeRate;
+                }
+
+                var newPurchaseOrderItems = new DBSets.TrnPurchaseOrderItemDBSet()
                 {
                     POId = trnPurchaseOrderItemDTO.POId,
                     ItemId = trnPurchaseOrderItemDTO.ItemId,
@@ -273,6 +283,7 @@ namespace liteclerk_api.APIControllers
                     UnitId = trnPurchaseOrderItemDTO.UnitId,
                     Cost = trnPurchaseOrderItemDTO.Cost,
                     Amount = trnPurchaseOrderItemDTO.Amount,
+                    BaseAmount = baseAmount,
                     BaseQuantity = baseQuantity,
                     BaseUnitId = item.UnitId,
                     BaseCost = baseCost,
@@ -281,9 +292,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnPurchaseOrderItems.Add(newPurchaseOrderItems);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnPurchaseOrderItemDBSet> purchaseOrderItemsByCurrentPurchaseOrder = await (
+                var purchaseOrderItemsByCurrentPurchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrderItems
                     where d.POId == trnPurchaseOrderItemDTO.POId
                     select d
@@ -291,11 +303,13 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrderItemsByCurrentPurchaseOrder.Any())
                 {
-                    amount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.Amount);
+                    totalAmount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.Amount);
+                    totalBaseAmount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnPurchaseOrderDBSet updatePurchaseOrder = purchaseOrder;
-                updatePurchaseOrder.Amount = amount;
+                var updatePurchaseOrder = purchaseOrder;
+                updatePurchaseOrder.Amount = totalAmount;
+                updatePurchaseOrder.BaseAmount = totalBaseAmount;
                 updatePurchaseOrder.UpdatedByUserId = loginUserId;
                 updatePurchaseOrder.UpdatedDateTime = DateTime.Now;
 
@@ -316,7 +330,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -327,7 +341,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseOrderDetail"
@@ -344,7 +358,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a purchase order item.");
                 }
 
-                DBSets.TrnPurchaseOrderItemDBSet purchaseOrderItem = await (
+                var purchaseOrderItem = await (
                     from d in _dbContext.TrnPurchaseOrderItems
                     where d.Id == id
                     select d
@@ -355,7 +369,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Purchase order item not found.");
                 }
 
-                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                var purchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrders
                     where d.Id == trnPurchaseOrderItemDTO.POId
                     select d
@@ -371,7 +385,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update purchase order items if the current purchase order is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnPurchaseOrderItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -383,7 +397,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnPurchaseOrderItemDTO.ItemId
                     && d.UnitId == trnPurchaseOrderItemDTO.UnitId
@@ -407,22 +421,32 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnPurchaseOrderItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnPurchaseOrderItemDBSet updatePurchaseOrderItems = purchaseOrderItem;
+                Decimal exchangeRate = purchaseOrder.ExchangeRate;
+                Decimal baseAmount = trnPurchaseOrderItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnPurchaseOrderItemDTO.Amount * exchangeRate;
+                }
+
+                var updatePurchaseOrderItems = purchaseOrderItem;
                 updatePurchaseOrderItems.POId = trnPurchaseOrderItemDTO.POId;
                 updatePurchaseOrderItems.Particulars = trnPurchaseOrderItemDTO.Particulars;
                 updatePurchaseOrderItems.Quantity = trnPurchaseOrderItemDTO.Quantity;
                 updatePurchaseOrderItems.UnitId = trnPurchaseOrderItemDTO.UnitId;
                 updatePurchaseOrderItems.Cost = trnPurchaseOrderItemDTO.Cost;
                 updatePurchaseOrderItems.Amount = trnPurchaseOrderItemDTO.Amount;
+                updatePurchaseOrderItems.BaseAmount = baseAmount;
                 updatePurchaseOrderItems.BaseQuantity = baseQuantity;
                 updatePurchaseOrderItems.BaseUnitId = item.UnitId;
                 updatePurchaseOrderItems.BaseCost = baseCost;
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnPurchaseOrderItemDBSet> purchaseOrderItemsByCurrentPurchaseOrder = await (
+                var purchaseOrderItemsByCurrentPurchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrderItems
                     where d.POId == trnPurchaseOrderItemDTO.POId
                     select d
@@ -430,11 +454,13 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrderItemsByCurrentPurchaseOrder.Any())
                 {
-                    amount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.Amount);
+                    totalAmount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.Amount);
+                    totalBaseAmount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnPurchaseOrderDBSet updatePurchaseOrder = purchaseOrder;
-                updatePurchaseOrder.Amount = amount;
+                var updatePurchaseOrder = purchaseOrder;
+                updatePurchaseOrder.Amount = totalAmount;
+                updatePurchaseOrder.BaseAmount = totalBaseAmount;
                 updatePurchaseOrder.UpdatedByUserId = loginUserId;
                 updatePurchaseOrder.UpdatedDateTime = DateTime.Now;
 
@@ -455,7 +481,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -466,7 +492,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseOrderDetail"
@@ -485,7 +511,7 @@ namespace liteclerk_api.APIControllers
 
                 Int32 POId = 0;
 
-                DBSets.TrnPurchaseOrderItemDBSet purchaseOrderItem = await (
+                var purchaseOrderItem = await (
                     from d in _dbContext.TrnPurchaseOrderItems
                     where d.Id == id
                     select d
@@ -498,7 +524,7 @@ namespace liteclerk_api.APIControllers
 
                 POId = purchaseOrderItem.POId;
 
-                DBSets.TrnPurchaseOrderDBSet purchaseOrder = await (
+                var purchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrders
                     where d.Id == POId
                     select d
@@ -517,9 +543,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnPurchaseOrderItems.Remove(purchaseOrderItem);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnPurchaseOrderItemDBSet> purchaseOrderItemsByCurrentPurchaseOrder = await (
+                var purchaseOrderItemsByCurrentPurchaseOrder = await (
                     from d in _dbContext.TrnPurchaseOrderItems
                     where d.POId == POId
                     select d
@@ -527,11 +554,13 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseOrderItemsByCurrentPurchaseOrder.Any())
                 {
-                    amount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.Amount);
+                    totalAmount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.Amount);
+                    totalBaseAmount = purchaseOrderItemsByCurrentPurchaseOrder.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnPurchaseOrderDBSet updatePurchaseOrder = purchaseOrder;
-                updatePurchaseOrder.Amount = amount;
+                var updatePurchaseOrder = purchaseOrder;
+                updatePurchaseOrder.Amount = totalAmount;
+                updatePurchaseOrder.BaseAmount = totalBaseAmount;
                 updatePurchaseOrder.UpdatedByUserId = loginUserId;
                 updatePurchaseOrder.UpdatedDateTime = DateTime.Now;
 

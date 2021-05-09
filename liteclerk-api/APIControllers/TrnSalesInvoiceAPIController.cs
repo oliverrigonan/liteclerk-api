@@ -83,6 +83,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -104,6 +111,14 @@ namespace liteclerk_api.APIControllers
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        PaidAmount = d.PaidAmount,
+                        BasePaidAmount = d.BasePaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BaseAdjustmentAmount = d.BaseAdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        BaseBalanceAmount = d.BaseBalanceAmount,
                         SoldByUserId = d.SoldByUserId,
                         SoldByUser = new DTO.MstUserDTO
                         {
@@ -128,10 +143,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
-                        PaidAmount = d.PaidAmount,
-                        AdjustmentAmount = d.AdjustmentAmount,
-                        BalanceAmount = d.BalanceAmount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -194,6 +205,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -206,12 +224,6 @@ namespace liteclerk_api.APIControllers
                                 ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
-                            ReceivableAccountId = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId : 0,
-                            ReceivableAccount = new DTO.MstAccountDTO
-                            {
-                                ManualCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.ManualCode : "",
-                                Account = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.Account : ""
-                            }
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
@@ -221,6 +233,14 @@ namespace liteclerk_api.APIControllers
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        PaidAmount = d.PaidAmount,
+                        BasePaidAmount = d.BasePaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BaseAdjustmentAmount = d.BaseAdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        BaseBalanceAmount = d.BaseBalanceAmount,
                         SoldByUserId = d.SoldByUserId,
                         SoldByUser = new DTO.MstUserDTO
                         {
@@ -245,10 +265,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
-                        PaidAmount = d.PaidAmount,
-                        AdjustmentAmount = d.AdjustmentAmount,
-                        BalanceAmount = d.BalanceAmount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -310,6 +326,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -322,12 +345,6 @@ namespace liteclerk_api.APIControllers
                                 ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
                             Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
-                            ReceivableAccountId = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId : 0,
-                            ReceivableAccount = new DTO.MstAccountDTO
-                            {
-                                ManualCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.ManualCode : "",
-                                Account = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.Account : ""
-                            }
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO
@@ -337,6 +354,14 @@ namespace liteclerk_api.APIControllers
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        PaidAmount = d.PaidAmount,
+                        BasePaidAmount = d.BasePaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BaseAdjustmentAmount = d.BaseAdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        BaseBalanceAmount = d.BaseBalanceAmount,
                         SoldByUserId = d.SoldByUserId,
                         SoldByUser = new DTO.MstUserDTO
                         {
@@ -361,10 +386,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
-                        PaidAmount = d.PaidAmount,
-                        AdjustmentAmount = d.AdjustmentAmount,
-                        BalanceAmount = d.BalanceAmount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -415,6 +436,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         SINumber = d.SINumber,
                         SIDate = d.SIDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -436,6 +464,14 @@ namespace liteclerk_api.APIControllers
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        PaidAmount = d.PaidAmount,
+                        BasePaidAmount = d.BasePaidAmount,
+                        AdjustmentAmount = d.AdjustmentAmount,
+                        BaseAdjustmentAmount = d.BaseAdjustmentAmount,
+                        BalanceAmount = d.BalanceAmount,
+                        BaseBalanceAmount = d.BaseBalanceAmount,
                         SoldByUserId = d.SoldByUserId,
                         SoldByUser = new DTO.MstUserDTO
                         {
@@ -460,10 +496,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
-                        PaidAmount = d.PaidAmount,
-                        AdjustmentAmount = d.AdjustmentAmount,
-                        BalanceAmount = d.BalanceAmount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -566,6 +598,8 @@ namespace liteclerk_api.APIControllers
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeCurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeRate = 0,
                     SINumber = SINumber,
                     SIDate = DateTime.Today,
                     ManualNumber = SINumber,
@@ -574,14 +608,18 @@ namespace liteclerk_api.APIControllers
                     TermId = customer.TermId,
                     DateNeeded = DateTime.Today,
                     Remarks = "",
+                    Amount = 0,
+                    BaseAmount = 0,
+                    PaidAmount = 0,
+                    BasePaidAmount = 0,
+                    AdjustmentAmount = 0,
+                    BaseAdjustmentAmount = 0,
+                    BalanceAmount = 0,
+                    BaseBalanceAmount = 0,
                     SoldByUserId = loginUserId,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
-                    Amount = 0,
-                    PaidAmount = 0,
-                    AdjustmentAmount = 0,
-                    BalanceAmount = 0,
                     Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
@@ -654,15 +692,15 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a sales invoice that is locked.");
                 }
 
-                var currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnSalesInvoiceDTO.CurrencyId
+                    where d.Id == trnSalesInvoiceDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
                 var customer = await (
@@ -734,7 +772,8 @@ namespace liteclerk_api.APIControllers
                 }
 
                 var saveSalesInvoice = salesInvoice;
-                saveSalesInvoice.CurrencyId = trnSalesInvoiceDTO.CurrencyId;
+                saveSalesInvoice.ExchangeCurrencyId = trnSalesInvoiceDTO.ExchangeCurrencyId;
+                saveSalesInvoice.ExchangeRate = trnSalesInvoiceDTO.ExchangeRate;
                 saveSalesInvoice.SIDate = Convert.ToDateTime(trnSalesInvoiceDTO.SIDate);
                 saveSalesInvoice.ManualNumber = trnSalesInvoiceDTO.ManualNumber;
                 saveSalesInvoice.DocumentReference = trnSalesInvoiceDTO.DocumentReference;
@@ -810,15 +849,15 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a sales invoice that is locked.");
                 }
 
-                var currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnSalesInvoiceDTO.CurrencyId
+                    where d.Id == trnSalesInvoiceDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
                 var customer = await (
@@ -890,7 +929,8 @@ namespace liteclerk_api.APIControllers
                 }
 
                 var lockSalesInvoice = salesInvoice;
-                lockSalesInvoice.CurrencyId = trnSalesInvoiceDTO.CurrencyId;
+                lockSalesInvoice.ExchangeCurrencyId = trnSalesInvoiceDTO.ExchangeCurrencyId;
+                lockSalesInvoice.ExchangeRate = trnSalesInvoiceDTO.ExchangeRate;
                 lockSalesInvoice.SIDate = Convert.ToDateTime(trnSalesInvoiceDTO.SIDate);
                 lockSalesInvoice.ManualNumber = trnSalesInvoiceDTO.ManualNumber;
                 lockSalesInvoice.DocumentReference = trnSalesInvoiceDTO.DocumentReference;

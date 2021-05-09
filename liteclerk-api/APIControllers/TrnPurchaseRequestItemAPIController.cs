@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.TrnPurchaseRequestItemDTO> purchaseRequestItems = await (
+                var purchaseRequestItems = await (
                     from d in _dbContext.TrnPurchaseRequestItems
                     where d.PRId == PRId
                     orderby d.Id descending
@@ -46,7 +46,31 @@ namespace liteclerk_api.APIControllers
                             },
                             SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                            RRVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().RRVATId : 0,
+                            RRVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxRate : 0
+                            },
+                            SIVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
+                            SIVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate : 0
+                            },
+                            WTAXId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId : 0,
+                            WTAX = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate : 0
+                            }
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
@@ -58,6 +82,7 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -82,7 +107,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnPurchaseRequestItemDTO purchaseRequestItem = await (
+                var purchaseRequestItem = await (
                     from d in _dbContext.TrnPurchaseRequestItems
                     where d.Id == id
                     select new DTO.TrnPurchaseRequestItemDTO
@@ -98,7 +123,31 @@ namespace liteclerk_api.APIControllers
                             },
                             SKUCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
                             BarCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SKUCode : "",
-                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : ""
+                            Description = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description : "",
+                            RRVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().RRVATId : 0,
+                            RRVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_RRVATId.TaxRate : 0
+                            },
+                            SIVATId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().SIVATId : 0,
+                            SIVAT = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_SIVATId.TaxRate : 0
+                            },
+                            WTAXId = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().WTAXId : 0,
+                            WTAX = new DTO.MstTaxDTO
+                            {
+                                TaxCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxCode : "",
+                                ManualCode = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.ManualCode : "",
+                                TaxDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxDescription : "",
+                                TaxRate = d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() ? d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().MstTax_WTAXId.TaxRate : 0
+                            }
                         },
                         Particulars = d.Particulars,
                         Quantity = d.Quantity,
@@ -110,6 +159,7 @@ namespace liteclerk_api.APIControllers
                         },
                         Cost = d.Cost,
                         Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         BaseQuantity = d.BaseQuantity,
                         BaseUnitId = d.BaseUnitId,
                         BaseUnit = new DTO.MstUnitDTO
@@ -136,7 +186,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -147,7 +197,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestDetail"
@@ -164,7 +214,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a purchase request item.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
+                var purchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequests
                     where d.Id == trnPurchaseRequestItemDTO.PRId
                     select d
@@ -180,7 +230,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot add purchase request items if the current purchase request is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnPurchaseRequestItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -192,7 +242,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnPurchaseRequestItemDTO.ItemId
                     && d.UnitId == trnPurchaseRequestItemDTO.UnitId
@@ -216,7 +266,15 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnPurchaseRequestItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnPurchaseRequestItemDBSet newPurchaseRequestItems = new DBSets.TrnPurchaseRequestItemDBSet()
+                Decimal exchangeRate = purchaseRequest.ExchangeRate;
+                Decimal baseAmount = trnPurchaseRequestItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnPurchaseRequestItemDTO.Amount * exchangeRate;
+                }
+
+                var newPurchaseRequestItems = new DBSets.TrnPurchaseRequestItemDBSet()
                 {
                     PRId = trnPurchaseRequestItemDTO.PRId,
                     ItemId = trnPurchaseRequestItemDTO.ItemId,
@@ -225,6 +283,7 @@ namespace liteclerk_api.APIControllers
                     UnitId = trnPurchaseRequestItemDTO.UnitId,
                     Cost = trnPurchaseRequestItemDTO.Cost,
                     Amount = trnPurchaseRequestItemDTO.Amount,
+                    BaseAmount = baseAmount,
                     BaseQuantity = baseQuantity,
                     BaseUnitId = item.UnitId,
                     BaseCost = baseCost,
@@ -233,9 +292,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnPurchaseRequestItems.Add(newPurchaseRequestItems);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnPurchaseRequestItemDBSet> purchaseRequestItemsByCurrentPurchaseRequest = await (
+                var purchaseRequestItemsByCurrentPurchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequestItems
                     where d.PRId == trnPurchaseRequestItemDTO.PRId
                     select d
@@ -243,11 +303,13 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseRequestItemsByCurrentPurchaseRequest.Any())
                 {
-                    amount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.Amount);
+                    totalAmount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.Amount);
+                    totalBaseAmount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnPurchaseRequestDBSet updatePurchaseRequest = purchaseRequest;
-                updatePurchaseRequest.Amount = amount;
+                var updatePurchaseRequest = purchaseRequest;
+                updatePurchaseRequest.Amount = totalAmount;
+                updatePurchaseRequest.BaseAmount = totalBaseAmount;
                 updatePurchaseRequest.UpdatedByUserId = loginUserId;
                 updatePurchaseRequest.UpdatedDateTime = DateTime.Now;
 
@@ -268,7 +330,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -279,7 +341,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestDetail"
@@ -296,7 +358,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or update a purchase request item.");
                 }
 
-                DBSets.TrnPurchaseRequestItemDBSet purchaseRequestItem = await (
+                var purchaseRequestItem = await (
                     from d in _dbContext.TrnPurchaseRequestItems
                     where d.Id == id
                     select d
@@ -307,7 +369,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Purchase request item not found.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
+                var purchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequests
                     where d.Id == trnPurchaseRequestItemDTO.PRId
                     select d
@@ -323,7 +385,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot update purchase request items if the current purchase request is locked.");
                 }
 
-                DBSets.MstArticleItemDBSet item = await (
+                var item = await (
                     from d in _dbContext.MstArticleItems
                     where d.ArticleId == trnPurchaseRequestItemDTO.ItemId
                     && d.MstArticle_ArticleId.IsLocked == true
@@ -335,7 +397,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Item not found.");
                 }
 
-                DBSets.MstArticleItemUnitDBSet itemUnit = await (
+                var itemUnit = await (
                     from d in _dbContext.MstArticleItemUnits
                     where d.ArticleId == trnPurchaseRequestItemDTO.ItemId
                     && d.UnitId == trnPurchaseRequestItemDTO.UnitId
@@ -359,22 +421,32 @@ namespace liteclerk_api.APIControllers
                     baseCost = trnPurchaseRequestItemDTO.Amount / baseQuantity;
                 }
 
-                DBSets.TrnPurchaseRequestItemDBSet updatePurchaseRequestItems = purchaseRequestItem;
+                Decimal exchangeRate = purchaseRequest.ExchangeRate;
+                Decimal baseAmount = trnPurchaseRequestItemDTO.Amount;
+
+                if (exchangeRate > 0)
+                {
+                    baseAmount = trnPurchaseRequestItemDTO.Amount * exchangeRate;
+                }
+
+                var updatePurchaseRequestItems = purchaseRequestItem;
                 updatePurchaseRequestItems.PRId = trnPurchaseRequestItemDTO.PRId;
                 updatePurchaseRequestItems.Particulars = trnPurchaseRequestItemDTO.Particulars;
                 updatePurchaseRequestItems.Quantity = trnPurchaseRequestItemDTO.Quantity;
                 updatePurchaseRequestItems.UnitId = trnPurchaseRequestItemDTO.UnitId;
                 updatePurchaseRequestItems.Cost = trnPurchaseRequestItemDTO.Cost;
                 updatePurchaseRequestItems.Amount = trnPurchaseRequestItemDTO.Amount;
+                updatePurchaseRequestItems.BaseAmount = baseAmount;
                 updatePurchaseRequestItems.BaseQuantity = baseQuantity;
                 updatePurchaseRequestItems.BaseUnitId = item.UnitId;
                 updatePurchaseRequestItems.BaseCost = baseCost;
 
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnPurchaseRequestItemDBSet> purchaseRequestItemsByCurrentPurchaseRequest = await (
+                var purchaseRequestItemsByCurrentPurchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequestItems
                     where d.PRId == trnPurchaseRequestItemDTO.PRId
                     select d
@@ -382,11 +454,13 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseRequestItemsByCurrentPurchaseRequest.Any())
                 {
-                    amount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.Amount);
+                    totalAmount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.Amount);
+                    totalBaseAmount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnPurchaseRequestDBSet updatePurchaseRequest = purchaseRequest;
-                updatePurchaseRequest.Amount = amount;
+                var updatePurchaseRequest = purchaseRequest;
+                updatePurchaseRequest.Amount = totalAmount;
+                updatePurchaseRequest.BaseAmount = totalBaseAmount;
                 updatePurchaseRequest.UpdatedByUserId = loginUserId;
                 updatePurchaseRequest.UpdatedDateTime = DateTime.Now;
 
@@ -407,7 +481,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -418,7 +492,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestDetail"
@@ -437,7 +511,7 @@ namespace liteclerk_api.APIControllers
 
                 Int32 PRId = 0;
 
-                DBSets.TrnPurchaseRequestItemDBSet purchaseRequestItem = await (
+                var purchaseRequestItem = await (
                     from d in _dbContext.TrnPurchaseRequestItems
                     where d.Id == id
                     select d
@@ -450,7 +524,7 @@ namespace liteclerk_api.APIControllers
 
                 PRId = purchaseRequestItem.PRId;
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
+                var purchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequests
                     where d.Id == PRId
                     select d
@@ -469,9 +543,10 @@ namespace liteclerk_api.APIControllers
                 _dbContext.TrnPurchaseRequestItems.Remove(purchaseRequestItem);
                 await _dbContext.SaveChangesAsync();
 
-                Decimal amount = 0;
+                Decimal totalAmount = 0;
+                Decimal totalBaseAmount = 0;
 
-                IEnumerable<DBSets.TrnPurchaseRequestItemDBSet> purchaseRequestItemsByCurrentPurchaseRequest = await (
+                var purchaseRequestItemsByCurrentPurchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequestItems
                     where d.PRId == PRId
                     select d
@@ -479,11 +554,13 @@ namespace liteclerk_api.APIControllers
 
                 if (purchaseRequestItemsByCurrentPurchaseRequest.Any())
                 {
-                    amount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.Amount);
+                    totalAmount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.Amount);
+                    totalBaseAmount = purchaseRequestItemsByCurrentPurchaseRequest.Sum(d => d.BaseAmount);
                 }
 
-                DBSets.TrnPurchaseRequestDBSet updatePurchaseRequest = purchaseRequest;
-                updatePurchaseRequest.Amount = amount;
+                var updatePurchaseRequest = purchaseRequest;
+                updatePurchaseRequest.Amount = totalAmount;
+                updatePurchaseRequest.BaseAmount = totalBaseAmount;
                 updatePurchaseRequest.UpdatedByUserId = loginUserId;
                 updatePurchaseRequest.UpdatedDateTime = DateTime.Now;
 

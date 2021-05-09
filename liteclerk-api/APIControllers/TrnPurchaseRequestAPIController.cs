@@ -48,13 +48,13 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
                 ).FirstOrDefaultAsync();
 
-                IEnumerable<DTO.TrnPurchaseRequestDTO> purchaseRequests = await (
+                var purchaseRequests = await (
                     from d in _dbContext.TrnPurchaseRequests
                     where d.BranchId == loginUser.BranchId
                     && d.PRDate >= Convert.ToDateTime(startDate)
@@ -75,6 +75,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         PRNumber = d.PRNumber,
                         PRDate = d.PRDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -96,6 +103,8 @@ namespace liteclerk_api.APIControllers
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         RequestedByUserId = d.RequestedByUserId,
                         RequestedByUser = new DTO.MstUserDTO
                         {
@@ -120,7 +129,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -153,12 +161,11 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.TrnPurchaseRequestDTO purchaseRequest = await (
+                var purchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequests
                     where d.Id == id
                     select new DTO.TrnPurchaseRequestDTO
                     {
-
                         Id = d.Id,
                         BranchId = d.BranchId,
                         Branch = new DTO.MstCompanyBranchDTO
@@ -172,6 +179,13 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstCurrency_CurrencyId.ManualCode,
                             Currency = d.MstCurrency_CurrencyId.Currency
                         },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
                         PRNumber = d.PRNumber,
                         PRDate = d.PRDate.ToShortDateString(),
                         ManualNumber = d.ManualNumber,
@@ -193,6 +207,8 @@ namespace liteclerk_api.APIControllers
                         },
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
                         RequestedByUserId = d.RequestedByUserId,
                         RequestedByUser = new DTO.MstUserDTO
                         {
@@ -217,7 +233,6 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_ApprovedByUserId.Username,
                             Fullname = d.MstUser_ApprovedByUserId.Fullname
                         },
-                        Amount = d.Amount,
                         Status = d.Status,
                         IsCancelled = d.IsCancelled,
                         IsPrinted = d.IsPrinted,
@@ -252,7 +267,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -263,7 +278,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestList"
@@ -280,18 +295,18 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to add a purchase request.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
-                    from d in _dbContext.MstArticleSuppliers
-                    where d.MstArticle_ArticleId.IsLocked == true
-                    select d
-                ).FirstOrDefaultAsync();
+                var supplier = await (
+                     from d in _dbContext.MstArticleSuppliers
+                     where d.MstArticle_ArticleId.IsLocked == true
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (supplier == null)
                 {
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.Category == "PURCHASE REQUEST STATUS"
                     select d
@@ -303,7 +318,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String PRNumber = "0000000001";
-                DBSets.TrnPurchaseRequestDBSet lastPurchaseRequest = await (
+                var lastPurchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequests
                     where d.BranchId == loginUser.BranchId
                     orderby d.Id descending
@@ -316,10 +331,12 @@ namespace liteclerk_api.APIControllers
                     PRNumber = PadZeroes(lastPRNumber, 10);
                 }
 
-                DBSets.TrnPurchaseRequestDBSet newPurchaseRequest = new DBSets.TrnPurchaseRequestDBSet()
+                var newPurchaseRequest = new DBSets.TrnPurchaseRequestDBSet()
                 {
                     BranchId = Convert.ToInt32(loginUser.BranchId),
                     CurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeCurrencyId = loginUser.MstCompany_CompanyId.CurrencyId,
+                    ExchangeRate = 0,
                     PRNumber = PRNumber,
                     PRDate = DateTime.Today,
                     ManualNumber = PRNumber,
@@ -328,11 +345,12 @@ namespace liteclerk_api.APIControllers
                     TermId = supplier.TermId,
                     DateNeeded = DateTime.Today.AddDays(Convert.ToDouble(supplier.MstTerm_TermId.NumberOfDays)),
                     Remarks = "",
+                    Amount = 0,
+                    BaseAmount = 0,
                     RequestedByUserId = loginUserId,
                     PreparedByUserId = loginUserId,
                     CheckedByUserId = loginUserId,
                     ApprovedByUserId = loginUserId,
-                    Amount = 0,
                     Status = codeTableStatus.CodeValue,
                     IsCancelled = false,
                     IsPrinted = false,
@@ -361,7 +379,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -372,7 +390,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestDetail"
@@ -389,7 +407,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to edit or save a purchase request.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
+                var purchaseRequest = await (
                     from d in _dbContext.TrnPurchaseRequests
                     where d.Id == id
                     select d
@@ -405,30 +423,30 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a purchase request that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnPurchaseRequestDTO.CurrencyId
+                    where d.Id == trnPurchaseRequestDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
-                    from d in _dbContext.MstArticleSuppliers
-                    where d.ArticleId == trnPurchaseRequestDTO.SupplierId
-                    && d.MstArticle_ArticleId.IsLocked == true
-                    select d
-                ).FirstOrDefaultAsync();
+                var supplier = await (
+                     from d in _dbContext.MstArticleSuppliers
+                     where d.ArticleId == trnPurchaseRequestDTO.SupplierId
+                     && d.MstArticle_ArticleId.IsLocked == true
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (supplier == null)
                 {
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstTermDBSet term = await (
+                var term = await (
                     from d in _dbContext.MstTerms
                     where d.Id == trnPurchaseRequestDTO.TermId
                     select d
@@ -439,7 +457,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Term not found.");
                 }
 
-                DBSets.MstUserDBSet requestedByUser = await (
+                var requestedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnPurchaseRequestDTO.RequestedByUserId
                     select d
@@ -450,7 +468,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Requested by user not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnPurchaseRequestDTO.CheckedByUserId
                     select d
@@ -461,7 +479,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnPurchaseRequestDTO.ApprovedByUserId
                     select d
@@ -472,7 +490,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnPurchaseRequestDTO.Status
                     && d.Category == "PURCHASE REQUEST STATUS"
@@ -484,8 +502,9 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet savePurchaseRequest = purchaseRequest;
-                savePurchaseRequest.CurrencyId = trnPurchaseRequestDTO.CurrencyId;
+                var savePurchaseRequest = purchaseRequest;
+                savePurchaseRequest.ExchangeCurrencyId = trnPurchaseRequestDTO.ExchangeCurrencyId;
+                savePurchaseRequest.ExchangeRate = trnPurchaseRequestDTO.ExchangeRate;
                 savePurchaseRequest.PRDate = Convert.ToDateTime(trnPurchaseRequestDTO.PRDate);
                 savePurchaseRequest.ManualNumber = trnPurchaseRequestDTO.ManualNumber;
                 savePurchaseRequest.DocumentReference = trnPurchaseRequestDTO.DocumentReference;
@@ -517,7 +536,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -528,7 +547,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestDetail"
@@ -545,7 +564,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to lock a purchase request.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
+                var purchaseRequest = await (
                      from d in _dbContext.TrnPurchaseRequests
                      where d.Id == id
                      select d
@@ -561,30 +580,30 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a purchase request that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var exchangeCurrency = await (
                     from d in _dbContext.MstCurrencies
-                    where d.Id == trnPurchaseRequestDTO.CurrencyId
+                    where d.Id == trnPurchaseRequestDTO.ExchangeCurrencyId
                     select d
                 ).FirstOrDefaultAsync();
 
-                if (currency == null)
+                if (exchangeCurrency == null)
                 {
-                    return StatusCode(404, "Currency not found.");
+                    return StatusCode(404, "Exchange currency not found.");
                 }
 
-                DBSets.MstArticleSupplierDBSet supplier = await (
-                    from d in _dbContext.MstArticleSuppliers
-                    where d.ArticleId == trnPurchaseRequestDTO.SupplierId
-                    && d.MstArticle_ArticleId.IsLocked == true
-                    select d
-                ).FirstOrDefaultAsync();
+                var supplier = await (
+                     from d in _dbContext.MstArticleSuppliers
+                     where d.ArticleId == trnPurchaseRequestDTO.SupplierId
+                     && d.MstArticle_ArticleId.IsLocked == true
+                     select d
+                 ).FirstOrDefaultAsync();
 
                 if (supplier == null)
                 {
                     return StatusCode(404, "Supplier not found.");
                 }
 
-                DBSets.MstTermDBSet term = await (
+                var term = await (
                     from d in _dbContext.MstTerms
                     where d.Id == trnPurchaseRequestDTO.TermId
                     select d
@@ -595,7 +614,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Term not found.");
                 }
 
-                DBSets.MstUserDBSet requestedByUser = await (
+                var requestedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnPurchaseRequestDTO.RequestedByUserId
                     select d
@@ -606,7 +625,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Requested by user not found.");
                 }
 
-                DBSets.MstUserDBSet checkedByUser = await (
+                var checkedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnPurchaseRequestDTO.CheckedByUserId
                     select d
@@ -617,7 +636,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Checked by user not found.");
                 }
 
-                DBSets.MstUserDBSet approvedByUser = await (
+                var approvedByUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == trnPurchaseRequestDTO.ApprovedByUserId
                     select d
@@ -628,7 +647,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Approved by user not found.");
                 }
 
-                DBSets.MstCodeTableDBSet codeTableStatus = await (
+                var codeTableStatus = await (
                     from d in _dbContext.MstCodeTables
                     where d.CodeValue == trnPurchaseRequestDTO.Status
                     && d.Category == "PURCHASE REQUEST STATUS"
@@ -640,8 +659,9 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Status not found.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet lockPurchaseRequest = purchaseRequest;
-                lockPurchaseRequest.CurrencyId = trnPurchaseRequestDTO.CurrencyId;
+                var lockPurchaseRequest = purchaseRequest;
+                lockPurchaseRequest.ExchangeCurrencyId = trnPurchaseRequestDTO.ExchangeCurrencyId;
+                lockPurchaseRequest.ExchangeRate = trnPurchaseRequestDTO.ExchangeRate;
                 lockPurchaseRequest.PRDate = Convert.ToDateTime(trnPurchaseRequestDTO.PRDate);
                 lockPurchaseRequest.ManualNumber = trnPurchaseRequestDTO.ManualNumber;
                 lockPurchaseRequest.DocumentReference = trnPurchaseRequestDTO.DocumentReference;
@@ -674,7 +694,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -685,7 +705,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestDetail"
@@ -702,7 +722,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to unlock a purchase request.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
+                var purchaseRequest = await (
                      from d in _dbContext.TrnPurchaseRequests
                      where d.Id == id
                      select d
@@ -718,7 +738,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock a purchase request that is unlocked.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet unlockPurchaseRequest = purchaseRequest;
+                var unlockPurchaseRequest = purchaseRequest;
                 unlockPurchaseRequest.IsLocked = false;
                 unlockPurchaseRequest.UpdatedByUserId = loginUserId;
                 unlockPurchaseRequest.UpdatedDateTime = DateTime.Now;
@@ -740,7 +760,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -751,7 +771,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestDetail"
@@ -768,10 +788,10 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to cancel a purchase request.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
-                     from d in _dbContext.TrnPurchaseRequests
-                     where d.Id == id
-                     select d
+                var purchaseRequest = await (
+                    from d in _dbContext.TrnPurchaseRequests
+                    where d.Id == id
+                    select d
                  ).FirstOrDefaultAsync(); ;
 
                 if (purchaseRequest == null)
@@ -784,7 +804,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot cancel a purchase request that is unlocked.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet cancelPurchaseRequest = purchaseRequest;
+                var cancelPurchaseRequest = purchaseRequest;
                 cancelPurchaseRequest.IsCancelled = true;
                 cancelPurchaseRequest.UpdatedByUserId = loginUserId;
                 cancelPurchaseRequest.UpdatedDateTime = DateTime.Now;
@@ -806,7 +826,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -817,7 +837,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstUserFormDBSet loginUserForm = await (
+                var loginUserForm = await (
                     from d in _dbContext.MstUserForms
                     where d.UserId == loginUserId
                     && d.SysForm_FormId.Form == "ActivityPurchaseRequestList"
@@ -834,7 +854,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "No rights to delete a purchase request.");
                 }
 
-                DBSets.TrnPurchaseRequestDBSet purchaseRequest = await (
+                var purchaseRequest = await (
                      from d in _dbContext.TrnPurchaseRequests
                      where d.Id == id
                      select d
