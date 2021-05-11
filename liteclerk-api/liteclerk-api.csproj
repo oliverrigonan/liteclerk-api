@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20201104061216_AddedIncomeAccountIdInMstCompanyTable.Designer.cs" />
     <Compile Remove="Migrations\20201104061933_AddedIncomeAccountIdInMstCompanyTable.cs" />
     <Compile Remove="Migrations\20201104061933_AddedIncomeAccountIdInMstCompanyTable.Designer.cs" />
+    <Compile Remove="Migrations\20210510235109_ForexGainAndLossAccountIdsInCompanyTable.cs" />
+    <Compile Remove="Migrations\20210510235109_ForexGainAndLossAccountIdsInCompanyTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -62,5 +62,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<SysJournalEntryDBSet> SysJournalEntries_AccountId { get; set; }
 
         public virtual ICollection<MstCompanyDBSet> MstCompanies_IncomeAccountId { get; set; }
+        public virtual ICollection<MstCompanyDBSet> MstCompanies_ForexGainAccountId { get; set; }
+        public virtual ICollection<MstCompanyDBSet> MstCompanies_ForexLossAccountId { get; set; }
     }
 }

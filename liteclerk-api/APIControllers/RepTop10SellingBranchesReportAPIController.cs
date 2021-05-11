@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Task<List<DTO.TrnSalesInvoiceDTO>> taskTop10SellingBranchesReportList = Task.FromResult(new List<DTO.TrnSalesInvoiceDTO>());
+                Task<List<DTO.RepTop10SellingBranchesReportDTO>> taskTop10SellingBranchesReportList = Task.FromResult(new List<DTO.RepTop10SellingBranchesReportDTO>());
 
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
@@ -55,13 +55,13 @@ namespace liteclerk_api.APIControllers
                                              {
                                                  Branch = d.MstCompanyBranch_BranchId.Branch
                                              } into g
-                                             select new DTO.TrnSalesInvoiceDTO
+                                             select new DTO.RepTop10SellingBranchesReportDTO
                                              {
                                                  Branch = new DTO.MstCompanyBranchDTO
                                                  {
                                                      Branch = g.Key.Branch
                                                  },
-                                                 Amount = g.Sum(d => d.Amount)
+                                                 Amount = g.Sum(d => d.BaseAmount)
                                              };
 
                     taskTop10SellingBranchesReportList = Task.FromResult(groupSalesInvoices.OrderByDescending(d => d.Amount).Take(10).ToList());

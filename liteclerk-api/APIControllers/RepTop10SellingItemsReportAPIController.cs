@@ -29,7 +29,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                Task<List<DTO.TrnSalesInvoiceItemDTO>> taskTop10SellingItemsReportList = Task.FromResult(new List<DTO.TrnSalesInvoiceItemDTO>());
+                Task<List<DTO.RepTop10SellingItemsReportDTO>> taskTop10SellingItemsReportList = Task.FromResult(new List<DTO.RepTop10SellingItemsReportDTO>());
 
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
@@ -57,13 +57,13 @@ namespace liteclerk_api.APIControllers
                                                  {
                                                      ItemDescription = d.MstArticle_ItemId.MstArticleItems_ArticleId.FirstOrDefault().Description
                                                  } into g
-                                                 select new DTO.TrnSalesInvoiceItemDTO
+                                                 select new DTO.RepTop10SellingItemsReportDTO
                                                  {
                                                      Item = new DTO.MstArticleItemDTO
                                                      {
                                                          Description = g.Key.ItemDescription
                                                      },
-                                                     Quantity = g.Sum(d => d.Quantity)
+                                                     Quantity = g.Sum(d => d.BaseQuantity)
                                                  };
 
                     taskTop10SellingItemsReportList = Task.FromResult(groupSalesInvoiceItems.OrderByDescending(d => d.Quantity).Take(10).ToList());

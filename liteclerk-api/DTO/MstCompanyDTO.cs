@@ -30,6 +30,12 @@ namespace liteclerk_api.DTO
         public Int32? SalesInvoiceApprovedByUserId { get; set; }
         public MstUserDTO SalesInvoiceApprovedByUser { get; set; }
 
+        public Int32? ForexGainAccountId { get; set; }
+        public MstAccountDTO ForexGainAccount { get; set; }
+
+        public Int32? ForexLossAccountId { get; set; }
+        public MstAccountDTO ForexLossAccount { get; set; }
+
         public Boolean IsLocked { get; set; }
 
         public MstUserDTO CreatedByUser { get; set; }

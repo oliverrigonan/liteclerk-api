@@ -48,7 +48,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstCompanyDTO> companies = await (
+                var companies = await (
                     from d in _dbContext.MstCompanies
                     select new DTO.MstCompanyDTO
                     {
@@ -71,6 +71,30 @@ namespace liteclerk_api.APIControllers
                         {
                             ManualCode = d.MstAccount_IncomeAccountId.ManualCode,
                             Account = d.MstAccount_IncomeAccountId.Account
+                        },
+                        SalesInvoiceCheckedByUserId = d.SalesInvoiceCheckedByUserId,
+                        SalesInvoiceCheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SalesInvoiceCheckedByUserId.Username,
+                            Fullname = d.MstUser_SalesInvoiceCheckedByUserId.Fullname
+                        },
+                        SalesInvoiceApprovedByUserId = d.SalesInvoiceApprovedByUserId,
+                        SalesInvoiceApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_SalesInvoiceApprovedByUserId.Username,
+                            Fullname = d.MstUser_SalesInvoiceApprovedByUserId.Fullname
+                        },
+                        ForexGainAccountId = d.ForexGainAccountId,
+                        ForexGainAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_ForexGainAccount.ManualCode,
+                            Account = d.MstAccount_ForexGainAccount.Account
+                        },
+                        ForexLossAccountId = d.ForexLossAccountId,
+                        ForexLossAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_ForexLossAccount.ManualCode,
+                            Account = d.MstAccount_ForexLossAccount.Account
                         },
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
@@ -101,7 +125,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                IEnumerable<DTO.MstCompanyDTO> companies = await (
+                var companies = await (
                     from d in _dbContext.MstCompanies
                     where d.IsLocked == true
                     select new DTO.MstCompanyDTO
@@ -138,6 +162,18 @@ namespace liteclerk_api.APIControllers
                             Username = d.MstUser_SalesInvoiceApprovedByUserId.Username,
                             Fullname = d.MstUser_SalesInvoiceApprovedByUserId.Fullname
                         },
+                        ForexGainAccountId = d.ForexGainAccountId,
+                        ForexGainAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_ForexGainAccount.ManualCode,
+                            Account = d.MstAccount_ForexGainAccount.Account
+                        },
+                        ForexLossAccountId = d.ForexLossAccountId,
+                        ForexLossAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_ForexLossAccount.ManualCode,
+                            Account = d.MstAccount_ForexLossAccount.Account
+                        },
                         IsLocked = d.IsLocked,
                         CreatedByUser = new DTO.MstUserDTO
                         {
@@ -167,7 +203,7 @@ namespace liteclerk_api.APIControllers
         {
             try
             {
-                DTO.MstCompanyDTO companyDetail = await (
+                var companyDetail = await (
                      from d in _dbContext.MstCompanies
                      where d.Id == id
                      select new DTO.MstCompanyDTO
@@ -204,6 +240,18 @@ namespace liteclerk_api.APIControllers
                              Username = d.MstUser_SalesInvoiceApprovedByUserId.Username,
                              Fullname = d.MstUser_SalesInvoiceApprovedByUserId.Fullname
                          },
+                         ForexGainAccountId = d.ForexGainAccountId,
+                         ForexGainAccount = new DTO.MstAccountDTO
+                         {
+                             ManualCode = d.MstAccount_ForexGainAccount.ManualCode,
+                             Account = d.MstAccount_ForexGainAccount.Account
+                         },
+                         ForexLossAccountId = d.ForexLossAccountId,
+                         ForexLossAccount = new DTO.MstAccountDTO
+                         {
+                             ManualCode = d.MstAccount_ForexLossAccount.ManualCode,
+                             Account = d.MstAccount_ForexLossAccount.Account
+                         },
                          IsLocked = d.IsLocked,
                          CreatedByUser = new DTO.MstUserDTO
                          {
@@ -235,7 +283,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -246,7 +294,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var currency = await (
                     from d in _dbContext.MstCurrencies
                     select d
                 ).FirstOrDefaultAsync();
@@ -257,7 +305,7 @@ namespace liteclerk_api.APIControllers
                 }
 
                 String companyCode = "0000000001";
-                DBSets.MstCompanyDBSet lastCompany = await (
+                var lastCompany = await (
                     from d in _dbContext.MstCompanies
                     orderby d.Id descending
                     select d
@@ -269,7 +317,7 @@ namespace liteclerk_api.APIControllers
                     companyCode = PadZeroes(lastCompanyCode, 10);
                 }
 
-                DBSets.MstCompanyDBSet newCompany = new DBSets.MstCompanyDBSet()
+                var newCompany = new DBSets.MstCompanyDBSet()
                 {
                     CompanyCode = companyCode,
                     ManualCode = companyCode,
@@ -282,6 +330,8 @@ namespace liteclerk_api.APIControllers
                     IncomeAccountId = null,
                     SalesInvoiceCheckedByUserId = null,
                     SalesInvoiceApprovedByUserId = null,
+                    ForexGainAccountId = null,
+                    ForexLossAccountId = null,
                     IsLocked = false,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
@@ -307,7 +357,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -318,7 +368,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstCompanyDBSet company = await (
+                var company = await (
                     from d in _dbContext.MstCompanies
                     where d.Id == id
                     select d
@@ -334,7 +384,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot save or make any changes to a company that is locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var currency = await (
                     from d in _dbContext.MstCurrencies
                     where d.Id == mstCompanyDTO.CurrencyId
                     select d
@@ -347,7 +397,7 @@ namespace liteclerk_api.APIControllers
 
                 if (mstCompanyDTO.IncomeAccountId != null)
                 {
-                    DBSets.MstAccountDBSet incomeAccount = await (
+                    var incomeAccount = await (
                         from d in _dbContext.MstAccounts
                         where d.Id == mstCompanyDTO.IncomeAccountId
                         select d
@@ -361,7 +411,7 @@ namespace liteclerk_api.APIControllers
 
                 if (mstCompanyDTO.SalesInvoiceCheckedByUserId != null)
                 {
-                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                    var salesInvoiceCheckedByUser = await (
                         from d in _dbContext.MstUsers
                         where d.Id == mstCompanyDTO.SalesInvoiceCheckedByUserId
                         select d
@@ -375,7 +425,7 @@ namespace liteclerk_api.APIControllers
 
                 if (mstCompanyDTO.SalesInvoiceApprovedByUserId != null)
                 {
-                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                    var salesInvoiceCheckedByUser = await (
                         from d in _dbContext.MstUsers
                         where d.Id == mstCompanyDTO.SalesInvoiceApprovedByUserId
                         select d
@@ -387,7 +437,35 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
-                DBSets.MstCompanyDBSet saveCompany = company;
+                if (mstCompanyDTO.ForexGainAccountId != null)
+                {
+                    var forexGainAccount = await (
+                        from d in _dbContext.MstAccounts
+                        where d.Id == mstCompanyDTO.ForexGainAccountId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (forexGainAccount == null)
+                    {
+                        return StatusCode(404, "Forex gain account not found.");
+                    }
+                }
+
+                if (mstCompanyDTO.ForexLossAccount != null)
+                {
+                    var forexLossAccount = await (
+                        from d in _dbContext.MstAccounts
+                        where d.Id == mstCompanyDTO.IncomeAccountId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (forexLossAccount == null)
+                    {
+                        return StatusCode(404, "Forex loss account not found.");
+                    }
+                }
+
+                var saveCompany = company;
                 saveCompany.ManualCode = mstCompanyDTO.ManualCode;
                 saveCompany.Company = mstCompanyDTO.Company;
                 saveCompany.Address = mstCompanyDTO.Address;
@@ -398,6 +476,8 @@ namespace liteclerk_api.APIControllers
                 saveCompany.IncomeAccountId = mstCompanyDTO.IncomeAccountId;
                 saveCompany.SalesInvoiceCheckedByUserId = mstCompanyDTO.SalesInvoiceCheckedByUserId;
                 saveCompany.SalesInvoiceApprovedByUserId = mstCompanyDTO.SalesInvoiceApprovedByUserId;
+                saveCompany.ForexGainAccountId = mstCompanyDTO.ForexGainAccountId;
+                saveCompany.ForexLossAccountId = mstCompanyDTO.ForexLossAccountId;
                 saveCompany.UpdatedByUserId = loginUserId;
                 saveCompany.UpdatedDateTime = DateTime.Now;
 
@@ -418,7 +498,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -429,7 +509,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstCompanyDBSet company = await (
+                var company = await (
                     from d in _dbContext.MstCompanies
                     where d.Id == id
                     select d
@@ -445,7 +525,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot lock a company that is already locked.");
                 }
 
-                DBSets.MstCurrencyDBSet currency = await (
+                var currency = await (
                     from d in _dbContext.MstCurrencies
                     where d.Id == mstCompanyDTO.CurrencyId
                     select d
@@ -458,7 +538,7 @@ namespace liteclerk_api.APIControllers
 
                 if (mstCompanyDTO.IncomeAccountId != null)
                 {
-                    DBSets.MstAccountDBSet incomeAccount = await (
+                    var incomeAccount = await (
                         from d in _dbContext.MstAccounts
                         where d.Id == mstCompanyDTO.IncomeAccountId
                         select d
@@ -472,7 +552,7 @@ namespace liteclerk_api.APIControllers
 
                 if (mstCompanyDTO.SalesInvoiceCheckedByUserId != null)
                 {
-                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                    var salesInvoiceCheckedByUser = await (
                         from d in _dbContext.MstUsers
                         where d.Id == mstCompanyDTO.SalesInvoiceCheckedByUserId
                         select d
@@ -486,7 +566,7 @@ namespace liteclerk_api.APIControllers
 
                 if (mstCompanyDTO.SalesInvoiceApprovedByUserId != null)
                 {
-                    DBSets.MstUserDBSet salesInvoiceCheckedByUser = await (
+                    var salesInvoiceCheckedByUser = await (
                         from d in _dbContext.MstUsers
                         where d.Id == mstCompanyDTO.SalesInvoiceApprovedByUserId
                         select d
@@ -498,7 +578,35 @@ namespace liteclerk_api.APIControllers
                     }
                 }
 
-                DBSets.MstCompanyDBSet lockCompany = company;
+                if (mstCompanyDTO.ForexGainAccountId != null)
+                {
+                    var forexGainAccount = await (
+                        from d in _dbContext.MstAccounts
+                        where d.Id == mstCompanyDTO.ForexGainAccountId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (forexGainAccount == null)
+                    {
+                        return StatusCode(404, "Forex gain account not found.");
+                    }
+                }
+
+                if (mstCompanyDTO.ForexLossAccount != null)
+                {
+                    var forexLossAccount = await (
+                        from d in _dbContext.MstAccounts
+                        where d.Id == mstCompanyDTO.IncomeAccountId
+                        select d
+                    ).FirstOrDefaultAsync();
+
+                    if (forexLossAccount == null)
+                    {
+                        return StatusCode(404, "Forex loss account not found.");
+                    }
+                }
+
+                var lockCompany = company;
                 lockCompany.ManualCode = mstCompanyDTO.ManualCode;
                 lockCompany.Company = mstCompanyDTO.Company;
                 lockCompany.Address = mstCompanyDTO.Address;
@@ -509,6 +617,8 @@ namespace liteclerk_api.APIControllers
                 lockCompany.IncomeAccountId = mstCompanyDTO.IncomeAccountId;
                 lockCompany.SalesInvoiceCheckedByUserId = mstCompanyDTO.SalesInvoiceCheckedByUserId;
                 lockCompany.SalesInvoiceApprovedByUserId = mstCompanyDTO.SalesInvoiceApprovedByUserId;
+                lockCompany.ForexGainAccountId = mstCompanyDTO.ForexGainAccountId;
+                lockCompany.ForexLossAccountId = mstCompanyDTO.ForexLossAccountId;
                 lockCompany.IsLocked = true;
                 lockCompany.UpdatedByUserId = loginUserId;
                 lockCompany.UpdatedDateTime = DateTime.Now;
@@ -530,7 +640,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -541,7 +651,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstCompanyDBSet company = await (
+                var company = await (
                     from d in _dbContext.MstCompanies
                     where d.Id == id
                     select d
@@ -557,7 +667,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(400, "Cannot unlock a company that is already unlocked.");
                 }
 
-                DBSets.MstCompanyDBSet unlockCompany = company;
+                var unlockCompany = company;
                 unlockCompany.IsLocked = false;
                 unlockCompany.UpdatedByUserId = loginUserId;
                 unlockCompany.UpdatedDateTime = DateTime.Now;
@@ -579,7 +689,7 @@ namespace liteclerk_api.APIControllers
             {
                 Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
 
-                DBSets.MstUserDBSet loginUser = await (
+                var loginUser = await (
                     from d in _dbContext.MstUsers
                     where d.Id == loginUserId
                     select d
@@ -590,7 +700,7 @@ namespace liteclerk_api.APIControllers
                     return StatusCode(404, "Login user not found.");
                 }
 
-                DBSets.MstCompanyDBSet company = await (
+                var company = await (
                     from d in _dbContext.MstCompanies
                     where d.Id == id
                     select d

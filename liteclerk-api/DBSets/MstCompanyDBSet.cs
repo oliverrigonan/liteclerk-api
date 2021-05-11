@@ -30,6 +30,12 @@ namespace liteclerk_api.DBSets
         public Int32? SalesInvoiceApprovedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_SalesInvoiceApprovedByUserId { get; set; }
 
+        public Int32? ForexGainAccountId { get; set; }
+        public virtual MstAccountDBSet MstAccount_ForexGainAccount { get; set; }
+
+        public Int32? ForexLossAccountId { get; set; }
+        public virtual MstAccountDBSet MstAccount_ForexLossAccount { get; set; }
+
         public Boolean IsLocked { get; set; }
 
         public Int32 CreatedByUserId { get; set; }

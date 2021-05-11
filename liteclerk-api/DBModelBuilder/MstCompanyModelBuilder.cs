@@ -37,6 +37,12 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.SalesInvoiceApprovedByUserId).HasColumnName("SalesInvoiceApprovedByUserId").HasColumnType("int");
                 entity.HasOne(f => f.MstUser_SalesInvoiceApprovedByUserId).WithMany(f => f.MstCompanies_SalesInvoiceApprovedByUserId).HasForeignKey(f => f.SalesInvoiceApprovedByUserId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.ForexGainAccountId).HasColumnName("ForexGainAccountId").HasColumnType("int");
+                entity.HasOne(f => f.MstAccount_ForexGainAccount).WithMany(f => f.MstCompanies_ForexGainAccountId).HasForeignKey(f => f.ForexGainAccountId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.ForexLossAccountId).HasColumnName("ForexLossAccountId").HasColumnType("int");
+                entity.HasOne(f => f.MstAccount_ForexLossAccount).WithMany(f => f.MstCompanies_ForexLossAccountId).HasForeignKey(f => f.ForexLossAccountId).OnDelete(DeleteBehavior.Restrict);
+
                 entity.Property(e => e.IsLocked).HasColumnName("IsLocked").HasColumnType("bit").IsRequired();
 
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();
