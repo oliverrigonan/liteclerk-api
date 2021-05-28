@@ -63,7 +63,7 @@ namespace liteclerk_api.APIControllers
                                                Quantity = g.Sum(d => d.Quantity)
                                            };
 
-                    taskTop10QuantityOnHandReportList = Task.FromResult(groupInventories.OrderByDescending(d => d.Quantity).Take(10).ToList());
+                    taskTop10QuantityOnHandReportList = Task.FromResult(groupInventories.Where(d => d.Quantity > 0).OrderByDescending(d => d.Quantity).Take(10).ToList());
                 }
 
                 return StatusCode(200, taskTop10QuantityOnHandReportList.Result);
