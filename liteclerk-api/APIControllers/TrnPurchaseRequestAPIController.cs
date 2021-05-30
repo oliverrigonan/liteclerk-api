@@ -156,6 +156,136 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/byDateRange/{startDate}/{endDate}/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedPurchaseRequestListByDateRanged(String startDate, String endDate, String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                var loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                var purchaseRequests = await (
+                    from d in _dbContext.TrnPurchaseRequests
+                    where d.BranchId == loginUser.BranchId
+                    && d.PRDate >= Convert.ToDateTime(startDate)
+                    && d.PRDate <= Convert.ToDateTime(endDate)
+                    && d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.Any() == true
+                    && (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.PRNumber.Contains(keywords) ||
+                                          d.ManualNumber.Contains(keywords) ||
+                                          d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier.Contains(keywords) ||
+                                          d.DocumentReference.Contains(keywords) ||
+                                          d.Remarks.Contains(keywords) ||
+                                          d.Status.Contains(keywords) :
+                        column == "PR No." ? d.PRNumber.Contains(keywords) :
+                        column == "Manual No." ? d.ManualNumber.Contains(keywords) :
+                        column == "Supplier" ? d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier.Contains(keywords) :
+                        column == "Document Reference" ? d.DocumentReference.Contains(keywords) :
+                        column == "Remarks" ? d.Remarks.Contains(keywords) :
+                        column == "Status" ? d.Status.Contains(keywords) : true
+                    )
+                    select new DTO.TrnPurchaseRequestDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
+                        },
+                        ExchangeCurrencyId = d.ExchangeCurrencyId,
+                        ExchangeCurrency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+                            Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+                        },
+                        ExchangeRate = d.ExchangeRate,
+                        PRNumber = d.PRNumber,
+                        PRDate = d.PRDate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        SupplierId = d.SupplierId,
+                        Supplier = new DTO.MstArticleSupplierDTO
+                        {
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_SupplierId.ManualCode
+                            },
+                            Supplier = d.MstArticle_SupplierId.MstArticleSuppliers_ArticleId.FirstOrDefault().Supplier,
+                        },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
+                        },
+                        DateNeeded = d.DateNeeded.ToShortDateString(),
+                        Remarks = d.Remarks,
+                        Amount = d.Amount,
+                        BaseAmount = d.BaseAmount,
+                        RequestedByUserId = d.RequestedByUserId,
+                        RequestedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_RequestedByUserId.Username,
+                            Fullname = d.MstUser_RequestedByUserId.Fullname
+                        },
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
+                        },
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
+                        },
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
+                        },
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, purchaseRequests.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetPurchaseRequestDetail(Int32 id)
         {
