@@ -44,6 +44,31 @@ namespace liteclerk_api.APIControllers
             return result;
         }
 
+        [NonAction]
+        public String GetMonthName(Int32 month)
+        {
+            String monthName = "";
+
+            switch (month)
+            {
+                case 1: { monthName = "JANUARY"; break; }
+                case 2: { monthName = "FEBRUARY"; break; }
+                case 3: { monthName = "MARCH"; break; }
+                case 4: { monthName = "APRIL"; break; }
+                case 5: { monthName = "MAY"; break; }
+                case 6: { monthName = "JUNE"; break; }
+                case 7: { monthName = "JULY"; break; }
+                case 8: { monthName = "AUGUST"; break; }
+                case 9: { monthName = "SEPTEMBER"; break; }
+                case 10: { monthName = "OCTOBER"; break; }
+                case 11: { monthName = "NOVEMBER"; break; }
+                case 12: { monthName = "DECEMBER"; break; }
+                default: { break; }
+            }
+
+            return monthName;
+        }
+
         [HttpGet("list/byDateRange/{startDate}/{endDate}")]
         public async Task<ActionResult> GetInventoryListByDateRanged(String startDate, String endDate)
         {
@@ -129,6 +154,109 @@ namespace liteclerk_api.APIControllers
             catch (Exception e)
             {
                 return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
+        [HttpGet("list/byDateRange/{startDate}/{endDate}/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedInventoryListByDateRanged(String startDate, String endDate, String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                var loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                var inventories = await (
+                    from d in _dbContext.TrnInventories
+                    where d.BranchId == loginUser.BranchId
+                    && d.ILDate >= Convert.ToDateTime(startDate)
+                    && d.ILDate <= Convert.ToDateTime(endDate)
+                    && (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.ILNumber.Contains(keywords) ||
+                                          d.ManualNumber.Contains(keywords) ||
+                                          GetMonthName(d.Month).Contains(keywords) ||
+                                          d.DocumentReference.Contains(keywords) ||
+                                          d.Remarks.Contains(keywords) ||
+                                          d.Status.Contains(keywords) :
+                        column == "OT No." ? d.ILNumber.Contains(keywords) :
+                        column == "Manual No." ? d.ManualNumber.Contains(keywords) :
+                        column == "Month" ? GetMonthName(d.Month).Contains(keywords) :
+                        column == "Year" ? d.Year == Convert.ToInt32(keywords) :
+                        column == "Document Reference" ? d.DocumentReference.Contains(keywords) :
+                        column == "Remarks" ? d.Remarks.Contains(keywords) :
+                        column == "Status" ? d.Status.Contains(keywords) : true
+                    )
+                    select new DTO.TrnInventoryDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            BranchCode = d.MstCompanyBranch_BranchId.BranchCode,
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            CurrencyCode = d.MstCurrency_CurrencyId.CurrencyCode,
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
+                        },
+                        ILNumber = d.ILNumber,
+                        ILDate = d.ILDate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        Month = d.Month,
+                        Year = d.Year,
+                        Remarks = d.Remarks,
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
+                        },
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
+                        },
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
+                        },
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, inventories.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, Task.FromResult(new List<DTO.TrnInventoryDTO>()));
             }
         }
 
@@ -744,7 +872,7 @@ namespace liteclerk_api.APIControllers
 
                 if (inventoryLedgerInventories.Any())
                 {
-                    foreach(var inventoryLedgerInventory in inventoryLedgerInventories)
+                    foreach (var inventoryLedgerInventory in inventoryLedgerInventories)
                     {
                         var updateInventoryILId = inventoryLedgerInventory;
                         updateInventoryILId.ILId = null;

@@ -325,6 +325,7 @@ namespace liteclerk_api.APIControllers
                     && d.CustomerId == customerId
                     && d.IsLocked == true
                     && d.BalanceAmount > 0
+                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
                     orderby d.Id descending
                     select new DTO.TrnSalesInvoiceDTO
                     {
@@ -359,7 +360,14 @@ namespace liteclerk_api.APIControllers
                             {
                                 ManualCode = d.MstArticle_CustomerId.ManualCode
                             },
-                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer : "",
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer,
+                            ReceivableAccountId = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ReceivableAccountId,
+                            ReceivableAccount = new DTO.MstAccountDTO
+                            {
+                                AccountCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.AccountCode,
+                                ManualCode = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.ManualCode,
+                                Account = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().MstAccount_ReceivableAccountId.Account,
+                            }
                         },
                         TermId = d.TermId,
                         Term = new DTO.MstTermDTO

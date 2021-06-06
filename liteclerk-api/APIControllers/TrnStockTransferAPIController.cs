@@ -145,6 +145,126 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/byDateRange/{startDate}/{endDate}/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedStockTransferListByDateRanged(String startDate, String endDate, String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                var loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                var stockTransfers = await (
+                    from d in _dbContext.TrnStockTransfers
+                    where d.BranchId == loginUser.BranchId
+                    && d.STDate >= Convert.ToDateTime(startDate)
+                    && d.STDate <= Convert.ToDateTime(endDate)
+                    && (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.STNumber.Contains(keywords) ||
+                                          d.ManualNumber.Contains(keywords) ||
+                                          d.MstCompanyBranch_ToBranchId.Branch.Contains(keywords) ||
+                                          d.MstAccount_AccountId.Account.Contains(keywords) ||
+                                          d.MstArticle_ArticleId.Article.Contains(keywords) ||
+                                          d.DocumentReference.Contains(keywords) ||
+                                          d.Remarks.Contains(keywords) ||
+                                          d.Status.Contains(keywords) :
+                        column == "OT No." ? d.STNumber.Contains(keywords) :
+                        column == "Manual No." ? d.ManualNumber.Contains(keywords) :
+                        column == "To Branch." ? d.MstCompanyBranch_ToBranchId.Branch.Contains(keywords) :
+                        column == "Account" ? d.MstAccount_AccountId.Account.Contains(keywords) :
+                        column == "Article" ? d.MstArticle_ArticleId.Article.Contains(keywords) :
+                        column == "Document Reference" ? d.DocumentReference.Contains(keywords) :
+                        column == "Remarks" ? d.Remarks.Contains(keywords) :
+                        column == "Status" ? d.Status.Contains(keywords) : true
+                    )
+                    select new DTO.TrnStockTransferDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
+                        },
+                        STNumber = d.STNumber,
+                        STDate = d.STDate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        ToBranchId = d.ToBranchId,
+                        ToBranch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_ToBranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_ToBranchId.Branch
+                        },
+                        AccountId = d.AccountId,
+                        Account = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_AccountId.ManualCode,
+                            Account = d.MstAccount_AccountId.Account
+                        },
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article
+                        },
+                        Remarks = d.Remarks,
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
+                        },
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
+                        },
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
+                        },
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, stockTransfers.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetStockTransferDetail(Int32 id)
         {

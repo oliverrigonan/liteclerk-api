@@ -160,6 +160,140 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/byDateRange/{startDate}/{endDate}/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedStockWithdrawalListByDateRanged(String startDate, String endDate, String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+                var loginUser = await (
+                    from d in _dbContext.MstUsers
+                    where d.Id == loginUserId
+                    select d
+                ).FirstOrDefaultAsync();
+
+                var stockWithdrawals = await (
+                    from d in _dbContext.TrnStockWithdrawals
+                    where d.BranchId == loginUser.BranchId
+                    && d.SWDate >= Convert.ToDateTime(startDate)
+                    && d.SWDate <= Convert.ToDateTime(endDate)
+                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
+                    && (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.SWNumber.Contains(keywords) ||
+                                          d.ManualNumber.Contains(keywords) ||
+                                          d.MstCompanyBranch_FromBranchId.Branch.Contains(keywords) ||
+                                          d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) ||
+                                          d.DocumentReference.Contains(keywords) ||
+                                          d.Remarks.Contains(keywords) ||
+                                          d.Status.Contains(keywords) :
+                        column == "OT No." ? d.SWNumber.Contains(keywords) :
+                        column == "Manual No." ? d.ManualNumber.Contains(keywords) :
+                        column == "Branch" ? d.MstCompanyBranch_FromBranchId.Branch.Contains(keywords) :
+                        column == "Customer" ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) :
+                        column == "Document Reference" ? d.DocumentReference.Contains(keywords) :
+                        column == "Remarks" ? d.Remarks.Contains(keywords) :
+                        column == "Status" ? d.Status.Contains(keywords) : true
+                    )
+                    select new DTO.TrnStockWithdrawalDTO
+                    {
+                        Id = d.Id,
+                        BranchId = d.BranchId,
+                        Branch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_BranchId.Branch
+                        },
+                        CurrencyId = d.CurrencyId,
+                        Currency = new DTO.MstCurrencyDTO
+                        {
+                            ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+                            Currency = d.MstCurrency_CurrencyId.Currency
+                        },
+                        SWNumber = d.SWNumber,
+                        SWDate = d.SWDate.ToShortDateString(),
+                        ManualNumber = d.ManualNumber,
+                        DocumentReference = d.DocumentReference,
+                        CustomerId = d.CustomerId,
+                        Customer = new DTO.MstArticleCustomerDTO
+                        {
+                            Article = new DTO.MstArticleDTO
+                            {
+                                ManualCode = d.MstArticle_CustomerId.ManualCode
+                            },
+                            Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer
+                        },
+                        FromBranchId = d.FromBranchId,
+                        FromBranch = new DTO.MstCompanyBranchDTO
+                        {
+                            ManualCode = d.MstCompanyBranch_FromBranchId.ManualCode,
+                            Branch = d.MstCompanyBranch_FromBranchId.Branch
+                        },
+                        SIId = d.SIId,
+                        SalesInvoice = new DTO.TrnSalesInvoiceDTO
+                        {
+                            SINumber = d.TrnSalesInvoice_SIId.SINumber,
+                            SIDate = d.TrnSalesInvoice_SIId.SIDate.ToShortDateString(),
+                            ManualNumber = d.TrnSalesInvoice_SIId.ManualNumber,
+                            DocumentReference = d.TrnSalesInvoice_SIId.DocumentReference
+                        },
+                        Address = d.Address,
+                        ContactPerson = d.ContactPerson,
+                        ContactNumber = d.ContactNumber,
+                        Remarks = d.Remarks,
+                        ReceivedByUserId = d.ReceivedByUserId,
+                        ReceivedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ReceivedByUserId.Username,
+                            Fullname = d.MstUser_ReceivedByUserId.Fullname
+                        },
+                        PreparedByUserId = d.PreparedByUserId,
+                        PreparedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_PreparedByUserId.Username,
+                            Fullname = d.MstUser_PreparedByUserId.Fullname
+                        },
+                        CheckedByUserId = d.CheckedByUserId,
+                        CheckedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CheckedByUserId.Username,
+                            Fullname = d.MstUser_CheckedByUserId.Fullname
+                        },
+                        ApprovedByUserId = d.ApprovedByUserId,
+                        ApprovedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_ApprovedByUserId.Username,
+                            Fullname = d.MstUser_ApprovedByUserId.Fullname
+                        },
+                        Amount = d.Amount,
+                        Status = d.Status,
+                        IsCancelled = d.IsCancelled,
+                        IsPrinted = d.IsPrinted,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, stockWithdrawals.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetStockWithdrawalDetail(Int32 id)
         {
