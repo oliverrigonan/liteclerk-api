@@ -78,6 +78,57 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedJobTypeList(String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                var jobTypes = await (
+                    from d in _dbContext.MstJobTypes
+                    where (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.JobTypeCode.Contains(keywords) ||
+                                          d.ManualCode.Contains(keywords) ||
+                                          d.JobType.Contains(keywords) ||
+                                          d.Remarks.Contains(keywords) :
+                        column == "Code" ? d.JobTypeCode.Contains(keywords) :
+                        column == "Manual Code" ? d.ManualCode.Contains(keywords) :
+                        column == "Job Type" ? d.JobType.Contains(keywords) :
+                        column == "Remarks" ? d.Remarks.Contains(keywords) : true
+                    )
+                    select new DTO.MstJobTypeDTO
+                    {
+                        Id = d.Id,
+                        JobTypeCode = d.JobTypeCode,
+                        ManualCode = d.ManualCode,
+                        JobType = d.JobType,
+                        TotalNumberOfDays = d.TotalNumberOfDays,
+                        Remarks = d.Remarks,
+                        IsInventory = d.IsInventory,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, jobTypes.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("list/locked")]
         public async Task<ActionResult> GetLockedJobTypeList()
         {

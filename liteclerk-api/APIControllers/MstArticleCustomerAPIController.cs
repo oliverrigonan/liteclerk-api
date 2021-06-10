@@ -249,6 +249,83 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/locked/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedLockedArticleCustomerList(String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                var lockedArticleCustomers = await (
+                    from d in _dbContext.MstArticleCustomers
+                    where d.MstArticle_ArticleId.IsLocked == true
+                    && (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.MstArticle_ArticleId.ManualCode.Contains(keywords) ||
+                                          d.Customer.Contains(keywords) ||
+                                          d.Address.Contains(keywords) ||
+                                          d.MstTerm_TermId.Term.Contains(keywords) :
+                        column == "Manual Code" ? d.MstArticle_ArticleId.ManualCode.Contains(keywords) :
+                        column == "Customer" ? d.Customer.Contains(keywords) :
+                        column == "Address" ? d.Address.Contains(keywords) :
+                        column == "Term" ? d.MstTerm_TermId.Term.Contains(keywords) : true
+                    )
+                    select new DTO.MstArticleCustomerDTO
+                    {
+                        Id = d.Id,
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
+                        },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
+                        Customer = d.Customer,
+                        Address = d.Address,
+                        ContactPerson = d.ContactPerson,
+                        ContactNumber = d.ContactNumber,
+                        Category = d.Category,
+                        ReceivableAccountId = d.ReceivableAccountId,
+                        ReceivableAccount = new DTO.MstAccountDTO
+                        {
+                            AccountCode = d.MstAccount_ReceivableAccountId.AccountCode,
+                            ManualCode = d.MstAccount_ReceivableAccountId.Account,
+                            Account = d.MstAccount_ReceivableAccountId.Account
+                        },
+                        TermId = d.TermId,
+                        Term = new DTO.MstTermDTO
+                        {
+                            TermCode = d.MstTerm_TermId.TermCode,
+                            ManualCode = d.MstTerm_TermId.ManualCode,
+                            Term = d.MstTerm_TermId.Term
+                        },
+                        CreditLimit = d.CreditLimit,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, lockedArticleCustomers.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetArticleCustomerDetail(Int32 id)
         {

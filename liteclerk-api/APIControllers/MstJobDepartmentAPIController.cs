@@ -75,6 +75,52 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedJobDepartmentList(String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                var jobDepartments = await (
+                    from d in _dbContext.MstJobDepartments
+                    where (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.JobDepartmentCode.Contains(keywords) ||
+                                          d.ManualCode.Contains(keywords) ||
+                                          d.JobDepartment.Contains(keywords) :
+                        column == "Code" ? d.JobDepartmentCode.Contains(keywords) :
+                        column == "Manual Code" ? d.ManualCode.Contains(keywords) :
+                        column == "Job Department" ? d.JobDepartment.Contains(keywords) : true
+                    )
+                    select new DTO.MstJobDepartmentDTO
+                    {
+                        Id = d.Id,
+                        JobDepartmentCode = d.JobDepartmentCode,
+                        ManualCode = d.ManualCode,
+                        JobDepartment = d.JobDepartment,
+                        IsLocked = d.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, jobDepartments.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("list/locked")]
         public async Task<ActionResult> GetLockedJobDepartmentList()
         {
