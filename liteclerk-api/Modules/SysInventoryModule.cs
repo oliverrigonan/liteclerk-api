@@ -137,7 +137,7 @@ namespace liteclerk_api.Modules
                                 }
                                 else
                                 {
-                                    String inventoryCode = "RR-" + receivingReceipt.MstCompanyBranch_BranchId.BranchCode + "-" + receivingReceipt.RRNumber;
+                                    String inventoryCode = "RR-" + receivingReceipt.MstCompanyBranch_BranchId.ManualCode + "-" + receivingReceipt.RRNumber;
 
                                     var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
                                     {
@@ -296,7 +296,7 @@ namespace liteclerk_api.Modules
                                 }
                                 else
                                 {
-                                    String inventoryCode = "IN-" + stockIn.MstCompanyBranch_BranchId.BranchCode + "-" + stockIn.INNumber;
+                                    String inventoryCode = "IN-" + stockIn.MstCompanyBranch_BranchId.ManualCode + "-" + stockIn.INNumber;
 
                                     var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
                                     {
@@ -725,7 +725,7 @@ namespace liteclerk_api.Modules
                                     }
                                     else
                                     {
-                                        String inventoryCode = "ST-" + stockTransfer.MstCompanyBranch_ToBranchId.BranchCode + "-" + stockTransfer.STNumber;
+                                        String inventoryCode = "ST-" + stockTransfer.MstCompanyBranch_ToBranchId.ManualCode + "-" + stockTransfer.STNumber;
 
                                         var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
                                         {
@@ -1123,7 +1123,7 @@ namespace liteclerk_api.Modules
                                     }
                                     else
                                     {
-                                        String inventoryCode = "SW-" + stockWithdrawal.MstCompanyBranch_FromBranchId.BranchCode + "-" + stockWithdrawal.SWNumber;
+                                        String inventoryCode = "SW-" + stockWithdrawal.MstCompanyBranch_FromBranchId.ManualCode + "-" + stockWithdrawal.SWNumber;
 
                                         var newItemInventory = new DBSets.MstArticleItemInventoryDBSet()
                                         {
