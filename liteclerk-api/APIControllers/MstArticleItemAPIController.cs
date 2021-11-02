@@ -101,6 +101,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -223,6 +224,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -331,6 +333,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -454,6 +457,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -564,6 +568,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -675,6 +680,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -783,6 +789,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -893,6 +900,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -1003,6 +1011,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -1111,6 +1120,7 @@ namespace liteclerk_api.APIControllers
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
                         Price = d.Price,
+                        Cost = d.Cost,
                         RRVATId = d.RRVATId,
                         RRVAT = new DTO.MstTaxDTO
                         {
@@ -1267,6 +1277,7 @@ namespace liteclerk_api.APIControllers
                     CostAccountId = articleAccountGroup.CostAccountId,
                     ExpenseAccountId = articleAccountGroup.ExpenseAccountId,
                     Price = 0,
+                    Cost = 0,
                     RRVATId = tax.Id,
                     SIVATId = tax.Id,
                     WTAXId = tax.Id,
@@ -1393,6 +1404,7 @@ namespace liteclerk_api.APIControllers
                 saveArticleItem.CostAccountId = mstArticleItemDTO.CostAccountId;
                 saveArticleItem.ExpenseAccountId = mstArticleItemDTO.ExpenseAccountId;
                 saveArticleItem.Price = mstArticleItemDTO.Price;
+                saveArticleItem.Cost = mstArticleItemDTO.Cost;
                 saveArticleItem.RRVATId = mstArticleItemDTO.RRVATId;
                 saveArticleItem.SIVATId = mstArticleItemDTO.SIVATId;
                 saveArticleItem.WTAXId = mstArticleItemDTO.WTAXId;
@@ -1538,6 +1550,7 @@ namespace liteclerk_api.APIControllers
                 lockArticleItem.CostAccountId = mstArticleItemDTO.CostAccountId;
                 lockArticleItem.ExpenseAccountId = mstArticleItemDTO.ExpenseAccountId;
                 lockArticleItem.Price = mstArticleItemDTO.Price;
+                lockArticleItem.Cost = mstArticleItemDTO.Cost;
                 lockArticleItem.RRVATId = mstArticleItemDTO.RRVATId;
                 lockArticleItem.SIVATId = mstArticleItemDTO.SIVATId;
                 lockArticleItem.WTAXId = mstArticleItemDTO.WTAXId;

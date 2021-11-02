@@ -45,6 +45,7 @@ namespace liteclerk_api.DBModelBuilder
                 entity.HasOne(f => f.MstAccount_ExpenseAccountId).WithMany(f => f.MstArticleItems_ExpenseAccountId).HasForeignKey(f => f.ExpenseAccountId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.Property(e => e.Price).HasColumnName("Price").HasColumnType("decimal(18,5)").IsRequired();
+                entity.Property(e => e.Cost).HasColumnName("Cost").HasColumnType("decimal(18,5)").IsRequired();
 
                 entity.Property(e => e.RRVATId).HasColumnName("RRVATId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstTax_RRVATId).WithMany(f => f.MstArticleItems_RRVATId).HasForeignKey(f => f.RRVATId).OnDelete(DeleteBehavior.Restrict);

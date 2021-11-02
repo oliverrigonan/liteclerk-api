@@ -40,6 +40,7 @@ namespace liteclerk_api.DTO
         public MstAccountDTO ExpenseAccount { get; set; }
 
         public Decimal Price { get; set; }
+        public Decimal Cost { get; set; }
 
         public Int32 RRVATId { get; set; }
         public MstTaxDTO RRVAT { get; set; }

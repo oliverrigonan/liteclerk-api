@@ -38,6 +38,7 @@ namespace liteclerk_api.DBSets
         public virtual MstAccountDBSet MstAccount_ExpenseAccountId { get; set; }
 
         public Decimal Price { get; set; }
+        public Decimal Cost { get; set; }
 
         public Int32 RRVATId { get; set; }
         public virtual MstTaxDBSet MstTax_RRVATId { get; set; }
