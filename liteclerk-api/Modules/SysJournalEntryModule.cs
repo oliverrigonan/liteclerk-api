@@ -435,6 +435,11 @@ namespace liteclerk_api.Modules
                                 {
                                     Decimal accountsPayableBaseAmount = accountsPayableDisbursementLine.Amount * accountsPayableDisbursementLine.TrnReceivingReceipt_RRId.ExchangeRate;
 
+                                    if (accountsPayableDisbursementLine.TrnReceivingReceipt_RRId.ExchangeRate == 0)
+                                    {
+                                        accountsPayableBaseAmount = accountsPayableDisbursementLine.Amount;
+                                    }
+
                                     var accountsPayableAmountEntry = new DBSets.SysJournalEntryDBSet
                                     {
                                         BranchId = disbursement.BranchId,
@@ -1086,6 +1091,11 @@ namespace liteclerk_api.Modules
                                 if (accountsReceivableCollectionLine.SIId != null)
                                 {
                                     Decimal accountsReceivableBaseAmount = accountsReceivableCollectionLine.Amount * accountsReceivableCollectionLine.TrnSalesInvoice_SIId.ExchangeRate;
+
+                                    if(accountsReceivableCollectionLine.TrnSalesInvoice_SIId.ExchangeRate == 0)
+                                    {
+                                        accountsReceivableBaseAmount = accountsReceivableCollectionLine.Amount;
+                                    }
 
                                     var accountsReceivableJournal = new DBSets.SysJournalEntryDBSet
                                     {
