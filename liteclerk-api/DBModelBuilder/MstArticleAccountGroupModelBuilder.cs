@@ -32,6 +32,9 @@ namespace liteclerk_api.DBModelBuilder
                 entity.Property(e => e.ExpenseAccountId).HasColumnName("ExpenseAccountId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstAccount_ExpenseAccountId).WithMany(f => f.MstArticleAccountGroups_ExpenseAccountId).HasForeignKey(f => f.ExpenseAccountId).OnDelete(DeleteBehavior.Restrict);
 
+                entity.Property(e => e.ArticleTypeId).HasColumnName("ArticleTypeId").HasColumnType("int").IsRequired();
+                entity.HasOne(f => f.MstArticleType_ArticleTypeId).WithMany(f => f.MstArticleAccountGroups_ArticleTypeId).HasForeignKey(f => f.ArticleTypeId).OnDelete(DeleteBehavior.Restrict);
+
                 entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId").HasColumnType("int").IsRequired();
                 entity.HasOne(f => f.MstUser_CreatedByUserId).WithMany(f => f.MstArticleAccountGroups_CreatedByUserId).HasForeignKey(f => f.CreatedByUserId).OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.CreatedDateTime).HasColumnName("CreatedDateTime").HasColumnType("datetime").IsRequired();

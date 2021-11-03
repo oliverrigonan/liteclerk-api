@@ -75,6 +75,9 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
+
+                        ArticleTypeId = d.ArticleTypeId,
+
                         CreatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstUser_CreatedByUserId.Username,
@@ -136,6 +139,9 @@ namespace liteclerk_api.APIControllers
                             ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
                             Account = d.MstAccount_ExpenseAccountId.Account
                         },
+
+                        ArticleTypeId = d.ArticleTypeId,
+
                         CreatedByUser = new DTO.MstUserDTO
                         {
                             Username = d.MstUser_CreatedByUserId.Username,
@@ -260,6 +266,7 @@ namespace liteclerk_api.APIControllers
                     SalesAccountId = mstArticleAccountGroupDTO.SalesAccountId,
                     CostAccountId = mstArticleAccountGroupDTO.CostAccountId,
                     ExpenseAccountId = mstArticleAccountGroupDTO.ExpenseAccountId,
+                    ArticleTypeId = mstArticleAccountGroupDTO.ArticleTypeId,
                     CreatedByUserId = loginUserId,
                     CreatedDateTime = DateTime.Now,
                     UpdatedByUserId = loginUserId,
@@ -374,6 +381,7 @@ namespace liteclerk_api.APIControllers
                 updateArticleAccountGroup.SalesAccountId = mstArticleAccountGroupDTO.SalesAccountId;
                 updateArticleAccountGroup.CostAccountId = mstArticleAccountGroupDTO.CostAccountId;
                 updateArticleAccountGroup.ExpenseAccountId = mstArticleAccountGroupDTO.ExpenseAccountId;
+                updateArticleAccountGroup.ArticleTypeId = mstArticleAccountGroupDTO.ArticleTypeId;
                 updateArticleAccountGroup.UpdatedByUserId = loginUserId;
                 updateArticleAccountGroup.UpdatedDateTime = DateTime.Now;
 

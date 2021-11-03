@@ -25,6 +25,9 @@ namespace liteclerk_api.DTO
         public Int32 ExpenseAccountId { get; set; }
         public MstAccountDTO ExpenseAccount { get; set; }
 
+        public Int32 ArticleTypeId { get; set; }
+        public MstArticleTypeDTO ArticleType { get; set; }
+
         public MstUserDTO CreatedByUser { get; set; }
         public String CreatedDateTime { get; set; }
         public MstUserDTO UpdatedByUser { get; set; }

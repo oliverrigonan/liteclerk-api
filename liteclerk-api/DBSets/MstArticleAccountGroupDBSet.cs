@@ -25,6 +25,9 @@ namespace liteclerk_api.DBSets
         public Int32 ExpenseAccountId { get; set; }
         public virtual MstAccountDBSet MstAccount_ExpenseAccountId { get; set; }
 
+        public Int32 ArticleTypeId { get; set; }
+        public virtual MstArticleTypeDBSet MstArticleType_ArticleTypeId { get; set; }
+
         public Int32 CreatedByUserId { get; set; }
         public virtual MstUserDBSet MstUser_CreatedByUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }
