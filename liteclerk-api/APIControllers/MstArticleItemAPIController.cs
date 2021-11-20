@@ -613,6 +613,132 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        [HttpGet("list/inventory/paginated/{column}/{skip}/{take}")]
+        public async Task<ActionResult> GetPaginatedInventoryArticleItemList(String column, Int32 skip, Int32 take, String keywords)
+        {
+            try
+            {
+                var lockedArticleItems = await (
+                    from d in _dbContext.MstArticleItems
+                    where d.MstArticle_ArticleId.IsLocked == true
+                    && (
+                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+                        column == "All" ? d.MstArticle_ArticleId.ArticleCode.Contains(keywords) ||
+                                          d.MstArticle_ArticleId.ManualCode.Contains(keywords) ||
+                                          d.BarCode.Contains(keywords) ||
+                                          d.Description.Contains(keywords) ||
+                                          d.Category.Contains(keywords) ||
+                                          d.MstUnit_UnitId.Unit.Contains(keywords) ||
+                                          d.Kitting.Contains(keywords) :
+                        column == "Barcode" ? d.BarCode.Contains(keywords) :
+                        column == "Description" ? d.Description.Contains(keywords) :
+                        column == "Category" ? d.Category.Contains(keywords) :
+                        column == "Unit" ? d.MstUnit_UnitId.Unit.Contains(keywords) :
+                        column == "Kitting" ? d.Kitting.Contains(keywords) : true
+                    )
+                    && d.IsInventory == true
+                    && (d.Kitting == "NONE" || d.Kitting == "PRODUCED")
+                    select new DTO.MstArticleItemDTO
+                    {
+                        Id = d.Id,
+                        ArticleId = d.ArticleId,
+                        Article = new DTO.MstArticleDTO
+                        {
+                            ArticleCode = d.MstArticle_ArticleId.ArticleCode,
+                            ManualCode = d.MstArticle_ArticleId.ManualCode,
+                            Article = d.MstArticle_ArticleId.Article,
+                            ImageURL = d.MstArticle_ArticleId.ImageURL,
+                            Particulars = d.MstArticle_ArticleId.Particulars
+                        },
+                        ArticleManualCode = d.MstArticle_ArticleId.ManualCode,
+                        ArticleParticulars = d.MstArticle_ArticleId.Particulars,
+                        SKUCode = d.SKUCode,
+                        BarCode = d.BarCode,
+                        Description = d.Description,
+                        UnitId = d.UnitId,
+                        Unit = new DTO.MstUnitDTO
+                        {
+                            ManualCode = d.MstUnit_UnitId.ManualCode,
+                            Unit = d.MstUnit_UnitId.Unit
+                        },
+                        Category = d.Category,
+                        IsInventory = d.IsInventory,
+                        ArticleAccountGroupId = d.ArticleAccountGroupId,
+                        ArticleAccountGroup = new DTO.MstArticleAccountGroupDTO
+                        {
+                            ManualCode = d.MstArticleAccountGroup_ArticleAccountGroupId.ManualCode,
+                            ArticleAccountGroup = d.MstArticleAccountGroup_ArticleAccountGroupId.ArticleAccountGroup
+                        },
+                        AssetAccountId = d.AssetAccountId,
+                        AssetAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_AssetAccountId.ManualCode,
+                            Account = d.MstAccount_AssetAccountId.Account
+                        },
+                        SalesAccountId = d.SalesAccountId,
+                        SalesAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_SalesAccountId.ManualCode,
+                            Account = d.MstAccount_SalesAccountId.Account
+                        },
+                        CostAccountId = d.CostAccountId,
+                        CostAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_CostAccountId.ManualCode,
+                            Account = d.MstAccount_CostAccountId.Account
+                        },
+                        ExpenseAccountId = d.ExpenseAccountId,
+                        ExpenseAccount = new DTO.MstAccountDTO
+                        {
+                            ManualCode = d.MstAccount_ExpenseAccountId.ManualCode,
+                            Account = d.MstAccount_ExpenseAccountId.Account
+                        },
+                        Price = d.Price,
+                        Cost = d.Cost,
+                        RRVATId = d.RRVATId,
+                        RRVAT = new DTO.MstTaxDTO
+                        {
+                            ManualCode = d.MstTax_RRVATId.ManualCode,
+                            TaxDescription = d.MstTax_RRVATId.TaxDescription
+                        },
+                        SIVATId = d.SIVATId,
+                        SIVAT = new DTO.MstTaxDTO
+                        {
+                            ManualCode = d.MstTax_SIVATId.ManualCode,
+                            TaxDescription = d.MstTax_SIVATId.TaxDescription
+                        },
+                        WTAXId = d.WTAXId,
+                        WTAX = new DTO.MstTaxDTO
+                        {
+                            ManualCode = d.MstTax_WTAXId.ManualCode,
+                            TaxDescription = d.MstTax_WTAXId.TaxDescription
+                        },
+                        Kitting = d.Kitting,
+                        ProductionCost = d.ProductionCost,
+                        IsLocked = d.MstArticle_ArticleId.IsLocked,
+                        CreatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_CreatedByUserId.Fullname
+                        },
+                        CreatedDateTime = d.MstArticle_ArticleId.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+                        UpdatedByUser = new DTO.MstUserDTO
+                        {
+                            Username = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Username,
+                            Fullname = d.MstArticle_ArticleId.MstUser_UpdatedByUserId.Fullname
+                        },
+                        UpdatedDateTime = d.MstArticle_ArticleId.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+                    }
+                ).ToListAsync();
+
+                return StatusCode(200, lockedArticleItems.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.InnerException.Message);
+            }
+        }
+
         [HttpGet("list/inventory/exceptByArticle/{articleId}")]
         public async Task<ActionResult> GetInventoryArticleItemListExceptByArticle(Int32 articleId)
         {

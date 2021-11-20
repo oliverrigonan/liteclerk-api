@@ -28,14 +28,14 @@ namespace liteclerk_api.Modules
                 if (inventoryLedger != null)
                 {
                     var otherArticle = await (
-                        from d in _dbContext.MstArticleOthers
+                        from d in _dbContext.MstArticleOthers.Include(s => s.MstArticle_ArticleId)
                         select d
                     ).FirstOrDefaultAsync();
 
                     if (otherArticle != null)
                     {
                         var inventories = await (
-                            from d in _dbContext.SysInventories
+                            from d in _dbContext.SysInventories.Include(s => s.MstArticle_ArticleId)
                             where d.ILId == ILId
                             && d.Amount != 0
                             select d
@@ -176,7 +176,7 @@ namespace liteclerk_api.Modules
             try
             {
                 var receivingReceipt = await (
-                    from d in _dbContext.TrnReceivingReceipts
+                    from d in _dbContext.TrnReceivingReceipts.Include(s => s.MstArticle_SupplierId)
                     where d.Id == RRId
                     && d.BaseAmount != 0
                     select d
@@ -185,7 +185,7 @@ namespace liteclerk_api.Modules
                 if (receivingReceipt != null)
                 {
                     var receivingReceiptItems = await (
-                        from d in _dbContext.TrnReceivingReceiptItems
+                        from d in _dbContext.TrnReceivingReceiptItems.Include(s => s.MstArticle_ItemId)
                         where d.RRId == RRId
                         && d.BaseAmount != 0
                         select d
@@ -787,7 +787,7 @@ namespace liteclerk_api.Modules
             try
             {
                 var salesInvoice = await (
-                    from d in _dbContext.TrnSalesInvoices
+                    from d in _dbContext.TrnSalesInvoices.Include(s => s.MstArticle_CustomerId)
                     where d.Id == SIId
                     && d.BaseAmount != 0
                     && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
@@ -819,7 +819,7 @@ namespace liteclerk_api.Modules
                     await _dbContext.SaveChangesAsync();
 
                     var salesInvoiceItems = await (
-                        from d in _dbContext.TrnSalesInvoiceItems
+                        from d in _dbContext.TrnSalesInvoiceItems.Include(s => s.MstArticle_ItemId)
                         where d.SIId == SIId
                         && d.BaseAmount != 0
                         && d.MstArticle_ItemId.MstArticleItems_ArticleId.Any() == true
@@ -941,7 +941,7 @@ namespace liteclerk_api.Modules
             try
             {
                 var collection = await (
-                    from d in _dbContext.TrnCollections
+                    from d in _dbContext.TrnCollections.Include(s => s.MstArticle_CustomerId)
                     where d.Id == CIId
                     && d.BaseAmount != 0
                     && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
@@ -951,7 +951,7 @@ namespace liteclerk_api.Modules
                 if (collection != null)
                 {
                     var collectionLines = await (
-                        from d in _dbContext.TrnCollectionLines
+                        from d in _dbContext.TrnCollectionLines.Include(s => s.MstArticle_ArticleId)
                         where d.CIId == CIId
                         && d.BaseAmount != 0
                         select d
@@ -1307,7 +1307,7 @@ namespace liteclerk_api.Modules
             try
             {
                 var receivableMemo = await (
-                    from d in _dbContext.TrnReceivableMemos
+                    from d in _dbContext.TrnReceivableMemos.Include(s => s.MstArticle_CustomerId)
                     where d.Id == RMId
                     && d.BaseAmount != 0
                     select d
@@ -1338,7 +1338,7 @@ namespace liteclerk_api.Modules
                     await _dbContext.SaveChangesAsync();
 
                     var receivableMemoLines = await (
-                        from d in _dbContext.TrnReceivableMemoLines
+                        from d in _dbContext.TrnReceivableMemoLines.Include(s => s.MstArticle_ArticleId)
                         where d.RMId == RMId
                         && d.BaseAmount != 0
                         select d

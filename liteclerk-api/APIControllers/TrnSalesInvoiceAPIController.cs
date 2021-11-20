@@ -1584,6 +1584,7 @@ namespace liteclerk_api.APIControllers
 
                                 var lockSalesInvoice = salesInvoice;
                                 lockSalesInvoice.Amount = totalAmount;
+                                lockSalesInvoice.BaseAmount = totalAmount;
                                 lockSalesInvoice.IsLocked = true;
                                 lockSalesInvoice.UpdatedByUserId = loginUserId;
                                 lockSalesInvoice.UpdatedDateTime = DateTime.Now;
