@@ -14,8 +14,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace liteclerk_api.APIControllers
 {
-    [Authorize]
-    [EnableCors("AppCorsPolicy")]
+    //[Authorize]
+    //[EnableCors("AppCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class TrnSalesInvoiceAPIController : ControllerBase
@@ -1721,7 +1721,7 @@ namespace liteclerk_api.APIControllers
                             tableHeader.AddCell(new PdfPCell(new Phrase(companyAddress, fontSegoeUI09)) { Border = 0 });
                             tableHeader.AddCell(new PdfPCell(new Phrase(companyTaxNumber, fontSegoeUI09)) { Border = 0 });
                             tableHeader.AddCell(new PdfPCell(new Phrase("Printed " + DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt") + " " + reprinted, fontSegoeUI09)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 3f });
-                            tableHeader.AddCell(new PdfPCell(new Phrase("SALES INVOICE", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
+                            tableHeader.AddCell(new PdfPCell(new Phrase("ORDER SLIP", fontSegoeUI10Bold)) { Border = PdfCell.BOTTOM_BORDER, PaddingBottom = 5f, Colspan = 2, HorizontalAlignment = Element.ALIGN_CENTER });
                             document.Add(tableHeader);
 
                             String customer = salesInvoice.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() ?
@@ -1984,6 +1984,8 @@ namespace liteclerk_api.APIControllers
                             tableUsers.AddCell(new PdfPCell(new Phrase(checkedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border=0, HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f, Colspan=4 });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("THIS DOCUMENT IS NOT VALID FOR CLAIMING INPUT TAXES UNLESS SUPPORTED WITH OR/CR", fontSegoeUI09Bold)) { Border=0, HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f, Colspan=4 });
                             document.Add(tableUsers);
                         }
                     }
