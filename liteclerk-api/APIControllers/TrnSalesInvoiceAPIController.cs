@@ -1736,7 +1736,7 @@ namespace liteclerk_api.APIControllers
                             String remarks = salesInvoice.Remarks;
 
                             String branch = salesInvoice.MstCompanyBranch_BranchId.Branch;
-                            String SINumber = "SI-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
+                            String SINumber = "OS-" + salesInvoice.MstCompanyBranch_BranchId.ManualCode + "-" + salesInvoice.SINumber;
                             String SIDate = salesInvoice.SIDate.ToString("MMMM dd, yyyy");
                             String DateNeeded = salesInvoice.DateNeeded.ToString("MMMM dd, yyyy");
                             String manualNumber = salesInvoice.ManualNumber;
@@ -1985,7 +1985,7 @@ namespace liteclerk_api.APIControllers
                             tableUsers.AddCell(new PdfPCell(new Phrase(approvedBy, fontSegoeUI09)) { HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableUsers.AddCell(new PdfPCell(new Phrase("Date Received:", fontSegoeUI09Bold)) { HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f });
                             tableUsers.AddCell(new PdfPCell(new Phrase("", fontSegoeUI09Bold)) { Border=0, HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f, Colspan=4 });
-                            tableUsers.AddCell(new PdfPCell(new Phrase("THIS DOCUMENT IS NOT VALID FOR CLAIMING INPUT TAXES UNLESS SUPPORTED WITH OR/CR", fontSegoeUI09Bold)) { Border=0, HorizontalAlignment = 0, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f, Colspan=4 });
+                            tableUsers.AddCell(new PdfPCell(new Phrase("THIS DOCUMENT IS NOT VALID FOR CLAIMING INPUT TAXES UNLESS SUPPORTED WITH OR/CR", fontSegoeUI09Bold)) { Border=0, HorizontalAlignment = 1, PaddingTop = 5f, PaddingBottom = 9f, PaddingLeft = 5f, PaddingRight = 5f, Colspan=4 });
                             document.Add(tableUsers);
                         }
                     }

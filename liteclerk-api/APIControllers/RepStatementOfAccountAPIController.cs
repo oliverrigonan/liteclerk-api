@@ -186,6 +186,7 @@ namespace liteclerk_api.APIControllers
                                  && d.MstCompanyBranch_BranchId.CompanyId == companyId
                                  && d.BranchId == branchId
                                  && d.IsLocked == true
+                                 && d.BalanceAmount > 0
                                  select d
                              ).ToListAsync(); ;
 
