@@ -192,7 +192,7 @@ namespace liteclerk_api.APIControllers
 
                             if (salesInvoices.Any())
                             {
-                                PdfPTable tableSalesInvoice = new PdfPTable(8);
+                                PdfPTable tableSalesInvoice = new PdfPTable(9);
                                 float[] widthCellsTableHeader = new float[] { 100f, 100f, 120f, 100f, 100f, 100f, 100f, 100f };
                                 tableSalesInvoice.WidthPercentage = 100;
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase("SI No.", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
@@ -203,6 +203,7 @@ namespace liteclerk_api.APIControllers
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Paid", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Adjusted", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Balance", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableSalesInvoice.AddCell(new PdfPCell(new Phrase("Remarks", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 1, PaddingTop = 2f, PaddingBottom = 5f });
 
                                 foreach (var salesInvoice in salesInvoices)
                                 {
@@ -216,6 +217,7 @@ namespace liteclerk_api.APIControllers
                                     tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesInvoice.PaidAmount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                     tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesInvoice.AdjustmentAmount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                     tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesInvoice.BalanceAmount.ToString("#,##0.00"), fontSegoeUI09)) { Border = 0, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesInvoice.Remarks, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                 }
 
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase("TOTAL:", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f, Colspan = 4 });
@@ -223,7 +225,8 @@ namespace liteclerk_api.APIControllers
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesInvoices.Sum(d => d.PaidAmount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesInvoices.Sum(d => d.AdjustmentAmount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
                                 tableSalesInvoice.AddCell(new PdfPCell(new Phrase(salesInvoices.Sum(d => d.BalanceAmount).ToString("#,##0.00"), fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
-                                tableSalesInvoice.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 8 });
+                                tableSalesInvoice.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, HorizontalAlignment = 2, PaddingTop = 2f, PaddingBottom = 5f });
+                                tableSalesInvoice.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09Bold)) { Border = 0, Colspan = 9 });
                                 document.Add(tableSalesInvoice);
                             }
 
