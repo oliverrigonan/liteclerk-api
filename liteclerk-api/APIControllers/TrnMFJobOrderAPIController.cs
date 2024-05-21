@@ -451,6 +451,7 @@ namespace liteclerk_api.APIControllers
                         DateScheduled = d.DateScheduled.ToShortDateString(),
                         DateNeeded = d.DateNeeded.ToShortDateString(),
                         CustomerId = d.CustomerId,
+                        Accessories = d.Accessories,
                         Customer = new DTO.MstArticleDTO
                         {
                             ManualCode = d.MstArticle_CustomerId.ManualCode,
@@ -717,6 +718,7 @@ namespace liteclerk_api.APIControllers
                 saveJobOrder.CustomerId = trnMFJobOrderDTO.CustomerId;
                 saveJobOrder.Engineer = trnMFJobOrderDTO.Engineer;
                 saveJobOrder.Complaint = trnMFJobOrderDTO.Complaint;
+                saveJobOrder.Accessories = trnMFJobOrderDTO.Accessories;
                 saveJobOrder.Remarks = trnMFJobOrderDTO.Remarks;
                 saveJobOrder.CheckedByUserId = trnMFJobOrderDTO.CheckedByUserId;
                 saveJobOrder.ApprovedByUserId = trnMFJobOrderDTO.ApprovedByUserId;
@@ -828,6 +830,7 @@ namespace liteclerk_api.APIControllers
                 lockJobOrder.CustomerId = trnMFJobOrderDTO.CustomerId;
                 lockJobOrder.Engineer = trnMFJobOrderDTO.Engineer;
                 lockJobOrder.Complaint = trnMFJobOrderDTO.Complaint;
+                lockJobOrder.Accessories = trnMFJobOrderDTO.Accessories;
                 lockJobOrder.Remarks = trnMFJobOrderDTO.Remarks;
                 lockJobOrder.CheckedByUserId = trnMFJobOrderDTO.CheckedByUserId;
                 lockJobOrder.ApprovedByUserId = trnMFJobOrderDTO.ApprovedByUserId;
