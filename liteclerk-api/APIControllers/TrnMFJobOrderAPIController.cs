@@ -354,6 +354,7 @@ namespace liteclerk_api.APIControllers
                     where d.CustomerId == CustomerId
                     && d.IsLocked == true
                     && d.IsCancelled == false
+                    && d.Status.ToUpper() == "NEW"
                     select new DTO.TrnMFJobOrderDTO
                     {
 
