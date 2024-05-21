@@ -64,5 +64,7 @@ namespace liteclerk_api.DBSets
         public virtual ICollection<SysProductionDBSet> SysProductions_BranchId { get; set; }
 
         public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_BranchId { get; set; }
+
+        public virtual ICollection<TrnMFJobOrderDBSet> TrnMFJobOrders_BranchId { get; set; }
     }
 }

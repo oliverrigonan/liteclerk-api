@@ -31,21 +31,28 @@ namespace liteclerk_api.Modules
 
         public async Task<SysUserAuthenticationResponseDTO> Authenticate(SysUserAuthenticationRequestDTO sysUserAuthenticationRequestDTO)
         {
-            DBSets.MstUserDBSet user = await (
-                from d in _dbContext.MstUsers
-                where d.Username == sysUserAuthenticationRequestDTO.Username
-                && d.Password == sysUserAuthenticationRequestDTO.Password
-                select d
-            ).FirstOrDefaultAsync();
-
-            if (user == null)
+            try
             {
-                return null;
+                DBSets.MstUserDBSet user = await (
+                    from d in _dbContext.MstUsers
+                    where d.Username == sysUserAuthenticationRequestDTO.Username
+                    && d.Password == sysUserAuthenticationRequestDTO.Password
+                    select d
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return null;
+                }
+
+                String token = GenerateJwtToken(user);
+
+                return new SysUserAuthenticationResponseDTO(user, token, _tokenExpirationDate.ToString());
             }
-
-            String token = GenerateJwtToken(user);
-
-            return new SysUserAuthenticationResponseDTO(user, token, _tokenExpirationDate.ToString());
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         private String GenerateJwtToken(DBSets.MstUserDBSet mstUserDBSet)
