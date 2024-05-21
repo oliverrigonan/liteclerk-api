@@ -94,5 +94,7 @@ namespace liteclerk_api.DBSets
 
         public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_CustomerId { get; set; }
         public virtual ICollection<TrnPointOfSaleDBSet> TrnPointOfSales_ItemId { get; set; }
+
+        public virtual ICollection<TrnMFJobOrderDBSet> TrnMFJobOrders_Customer { get; set; }
     }
 }

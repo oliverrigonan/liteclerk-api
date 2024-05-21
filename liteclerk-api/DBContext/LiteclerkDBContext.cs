@@ -92,6 +92,10 @@ namespace liteclerk_api.DBContext
         public virtual DbSet<DBSets.TrnStockWithdrawalDBSet> TrnStockWithdrawals { get; set; }
         public virtual DbSet<DBSets.TrnStockWithdrawalItemDBSet> TrnStockWithdrawalItems { get; set; }
 
+        public virtual DbSet<DBSets.TrnMFJobOrderDBSet> TrnMFJobOrders { get; set; }
+        public virtual DbSet<DBSets.TrnMFJobOrderLineDBSet> TrnMFJobOrderLines { get; set; }
+        public virtual DbSet<DBSets.TrnSalesInvoiceMFJOItemDBSet> TrnSalesInvoiceMFJOItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -174,6 +178,10 @@ namespace liteclerk_api.DBContext
             DBModelBuilder.MstArticleOtherModelBuilder.CreateMstArticleOtherModel(modelBuilder);
             DBModelBuilder.TrnStockCountModelBuilder.CreateTrnStockCountModel(modelBuilder);
             DBModelBuilder.TrnStockCountItemModelBuilder.CreateTrnStockCountItemModel(modelBuilder);
+
+            DBModelBuilder.TrnMFJobOrderModelBuilder.CreateTrnMFJobOrderModel(modelBuilder);
+            DBModelBuilder.TrnMFJobOrderLineModelBuilder.CreateMFTrnJobOrderLineModel(modelBuilder);
+            DBModelBuilder.TrnSalesInvoiceMFJOItemModelBuilder.CreateMFTrnSalesInvoiceJOItemModel(modelBuilder);
         }
     }
 }

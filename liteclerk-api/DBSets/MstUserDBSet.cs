@@ -189,5 +189,11 @@ namespace liteclerk_api.DBSets
 
         public virtual ICollection<MstCompanyDBSet> MstCompanies_SalesInvoiceCheckedByUserId { get; set; }
         public virtual ICollection<MstCompanyDBSet> MstCompanies_SalesInvoiceApprovedByUserId { get; set; }
+
+        public virtual ICollection<TrnMFJobOrderDBSet> TrnMFJobOrders_PreparedByUserId { get; set; }
+        public virtual ICollection<TrnMFJobOrderDBSet> TrnMFJobOrder_CheckedByUserId { get; set; }
+        public virtual ICollection<TrnMFJobOrderDBSet> TrnMFJobOrders_ApprovedByUserId { get; set; }
+        public virtual ICollection<TrnMFJobOrderDBSet> TrnMFJobOrders_CreatedByUserId { get; set; }
+        public virtual ICollection<TrnMFJobOrderDBSet> TrnMFJobOrders_UpdatedByUserId { get; set; }
     }
 }
