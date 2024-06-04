@@ -263,7 +263,6 @@ namespace liteclerk_api.APIControllers
                         column == "Complaint" ? d.Complaint.Contains(keywords) :
                         column == "Status" ? d.Status.Contains(keywords) : true
                         )
-                        orderby d.JODate descending
                     select new DTO.TrnMFJobOrderDTO
                     {
 
@@ -324,7 +323,7 @@ namespace liteclerk_api.APIControllers
                             Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
-                    }).Skip((@params.PageNumber - 1) * @params.ItemsPerPage).Take(@params.ItemsPerPage).ToListAsync();
+                    }).OrderByDescending(p => p.Id).Skip((@params.PageNumber - 1) * @params.ItemsPerPage).Take(@params.ItemsPerPage).ToListAsync();
 
                 mfJobOrderList.AddRange(mfJobOrders);
                 var paginationMetaData = new PaginationMetaData(mfJobOrdersCount, @params.PageNumber, @params.ItemsPerPage);
@@ -1148,6 +1147,10 @@ namespace liteclerk_api.APIControllers
 
                                 String Customer = jobOrder.CustomerId != null ?
                                                   jobOrder.MstArticle_CustomerId.Article : "";
+                                String ContactNumber = jobOrder.CustomerId != null ?
+                                                  jobOrder.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactNumber : "";
+                                String ContactPerson = jobOrder.CustomerId != null ?
+                                                  jobOrder.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().ContactPerson : "";
                                 String remarks = jobOrder.Remarks;
 
                                 String branch = jobOrder.MstCompanyBranch_BranchId.Branch;
@@ -1166,25 +1169,31 @@ namespace liteclerk_api.APIControllers
                                 tableJobOrder.AddCell(new PdfPCell(new Phrase("Date:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
                                 tableJobOrder.AddCell(new PdfPCell(new Phrase(JODate, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
 
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Engineer:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase(jobOrder.Engineer, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Date Scheduled:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Contact Info:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase(ContactPerson + " \n" + ContactNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Date Out:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
                                 tableJobOrder.AddCell(new PdfPCell(new Phrase(dateScheduled, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
 
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Accessories:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase(jobOrder.Accessories, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Date Needed:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase(dateNeeded, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                //tableJobOrder.AddCell(new PdfPCell(new Phrase("Date Needed:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                //tableJobOrder.AddCell(new PdfPCell(new Phrase(dateNeeded, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
 
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Complaint:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase(jobOrder.Complaint, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Engineer:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase(jobOrder.Engineer, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
                                 tableJobOrder.AddCell(new PdfPCell(new Phrase("Manual No:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
                                 tableJobOrder.AddCell(new PdfPCell(new Phrase(manualNumber, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
 
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Remarks:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                tableJobOrder.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Accessories:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase(jobOrder.Accessories, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
                                 tableJobOrder.AddCell(new PdfPCell(new Phrase("Document Ref:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                 tableJobOrder.AddCell(new PdfPCell(new Phrase(documentReference, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
+
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Complaint:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase(jobOrder.Complaint, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase("Remarks:", fontSegoeUI10Bold)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                tableJobOrder.AddCell(new PdfPCell(new Phrase(remarks, fontSegoeUI10)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
 
                                 document.Add(tableJobOrder);
 
@@ -1204,18 +1213,18 @@ namespace liteclerk_api.APIControllers
                                     PdfPTable tableJobOrderLine = new PdfPTable(4);
                                     tableJobOrderLine.SetWidths(new float[] { 100f, 100f, 150f, 50f });
                                     tableJobOrderLine.WidthPercentage = 100;
+
+                                    tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Brand", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Serial", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Description", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+                                    tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Quantity", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
+
                                     foreach (var jobOrderLine in jobOrderLines)
                                     {
-                                        tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Brand", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                        tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Serial", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                        tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Description", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                        tableJobOrderLine.AddCell(new PdfPCell(new Phrase("Quantity", fontSegoeUI09Bold)) { HorizontalAlignment = 1, Border = PdfCell.BOTTOM_BORDER | PdfCell.TOP_BORDER, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-
                                         tableJobOrderLine.AddCell(new PdfPCell(new Phrase(jobOrderLine.Brand, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                         tableJobOrderLine.AddCell(new PdfPCell(new Phrase(jobOrderLine.Serial, fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                         tableJobOrderLine.AddCell(new PdfPCell(new Phrase(jobOrderLine.Description, fontSegoeUI09)) { HorizontalAlignment = 1, Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
                                         tableJobOrderLine.AddCell(new PdfPCell(new Phrase(jobOrderLine.Quantity.ToString("#,##0.00"), fontSegoeUI09)) { HorizontalAlignment = Element.ALIGN_RIGHT, Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f });
-                                        tableJobOrderLine.AddCell(new PdfPCell(new Phrase(" ", fontSegoeUI09)) { Border = 0, PaddingTop = 2f, PaddingBottom = 5f, PaddingLeft = 5f, PaddingRight = 5f, Colspan = 4, Rowspan = 2 });
                                     }
                                     document.Add(tableJobOrderLine);
                                     document.Add(tableSpace);
