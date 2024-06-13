@@ -61,6 +61,7 @@ namespace liteclerk_api.APIControllers
                             Article = d.TrnMFJobOrder_MFJOId.MstArticle_CustomerId.Article
                         },
                         DateNeeded = d.TrnMFJobOrder_MFJOId.DateNeeded.ToShortDateString(),
+                        DateScheduled = d.TrnMFJobOrder_MFJOId.DateScheduled.ToShortDateString(),
                         Remarks = d.TrnMFJobOrder_MFJOId.Remarks,
                         Complaint = d.TrnMFJobOrder_MFJOId.Complaint,
                         Accessories = d.TrnMFJobOrder_MFJOId.Accessories,
