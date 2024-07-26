@@ -183,6 +183,8 @@ namespace liteclerk_api.APIControllers
                         column == "Remarks" ? d.Remarks.Contains(keywords) :
                         column == "Status" ? d.Status.Contains(keywords) : true
                     )
+                    //OrderByDescending(d => d.Id)
+                    orderby d.Id descending
                     select new DTO.TrnCollectionDTO
                     {
                         Id = d.Id,
@@ -258,7 +260,7 @@ namespace liteclerk_api.APIControllers
                     }
                 ).ToListAsync();
 
-                return StatusCode(200, collections.OrderByDescending(d => d.Id).Skip(skip).Take(take));
+                return StatusCode(200, collections.Skip(skip).Take(take));
             }
             catch (Exception e)
             {
