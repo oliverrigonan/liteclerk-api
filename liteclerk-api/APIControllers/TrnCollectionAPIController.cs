@@ -149,43 +149,165 @@ namespace liteclerk_api.APIControllers
             }
         }
 
+        //[HttpGet("list/byDateRange/{startDate}/{endDate}/paginated/{column}/{skip}/{take}")]
+        //public async Task<ActionResult> GetPaginatedCollectionListByDateRanged(String startDate, String endDate, String column, Int32 skip, Int32 take, String keywords)
+        //{
+        //    try
+        //    {
+        //        Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+
+        //        var loginUser = await (
+        //            from d in _dbContext.MstUsers
+        //            where d.Id == loginUserId
+        //            select d
+        //        ).FirstOrDefaultAsync();
+
+        //        var collections = await (
+        //            from d in _dbContext.TrnCollections
+        //            where d.BranchId == loginUser.BranchId
+        //            && d.CIDate >= Convert.ToDateTime(startDate)
+        //            && d.CIDate <= Convert.ToDateTime(endDate)
+        //            && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
+        //            && (
+        //                keywords == "" || String.IsNullOrEmpty(keywords) ? true :
+        //                column == "All" ? d.CINumber.Contains(keywords) ||
+        //                                  d.ManualNumber.Contains(keywords) ||
+        //                                  d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) ||
+        //                                  d.DocumentReference.Contains(keywords) ||
+        //                                  d.Remarks.Contains(keywords) ||
+        //                                  d.Status.Contains(keywords) :
+        //                column == "CI No." ? d.CINumber.Contains(keywords) :
+        //                column == "Manual No." ? d.ManualNumber.Contains(keywords) :
+        //                column == "Customer" ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) :
+        //                column == "Document Reference" ? d.DocumentReference.Contains(keywords) :
+        //                column == "Remarks" ? d.Remarks.Contains(keywords) :
+        //                column == "Status" ? d.Status.Contains(keywords) : true
+        //            )
+        //            //OrderByDescending(d => d.Id)
+        //            orderby d.Id descending
+        //            select new DTO.TrnCollectionDTO
+        //            {
+        //                Id = d.Id,
+        //                BranchId = d.BranchId,
+        //                Branch = new DTO.MstCompanyBranchDTO
+        //                {
+        //                    ManualCode = d.MstCompanyBranch_BranchId.ManualCode,
+        //                    Branch = d.MstCompanyBranch_BranchId.Branch
+        //                },
+        //                CurrencyId = d.CurrencyId,
+        //                Currency = new DTO.MstCurrencyDTO
+        //                {
+        //                    ManualCode = d.MstCurrency_CurrencyId.ManualCode,
+        //                    Currency = d.MstCurrency_CurrencyId.Currency
+        //                },
+        //                ExchangeCurrencyId = d.ExchangeCurrencyId,
+        //                ExchangeCurrency = new DTO.MstCurrencyDTO
+        //                {
+        //                    ManualCode = d.MstCurrency_ExchangeCurrencyId.ManualCode,
+        //                    Currency = d.MstCurrency_ExchangeCurrencyId.Currency
+        //                },
+        //                ExchangeRate = d.ExchangeRate,
+        //                CINumber = d.CINumber,
+        //                CIDate = d.CIDate.ToShortDateString(),
+        //                ManualNumber = d.ManualNumber,
+        //                DocumentReference = d.DocumentReference,
+        //                CustomerId = d.CustomerId,
+        //                Customer = new DTO.MstArticleCustomerDTO
+        //                {
+        //                    Article = new DTO.MstArticleDTO
+        //                    {
+        //                        ManualCode = d.MstArticle_CustomerId.ManualCode
+        //                    },
+        //                    Customer = d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer,
+        //                },
+        //                Remarks = d.Remarks,
+        //                Amount = d.Amount,
+        //                BaseAmount = d.BaseAmount,
+        //                PreparedByUserId = d.PreparedByUserId,
+        //                PreparedByUser = new DTO.MstUserDTO
+        //                {
+        //                    Username = d.MstUser_PreparedByUserId.Username,
+        //                    Fullname = d.MstUser_PreparedByUserId.Fullname
+        //                },
+        //                CheckedByUserId = d.CheckedByUserId,
+        //                CheckedByUser = new DTO.MstUserDTO
+        //                {
+        //                    Username = d.MstUser_CheckedByUserId.Username,
+        //                    Fullname = d.MstUser_CheckedByUserId.Fullname
+        //                },
+        //                ApprovedByUserId = d.ApprovedByUserId,
+        //                ApprovedByUser = new DTO.MstUserDTO
+        //                {
+        //                    Username = d.MstUser_ApprovedByUserId.Username,
+        //                    Fullname = d.MstUser_ApprovedByUserId.Fullname
+        //                },
+        //                Status = d.Status,
+        //                IsCancelled = d.IsCancelled,
+        //                IsPrinted = d.IsPrinted,
+        //                IsLocked = d.IsLocked,
+        //                CreatedByUser = new DTO.MstUserDTO
+        //                {
+        //                    Username = d.MstUser_CreatedByUserId.Username,
+        //                    Fullname = d.MstUser_CreatedByUserId.Fullname
+        //                },
+        //                CreatedDateTime = d.CreatedDateTime.ToString("MMMM dd, yyyy hh:mm tt"),
+        //                UpdatedByUser = new DTO.MstUserDTO
+        //                {
+        //                    Username = d.MstUser_UpdatedByUserId.Username,
+        //                    Fullname = d.MstUser_UpdatedByUserId.Fullname
+        //                },
+        //                UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
+        //            }
+        //        ).ToListAsync();
+
+        //        return StatusCode(200, collections.Skip(skip).Take(take));
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, e.InnerException.Message);
+        //    }
+        //}
+
         [HttpGet("list/byDateRange/{startDate}/{endDate}/paginated/{column}/{skip}/{take}")]
         public async Task<ActionResult> GetPaginatedCollectionListByDateRanged(String startDate, String endDate, String column, Int32 skip, Int32 take, String keywords)
         {
             try
             {
-                Int32 loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                int loginUserId = Convert.ToInt32(User.FindFirst(ClaimTypes.Name)?.Value);
+                DateTime start = Convert.ToDateTime(startDate);
+                DateTime end = Convert.ToDateTime(endDate);
 
-                var loginUser = await (
-                    from d in _dbContext.MstUsers
-                    where d.Id == loginUserId
-                    select d
-                ).FirstOrDefaultAsync();
+                var loginUser = await _dbContext.MstUsers
+                    .Where(d => d.Id == loginUserId)
+                    .FirstOrDefaultAsync();
 
-                var collections = await (
-                    from d in _dbContext.TrnCollections
-                    where d.BranchId == loginUser.BranchId
-                    && d.CIDate >= Convert.ToDateTime(startDate)
-                    && d.CIDate <= Convert.ToDateTime(endDate)
-                    && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any() == true
-                    && (
-                        keywords == "" || String.IsNullOrEmpty(keywords) ? true :
-                        column == "All" ? d.CINumber.Contains(keywords) ||
-                                          d.ManualNumber.Contains(keywords) ||
-                                          d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) ||
-                                          d.DocumentReference.Contains(keywords) ||
-                                          d.Remarks.Contains(keywords) ||
-                                          d.Status.Contains(keywords) :
-                        column == "CI No." ? d.CINumber.Contains(keywords) :
-                        column == "Manual No." ? d.ManualNumber.Contains(keywords) :
-                        column == "Customer" ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) :
-                        column == "Document Reference" ? d.DocumentReference.Contains(keywords) :
-                        column == "Remarks" ? d.Remarks.Contains(keywords) :
-                        column == "Status" ? d.Status.Contains(keywords) : true
-                    )
-                    //OrderByDescending(d => d.Id)
-                    orderby d.Id descending
-                    select new DTO.TrnCollectionDTO
+                var query = _dbContext.TrnCollections
+                    .Where(d => d.BranchId == loginUser.BranchId
+                                && d.CIDate >= start
+                                && d.CIDate <= end
+                                && d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.Any());
+
+                if (!string.IsNullOrEmpty(keywords))
+                {
+                    query = query.Where(d => column == "All" ? d.CINumber.Contains(keywords) ||
+                                                d.ManualNumber.Contains(keywords) ||
+                                                d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) ||
+                                                d.DocumentReference.Contains(keywords) ||
+                                                d.Remarks.Contains(keywords) ||
+                                                d.Status.Contains(keywords) :
+                                 column == "CI No." ? d.CINumber.Contains(keywords) :
+                                 column == "Manual No." ? d.ManualNumber.Contains(keywords) :
+                                 column == "Customer" ? d.MstArticle_CustomerId.MstArticleCustomers_ArticleId.FirstOrDefault().Customer.Contains(keywords) :
+                                 column == "Document Reference" ? d.DocumentReference.Contains(keywords) :
+                                 column == "Remarks" ? d.Remarks.Contains(keywords) :
+                                 column == "Status" ? d.Status.Contains(keywords) : true);
+                }
+
+                var collections = await query
+                    .OrderByDescending(d => d.Id)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(d => new DTO.TrnCollectionDTO
                     {
                         Id = d.Id,
                         BranchId = d.BranchId,
@@ -257,16 +379,17 @@ namespace liteclerk_api.APIControllers
                             Fullname = d.MstUser_UpdatedByUserId.Fullname
                         },
                         UpdatedDateTime = d.UpdatedDateTime.ToString("MMMM dd, yyyy hh:mm tt")
-                    }
-                ).ToListAsync();
+                    })
+                    .ToListAsync();
 
-                return StatusCode(200, collections.Skip(skip).Take(take));
+                return StatusCode(200, collections);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.InnerException.Message);
+                return StatusCode(500, e.InnerException?.Message ?? e.Message);
             }
         }
+
 
         [HttpGet("detail/{id}")]
         public async Task<ActionResult> GetCollectionDetail(Int32 id)
