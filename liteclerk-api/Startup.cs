@@ -18,6 +18,9 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using Microsoft.Extensions.Options;
 
 namespace liteclerk_api
 {
@@ -34,6 +37,14 @@ namespace liteclerk_api
         public void ConfigureServices(IServiceCollection services)
         {
             IdentityModelEventSource.ShowPII = true;
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { new CultureInfo("en-US") };
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             services.AddDbContext<DBContext.LiteclerkDBContext>(options => options
                 .UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"])
@@ -111,6 +122,9 @@ namespace liteclerk_api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>().Value;
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseHttpsRedirection();
 
